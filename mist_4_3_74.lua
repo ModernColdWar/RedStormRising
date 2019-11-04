@@ -975,6 +975,12 @@ do -- the main scope
 				-------
 				-- New functionality below. 
 				-------
+
+			if event.initiator == nil then
+				dbLog:warn('event.initiator was nil. Skipping groupSpawned')
+				return
+			end
+
 			if Object.getCategory(event.initiator) == 1 and not Unit.getPlayerName(event.initiator) then -- simple player check, will need to later check to see if unit was spawned with a player in a flight
 				dbLog:info('Object is a Unit')
 				dbLog:info(Unit.getGroup(event.initiator):getName())
