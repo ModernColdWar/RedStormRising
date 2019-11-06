@@ -29,10 +29,29 @@ timer = {
 
 trigger = {
     smokeColor = {
+        Green = 0,
+        Red = 1,
+        White = 2,
+        Orange = 3,
+        Blue = 4
+    },
+    flareColor = {
+        Green = 0,
+        Red = 1,
+        White = 2,
+        Yellow = 3
+    },
+    action = {
+        outText = function(text, displayTime)
+            _log():info("trigger.action.outText($1, $2)", displayTime, text)
+        end
     }
 }
 
 world = {
+    event = {
+        S_EVENT_MARK_REMOVED = 99, -- this is a placeholder number
+    },
     addEventHandler = function()
     end
 }
@@ -49,7 +68,8 @@ coalition = {
         TANKER = 2,
         FAC = 3,
     },
-    addStaticObject = function()
+    addStaticObject = function(countryId, groupData)
+        _log():info("coalition.addStaticObject($1, $2)", countryId, groupData)
     end
 }
 
@@ -80,3 +100,14 @@ StaticObject = {
     getByName = function()
     end
 }
+
+__logger = nil
+
+--- Lazily creates a MIST logger
+--- This is done lazily because we stub DCS before we load MIST
+function _log()
+    if __logger == nil then
+        __logger = mist.Logger:new("DCS_STUB", "info")
+    end
+    return __logger
+end
