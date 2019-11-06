@@ -1,13 +1,34 @@
+--- Red Storm Rising DCS mission LUA code
+
+--- Figure out whether we're running inside DCS or not
+-- currently done by setting environment variable manually when running outside
+function running_in_dcs()
+    return os.getenv("STUB_DCS") == nil
+end
+
+if not running_in_dcs() then
+    dofile("dcs_stub.lua")
+end
+
+--- Loads file from inside DCS saved games folder if running in DCS or current dir if not
+function dofile_wrapper(filename)
+    if running_in_dcs() then
+        dofile(lfs.writedir() .. [[Scripts\RSR\]] .. filename)
+    else
+        dofile(filename)
+    end
+end
+
 env.info("RSR starting")
 
 env.info("Loading MIST")
-dofile(lfs.writedir() .. [[Scripts\RSR\mist_4_3_74.lua]])
+dofile_wrapper("mist_4_3_74.lua")
 env.info("MIST loaded")
 
 log = mist.Logger:new("RSR", "info")
 
 log:info("Loading CTLD")
-dofile(lfs.writedir() .. [[Scripts\RSR\CTLD.lua]])
+dofile_wrapper("CTLD.lua")
 log:info("CTLD loaded")
 
 ctld.slingLoad = true
