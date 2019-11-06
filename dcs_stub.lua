@@ -1,29 +1,50 @@
 --- Stubs DCS World for testing of scripts outside of the DCS runtime mission environment
+local lu = require("luaunit")
+
+dcsStub = {}
+
+local _logger = nil
+
+--- Lazily creates a MIST logger
+--- This is done lazily because we stub DCS before we load MIST
+local function log()
+    if _logger == nil then
+        _logger = mist.Logger:new("DCS_STUB", "info")
+    end
+    return _logger
+end
+
+dcsStub.recordedCalls = {}
 
 --- Logs the call name and arguments
-function _log_call(call_name)
-    return function(...)
-        text = call_name .. "("
-        n = 0
-        for k, v in pairs(arg) do
-            if k ~= "n" then
-                if n > 0 then
-                    text = text .. ", "
-                end
-                if type(v) ~= "string" then
-                    if type(v) == "table" then
-                        text = text .. mist.utils.oneLineSerialize(v)
-                    else
-                        text = text .. tostring(v)
-                    end
-                else
-                    text = text .. v
-                end
-                n = n + 1
+local function logCall(callName, ...)
+    text = callName .. "("
+    n = 0
+    for k, v in pairs(arg) do
+        if k ~= "n" then
+            if n > 0 then
+                text = text .. ", "
             end
+            if type(v) ~= "string" then
+                if type(v) == "table" then
+                    text = text .. mist.utils.oneLineSerialize(v)
+                else
+                    text = text .. tostring(v)
+                end
+            else
+                text = text .. v
+            end
+            n = n + 1
         end
-        text = text .. ")"
-        _log():info(text)
+    end
+    text = text .. ")"
+    log():info(text)
+end
+
+local function recordCall(callName)
+    return function(...)
+        logCall(callName, ...)
+        table.insert(dcsStub.recordedCalls, callName)
     end
 end
 
@@ -69,7 +90,7 @@ trigger = {
         Yellow = 3
     },
     action = {
-        outText = _log_call("trigger.action.outText")
+        outText = recordCall("trigger.action.outText")
     }
 }
 
@@ -93,7 +114,7 @@ coalition = {
         TANKER = 2,
         FAC = 3,
     },
-    addStaticObject = _log_call("coalition.addStaticObject")
+    addStaticObject = recordCall("coalition.addStaticObject")
 }
 
 country = {
@@ -124,13 +145,12 @@ StaticObject = {
     end
 }
 
-__logger = nil
-
---- Lazily creates a MIST logger
---- This is done lazily because we stub DCS before we load MIST
-function _log()
-    if __logger == nil then
-        __logger = mist.Logger:new("DCS_STUB", "info")
-    end
-    return __logger
+function dcsStub.assertNoCalls()
+    lu.assertEquals(#dcsStub.recordedCalls, 0)
 end
+
+function dcsStub.assertOneCallTo(callName)
+    lu.assertEquals(#dcsStub.recordedCalls, 1)
+    lu.assertEquals(dcsStub.recordedCalls[1], callName)
+end
+
