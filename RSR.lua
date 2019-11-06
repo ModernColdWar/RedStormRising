@@ -2,17 +2,17 @@
 
 --- Figure out whether we're running inside DCS or not
 -- currently done by setting environment variable manually when running outside
-function running_in_dcs()
+function runningInDcs()
     return os.getenv("STUB_DCS") == nil
 end
 
-if not running_in_dcs() then
+if not runningInDcs() then
     dofile("dcs_stub.lua")
 end
 
 --- Loads file from inside DCS saved games folder if running in DCS or current dir if not
-function dofile_wrapper(filename)
-    if running_in_dcs() then
+function dofileWrapper(filename)
+    if runningInDcs() then
         dofile(lfs.writedir() .. [[Scripts\RSR\]] .. filename)
     else
         dofile(filename)
@@ -22,13 +22,13 @@ end
 env.info("RSR starting")
 
 env.info("Loading MIST")
-dofile_wrapper("mist_4_3_74.lua")
+dofileWrapper("mist_4_3_74.lua")
 env.info("MIST loaded")
 
 log = mist.Logger:new("RSR", "info")
 
 log:info("Loading CTLD")
-dofile_wrapper("CTLD.lua")
+dofileWrapper("CTLD.lua")
 log:info("CTLD loaded")
 
 ctld.slingLoad = true
