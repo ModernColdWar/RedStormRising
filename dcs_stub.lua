@@ -1,5 +1,32 @@
 --- Stubs DCS World for testing of scripts outside of the DCS runtime mission environment
 
+--- Logs the call name and arguments
+function _log_call(call_name)
+    return function(...)
+        text = call_name .. "("
+        n = 0
+        for k, v in pairs(arg) do
+            if k ~= "n" then
+                if n > 0 then
+                    text = text .. ", "
+                end
+                if type(v) ~= "string" then
+                    if type(v) == "table" then
+                        text = text .. mist.utils.oneLineSerialize(v)
+                    else
+                        text = text .. tostring(v)
+                    end
+                else
+                    text = text .. v
+                end
+                n = n + 1
+            end
+        end
+        text = text .. ")"
+        _log():info(text)
+    end
+end
+
 env = {
     mission = {
         coalition = {
@@ -42,9 +69,7 @@ trigger = {
         Yellow = 3
     },
     action = {
-        outText = function(text, displayTime)
-            _log():info("trigger.action.outText($1, $2)", displayTime, text)
-        end
+        outText = _log_call("trigger.action.outText")
     }
 }
 
@@ -68,9 +93,7 @@ coalition = {
         TANKER = 2,
         FAC = 3,
     },
-    addStaticObject = function(countryId, groupData)
-        _log():info("coalition.addStaticObject($1, $2)", countryId, groupData)
-    end
+    addStaticObject = _log_call("coalition.addStaticObject")
 }
 
 country = {
