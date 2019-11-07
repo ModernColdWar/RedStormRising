@@ -1,7 +1,7 @@
 --- Red Storm Rising DCS mission LUA code
 
 if env == nil then
-    dofile("init.lua")
+    dofile("bootstrap.lua")
 else
     dofile(lfs.writedir() .. [[Scripts\RSR\init.lua]])
 end
