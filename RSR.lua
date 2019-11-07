@@ -3,7 +3,7 @@
 if env == nil then
     dofile("bootstrap.lua")
 else
-    dofile(lfs.writedir() .. [[Scripts\RSR\init.lua]])
+    dofile(lfs.writedir() .. [[Scripts\RSR\bootstrap.lua]])
 end
 
 env.info("RSR starting")
