@@ -8,11 +8,16 @@ end
 
 --- Loads file from inside DCS saved games folder if running in DCS or current dir if not
 function dofileWrapper(filename)
+    filename = getFilePath(filename)
     env.info("Loading " .. filename)
-    if dcsStub == nil then
-        dofile(lfs.writedir() .. [[Scripts\RSR\]] .. filename)
-    else
     dofile(filename)
-    end
     env.info(filename .. " loaded")
+end
+
+function getFilePath(filename)
+    if dcsStub == nil then
+        return lfs.writedir() .. [[Scripts\RSR\]] .. filename
+    else
+        return filename
+    end
 end
