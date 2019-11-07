@@ -1,8 +1,8 @@
 local lu = require("luaunit")
-
+dofile("dcs_stub.lua")
 dofile("RSR.lua")
 
-TestMarkRemoved = {}
+TestMarkEvents = {}
 
 function removeMarkWithText(text)
     event = {
@@ -13,21 +13,21 @@ function removeMarkWithText(text)
     markRemoved(event)
 end
 
-function TestMarkRemoved:setUp()
+function TestMarkEvents:setUp()
     dcsStub.recordedCalls = {}
 end
 
-function TestMarkRemoved:testSpawnsCrate()
+function TestMarkEvents:testSpawnsCrate()
     removeMarkWithText("-crate 100")
     dcsStub.assertOneCallTo("coalition.addStaticObject")
 end
 
-function TestMarkRemoved:testInvalidWeightDisplaysMessage()
+function TestMarkEvents:testInvalidWeightDisplaysMessage()
     removeMarkWithText("-crate 123")
     dcsStub.assertOneCallTo("trigger.action.outText")
 end
 
-function TestMarkRemoved:testOtherTextDoesNothing()
+function TestMarkEvents:testOtherTextDoesNothing()
     removeMarkWithText("tis is my message")
     dcsStub.assertNoCalls()
 end
