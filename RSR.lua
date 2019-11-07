@@ -14,7 +14,10 @@ dofileWrapper("CTLD.lua")
 ctld.slingLoad = true
 
 log = mist.Logger:new("RSR", "info")
+JSON = loadfile(getFilePath("JSON.lua"))()
 
+dofileWrapper("rsrState.lua")
+dofileWrapper("persistence.lua")
 dofileWrapper("markEvents.lua")
 
 env.info("RSR ready")

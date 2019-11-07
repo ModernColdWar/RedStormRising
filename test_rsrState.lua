@@ -1,5 +1,5 @@
 local lu = require("luaunit")
-dofile("rsrState.lua")
+require("rsrState.lua")
 
 TestRsrState = {}
 
