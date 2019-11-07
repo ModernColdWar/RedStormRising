@@ -5,3 +5,5 @@ if stateFileExists() then
 else
     log:info("No state file exists - setting up from scratch")
 end
+
+mist.scheduleFunction(writeState, {rsrState}, timer.getTime() + 30, 30)
