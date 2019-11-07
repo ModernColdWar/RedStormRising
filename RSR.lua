@@ -20,4 +20,6 @@ dofileWrapper("rsrState.lua")
 dofileWrapper("persistence.lua")
 dofileWrapper("markEvents.lua")
 
+dofileWrapper("init.lua")
+
 env.info("RSR ready")

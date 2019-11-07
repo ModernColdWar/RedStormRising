@@ -17,3 +17,13 @@ function readState()
     log:info("Finished reading state")
     return state
 end
+
+function stateFileExists()
+    local f = io.open(stateFile, "r")
+    if f == nil then
+        return false
+    else
+        f:close()
+        return true
+    end
+end
