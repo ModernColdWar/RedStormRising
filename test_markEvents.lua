@@ -14,7 +14,7 @@ function removeMarkWithText(text)
 end
 
 function TestMarkEvents:setUp()
-    dcsStub.recordedCalls = {}
+    dcsStub.reset()
 end
 
 function TestMarkEvents:testSpawnsCrate()

@@ -192,6 +192,10 @@ function Unit.getByName(name)
     return Unit:new(name)
 end
 
+function dcsStub.reset()
+    dcsStub.recordedCalls = {}
+end
+
 function dcsStub.assertNoCalls()
     lu.assertEquals(#dcsStub.recordedCalls, 0)
 end
