@@ -145,6 +145,53 @@ StaticObject = {
     end
 }
 
+Unit = {}
+
+function Unit:new(name)
+    u = u or {}
+    u.name = name
+    u.active = true
+    u.life = 100
+    u.coalition = coalition.side.RED
+    u.pos = {x=1, y=2, z=3}
+    u.id = 1001
+    setmetatable(u, self)
+    self.__index = self
+    return u
+end
+
+function Unit:getName()
+    return self.name
+end
+
+function Unit:isActive()
+    return self.active
+end
+
+function Unit:getLife()
+    return self.life
+end
+
+function Unit:inAir()
+    return false
+end
+
+function Unit:getCoalition()
+    return self.coalition
+end
+
+function Unit:getPoint()
+    return self.pos
+end
+
+function Unit:getID()
+    return self.id
+end
+
+function Unit.getByName(name)
+    return Unit:new(name)
+end
+
 function dcsStub.assertNoCalls()
     lu.assertEquals(#dcsStub.recordedCalls, 0)
 end
