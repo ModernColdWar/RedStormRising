@@ -19,7 +19,7 @@ JSON = loadfile(getFilePath("JSON.lua"))()
 dofileWrapper("rsrState.lua")
 dofileWrapper("persistence.lua")
 dofileWrapper("markEvents.lua")
-
+dofileWrapper("ctldCallbacks.lua")
 dofileWrapper("init.lua")
 
 env.info("RSR ready")

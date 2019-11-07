@@ -135,25 +135,69 @@ country = {
     },
 }
 
-Group = {
-    getByName = function()
-    end
-}
+Position3 = {}
+
+function Position3:new(p)
+    p = p or {}
+    setmetatable(p, self)
+    self.__index = self
+    return p
+end
+
+Vec3 = {}
+
+function Vec3:new(v)
+    v = v or {}
+    setmetatable(v, self)
+    self.__index = self
+    return v
+end
+
+
+
+Group = {}
+
+function Group:new(name)
+    g = {}
+    g.name = name
+    g.coalition = coalition.side.RED
+    setmetatable(g, self)
+    self.__index = self
+    return g
+end
+
+function Group:getName()
+    return self.name
+end
+
+function Group:getCoalition()
+    return self.coalition
+end
+
+function Group:getUnit(n)
+    return Unit.getByName(self.name)
+end
 
 StaticObject = {
     getByName = function()
     end
 }
 
+function Group.getByName(name)
+    return Group:new(name)
+end
+
+
 Unit = {}
 
 function Unit:new(name)
-    u = u or {}
+    u = {}
     u.name = name
     u.active = true
     u.life = 100
     u.coalition = coalition.side.RED
-    u.pos = {x=1, y=2, z=3}
+    u.point = {x=1, y=2, z=3}
+    u.position = {p={x=4, y=5, z=6}, x=u.point, y=u.point, z=u.point}
     u.id = 1001
     setmetatable(u, self)
     self.__index = self
@@ -181,7 +225,11 @@ function Unit:getCoalition()
 end
 
 function Unit:getPoint()
-    return self.pos
+    return self.point
+end
+
+function Unit:getPosition()
+    return self.position
 end
 
 function Unit:getID()
