@@ -14,6 +14,5 @@ A persistent PvP mission for DCS world.
   --loadlib = nil
 ```
  3. Clone this repository: from your `Saved Games\DCS\Scripts` folder run `git clone https://github.com/ModernColdWar/RedStormRising.git RSR`.  This should create a folder named `RSR` and in the end it should look like `Saved Games\DCS\Scripts\RSR`
- 4. Edit your mission/and or the `RSR.lua` file to make sure that MIST and CTLD are only loaded once from either the mission or `RSR.lua`.
  4. Update your mission file to include a trigger with `dofile(lfs.writedir() .. [[Scripts\RSR\RSR.lua]])`
 
