@@ -4,10 +4,12 @@ dofile("RSR.lua")
 TestPersistence = {}
 
 function TestPersistence:testStateRoundtrip()
-    local inputState = {foo=123, bar={bar=456}}
-    writeState(inputState)
-    local outputState = readState()
-    lu.assertEquals(outputState, inputState)
+    local expectedState = {foo=123, bar={bar=456}}
+    rsrState = mist.utils.deepCopy(expectedState)
+    writeState()
+    rsrState = {}
+    readState()
+    lu.assertEquals(rsrState, expectedState)
 end
 
 
