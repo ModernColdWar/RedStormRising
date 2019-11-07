@@ -1,5 +1,4 @@
 local lu = require("luaunit")
-dofile("dcs_stub.lua")
 dofile("RSR.lua")
 
 TestMarkEvents = {}
