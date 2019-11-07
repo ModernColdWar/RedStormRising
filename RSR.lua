@@ -8,9 +8,14 @@ end
 
 env.info("RSR starting")
 
-dofileWrapper("mist_4_3_74.lua")
-dofileWrapper("CTLD.lua")
-dofileWrapper("configureCTLD.lua")
+if mist == nil then
+    dofileWrapper("mist_4_3_74.lua")
+end
+
+if ctld == nil then
+    dofileWrapper("CTLD.lua")
+    dofileWrapper("configureCTLD.lua")
+end
 
 log = mist.Logger:new("RSR", "info")
 JSON = loadfile(getFilePath("JSON.lua"))()
