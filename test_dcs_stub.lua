@@ -1,7 +1,12 @@
 local lu = require("luaunit")
 dofile("dcs_stub.lua")
+dofile("mist_4_3_74.lua")
 
 TestDcsStub = {}
+
+function TestDcsStub:setUp()
+    dcsStub.reset()
+end
 
 function TestDcsStub:testNewUnit()
     local u = Unit:new('unitname')
@@ -14,6 +19,11 @@ end
 function TestDcsStub:testUnitGetByName()
     local u = Unit.getByName('unitname')
     lu.assertEquals(u:getName(), 'unitname')
+end
+
+function TestDcsStub:testCallRecording()
+    trigger.action.outText("Hello world")
+    dcsStub.assertOneCallTo("trigger.action.outText")
 end
 
 local runner = lu.LuaUnit.new()
