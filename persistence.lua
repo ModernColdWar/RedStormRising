@@ -4,7 +4,7 @@ rsrState = {
 }
 
 function updateState()
-    rsrState.persistentUnits = {}
+    rsrState.persistentGroupData = {}
     for i, groupName in ipairs(rsrState.ctldUnpackedGroupNames) do
         log:info("Getting data for unpacked CTLD unit: $1", groupName)
         table.insert(rsrState.persistentGroupData, mist.getGroupData(groupName))
