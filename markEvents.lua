@@ -1,3 +1,5 @@
+--- Handles mark removals
+--- "-crate <weight>" spawns a RED crate at the marker
 function markRemoved(event)
     if event.id == world.event.S_EVENT_MARK_REMOVED and event.text ~= nil then
         local text = event.text:lower()
@@ -10,4 +12,6 @@ function markRemoved(event)
     end
 end
 
-mist.addEventHandler(markRemoved)
+if rsr.devMode then
+    mist.addEventHandler(markRemoved)
+end
