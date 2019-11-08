@@ -14,12 +14,13 @@ end
 
 if ctld == nil then
     dofileWrapper("CTLD.lua")
-    dofileWrapper("configureCTLD.lua")
+    dofileWrapper("CTLDconfig.lua")
 end
 
 log = mist.Logger:new("RSR", "info")
 JSON = loadfile(getFilePath("JSON.lua"))()
 
+dofileWrapper("RSRconfig.lua")
 dofileWrapper("persistence.lua")
 dofileWrapper("markEvents.lua")
 dofileWrapper("ctldCallbacks.lua")
