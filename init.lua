@@ -1,5 +1,3 @@
-local writeInterval = 10
-
 local stateFile = getFilePath(rsr.stateFileName)
 
 if fileExists(stateFile) then
@@ -12,4 +10,9 @@ else
     log:info("No state file exists - setting up from scratch")
 end
 
-mist.scheduleFunction(writeState, { rsr.state, true, stateFile }, timer.getTime() + writeInterval, writeInterval)
+local function persistState()
+    updateState(rsr.state)
+    writeState(rsr.state, stateFile)
+end
+
+mist.scheduleFunction(persistState, {}, timer.getTime() + rsr.writeInterval, rsr.writeInterval)

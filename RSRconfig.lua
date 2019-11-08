@@ -3,6 +3,7 @@ rsr = {}
 rsr.devMode = false  -- enables "developer only" marker features
 rsr.stateFileName = "rsrState.json"  -- default name for state file
 rsr.loadStateFile = true -- whether to load from state if it exists
+rsr.writeInterval = 10 -- how often to update and write the state to disk in seconds
 
 -- The initial configuration of the persistent data we save to disk
 rsr.state = {
