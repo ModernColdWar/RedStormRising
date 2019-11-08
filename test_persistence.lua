@@ -5,13 +5,10 @@ TestPersistence = {}
 
 function TestPersistence:testStateRoundtrip()
     local expectedState = {foo=123, bar={bar=456}}
-    rsrState = mist.utils.deepCopy(expectedState)
-    writeState()
-    rsrState = {}
-    readState()
-    lu.assertEquals(rsrState, expectedState)
+    writeState(expectedState, false,"rsrState_testPersistence_roundtrip.json")
+    local loadedState = readState("rsrState_testPersistence_roundtrip.json")
+    lu.assertEquals(loadedState, expectedState)
 end
-
 
 local runner = lu.LuaUnit.new()
 os.exit(runner:runSuite())
