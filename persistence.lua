@@ -1,17 +1,7 @@
-function updateState(state)
-    state.persistentGroupData = {}
-    for i, groupName in ipairs(state.ctldUnpackedGroupNames) do
-        log:info("Getting data for unpacked CTLD unit: $1", groupName)
-        local groupData = removeGroupAndUnitIds(mist.getGroupData(groupName))
-        table.insert(state.persistentGroupData, groupData)
-    end
-    state.ctld.nextGroupId = ctld.nextGroupId
-    state.ctld.nextUnitId = ctld.nextUnitId
-end
-
 --- Removes groupId and unitId from data so that upon respawn, MIST assigns new IDs
 --- Avoids accidental overwrite of units
-function removeGroupAndUnitIds(groupData)
+local function getGroupData(groupName)
+    local groupData = mist.getGroupData(groupName)
     groupData["groupId"] = nil
     for _, unitData in ipairs(groupData.units) do
         unitData["unitId"] = nil
@@ -19,10 +9,17 @@ function removeGroupAndUnitIds(groupData)
     return groupData
 end
 
-function writeState(state, updateFirst, filename)
-    if updateFirst then
-        updateState(state)
+function updateState(state)
+    state.persistentGroupData = {}
+    for _, groupName in ipairs(state.ctldUnpackedGroupNames) do
+        log:info("Getting data for unpacked CTLD unit: $1", groupName)
+        table.insert(state.persistentGroupData, getGroupData(groupName))
     end
+    state.ctld.nextGroupId = ctld.nextGroupId
+    state.ctld.nextUnitId = ctld.nextUnitId
+end
+
+function writeState(state, filename)
     filename = filename or stateFile
     log:info("Writing state to disk at $1", filename)
     local f = io.open(filename, "w")
