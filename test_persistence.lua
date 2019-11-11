@@ -5,8 +5,6 @@ dofile("mist_4_3_74.lua")
 
 TestPersistence = {}
 
-local json = require("json")
-
 function TestPersistence:testRemoveGroupAndUnitIds()
     local groupData = {
         [1] = {
