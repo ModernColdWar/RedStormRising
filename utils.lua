@@ -23,4 +23,14 @@ function M.getFilePath(filename)
     end
 end
 
+function M.createBackup(filename)
+    local backupFilename = filename .. ".bak"
+    log:info("Backing up $1 to $2", filename, backupFilename)
+    local backup = io.open(backupFilename, "w")
+    local infile = io.open(filename, "r")
+    backup:write(infile:read("*all"))
+    infile:close()
+    backup:close()
+end
+
 return M
