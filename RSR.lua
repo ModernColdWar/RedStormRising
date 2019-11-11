@@ -13,11 +13,8 @@ if mist == nil then
     require("mist_4_3_74")
 end
 
-if ctld == nil then
-    -- if not nil, we're in the "old" RSR mission setup
-    require("CTLD")
-    require("CTLDconfig")
-end
+-- this is our custom CTLD file
+require("MCW")
 
 log = mist.Logger:new("RSR", "info")
 
