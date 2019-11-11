@@ -1,13 +1,43 @@
 local lu = require("luaunit")
-dofile("RSR.lua")
+dofile("dcs_stub.lua")
+dofile("persistence.lua")
+dofile("mist_4_3_74.lua")
 
 TestPersistence = {}
 
-function TestPersistence:testStateRoundtrip()
-    local expectedState = {foo=123, bar={bar=456}}
-    writeState(expectedState,"rsrState_testPersistence_roundtrip.json")
-    local loadedState = readState("rsrState_testPersistence_roundtrip.json")
-    lu.assertEquals(loadedState, expectedState)
+local json = require("json")
+
+function TestPersistence:testRemoveGroupAndUnitIds()
+    local groupData = {
+        [1] = {
+            ["visible"] = false,
+            ["name"] = "groupName",
+            ["groupId"] = 1001,
+            ["units"] = {
+                [1] = {
+                    ["x"] = 1,
+                    ["y"] = 2,
+                    ["name"] = "unitName",
+                    ["unitId"] = 1002,
+                }
+            },
+        }
+    }
+
+    removeGroupAndUnitIds(groupData)
+    lu.assertEquals(groupData, {
+        [1] = {
+            ["visible"] = false,
+            ["name"] = "groupName",
+            ["units"] = {
+                [1] = {
+                    ["x"] = 1,
+                    ["y"] = 2,
+                    ["name"] = "unitName",
+                }
+            },
+        }
+    })
 end
 
 local runner = lu.LuaUnit.new()
