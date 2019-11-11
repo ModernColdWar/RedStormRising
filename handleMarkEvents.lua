@@ -1,3 +1,5 @@
+local utils = require("utils")
+
 --- Handles mark removals
 --- "-crate <weight>" spawns a RED crate at the marker
 function markRemoved(event)
@@ -12,6 +14,6 @@ function markRemoved(event)
     end
 end
 
-if rsr.devMode then
+if utils.runningInDcs() and rsr.devMode then
     mist.addEventHandler(markRemoved)
 end
