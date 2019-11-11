@@ -1,15 +1,27 @@
 local utils = require("utils")
 
+local function crate(text)
+    local weight = tonumber(text)
+    log:info("Spawning red crate with weight $1 at $2", weight, event.pos)
+    ctld.spawnCrateAtPoint("red", weight, event.pos)
+end
+
+local function destroy(text)
+    local unit = Unit.getByName(text)
+    if unit ~= nil then
+        log:info("Destroying unit $1", text)
+        unit:destroy()
+    else
+        log:warn("Unable to find unit with name $1", text)
+    end
+end
 --- Handles mark removals
---- "-crate <weight>" spawns a RED crate at the marker
 function markRemoved(event)
     if event.id == world.event.S_EVENT_MARK_REMOVED and event.text ~= nil then
-        local text = event.text:lower()
-        local side = event.coalition == coalition.side.RED and "red" or "blue"
-        if text:find("-crate") then
-            local weight = tonumber(string.sub(text, 8))
-            log:info("Spawing $1 crate with weight $2 at $3", side, weight, event.pos)
-            ctld.spawnCrateAtPoint(side, weight, event.pos)
+        if event.text:find("-crate") then
+            crate(string.sub(event.text, 8))
+        elseif event.text:find("-destroy") then
+            destroy(string.sub(event.text, 10))
         end
     end
 end
