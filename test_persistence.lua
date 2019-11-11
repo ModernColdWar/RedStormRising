@@ -1,7 +1,7 @@
 local lu = require("luaunit")
-dofile("dcs_stub.lua")
-dofile("persistence.lua")
-dofile("mist_4_3_74.lua")
+require("dcs_stub")
+require("mist_4_3_74")
+require("persistence")
 
 TestPersistence = {}
 
