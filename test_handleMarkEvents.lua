@@ -1,11 +1,11 @@
 local lu = require("luaunit")
-dofile("dcs_stub.lua")
-dofile("mist_4_3_74.lua")
-dofile("CTLD.lua")
+require("dcs_stub")
+require("mist_4_3_74")
+require("CTLD")
 rsr = {}
 rsr.devMode = true
 
-dofile("handleMarkEvents.lua")
+require("handleMarkEvents")
 
 log = mist.Logger:new("TestHandleMarkEvents", "info")
 
