@@ -89,6 +89,10 @@ local function updateGroupData(persistentGroupData)
                 log:info("Updated position info for $1", unitName)
             end
         end
+        if #groupData.units == 0 then
+            log:info("Removing persistent data for dead group $1", groupName)
+            table.remove(persistentGroupData, i)
+        end
     end
     log:info("Persistent group data update complete")
 end
