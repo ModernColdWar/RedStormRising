@@ -9,10 +9,7 @@ end
 
 env.info("RSR starting")
 
-if mist == nil then
-    require("mist_4_3_74")
-end
-
+require("mist_4_3_74")
 -- this is our custom CTLD file
 require("MCW")
 
@@ -25,5 +22,8 @@ require("persistence")
 if rsr.devMode then
     log:warn("Running in developer mode - should not be used for 'real' servers")
 end
+
+-- set up simple slot block (moved from mission trigger)
+trigger.action.setUserFlag("SSB",100)
 
 env.info("RSR ready")
