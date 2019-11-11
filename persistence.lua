@@ -107,6 +107,21 @@ local function pushSpawnQueue(groupName)
     table.insert(spawnQueue, groupName)
 end
 
+local function spawnGroup(groupData)
+    -- Currently this code replicates the actions from ctld.unpackCrates
+    local groupName = groupData.groupName
+    log:info("Spawning $1 from saved state $2", groupName, groupData)
+    mist.dynAdd(groupData)
+    if ctld.isJTACUnitType(groupName) then
+        log:info("Configuring group $1 to auto-lase", groupName)
+        local _code = table.remove(ctld.jtacGeneratedLaserCodes, 1)
+        --put to the end
+        table.insert(ctld.jtacGeneratedLaserCodes, _code)
+        ctld.JTACAutoLase(groupName, _code)
+    end
+    pushSpawnQueue(groupName)
+end
+
 local function restoreFromState(_state)
     --- Note that we don't directly update the state variable from here, this is done in handleSpawnQueue later
     log:info("Restoring from state")
@@ -118,10 +133,7 @@ local function restoreFromState(_state)
     ctld.nextUnitId = _state.ctld.nextUnitId
 
     for _, groupData in ipairs(_state.persistentGroupData) do
-        local groupName = groupData.groupName
-        log:info("Spawning $1 from saved state $2", groupName, groupData)
-        mist.dynAdd(groupData)
-        pushSpawnQueue(groupName)
+        spawnGroup(groupData)
     end
     log:info("Restored from state")
 end
