@@ -58,8 +58,8 @@ local function handleSpawnQueue()
     log:info("Handling spawn queue (length $1)", #spawnQueue)
     for i = #spawnQueue, 1, -1 do
         local groupName = spawnQueue[i]
-        log:info("Getting data for spawned group $1", groupName)
-        local groupData = mist.getCurrentGroupData(groupName)
+        log:info("Getting group data for spawned group $1", groupName)
+        local groupData = mist.getGroupData(groupName)
         if groupData ~= nil then
             log:info("Successfully got group data for $1", groupName)
             table.insert(state.persistentGroupData, groupData)
@@ -90,7 +90,7 @@ local function updateGroupData(persistentGroupData)
 end
 
 local function updateState()
-    updateGroupData(state.persistentGroupData)
+    --updateGroupData(state.persistentGroupData)
     handleSpawnQueue()
     state.ctld.nextGroupId = ctld.nextGroupId
     state.ctld.nextUnitId = ctld.nextUnitId
