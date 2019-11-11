@@ -19,9 +19,6 @@ local function readStateFromDisk(filename)
     local f = io.open(filename, "r")
     local json = f:read("*all")
     f:close()
-    if rsr.devMode then
-        log:info("JSON read from disk:\n$1", json)
-    end
     local _state = JSON:decode(json)
     log:info("Finished reading state from disk at $1", filename)
     return _state
@@ -44,9 +41,6 @@ local function writeStateToDisk(_state, filename)
     removeGroupAndUnitIds(stateToWrite.persistentGroupData)
     log:info("Writing state to disk at $1", filename)
     local json = JSON:encode_pretty(stateToWrite)
-    if rsr.devMode then
-        log:info("JSON being written to disk:\n$1", json)
-    end
     local f = io.open(filename, "w")
     f:write(json)
     f:close()
@@ -75,22 +69,26 @@ end
 local function updateGroupData(persistentGroupData)
     log:info("Updating persistent group data")
     for i = #persistentGroupData, 1, -1 do
-        local groupName = persistentGroupData[i]["name"]
-        log:info("Getting data for group $1", groupName)
-        local groupData = mist.getCurrentGroupData(groupName)
-        if groupData == nil then
-            log:info("No group data found for $1", groupName)
-            table.remove(persistentGroupData, i)
-        else
-            log:info("Updating group data for $1 to $2", groupName, groupData)
-            persistentGroupData[i] = groupData
+        local groupData = persistentGroupData[i]
+        local groupName = groupData.name
+        log:info("Processing units in group $1", groupName)
+        for _, unitData in ipairs(groupData.units) do
+            local unitName = unitData.unitName
+            log:info("Updating position information for unit $1", unitName)
+            local unit = Unit.getByName(unitName)
+            local position = unit:getPosition().p
+            unitData.x = position.x
+            unitData.y = position.z
+            unitData.alt = position.y
+            unitData.heading = mist.getHeading(unit, true)
+            log:info("Updated position info for $1", unitName)
         end
     end
     log:info("Persistent group data update complete")
 end
 
 local function updateState()
-    --updateGroupData(state.persistentGroupData)
+    updateGroupData(state.persistentGroupData)
     handleSpawnQueue()
     state.ctld.nextGroupId = ctld.nextGroupId
     state.ctld.nextUnitId = ctld.nextUnitId
