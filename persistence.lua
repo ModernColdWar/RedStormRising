@@ -48,6 +48,7 @@ end
 
 local function handleSpawnQueue()
     -- get MIST group data for newly unpacked units (if it's available)
+    log:info("Handling spawn queue (length $1)", #spawnQueue)
     for i = #spawnQueue, 1, -1 do
         local groupName = spawnQueue[i]
         log:info("Getting data for spawned group $1", groupName)
@@ -60,9 +61,11 @@ local function handleSpawnQueue()
             log:warn("Unable to get group data for $1", groupName)
         end
     end
+    log:info("Spawn queue handling complete")
 end
 
 local function updateGroupData(persistentGroupData)
+    log:info("Updating persistent group data")
     for i = #persistentGroupData, 1, -1 do
         local groupName = persistentGroupData["name"]
         log:info("Getting data for group $1", groupName)
@@ -75,6 +78,7 @@ local function updateGroupData(persistentGroupData)
             table[i] = groupData
         end
     end
+    log:info("Persistent group data update complete")
 end
 
 local function updateState()
