@@ -72,16 +72,22 @@ local function updateGroupData(persistentGroupData)
         local groupData = persistentGroupData[i]
         local groupName = groupData.name
         log:info("Processing units in group $1", groupName)
-        for _, unitData in ipairs(groupData.units) do
+        for i = #groupData.units, 1, -1 do
+            local unitData = groupData.units[i]
             local unitName = unitData.unitName
-            log:info("Updating position information for unit $1", unitName)
             local unit = Unit.getByName(unitName)
-            local position = unit:getPosition().p
-            unitData.x = position.x
-            unitData.y = position.z
-            unitData.alt = position.y
-            unitData.heading = mist.getHeading(unit, true)
-            log:info("Updated position info for $1", unitName)
+            if unit == nil then
+                log:info("Removing persistent data for dead unit $1", unitName)
+                table.remove(groupData.units, i)
+            else
+                log:info("Updating position information for unit $1", unitName)
+                local position = unit:getPosition().p
+                unitData.x = position.x
+                unitData.y = position.z
+                unitData.alt = position.y
+                unitData.heading = mist.getHeading(unit, true)
+                log:info("Updated position info for $1", unitName)
+            end
         end
     end
     log:info("Persistent group data update complete")
