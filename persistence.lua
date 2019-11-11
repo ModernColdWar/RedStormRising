@@ -1,6 +1,7 @@
 --- Saving/loading/updating code for managing "live" units and persisting them across server restarts
 local utils = require("utils")
 
+
 -- recently spawned units (from player unpacking via CTLD or via code)
 local spawnQueue = {}
 
@@ -85,6 +86,9 @@ end
 
 local function persistState()
     updateState()
+    if utils.fileExists(rsr.stateFileName) then
+        utils.createBackup(rsr.stateFileName)
+    end
     writeStateToDisk(_state, rsr.stateFileName)
 end
 
