@@ -106,9 +106,9 @@ ctld.hoverTime = 4 -- Time to hold hover above a crate for loading in seconds
 -- When this limit is hit, a player will still be able to get crates for an AA system, just unable
 -- to unpack them
 
-ctld.AASystemLimitRED = 20 -- Red side limit
+ctld.AASystemLimitRED = 100 -- Red side limit
 
-ctld.AASystemLimitBLUE = 20 -- Blue side limit
+ctld.AASystemLimitBLUE = 100 -- Blue side limit
 
 ctld.aaSRLaunchers = 3 -- controls how many launchers to add to Short Range Missile systems when spawned.
 ctld.aaMRLaunchers = 4 -- controls how many launchers to add to Medium Range Missile systems when spawned.
@@ -119,8 +119,8 @@ ctld.aaLRLaunchers = 4 -- controls how many launchers to add to Long Range Missi
 
 -- ***************** JTAC CONFIGURATION *****************
 
-ctld.JTAC_LIMIT_RED = 10 -- max number of JTAC Crates for the RED Side
-ctld.JTAC_LIMIT_BLUE = 10 -- max number of JTAC Crates for the BLUE Side
+ctld.JTAC_LIMIT_RED = 20 -- max number of JTAC Crates for the RED Side
+ctld.JTAC_LIMIT_BLUE = 20 -- max number of JTAC Crates for the BLUE Side
 
 ctld.JTAC_dropEnabled = true -- allow JTAC Crate spawn from F10 menu
 
