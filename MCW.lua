@@ -638,8 +638,6 @@ ctld.spawnableCrates = {
         { weight = 1017, desc = "MLRS", unit = "MLRS", side = 2, cratesRequired = 2, internal = 0 },
         { weight = 1018, desc = "MLRS Smerch", unit = "Smerch", side = 2, side = 1, cratesRequired = 2, internal = 0 },
         { weight = 1019, desc = "BM-27 MLRS", unit = "Uragan_BM-27", side = 1, cratesRequired = 2, internal = 0 },
-
-
     },
 
 
@@ -661,6 +659,7 @@ ctld.spawnableCrates = {
 
 
     },
+
 
     ["Radar SAM"] = {
         -- SA-3 GOA
@@ -690,8 +689,8 @@ ctld.spawnableCrates = {
 
     },
 
-    ["Support"] = {
 
+    ["Support"] = {
         { weight = 1058, desc = "M978 HEMTT Tanker", unit = "M978 HEMTT Tanker", side = 2, cratesRequired = 1, internal = 0 },
         { weight = 1059, desc = "ATZ-10 Fuel Truck", unit = "ATZ-10", side = 1, cratesRequired = 1, internal = 1 },
         { weight = 1060, desc = "Ural-375 Ammo Truck", unit = "Ural-375", side = 1, cratesRequired = 1, internal = 0 },
@@ -700,11 +699,13 @@ ctld.spawnableCrates = {
         { weight = 1020, desc = "Early Warning Radar", unit = "1L13 EWR", internal = 0 },
 
     },
+
+
     ["Internal Cargo"] = {
         -- cant be used by BLUE coalition
-        { weight = 1008, desc = "HMMWV - JTAC(internal)", unit = "Hummer", side = 2, cratesRequired = 1, internal = 1 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
-        { weight = 1009, desc = "UAZ - JTAC(internal)", unit = "UAZ-469", side = 1, cratesRequired = 1, internal = 1 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
-        { weight = 1063, desc = "Command Center Crate", unit = "FOB", internal = 1 },
+        { weight = 1008, desc = "HMMWV - JTAC (internal)", unit = "Hummer", side = 2, cratesRequired = 1, internal = 1 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
+        { weight = 1009, desc = "UAZ - JTAC (internal)", unit = "UAZ-469", side = 1, cratesRequired = 1, internal = 1 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
+        { weight = 1063, desc = "Command Center (internal) ", unit = "FOB", internal = 1 },
     },
 
 
