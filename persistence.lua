@@ -148,6 +148,10 @@ local function spawnGroup(groupData)
     pushSpawnQueue(groupName)
 end
 
+local function isReplacementGroup(group)
+    return string.find(group:GetName():lower(), "replacement")
+end
+
 local function activateBaseDefences(airbaseOwnership)
     for side, airbaseNames in pairs(airbaseOwnership) do
         local sideName = side == coalition.side.RED and "red" or "blue"
@@ -161,7 +165,8 @@ local function activateBaseDefences(airbaseOwnership)
             allBaseDefencesForSide:ForEachGroup(function(group)
                 -- we can't use any of the GROUP:InZone as they filter for the unit being alive
                 -- which it isn't, as it is late-actvated
-                if airbaseZone:IsVec3InZone(group:GetVec3()) then
+                -- also ignore replacement units
+                if airbaseZone:IsVec3InZone(group:GetVec3()) and not isReplacementGroup(group) then
                     log:info("Activating $1 $2 base defence group $3", airbaseName, sideName, group:GetName())
                     group:Activate()
                 end
