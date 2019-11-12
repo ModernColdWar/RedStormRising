@@ -29,7 +29,6 @@ ctld = {} -- DONT REMOVE!
 ctld.staticBugWorkaround = false --  DCS had a bug where destroying statics would cause a crash. If this happens again, set this to TRUE
 ctld.debug = false -- Set true to turn off logistics distances, to test crates
 ctld.disableAllSmoke = true -- if true, all smoke is diabled at pickup and drop off zones regardless of settings below. Leave false to respect settings below
-ctld.JTAL = false -- if true, JTACAutoLase module is loaded dont use CTLD
 
 ctld.hoverPickup = false --  if set to false you can load internal crates with the F10 menu instead of hovering... Only if not using real crates!
 
@@ -5240,7 +5239,7 @@ function ctld.addJTACRadioCommand(_side)
 
             local _groupId = ctld.getGroupId(_playerUnit)
 
-            if _groupId and not ctld.JTAL then
+            if _groupId then
                 -- Ironwulf2000 modified for AutoLase script
                 --   env.info("adding command for "..index)
                 if ctld.jtacRadioAdded[tostring(_groupId)] == nil then
