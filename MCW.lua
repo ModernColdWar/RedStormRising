@@ -1777,7 +1777,7 @@ function ctld.spawnCrate(_arguments)
 
         if _crateType ~= nil and _heli ~= nil and ctld.inAir(_heli) == false then
 
-            if ctld.inLogisticsZone(_heli) == false then
+            if ctld.inLogisticsZone(_heli) == false and ctld.debug == false then
 
                 ctld.displayMessageToGroup(_heli, "You are not close enough to friendly logistics to get a crate!", 10)
 
