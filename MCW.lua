@@ -1605,9 +1605,9 @@ function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight, _side,
                 ["category"] = "Cargos", --now plurar
                 --["shape_name"] = "bw_container_cargo", --new slingloadable container
                 --["type"] = "container_cargo", --new type
-                -- ["unitId"] = _unitId,
                 ["shape_name"] = "iso_container_small_cargo",
                 ["type"] = "iso_container_small",
+                -- ["unitId"] = _unitId,
                 ["y"] = _point.z,
                 ["x"] = _point.x,
                 ["mass"] = _weight,
