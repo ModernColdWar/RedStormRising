@@ -11,6 +11,7 @@ env.info("RSR starting")
 
 require("mist_4_3_74")
 require("CTLD")
+require("Moose")
 
 log = mist.Logger:new("RSR", "info")
 
@@ -23,6 +24,6 @@ if rsr.devMode then
 end
 
 -- set up simple slot block (moved from mission trigger)
-trigger.action.setUserFlag("SSB",100)
+trigger.action.setUserFlag("SSB", 100)
 
 env.info("RSR ready")
