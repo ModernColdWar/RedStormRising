@@ -742,12 +742,12 @@ end
 -- "groupSide" = "red" for Russia "blue" for USA
 -- _number = number of groups to spawn OR Group description
 -- "triggerName" = trigger name in mission editor between commas
--- _searchRadius = random distance for units to 2000 from spawn zone (0 will leave troops at the spawn position - no search for enemy)
+-- _searchRadius = random distance for units to move from spawn zone (0 will leave troops at the spawn position - no search for enemy)
 --
 -- Example: ctld.spawnGroupAtTrigger("red", 2, "spawn1", 1000)
 --
 -- This example will spawn 2 groups of russians at the specified point
--- and they will search for enemy or 2000 randomly withing 1000m
+-- and they will search for enemy or move randomly withing 1000m
 -- OR
 --
 -- ctld.spawnGroupAtTrigger("blue", {mg=1,at=2,aa=3,inf=4,mortar=5},"spawn2", 2000)
