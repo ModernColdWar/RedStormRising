@@ -12,6 +12,10 @@ local state = {
         nextUnitId = 1,
     },
     persistentGroupData = {},
+    airbaseOwnership = {
+        [coalition.side.RED] = { "Kobuleti", "Kutaisi", "Senaki-Kolkhi" },
+        [coalition.side.BLUE] = { "Gudauta", "Sochi-Adler", "Sukhumi-Babushara" }
+    },
 }
 
 local function readStateFromDisk(filename)
@@ -97,11 +101,23 @@ local function updateGroupData(persistentGroupData)
     log:info("Persistent group data update complete")
 end
 
+local function getAirbaseOwnership()
+    local airbaseOwnership = {}
+    for _, side in ipairs({ coalition.side.RED, coalition.side.BLUE }) do
+        airbaseOwnership[side] = {}
+        for _, airbase in ipairs(AIRBASE.GetAllAirbases(side, Airbase.Category.AIRDROME)) do
+            table.insert(airbaseOwnership[side], airbase:GetName())
+        end
+    end
+    return airbaseOwnership
+end
+
 local function updateState()
     updateGroupData(state.persistentGroupData)
     handleSpawnQueue()
     state.ctld.nextGroupId = ctld.nextGroupId
     state.ctld.nextUnitId = ctld.nextUnitId
+    state.airbaseOwnership = getAirbaseOwnership()
 end
 
 local function persistState()
@@ -132,20 +148,31 @@ local function spawnGroup(groupData)
     pushSpawnQueue(groupName)
 end
 
+--- Placeholder base defences activation function
+local function activateBaseDefences(airbaseOwnership)
+    log:info("Activating base defences")
+    for side, airbaseNames in pairs(airbaseOwnership) do
+        for _, airbaseName in pairs(airbaseNames) do
+            log:info("(placeholder) Activating base defenses for $1 at $2", side == coalition.side.RED and "red" or "blue", airbaseName)
+        end
+    end
+end
+
 local function restoreFromState(_state)
     --- Note that we don't directly update the state variable from here, this is done in handleSpawnQueue later
-    log:info("Restoring from state")
-    if _state == nil then
-        log:warn("State loaded from disk is nil - setting up from scratch")
-        return
-    end
+    log:info("Restoring mission state")
+    -- use default ownerships if ownership is not in the passed state (ie it came from a file without airbaseOwnership)
+    local airbaseOwnership = _state.airbaseOwnership or state.airbaseOwnership
+    activateBaseDefences(airbaseOwnership)
+
     ctld.nextGroupId = _state.ctld.nextGroupId
     ctld.nextUnitId = _state.ctld.nextUnitId
 
     for _, groupData in ipairs(_state.persistentGroupData) do
         spawnGroup(groupData)
     end
-    log:info("Restored from state")
+
+    log:info("Mission state restored")
 end
 
 if utils.runningInDcs() then
@@ -153,7 +180,8 @@ if utils.runningInDcs() then
         local _state = readStateFromDisk(rsr.stateFileName)
         restoreFromState(_state)
     else
-        log:info("No state file exists - setting up from scratch")
+        log:info("No state file exists - setting up from defaults in code")
+        restoreFromState(state)
     end
 
     -- register unpack callback so we can update our state
