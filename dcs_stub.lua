@@ -90,7 +90,8 @@ trigger = {
         Yellow = 3
     },
     action = {
-        outText = recordCall("trigger.action.outText")
+        outText = recordCall("trigger.action.outText"),
+        setUserFlag = recordCall("trigger.action.setUserFlag")
     }
 }
 
