@@ -148,12 +148,24 @@ local function spawnGroup(groupData)
     pushSpawnQueue(groupName)
 end
 
---- Placeholder base defences activation function
 local function activateBaseDefences(airbaseOwnership)
-    log:info("Activating base defences")
     for side, airbaseNames in pairs(airbaseOwnership) do
+        local sideName = side == coalition.side.RED and "red" or "blue"
+        local allBaseDefencesForSide = SET_GROUP:New()
+                                                :FilterCoalitions(sideName)
+                                                :FilterCategories("ground")
+                                                :FilterActive(false)
+                                                :FilterOnce()
         for _, airbaseName in pairs(airbaseNames) do
-            log:info("(placeholder) Activating base defenses for $1 at $2", side == coalition.side.RED and "red" or "blue", airbaseName)
+            local airbaseZone = ZONE_AIRBASE:New(airbaseName, rsr.airbaseZoneRadius)
+            allBaseDefencesForSide:ForEachGroup(function(group)
+                -- we can't use any of the GROUP:InZone as they filter for the unit being alive
+                -- which it isn't, as it is late-actvated
+                if airbaseZone:IsVec3InZone(group:GetVec3()) then
+                    log:info("Activating $1 $2 base defence group $3", airbaseName, sideName, group:GetName())
+                    group:Activate()
+                end
+            end)
         end
     end
 end
