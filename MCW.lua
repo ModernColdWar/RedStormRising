@@ -39,10 +39,6 @@ ctld.slingLoad = true -- if false, crates can be used WITHOUT slingloading, by h
 -- to use the other method.
 -- Set staticBugFix  to FALSE if use set ctld.slingLoad to TRUE
 
-
-ctld.redCountry = 0        -- Examples: Russia: 0, Ukraine: 1, Aggressors: 7, Insurgents: 17, China: 27, Iran: 34, Iraq: 35, North Korea: 38, USSR: 68
-ctld.blueCountry = 2    -- Examples: USA: 2, UK: 4, Candada: 8, Israel: 15, Georgia: 16, Australia: 21
-
 ctld.enableSmokeDrop = true -- if false, helis and c-130 will not be able to drop smoke
 
 ctld.maxExtractDistance = 200 -- max distance from vehicle to troops to allow a group extraction
@@ -768,10 +764,10 @@ function ctld.spawnGroupAtTrigger(_groupSide, _number, _triggerName, _searchRadi
     local _country
     if _groupSide == "red" then
         _groupSide = 1
-        _country = redCountry                -- 0
+        _country = 0
     else
         _groupSide = 2
-        _country = blueCountry                -- 2
+        _country = 2
     end
 
     if _searchRadius < 0 then
