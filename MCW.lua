@@ -108,7 +108,6 @@ ctld.AASystemLimitBLUE = 100 -- Blue side limit
 ctld.aaSRLaunchers = 3 -- controls how many launchers to add to Short Range Missile systems when spawned.
 ctld.aaMRLaunchers = 4 -- controls how many launchers to add to Medium Range Missile systems when spawned.
 ctld.aaLRLaunchers = 4 -- controls how many launchers to add to Long Range Missile systems when spawned.
--- ctld.hawkLaunchers = 5 -- controls how many launchers to add to the hawk when its spawned.
 
 --END AA SYSTEM CONFIG --
 
@@ -3357,7 +3356,6 @@ end
 --unloads the sling crate when the helicopter is on the ground or between 4.5 - 10 meters
 function ctld.dropSlingCrate(_args)
     local _heli = ctld.getTransportUnit(_args[1])
-    local _type = _heli:getTypeName()
 
     if _heli == nil then
         return -- no heli!
