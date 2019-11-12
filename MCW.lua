@@ -1395,7 +1395,7 @@ end
 
 -- Spawns a sling loadable crate at a Trigger Zone
 --
--- Weights can be found in the ctld. list
+-- Weights can be found in the ctld.spawnableCrates list
 -- e.g. ctld.spawnCrateAtZone("red", 500,"triggerzone1") -- spawn a humvee at triggerzone 1 for red side
 -- e.g. ctld.spawnCrateAtZone("blue", 505,"triggerzone1") -- spawn a tow humvee at triggerzone1 for blue side
 --
