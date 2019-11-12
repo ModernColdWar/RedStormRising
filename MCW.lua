@@ -3824,7 +3824,6 @@ function ctld.rearmAASystem(_heli, _nearestCrate, _nearbyCrates, _aaSystemTempla
 
     -- are we adding to existing aa system?
     -- check to see if the crate is a launcher
-    local _launcherunit = ctld.getLauncherUnitFromAATemplate(_aaSystemTemplate)
     if ctld.getLauncherUnitFromAATemplate(_aaSystemTemplate) == _nearestCrate.details.unit then
 
         -- find nearest COMPLETE AA system
