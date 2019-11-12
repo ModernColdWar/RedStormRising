@@ -696,7 +696,7 @@ ctld.spawnableCrates = {
         { weight = 1059, desc = "ATZ-10 Fuel Truck", unit = "ATZ-10", side = 1, cratesRequired = 1, internal = 1 },
         { weight = 1060, desc = "Ural-375 Ammo Truck", unit = "Ural-375", side = 1, cratesRequired = 1, internal = 0 },
         { weight = 1061, desc = "M-818 Ammo Truck", unit = "M 818", side = 2, cratesRequired = 1, internal = 0 },
-        { weight = 1062, desc = "SAM Repair", unit = "SAM Repair", side = 1, internal = 0 },
+        { weight = 1062, desc = "SAM Repair", unit = "SAM Repair", internal = 0 },
         { weight = 1020, desc = "Early Warning Radar", unit = "1L13 EWR", internal = 0 },
 
     },
