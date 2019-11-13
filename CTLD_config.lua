@@ -643,11 +643,10 @@ ctld.spawnableCrates = {
         { weight = 823, desc = "T-90", unit = "T-90", side = 1, cratesRequired = 3, internal = 0 },
         { weight = 824, desc = "LeClerc", unit = "Leclerc", side = 1, cratesRequired = 4, internal = 0 },
 
-        { weight = 830, desc = "M60A3 Patton", unit = "M-60", side = 2, cratesRequired = 1, unitQuantity = 2, internal = 0 },
-        { weight = 831, desc = "Leopard 1A3", unit = "Leopard1A3", side = 2, cratesRequired = 2, internal = 0 },
-        { weight = 832, desc = "Leopard 2", unit = "Leopard-2", side = 2, cratesRequired = 3, internal = 0 },
-        { weight = 833, desc = "Challenger II", unit = "Challenger2", side = 2, cratesRequired = 3, internal = 0 },
-        { weight = 834, desc = "M1A2 Abrams", unit = "M-1 Abrams", side = 2, cratesRequired = 4, internal = 0 },
+        { weight = 830, desc = "Leopard 1A3", unit = "Leopard1A3", side = 2, cratesRequired = 2, internal = 0 },
+        { weight = 831, desc = "Leopard 2", unit = "Leopard-2", side = 2, cratesRequired = 3, internal = 0 },
+        { weight = 832, desc = "Challenger II", unit = "Challenger2", side = 2, cratesRequired = 3, internal = 0 },
+        { weight = 833, desc = "M1A2 Abrams", unit = "M-1 Abrams", side = 2, cratesRequired = 4, internal = 0 },
     },
 
     ["IR SAM & AAA"] = {
