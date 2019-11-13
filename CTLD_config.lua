@@ -651,18 +651,18 @@ ctld.spawnableCrates = {
         --{ weight = 55, desc = "Igla", unit = "SA-18 Igla manpad", side = 1 },
 
 
-        { weight = 751, desc = "SA-13", unit = "Strela-10M3", side = 1, internal = 0 },
-        { weight = 752, desc = "M1097 Avenger", unit = "M1097 Avenger", side = 2, internal = 0 },
-        { weight = 753, desc = "M6 Linebacker", unit = "M6 Linebacker", side = 2, cratesRequired = 2, internal = 0 },
+        { weight = 751, desc = "SA-9 Strela-1", unit = "Strela-1 9P31", side = 1, internal = 0 },
+        { weight = 752, desc = "SA-13 Strela-10", unit = "Strela-10M3", side = 1, cratesRequired = 2, internal = 0 },
+        { weight = 753, desc = "M1097 Avenger", unit = "M1097 Avenger", side = 2, cratesRequired = 2, internal = 0 },
+        { weight = 754, desc = "M6 Linebacker", unit = "M6 Linebacker", side = 2, cratesRequired = 2, internal = 0 },
 
         -- AAA Guns
-        { weight = 754, desc = "M163 Vulcan", unit = "Vulcan", side = 2, internal = 0 },
-        { weight = 755, desc = "Gepard", unit = "Gepard", side = 2, internal = 0 },
+        { weight = 755, desc = "M163 Vulcan", unit = "Vulcan", side = 2, internal = 0 },
+        { weight = 756, desc = "Gepard", unit = "Gepard", side = 2, internal = 0 },
 
-        { weight = 756, desc = "ZSU-23-4 Shilka", unit = "ZSU-23-4 Shilka", side = 1, internal = 0 },
-        { weight = 757, desc = "SA-19 Tunguska", unit = "2S6 Tunguska", side = 1, internal = 0 },
-
-
+        { weight = 757, desc = "ZSU-23-4 Shilka", unit = "ZSU-23-4 Shilka", side = 1, internal = 0 },
+        { weight = 758, desc = "ZU-23 on Ural", unit = "Ural-375 ZU-23", side = 1, internal = 0 },
+        { weight = 759, desc = "SA-19 Tunguska", unit = "2S6 Tunguska", side = 1, cratesRequired = 2, internal = 0 },
     },
 
 
@@ -677,21 +677,28 @@ ctld.spawnableCrates = {
         { weight = 804, desc = "KUB Launcher", unit = "Kub 2P25 ln", side = 1, internal = 0 },
         { weight = 805, desc = "KUB Radar", unit = "Kub 1S91 str", side = 1, internal = 0 },
 
-        -- TOR SYSTEM
-        { weight = 806, desc = "SA-15 TOR", unit = "Tor 9A331", internal = 0 },
+        -- single crate units
+        { weight = 806, desc = "SA-8 Osa", unit = "SA-8 Osa LD 9T217", side = 1, cratesRequired = 2, internal = 0 },
+        { weight = 807, desc = "SA-15 Tor", unit = "Tor 9A331", cratesRequired = 2, internal = 0 },
 
-        -- HAWK System
-        { weight = 807, desc = "HAWK Launcher", unit = "Hawk ln", side = 2, internal = 0 },
-        { weight = 808, desc = "HAWK Search Radar", unit = "Hawk sr", side = 2, internal = 0 },
-        { weight = 809, desc = "HAWK Track Radar", unit = "Hawk tr", side = 2, internal = 0 },
-        { weight = 810, desc = "HAWK PCP", unit = "Hawk pcp", side = 2, internal = 0 }, -- Remove this if on 1.2
+        --
+        -- Hawk System
+        { weight = 808, desc = "Hawk Launcher", unit = "Hawk ln", side = 2, internal = 0 },
+        { weight = 809, desc = "Hawk Search Radar", unit = "Hawk sr", side = 2, internal = 0 },
+        { weight = 810, desc = "Hawk Track Radar", unit = "Hawk tr", side = 2, internal = 0 },
+        { weight = 811, desc = "Hawk PCP", unit = "Hawk pcp", side = 2, internal = 0 }, -- Remove this if on 1.2
         -- End of HAWK
 
         -- BUK System
-        { weight = 811, desc = "BUK Launcher", unit = "SA-11 Buk LN 9A310M1", side = 1, internal = 0 },
-        { weight = 812, desc = "BUK Search Radar", unit = "SA-11 Buk SR 9S18M1", side = 1, internal = 0 },
-        { weight = 813, desc = "BUK CC Radar", unit = "SA-11 Buk CC 9S470M1", side = 1, internal = 0 },
+        { weight = 812, desc = "BUK Launcher", unit = "SA-11 Buk LN 9A310M1", side = 1, internal = 0 },
+        { weight = 813, desc = "BUK Search Radar", unit = "SA-11 Buk SR 9S18M1", side = 1, internal = 0 },
+        { weight = 814, desc = "BUK CC Radar", unit = "SA-11 Buk CC 9S470M1", side = 1, internal = 0 },
         -- END of BUK
+
+        -- HQ-7 System
+        { weight = 812, desc = "HQ-7 Launcher", unit = "HQ-7 Self-Propelled ln", side = 1, internal = 0 },
+        { weight = 813, desc = "HQ-7 Search Radar", unit = "HQ-7 Self-Propelled str", side = 1, internal = 0 },
+
 
     },
 
@@ -748,10 +755,10 @@ ctld.AASystemTemplate = {
         name = "HAWK SAM System",
         count = 4,
         parts = {
-            { name = "Hawk ln", desc = "HAWK Launcher", launcher = true },
-            { name = "Hawk tr", desc = "HAWK Track Radar (internal)" },
-            { name = "Hawk sr", desc = "HAWK Search Radar" },
-            { name = "Hawk pcp", desc = "HAWK PCP" },
+            { name = "Hawk ln", desc = "Hawk Launcher", launcher = true },
+            { name = "Hawk tr", desc = "Hawk Track Radar" },
+            { name = "Hawk sr", desc = "Hawk Search Radar" },
+            { name = "Hawk pcp", desc = "Hawk PCP" },
         },
         repair = "SAM Repair",
         systemType = "MR",
@@ -783,7 +790,7 @@ ctld.AASystemTemplate = {
         parts = {
 
             { name = "5p73 s-125 ln", desc = "SA-3 Launcher", launcher = true },
-            { name = "snr s-125 tr", desc = "SA-3 Track Radar (internal)" },
+            { name = "snr s-125 tr", desc = "SA-3 Track Radar" },
             { name = "p-19 s-125 sr", desc = "SA-3 Search Radar" },
         },
         repair = "SAM Repair",
