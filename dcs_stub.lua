@@ -57,6 +57,9 @@ env = {
             blue = {
                 bullseye = { x = 3, y = 4 },
             }
+        },
+        triggers = {
+            zones = {},
         }
     },
     info = function(str)
@@ -65,6 +68,8 @@ env = {
     error = function(str)
         print("ERROR: " .. str)
     end,
+    setErrorMessageBoxEnabled = function(b)
+    end
 }
 
 timer = {
@@ -96,8 +101,37 @@ trigger = {
 }
 
 world = {
+    -- all these numbers are placeholders
     event = {
-        S_EVENT_MARK_REMOVED = 99, -- this is a placeholder number
+        S_EVENT_INVALID = 0,
+        S_EVENT_SHOT = 1,
+        S_EVENT_HIT = 2,
+        S_EVENT_TAKEOFF = 3,
+        S_EVENT_LAND = 4,
+        S_EVENT_CRASH = 5,
+        S_EVENT_EJECTION = 6,
+        S_EVENT_REFUELING = 7,
+        S_EVENT_DEAD = 8,
+        S_EVENT_PILOT_DEAD = 9,
+        S_EVENT_BASE_CAPTURED = 10,
+        S_EVENT_MISSION_START = 11,
+        S_EVENT_MISSION_END = 12,
+        S_EVENT_TOOK_CONTROL = 13,
+        S_EVENT_REFUELING_STOP = 14,
+        S_EVENT_BIRTH = 15,
+        S_EVENT_HUMAN_FAILURE = 16,
+        S_EVENT_ENGINE_STARTUP = 17,
+        S_EVENT_ENGINE_SHUTDOWN = 18,
+        S_EVENT_PLAYER_ENTER_UNIT = 19,
+        S_EVENT_PLAYER_LEAVE_UNIT = 20,
+        S_EVENT_PLAYER_COMMENT = 21,
+        S_EVENT_SHOOTING_START = 22,
+        S_EVENT_SHOOTING_END = 23,
+        S_EVENT_MARK_ADDED = 24,
+        S_EVENT_MARK_CHANGE = 25,
+        S_EVENT_MARK_REMOVED = 26,
+        S_EVENT_MARK_REMOVED = 29,
+        S_EVENT_MAX = 99,
     },
     addEventHandler = function()
     end
@@ -115,7 +149,14 @@ coalition = {
         TANKER = 2,
         FAC = 3,
     },
-    addStaticObject = recordCall("coalition.addStaticObject")
+    addStaticObject = recordCall("coalition.addStaticObject"),
+    getGroups = function()
+    end,
+    getStaticObjects = function()
+    end,
+    getAirbases = function()
+    end,
+
 }
 
 country = {
@@ -136,6 +177,13 @@ country = {
     },
 }
 
+radio = {
+    modulation = {
+        AM,
+        FM
+    }
+}
+
 Position3 = {}
 
 function Position3:new(p)
@@ -154,7 +202,15 @@ function Vec3:new(v)
     return v
 end
 
-Group = {}
+Group = {
+    Category = {
+        AIRPLANE = 0,
+        HELICOPTER = 1,
+        GROUND = 2,
+        SHIP = 3,
+        TRAIN = 4
+    }
+}
 
 function Group:new(name)
     g = {}
@@ -186,7 +242,15 @@ function Group.getByName(name)
     return Group:new(name)
 end
 
-Unit = {}
+Unit = {
+    Category = {
+        AIRPLANE = 0,
+        HELICOPTER = 1,
+        GROUND_UNIT = 2,
+        SHIP = 3,
+        STRUCTURE = 4
+    }
+}
 
 function Unit:new(name)
     u = {}
@@ -240,9 +304,24 @@ end
 
 Airbase = {
     Category = {
-        AIRDROME,
-        HELIPAD,
-        SHIP
+        AIRDROME = 1,
+        HELIPAD = 2,
+        SHIP = 3
+    }
+}
+
+AI = {
+    Option = {
+        Air = {
+            val = {
+                ROE = {
+                    OPEN_FIRE = 1
+                },
+                REACTION_ON_THREAT = {
+                    ALLOW_ABORT_MISSION = 1,
+                }
+            }
+        }
     }
 }
 
