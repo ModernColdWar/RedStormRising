@@ -3441,7 +3441,7 @@ function ctld.spawnCrateGroup(_heli, _positions, _types, _unitQuantity)
     }
 
     if #_positions == 1 then
-        for _i = 1, #_unitQuantity do
+        for _i = 1, _unitQuantity do
             local _unitId = ctld.getNextUnitId()
             local _details = { type = _types[1], unitId = _unitId, name = string.format("Unpacked %s #%i", _types[1], _unitId) }
             local _offset = _i * 5
