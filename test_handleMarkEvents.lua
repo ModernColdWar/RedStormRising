@@ -1,7 +1,7 @@
 local lu = require("luaunit")
 require("dcs_stub")
 require("mist_4_3_74")
-require("CTLD")
+require("MCW")
 rsr = {}
 rsr.devMode = true
 
@@ -25,7 +25,7 @@ function TestMarkEvents:setUp()
 end
 
 function TestMarkEvents:testSpawnsCrate()
-    removeMarkWithText("-crate 100")
+    removeMarkWithText("-crate 751")
     dcsStub.assertOneCallTo("coalition.addStaticObject")
 end
 
