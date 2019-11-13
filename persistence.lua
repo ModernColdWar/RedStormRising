@@ -175,12 +175,9 @@ local function activateBaseDefences(airbaseOwnership)
     end
 end
 
+--- Note that we don't directly update the state variable from here, this is done in handleSpawnQueue later
 local function restoreFromState(_state)
-    --- Note that we don't directly update the state variable from here, this is done in handleSpawnQueue later
     log:info("Restoring mission state")
-    -- use default ownerships if ownership is not in the passed state (ie it came from a file without airbaseOwnership)
-    local airbaseOwnership = _state.airbaseOwnership or state.airbaseOwnership
-    activateBaseDefences(airbaseOwnership)
 
     ctld.nextGroupId = _state.ctld.nextGroupId
     ctld.nextUnitId = _state.ctld.nextUnitId
@@ -188,6 +185,10 @@ local function restoreFromState(_state)
     for _, groupData in ipairs(_state.persistentGroupData) do
         spawnGroup(groupData)
     end
+
+    -- use default ownerships if ownership is not in the passed state (ie it came from a file without airbaseOwnership)
+    local airbaseOwnership = _state.airbaseOwnership or state.airbaseOwnership
+    activateBaseDefences(airbaseOwnership)
 
     log:info("Mission state restored")
 end
