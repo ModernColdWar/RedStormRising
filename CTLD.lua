@@ -4315,9 +4315,22 @@ function ctld.addF10MenuOptions()
 
                                                 local _crateRadioMsg = _crate.desc
 
-                                                --add in the number of crates required to build something
-                                                if _crate.cratesRequired ~= nil and _crate.cratesRequired > 1 then
-                                                    _crateRadioMsg = _crateRadioMsg .. " (" .. _crate.cratesRequired .. "c)"
+                                                --add details of crate count and unit quantity
+                                                local _requiresMultipleCrates = _crate.cratesRequired ~= nil and _crate.cratesRequired > 1
+                                                local _hasMultipleUnits = _crate.unitQuantity ~= nil and _crate.unitQuantity > 1
+                                                if (_requiresMultipleCrates or _hasMultipleUnits) then
+                                                    _crateRadioMsg = _crateRadioMsg .. " ("
+                                                    if _requiresMultipleCrates then
+                                                        _crateRadioMsg = _crateRadioMsg .. _crate.cratesRequired .. "c"
+                                                        if _hasMultipleUnits then
+                                                            _crateRadioMsg = _crateRadioMsg .. ", " .. _crate.unitQuantity .. "q"
+                                                        end
+                                                    else
+                                                        if _hasMultipleUnits then
+                                                            _crateRadioMsg = _crateRadioMsg .. _crate.unitQuantity .. "q"
+                                                        end
+                                                    end
+                                                    _crateRadioMsg = _crateRadioMsg .. ")"
                                                 end
 
                                                 missionCommands.addCommandForGroup(_groupId, _crateRadioMsg, _cratePath, ctld.spawnCrate, { _unitName, _crate.weight, _crate.internal })
