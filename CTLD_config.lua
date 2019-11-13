@@ -722,9 +722,9 @@ ctld.spawnableCrates = {
     },
 
     ["Internal Cargo"] = {
-        { weight = 501, desc = "HMMWV - JTAC (internal)", unit = "Hummer", side = 2, cratesRequired = 1, internal = 1 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
-        { weight = 502, desc = "UAZ - JTAC (internal)", unit = "UAZ-469", side = 1, cratesRequired = 1, internal = 1 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
-        { weight = 503, desc = "Command Center (internal) ", unit = "FOB", internal = 1 },
+        { weight = 501, desc = "HMMWV - JTAC", unit = "Hummer", side = 2, cratesRequired = 1, internal = 1 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
+        { weight = 502, desc = "UAZ - JTAC", unit = "UAZ-469", side = 1, cratesRequired = 1, internal = 1 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
+        { weight = 503, desc = "FOB", unit = "FOB", internal = 1 },
     },
 }
 
