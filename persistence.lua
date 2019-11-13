@@ -12,6 +12,10 @@ local state = {
         nextUnitId = 1,
     },
     persistentGroupData = {},
+    airbaseOwnership = {
+        [coalition.side.RED] = { "Kobuleti", "Kutaisi", "Senaki-Kolkhi" },
+        [coalition.side.BLUE] = { "Gudauta", "Sochi-Adler", "Sukhumi-Babushara" }
+    },
 }
 
 local function readStateFromDisk(filename)
@@ -97,11 +101,23 @@ local function updateGroupData(persistentGroupData)
     log:info("Persistent group data update complete")
 end
 
+local function getAirbaseOwnership()
+    local airbaseOwnership = {}
+    for _, side in ipairs({ coalition.side.RED, coalition.side.BLUE }) do
+        airbaseOwnership[side] = {}
+        for _, airbase in ipairs(AIRBASE.GetAllAirbases(side, Airbase.Category.AIRDROME)) do
+            table.insert(airbaseOwnership[side], airbase:GetName())
+        end
+    end
+    return airbaseOwnership
+end
+
 local function updateState()
     updateGroupData(state.persistentGroupData)
     handleSpawnQueue()
     state.ctld.nextGroupId = ctld.nextGroupId
     state.ctld.nextUnitId = ctld.nextUnitId
+    state.airbaseOwnership = getAirbaseOwnership()
 end
 
 local function persistState()
@@ -132,20 +148,49 @@ local function spawnGroup(groupData)
     pushSpawnQueue(groupName)
 end
 
-local function restoreFromState(_state)
-    --- Note that we don't directly update the state variable from here, this is done in handleSpawnQueue later
-    log:info("Restoring from state")
-    if _state == nil then
-        log:warn("State loaded from disk is nil - setting up from scratch")
-        return
+local function isReplacementGroup(group)
+    return string.find(group:GetName():lower(), "replacement")
+end
+
+local function activateBaseDefences(airbaseOwnership)
+    for side, airbaseNames in pairs(airbaseOwnership) do
+        local sideName = side == coalition.side.RED and "red" or "blue"
+        local allBaseDefencesForSide = SET_GROUP:New()
+                                                :FilterCoalitions(sideName)
+                                                :FilterCategories("ground")
+                                                :FilterActive(false)
+                                                :FilterOnce()
+        for _, airbaseName in pairs(airbaseNames) do
+            local airbaseZone = ZONE_AIRBASE:New(airbaseName, rsr.airbaseZoneRadius)
+            allBaseDefencesForSide:ForEachGroup(function(group)
+                -- we can't use any of the GROUP:InZone as they filter for the unit being alive
+                -- which it isn't, as it is late-actvated
+                -- also ignore replacement units
+                if airbaseZone:IsVec3InZone(group:GetVec3()) and not isReplacementGroup(group) then
+                    log:info("Activating $1 $2 base defence group $3", airbaseName, sideName, group:GetName())
+                    group:Activate()
+                end
+            end)
+        end
     end
+end
+
+--- Note that we don't directly update the state variable from here, this is done in handleSpawnQueue later
+local function restoreFromState(_state)
+    log:info("Restoring mission state")
+
     ctld.nextGroupId = _state.ctld.nextGroupId
     ctld.nextUnitId = _state.ctld.nextUnitId
 
     for _, groupData in ipairs(_state.persistentGroupData) do
         spawnGroup(groupData)
     end
-    log:info("Restored from state")
+
+    -- use default ownerships if ownership is not in the passed state (ie it came from a file without airbaseOwnership)
+    local airbaseOwnership = _state.airbaseOwnership or state.airbaseOwnership
+    activateBaseDefences(airbaseOwnership)
+
+    log:info("Mission state restored")
 end
 
 if utils.runningInDcs() then
@@ -153,7 +198,8 @@ if utils.runningInDcs() then
         local _state = readStateFromDisk(rsr.stateFileName)
         restoreFromState(_state)
     else
-        log:info("No state file exists - setting up from scratch")
+        log:info("No state file exists - setting up from defaults in code")
+        restoreFromState(state)
     end
 
     -- register unpack callback so we can update our state
