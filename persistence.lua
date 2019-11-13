@@ -12,16 +12,7 @@ local state = {
         nextUnitId = 1,
     },
     persistentGroupData = {},
-    baseOwnership = {
-        airbases = {
-            red = { "Kobuleti", "Kutaisi", "Senaki-Kolkhi" },
-            blue = { "Gudauta", "Sochi-Adler", "Sukhumi-Babushara" }
-        },
-        farps = {
-            red = { "FARP KN61" },
-            blue = { "FARP GH05" },
-        }
-    }
+    baseOwnership = {} -- populated at startup if not from state file
 }
 
 local function readStateFromDisk(filename)
@@ -116,7 +107,14 @@ local function getBaseOwnership(category)
             table.insert(baseOwnership[sideName], base:GetName())
         end
     end
-    return airbaseOwnership
+    return baseOwnership
+end
+
+local function getAllBaseOwnership()
+    return {
+        airbases = getBaseOwnership(Airbase.Category.AIRDROME),
+        farps = getBaseOwnership(Airbase.Category.HELIPAD)
+    }
 end
 
 local function updateState()
@@ -124,8 +122,7 @@ local function updateState()
     handleSpawnQueue()
     state.ctld.nextGroupId = ctld.nextGroupId
     state.ctld.nextUnitId = ctld.nextUnitId
-    state.baseOwnership.airbases = getBaseOwnership(Airbase.Category.AIRDROME)
-    state.baseOwnership.farps = getBaseOwnership(Airbase.Category.HELIPAD)
+    state.baseOwnership = getAllBaseOwnership()
 end
 
 local function persistState()
@@ -165,20 +162,21 @@ local function activateBaseDefences(baseOwnership)
                                                   :FilterActive(false)
                                                   :FilterOnce()
 
-    for baseType, ownershipData in { baseOwnership.airbases, baseOwnership.farps } do
+    for baseType, ownershipData in pairs(baseOwnership) do
+        log:info("baseType $1", baseType)
         for sideName, baseNames in pairs(ownershipData) do
+            log:info("  sideName $1", sideName)
             local side = sideName == "red" and coalition.side.RED or coalition.side.BLUE
             for _, baseName in pairs(baseNames) do
                 local radius = baseType == "airbases" and rsr.baseDefenceActivationRadiusAirbase or rsr.baseDefenceActivationRadiusFarp
                 local activationZone = ZONE_AIRBASE:New(baseName, radius)
                 allLateActivatedGroundGroups:ForEachGroup(function(group)
                     -- we can't use any of the GROUP:InZone methods as these are late activated units
-                    if group:getCoalition() == side and activationZone:IsVec3InZone(group:GetVec3()) and not isReplacementGroup(group) then
+                    if group:GetCoalition() == side and activationZone:IsVec3InZone(group:GetVec3()) and not isReplacementGroup(group) then
                         log:info("Activating $1 $2 base defence group $3", baseName, sideName, group:GetName())
                         group:Activate()
                     end
                 end)
-
             end
         end
     end
@@ -196,7 +194,7 @@ local function restoreFromState(_state)
     end
 
     -- use default ownerships if ownership is not in the passed state (ie it came from a file without baseOwnership)
-    local baseOwnership = _state.baseOwnership or state.baseOwnership
+    local baseOwnership = _state.baseOwnership or getAllBaseOwnership()
     activateBaseDefences(baseOwnership)
 
     log:info("Mission state restored")
