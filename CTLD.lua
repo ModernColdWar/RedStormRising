@@ -2420,7 +2420,7 @@ function ctld.unpackCrates(_arguments)
                     _crate.crateUnit:destroy()
                     -- end
 
-                    local _spawnedGroups = ctld.spawnCrateGroup(_heli, { _cratePoint }, { _crate.details.unit })
+                    local _spawnedGroups = ctld.spawnCrateGroup(_heli, { _cratePoint }, { _crate.details.unit }, _crate.details.unitQuantity)
 
                     if _heli:getCoalition() == 1 then
                         ctld.spawnedCratesRED[_crateName] = nil
@@ -3397,7 +3397,7 @@ function ctld.unpackMultiCrate(_heli, _nearestCrate, _nearbyCrates)
             --   end
         end
 
-        local _spawnedGroup = ctld.spawnCrateGroup(_heli, { _point }, { _nearestCrate.details.unit })
+        local _spawnedGroup = ctld.spawnCrateGroup(_heli, { _point }, { _nearestCrate.details.unit }, _nearestCrate.details.unitQuantity)
 
         ctld.processCallback({ unit = _heli, crate = _nearestCrate, spawnedGroup = _spawnedGroup, action = "unpack" })
 
@@ -3418,7 +3418,8 @@ function ctld.unpackMultiCrate(_heli, _nearestCrate, _nearbyCrates)
     end
 end
 
-function ctld.spawnCrateGroup(_heli, _positions, _types)
+function ctld.spawnCrateGroup(_heli, _positions, _types, _unitQuantity)
+    _unitQuantity = _unitQuantity or 1
 
     local _id = ctld.getNextGroupId()
 
@@ -3440,11 +3441,12 @@ function ctld.spawnCrateGroup(_heli, _positions, _types)
     }
 
     if #_positions == 1 then
-
-        local _unitId = ctld.getNextUnitId()
-        local _details = { type = _types[1], unitId = _unitId, name = string.format("Unpacked %s #%i", _types[1], _unitId) }
-
-        _group.units[1] = ctld.createUnit(_positions[1].x + 5, _positions[1].z + 5, 120, _details)
+        for _i = 1, #_unitQuantity do
+            local _unitId = ctld.getNextUnitId()
+            local _details = { type = _types[1], unitId = _unitId, name = string.format("Unpacked %s #%i", _types[1], _unitId) }
+            local _offset = _i * 5
+            _group.units[_i] = ctld.createUnit(_positions[1].x + _offset, _positions[1].z + _offset, 120, _details)
+        end
 
     else
 
