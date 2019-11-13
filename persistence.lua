@@ -13,8 +13,8 @@ local state = {
     },
     persistentGroupData = {},
     airbaseOwnership = {
-        [coalition.side.RED] = { "Kobuleti", "Kutaisi", "Senaki-Kolkhi" },
-        [coalition.side.BLUE] = { "Gudauta", "Sochi-Adler", "Sukhumi-Babushara" }
+        red = { "Kobuleti", "Kutaisi", "Senaki-Kolkhi" },
+        blue = { "Gudauta", "Sochi-Adler", "Sukhumi-Babushara" }
     },
 }
 
@@ -104,9 +104,10 @@ end
 local function getAirbaseOwnership()
     local airbaseOwnership = {}
     for _, side in ipairs({ coalition.side.RED, coalition.side.BLUE }) do
-        airbaseOwnership[side] = {}
+        local sideName = side == coalition.side.RED and "red" or "blue"
+        airbaseOwnership[sideName] = {}
         for _, airbase in ipairs(AIRBASE.GetAllAirbases(side, Airbase.Category.AIRDROME)) do
-            table.insert(airbaseOwnership[side], airbase:GetName())
+            table.insert(airbaseOwnership[sideName], airbase:GetName())
         end
     end
     return airbaseOwnership
@@ -153,8 +154,7 @@ local function isReplacementGroup(group)
 end
 
 local function activateBaseDefences(airbaseOwnership)
-    for side, airbaseNames in pairs(airbaseOwnership) do
-        local sideName = side == coalition.side.RED and "red" or "blue"
+    for sideName, airbaseNames in pairs(airbaseOwnership) do
         local allBaseDefencesForSide = SET_GROUP:New()
                                                 :FilterCoalitions(sideName)
                                                 :FilterCategories("ground")
