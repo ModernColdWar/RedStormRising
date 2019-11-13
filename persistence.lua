@@ -130,7 +130,7 @@ end
 
 local function persistState()
     updateState()
-    if utils.fileExists(rsr.stateFileName) then
+    if UTILS.FileExists(rsr.stateFileName) then
         utils.createBackup(rsr.stateFileName)
     end
     writeStateToDisk(state, rsr.stateFileName)
@@ -205,7 +205,7 @@ local function restoreFromState(_state)
 end
 
 if utils.runningInDcs() then
-    if utils.fileExists(rsr.stateFileName) then
+    if UTILS.FileExists(rsr.stateFileName) then
         local _state = readStateFromDisk(rsr.stateFileName)
         restoreFromState(_state)
     else
