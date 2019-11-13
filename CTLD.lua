@@ -3493,7 +3493,8 @@ function ctld.spawnCrateGroup(_heli, _positions, _types)
 
     local _id = ctld.getNextGroupId()
 
-    local _groupName = 'CTLD_' .. _types[1] .. '_' .. _id  -- encountered some issues with using "type #number" on some servers
+    local _playerName = ctld.getPlayerNameOrType(_heli)
+    local _groupName = 'CTLD_' .. _types[1] .. '_' .. _id .. '(' .. _playerName .. ')' -- encountered some issues with using "type #number" on some servers
 
     local _side = _heli:getCoalition()
 
@@ -4563,7 +4564,6 @@ ctld.jtacCurrentTargets = {}
 ctld.jtacRadioAdded = {} --keeps track of who's had the radio command added
 ctld.jtacGeneratedLaserCodes = {} -- keeps track of generated codes, cycles when they run out
 ctld.jtacLaserPointCodes = {}
-
 
 function ctld.getLaserCode(_coalition)
     return _coalition == coalition.side.RED and ctld.JTAC_laserCode_RED or ctld.JTAC_laserCode_BLUE
