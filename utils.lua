@@ -12,8 +12,14 @@ function M.getFilePath(filename)
     end
 end
 
+local function getBackupFilename(filename)
+    local beforeExtension = filename:match("^(.+)%..+$")
+    local extension = filename:match("^.+(%..+)$")
+    return beforeExtension .. "-backup" .. extension
+end
+
 function M.createBackup(filename)
-    local backupFilename = filename .. ".bak"
+    local backupFilename = getBackupFilename(filename)
     log:info("Backing up $1 to $2", filename, backupFilename)
     local backup = io.open(backupFilename, "w")
     local infile = io.open(filename, "r")
