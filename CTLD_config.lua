@@ -621,102 +621,101 @@ ctld.spawnableCrates = {
     -- internal is cargo can be carried in internal bays, set 0 for external.
     -- dont use that option with the HAWK Crates
 
-    -- weight range 701-749
-    ["Ground Forces"] = {
+    ["IFVs & Light Vehicles"] = {
+        { weight = 706, desc = "BTR-80", unit = "BTR-80", side = 1, cratesRequired = 1, internal = 0 },
+        { weight = 707, desc = "IFV BMP-2", unit = "BMP-2", side = 1, cratesRequired = 1, internal = 0 },
+        { weight = 708, desc = "IFV BMP-3", unit = "BMP-3", side = 1, cratesRequired = 2, internal = 0 },
+        { weight = 709, desc = "ZBD04A", unit = "ZBD04A", side = 1, cratesRequired = 2, internal = 0 },
+
         { weight = 701, desc = "HMMWV - TOW", unit = "M1045 HMMWV TOW", side = 2, cratesRequired = 1, internal = 0 },
         { weight = 702, desc = "HMMWV MG", unit = "M1043 HMMWV Armament", side = 2, cratesRequired = 1, internal = 0 },
         { weight = 703, desc = "Stryker ATGM", unit = "M1134 Stryker ATGM", side = 2, internal = 0 },
         { weight = 704, desc = "Stryker MGS", unit = "M1128 Stryker MGS", side = 2, internal = 0 },
         { weight = 705, desc = "IFV BRADLEY", unit = "M-2 Bradley", side = 2, cratesRequired = 2, internal = 0 },
-        { weight = 706, desc = "BTR-80", unit = "BTR-80", side = 1, cratesRequired = 1, internal = 0 },
-        { weight = 707, desc = "IFV BMP-2", unit = "BMP-2", side = 1, cratesRequired = 1, internal = 0 },
-        { weight = 708, desc = "IFV BMP-3", unit = "BMP-3", side = 1, cratesRequired = 2, internal = 0 },
-        { weight = 709, desc = "ZBD04A", unit = "ZBD04A", side = 1, cratesRequired = 2, internal = 0 },
+
+    },
+
+    -- weight range 731-749
+    ["Tanks"] = {
         { weight = 710, desc = "MBT T-72", unit = "T-72B", side = 1, cratesRequired = 2, internal = 0 },
         { weight = 711, desc = "MBT T-80", unit = "T-80UD", side = 1, cratesRequired = 3, internal = 0 },
+
         { weight = 712, desc = "Leopard1A3", unit = "Leopard1A3", side = 2, cratesRequired = 2, internal = 0 },
         { weight = 713, desc = "Leopard 2", unit = "Leopard-2", side = 2, cratesRequired = 3, internal = 0 },
         { weight = 714, desc = "Challenger II", unit = "Challenger2", side = 2, cratesRequired = 3, internal = 0 }, -- blue tanks
-        { weight = 715, desc = "SPH 2S19 Msta", unit = "SAU Msta", side = 1, cratesRequired = 2, internal = 0 },
-        { weight = 716, desc = "M-109", unit = "M-109", side = 2, cratesRequired = 2, internal = 0 },
-        { weight = 717, desc = "MLRS", unit = "MLRS", side = 2, cratesRequired = 2, internal = 0 },
-        { weight = 718, desc = "MLRS Smerch", unit = "Smerch", side = 2, side = 1, cratesRequired = 2, internal = 0 },
-        { weight = 719, desc = "BM-27 MLRS", unit = "Uragan_BM-27", side = 1, cratesRequired = 2, internal = 0 },
     },
 
-
-    -- weight range 751-799
     ["IR SAM & AAA"] = {
-        --{ weight = 50, desc = "Stinger", unit = "Stinger manpad", side = 2 },
-        --{ weight = 55, desc = "Igla", unit = "SA-18 Igla manpad", side = 1 },
-
-
-        { weight = 751, desc = "SA-9 Strela-1", unit = "Strela-1 9P31", side = 1, internal = 0 },
-        { weight = 752, desc = "SA-13 Strela-10", unit = "Strela-10M3", side = 1, cratesRequired = 2, internal = 0 },
-        { weight = 753, desc = "M1097 Avenger", unit = "M1097 Avenger", side = 2, cratesRequired = 2, internal = 0 },
-        { weight = 754, desc = "M6 Linebacker", unit = "M6 Linebacker", side = 2, cratesRequired = 2, internal = 0 },
-
-        -- AAA Guns
-        { weight = 755, desc = "M163 Vulcan", unit = "Vulcan", side = 2, internal = 0 },
-        { weight = 756, desc = "Gepard", unit = "Gepard", side = 2, internal = 0 },
-
         { weight = 757, desc = "ZSU-23-4 Shilka", unit = "ZSU-23-4 Shilka", side = 1, internal = 0 },
         { weight = 758, desc = "ZU-23 on Ural", unit = "Ural-375 ZU-23", side = 1, internal = 0 },
         { weight = 759, desc = "SA-19 Tunguska", unit = "2S6 Tunguska", side = 1, cratesRequired = 2, internal = 0 },
+        { weight = 751, desc = "SA-9 Strela-1", unit = "Strela-1 9P31", side = 1, internal = 0 },
+        { weight = 752, desc = "SA-13 Strela-10", unit = "Strela-10M3", side = 1, cratesRequired = 2, internal = 0 },
+
+        { weight = 755, desc = "M163 Vulcan", unit = "Vulcan", side = 2, internal = 0 },
+        { weight = 756, desc = "Gepard", unit = "Gepard", side = 2, internal = 0 },
+        { weight = 753, desc = "M1097 Avenger", unit = "M1097 Avenger", side = 2, cratesRequired = 2, internal = 0 },
+        { weight = 754, desc = "M6 Linebacker", unit = "M6 Linebacker", side = 2, cratesRequired = 2, internal = 0 },
     },
 
 
     -- weight range 801-849
     ["Radar SAM"] = {
-        -- SA-3 GOA
+        -- SA-3 system
         { weight = 801, desc = "SA-3 Search Radar", unit = "p-19 s-125 sr", side = 1, internal = 0 },
         { weight = 802, desc = "SA-3 Track Radar", unit = "snr s-125 tr", side = 1, internal = 0 },
         { weight = 803, desc = "SA-3 Launcher", unit = "5p73 s-125 ln", side = 1, internal = 0 },
-
-        -- KUB SYSTEM
-        { weight = 804, desc = "KUB Launcher", unit = "Kub 2P25 ln", side = 1, internal = 0 },
-        { weight = 805, desc = "KUB Radar", unit = "Kub 1S91 str", side = 1, internal = 0 },
-
-        -- single crate units
-        { weight = 806, desc = "SA-8 Osa", unit = "SA-8 Osa LD 9T217", side = 1, cratesRequired = 2, internal = 0 },
-        { weight = 807, desc = "SA-15 Tor", unit = "Tor 9A331", cratesRequired = 2, internal = 0 },
-
-        --
-        -- Hawk System
-        { weight = 808, desc = "Hawk Launcher", unit = "Hawk ln", side = 2, internal = 0 },
-        { weight = 809, desc = "Hawk Search Radar", unit = "Hawk sr", side = 2, internal = 0 },
-        { weight = 810, desc = "Hawk Track Radar", unit = "Hawk tr", side = 2, internal = 0 },
-        { weight = 811, desc = "Hawk PCP", unit = "Hawk pcp", side = 2, internal = 0 }, -- Remove this if on 1.2
-        -- End of HAWK
-
-        -- BUK System
-        { weight = 812, desc = "BUK Launcher", unit = "SA-11 Buk LN 9A310M1", side = 1, internal = 0 },
-        { weight = 813, desc = "BUK Search Radar", unit = "SA-11 Buk SR 9S18M1", side = 1, internal = 0 },
-        { weight = 814, desc = "BUK CC Radar", unit = "SA-11 Buk CC 9S470M1", side = 1, internal = 0 },
-        -- END of BUK
 
         -- HQ-7 System
         { weight = 812, desc = "HQ-7 Launcher", unit = "HQ-7 Self-Propelled ln", side = 1, internal = 0 },
         { weight = 813, desc = "HQ-7 Search Radar", unit = "HQ-7 Self-Propelled str", side = 1, internal = 0 },
 
+        -- KUB system
+        { weight = 804, desc = "KUB Launcher", unit = "Kub 2P25 ln", side = 1, internal = 0 },
+        { weight = 805, desc = "KUB Radar", unit = "Kub 1S91 str", side = 1, internal = 0 },
+
+        -- BUK system
+        { weight = 812, desc = "BUK Launcher", unit = "SA-11 Buk LN 9A310M1", side = 1, internal = 0 },
+        { weight = 813, desc = "BUK Search Radar", unit = "SA-11 Buk SR 9S18M1", side = 1, internal = 0 },
+        { weight = 814, desc = "BUK CC Radar", unit = "SA-11 Buk CC 9S470M1", side = 1, internal = 0 },
+
+        { weight = 806, desc = "SA-8 Osa", unit = "SA-8 Osa LD 9T217", side = 1, cratesRequired = 2, internal = 0 },
+
+        -- Hawk System
+        { weight = 808, desc = "Hawk Launcher", unit = "Hawk ln", side = 2, internal = 0 },
+        { weight = 809, desc = "Hawk Search Radar", unit = "Hawk sr", side = 2, internal = 0 },
+        { weight = 810, desc = "Hawk Track Radar", unit = "Hawk tr", side = 2, internal = 0 },
+        { weight = 811, desc = "Hawk PCP", unit = "Hawk pcp", side = 2, internal = 0 }, -- Remove this if on 1.2
+
+
+        -- Tor on both sides
+        { weight = 807, desc = "SA-15 Tor", unit = "Tor 9A331", cratesRequired = 2, internal = 0 },
+
 
     },
 
-    -- weight range 651-699
+    ["Artillery"] = {
+        { weight = 715, desc = "SPH 2S19 Msta", unit = "SAU Msta", side = 1, cratesRequired = 2, internal = 0 },
+        { weight = 719, desc = "BM-27 MLRS", unit = "Uragan_BM-27", side = 1, cratesRequired = 2, internal = 0 },
+        { weight = 718, desc = "MLRS Smerch", unit = "Smerch", side = 1, cratesRequired = 2, internal = 0 },
+
+        { weight = 716, desc = "M-109", unit = "M-109", side = 2, cratesRequired = 2, internal = 0 },
+        { weight = 717, desc = "MLRS", unit = "MLRS", side = 2, cratesRequired = 2, internal = 0 },
+    },
+
     ["Support"] = {
-        { weight = 651, desc = "M978 HEMTT Tanker", unit = "M978 HEMTT Tanker", side = 2, cratesRequired = 1, internal = 0 },
         { weight = 652, desc = "ATZ-10 Fuel Truck", unit = "ATZ-10", side = 1, cratesRequired = 1, internal = 1 },
         { weight = 653, desc = "Ural-375 Ammo Truck", unit = "Ural-375", side = 1, cratesRequired = 1, internal = 0 },
+
+        { weight = 651, desc = "M978 HEMTT Tanker", unit = "M978 HEMTT Tanker", side = 2, cratesRequired = 1, internal = 0 },
         { weight = 654, desc = "M-818 Ammo Truck", unit = "M 818", side = 2, cratesRequired = 1, internal = 0 },
+
         { weight = 655, desc = "SAM Repair", unit = "SAM Repair", internal = 0 },
         { weight = 656, desc = "Early Warning Radar", unit = "1L13 EWR", internal = 0 },
-
     },
 
 
-    -- weight range 501-549
     ["Internal Cargo"] = {
-        -- cant be used by BLUE coalition
         { weight = 501, desc = "HMMWV - JTAC (internal)", unit = "Hummer", side = 2, cratesRequired = 1, internal = 1 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
         { weight = 502, desc = "UAZ - JTAC (internal)", unit = "UAZ-469", side = 1, cratesRequired = 1, internal = 1 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
         { weight = 503, desc = "Command Center (internal) ", unit = "FOB", internal = 1 },
