@@ -2514,7 +2514,6 @@ function ctld.unpackCrates(_arguments)
                         local _code = table.remove(ctld.jtacGeneratedLaserCodes, 1)
                         --put to the end
                         table.insert(ctld.jtacGeneratedLaserCodes, _code)
-                        ctld.setJTACInvisible(_spawnedGroups, ctld.JTAC_invisible)
                         ctld.JTACAutoLase(_spawnedGroups:getName(), _code) --(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
                     end
                 end
@@ -2529,27 +2528,6 @@ function ctld.unpackCrates(_arguments)
     if (not _status) then
         env.error(string.format("CTLD ERROR: %s", _err))
     end
-end
-
-function ctld.setJTACInvisible (_jtacGroup, _invisible)
-    -- Ironwulf2000 created - set JTAC to AI invisible
-
-    if ((_invisible == nil) or (_invisible ~= false)) then
-        -- if no argument passed or the argument is not a boolean, set to true so command doesnt error
-        _invisible = true
-    end
-
-    local JTACSetInvisCommand = {
-        id = 'SetInvisible',
-        params = {
-            value = _invisible
-        }
-    }
-
-    local _controller = _jtacGroup:getController()
-
-    _controller:setCommand(JTACSetInvisCommand)
-
 end
 
 
@@ -3506,7 +3484,6 @@ function ctld.unpackMultiCrate(_heli, _nearestCrate, _nearbyCrates)
             local _code = table.remove(ctld.jtacGeneratedLaserCodes, 1)
             --put to the end
             table.insert(ctld.jtacGeneratedLaserCodes, _code)
-            ctld.setJTACInvisible(_spawnedGroup, ctld.JTAC_invisible)
             ctld.JTACAutoLase(_spawnedGroup:getName(), _code) --(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
         end
 
