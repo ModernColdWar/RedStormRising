@@ -10,8 +10,7 @@ end
 env.info("RSR starting")
 
 require("mist_4_3_74")
--- this is our custom CTLD file
-require("MCW")
+require("CTLD")
 
 log = mist.Logger:new("RSR", "info")
 
