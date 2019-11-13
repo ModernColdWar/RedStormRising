@@ -3424,7 +3424,7 @@ function ctld.spawnCrateGroup(_heli, _positions, _types, _unitQuantity)
     local _id = ctld.getNextGroupId()
 
     local _playerName = ctld.getPlayerNameOrType(_heli)
-    local _groupName = 'CTLD_' .. _types[1] .. '_' .. _id .. '(' .. _playerName .. ')' -- encountered some issues with using "type #number" on some servers
+    local _groupName = 'CTLD_' .. _types[1] .. '_' .. _id .. ' (' .. _playerName .. ')' -- encountered some issues with using "type #number" on some servers
 
     local _side = _heli:getCoalition()
 
