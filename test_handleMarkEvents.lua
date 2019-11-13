@@ -1,7 +1,7 @@
 local lu = require("luaunit")
 require("dcs_stub")
 require("mist_4_3_74")
-require("MCW")
+require("CTLD")
 rsr = {}
 rsr.devMode = true
 
