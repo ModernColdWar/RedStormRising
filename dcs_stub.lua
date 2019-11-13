@@ -154,8 +154,6 @@ function Vec3:new(v)
     return v
 end
 
-
-
 Group = {}
 
 function Group:new(name)
@@ -188,7 +186,6 @@ function Group.getByName(name)
     return Group:new(name)
 end
 
-
 Unit = {}
 
 function Unit:new(name)
@@ -197,8 +194,8 @@ function Unit:new(name)
     u.active = true
     u.life = 100
     u.coalition = coalition.side.RED
-    u.point = {x=1, y=2, z=3}
-    u.position = {p={x=4, y=5, z=6}, x=u.point, y=u.point, z=u.point}
+    u.point = { x = 1, y = 2, z = 3 }
+    u.position = { p = { x = 4, y = 5, z = 6 }, x = u.point, y = u.point, z = u.point }
     u.id = 1001
     setmetatable(u, self)
     self.__index = self
@@ -240,6 +237,14 @@ end
 function Unit.getByName(name)
     return Unit:new(name)
 end
+
+Airbase = {
+    Category = {
+        AIRDROME,
+        HELIPAD,
+        SHIP
+    }
+}
 
 function dcsStub.reset()
     dcsStub.recordedCalls = {}
