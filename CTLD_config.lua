@@ -720,3 +720,74 @@ ctld.spawnableCrates = {
 ctld.jtacUnitTypes = {
     "UAZ", "Hummer" -- there are some wierd encoding issues so if you write SKP-11 it wont match as the - sign is encoded differently...
 }
+
+--- Tells CTLD What multipart AA Systems there are and what parts they need
+-- A New system added here also needs the launcher added
+ctld.AASystemTemplate = {
+    {
+        name = "HQ-7 AA System",
+        count = 2,
+        parts = {
+            { name = "HQ-7 Self-Propelled ln", desc = "HQ-7_LN_SP", launcher = true },
+            { name = "HQ-7 Self-Propelled str", desc = "HQ-7_STR_SP" },
+        },
+        repair = "SAM Repair",
+        systemType = "SR",
+    },
+    {
+        name = "ROLAND AA System",
+        count = 2,
+        parts = {
+            { name = "SAM Roland ADS", desc = "Roland Launcher", launcher = true },
+            { name = "SAM Roland EWR", desc = "Roland Radar" },
+        },
+        repair = "SAM Repair",
+        systemType = "SR",
+    },
+    {
+        name = "HAWK SAM System",
+        count = 4,
+        parts = {
+            { name = "Hawk ln", desc = "HAWK Launcher", launcher = true },
+            { name = "Hawk tr", desc = "HAWK Track Radar (internal)" },
+            { name = "Hawk sr", desc = "HAWK Search Radar" },
+            { name = "Hawk pcp", desc = "HAWK PCP" },
+        },
+        repair = "SAM Repair",
+        systemType = "MR",
+    },
+    {
+        name = "BUK SAM System",
+        count = 3,
+        parts = {
+            { name = "SA-11 Buk LN 9A310M1", desc = "BUK Launcher", launcher = true },
+            { name = "SA-11 Buk CC 9S470M1", desc = "BUK CC Radar" },
+            { name = "SA-11 Buk SR 9S18M1", desc = "BUK Search Radar" },
+        },
+        repair = "SAM Repair",
+        systemType = "MR"
+    },
+    {
+        name = "KUB SAM System",
+        count = 2,
+        parts = {
+            { name = "Kub 2P25 ln", desc = "KUB Launcher", launcher = true },
+            { name = "Kub 1S91 str", desc = "KUB Radar" },
+        },
+        repair = "SAM Repair",
+        systemType = "MR",
+    },
+    {
+        name = "SA-3 SAM System",
+        count = 3,
+        parts = {
+
+            { name = "5p73 s-125 ln", desc = "SA-3 Launcher", launcher = true },
+            { name = "snr s-125 tr", desc = "SA-3 Track Radar (internal)" },
+            { name = "p-19 s-125 sr", desc = "SA-3 Search Radar" },
+        },
+        repair = "SAM Repair",
+        systemType = "MR",
+    },
+
+}
