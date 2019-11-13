@@ -163,9 +163,7 @@ local function activateBaseDefences(baseOwnership)
                                                   :FilterOnce()
 
     for baseType, ownershipData in pairs(baseOwnership) do
-        log:info("baseType $1", baseType)
         for sideName, baseNames in pairs(ownershipData) do
-            log:info("  sideName $1", sideName)
             local side = sideName == "red" and coalition.side.RED or coalition.side.BLUE
             for _, baseName in pairs(baseNames) do
                 local radius = baseType == "airbases" and rsr.baseDefenceActivationRadiusAirbase or rsr.baseDefenceActivationRadiusFarp
