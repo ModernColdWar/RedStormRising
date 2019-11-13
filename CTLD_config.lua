@@ -731,7 +731,7 @@ ctld.jtacUnitTypes = {
 -- A New system added here also needs the launcher added
 ctld.AASystemTemplate = {
     {
-        name = "HQ-7 AA System",
+        name = "HQ-7 SAM System",
         count = 2,
         parts = {
             { name = "HQ-7 Self-Propelled ln", desc = "HQ-7_LN_SP", launcher = true },
@@ -741,7 +741,7 @@ ctld.AASystemTemplate = {
         systemType = "SR",
     },
     {
-        name = "ROLAND AA System",
+        name = "ROLAND SAM System",
         count = 2,
         parts = {
             { name = "SAM Roland ADS", desc = "Roland Launcher", launcher = true },
