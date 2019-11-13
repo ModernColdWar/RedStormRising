@@ -671,8 +671,8 @@ ctld.spawnableCrates = {
         { weight = 862, desc = "SA-3 Launcher", unit = "5p73 s-125 ln", side = 1, internal = 0 },
 
         -- HQ-7 System
-        { weight = 863, desc = "HQ-7 Launcher", unit = "HQ-7 Self-Propelled ln", side = 1, internal = 0 },
-        { weight = 864, desc = "HQ-7 Search Radar", unit = "HQ-7 Self-Propelled str", side = 1, internal = 0 },
+        --{ weight = 863, desc = "HQ-7 Launcher", unit = "HQ-7 Self-Propelled ln", side = 1, internal = 0 },
+        --{ weight = 864, desc = "HQ-7 Search Radar", unit = "HQ-7 Self-Propelled str", side = 1, internal = 0 },
 
         -- KUB system
         { weight = 865, desc = "KUB Launcher", unit = "Kub 2P25 ln", side = 1, internal = 0 },
@@ -692,8 +692,8 @@ ctld.spawnableCrates = {
         { weight = 874, desc = "Hawk PCP", unit = "Hawk pcp", side = 2, internal = 0 }, -- Remove this if on 1.2
 
         -- Roland System
-        { weight = 875, desc = "Roland Launcher", unit = "SAM Roland ADS", side = 2, internal = 0 },
-        { weight = 876, desc = "Roland Radar", unit = "SAM Roland EWR", side = 2, internal = 0 },
+        --{ weight = 875, desc = "Roland Launcher", unit = "SAM Roland ADS", side = 2, internal = 0 },
+        --{ weight = 876, desc = "Roland Radar", unit = "SAM Roland EWR", side = 2, internal = 0 },
 
         -- Tor on both sides
         { weight = 877, desc = "SA-15 Tor", unit = "Tor 9A331", cratesRequired = 2, internal = 0 },
