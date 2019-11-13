@@ -14,7 +14,7 @@ require("CTLD")
 
 log = mist.Logger:new("RSR", "info")
 
-require("RSRconfig")
+require("RSR_config")
 require("handleMarkEvents")
 require("persistence")
 
