@@ -133,6 +133,9 @@ ctld.location_DMS = false -- shows coordinates as Degrees Minutes Seconds instea
 
 ctld.JTAC_lock = "all" -- "vehicle" OR "troop" OR "all" forces JTAC to only lock vehicles or troops or all ground units
 
+ctld.JTAC_laserCode_RED = 1686
+ctld.JTAC_laserCode_BLUE = 1687
+
 -- ***************** Pickup, dropoff and waypoint zones *****************
 
 -- Available colors (anything else like "none" disables smoke): "green", "red", "white", "orange", "blue", "none",

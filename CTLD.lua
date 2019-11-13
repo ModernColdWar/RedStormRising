@@ -2510,11 +2510,8 @@ function ctld.unpackCrates(_arguments)
                     trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " successfully deployed " .. _crate.details.desc .. " to the field", 10)
 
                     if ctld.isJTACUnitType(_crate.details.unit) and ctld.JTAC_dropEnabled then
-
-                        local _code = table.remove(ctld.jtacGeneratedLaserCodes, 1)
-                        --put to the end
-                        table.insert(ctld.jtacGeneratedLaserCodes, _code)
-                        ctld.JTACAutoLase(_spawnedGroups:getName(), _code) --(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
+                        local _code = ctld.getLaserCode(_heli:getCoalition())
+                        ctld.JTACAutoLase(_spawnedGroups:getName(), _code)
                     end
                 end
 
@@ -3480,11 +3477,8 @@ function ctld.unpackMultiCrate(_heli, _nearestCrate, _nearbyCrates)
         trigger.action.outTextForCoalition(_heli:getCoalition(), _txt, 10)
 
         if ctld.isJTACUnitType(_nearestCrate.details.unit) and ctld.JTAC_dropEnabled then
-
-            local _code = table.remove(ctld.jtacGeneratedLaserCodes, 1)
-            --put to the end
-            table.insert(ctld.jtacGeneratedLaserCodes, _code)
-            ctld.JTACAutoLase(_spawnedGroup:getName(), _code) --(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
+            local _code = ctld.getLaserCode(_heli:getCoalition())
+            ctld.JTACAutoLase(_spawnedGroup:getName(), _code)
         end
 
     else
@@ -4569,6 +4563,11 @@ ctld.jtacCurrentTargets = {}
 ctld.jtacRadioAdded = {} --keeps track of who's had the radio command added
 ctld.jtacGeneratedLaserCodes = {} -- keeps track of generated codes, cycles when they run out
 ctld.jtacLaserPointCodes = {}
+
+
+function ctld.getLaserCode(_coalition)
+    return _coalition == coalition.side.RED and ctld.JTAC_laserCode_RED or ctld.JTAC_laserCode_BLUE
+end
 
 function ctld.JTACAutoLase(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
 

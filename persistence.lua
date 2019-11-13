@@ -147,10 +147,8 @@ local function spawnGroup(groupData)
     log:info("Spawning $1 from saved state $2", groupName, groupData)
     mist.dynAdd(groupData)
     if ctld.isJTACUnitType(groupName) then
-        log:info("Configuring group $1 to auto-lase", groupName)
-        local _code = table.remove(ctld.jtacGeneratedLaserCodes, 1)
-        --put to the end
-        table.insert(ctld.jtacGeneratedLaserCodes, _code)
+        local _code = ctld.getLaserCode(Group.getByName(groupName):getCoalition())
+        log:info("Configuring group $1 to auto-lase on $2", groupName, _code)
         ctld.JTACAutoLase(groupName, _code)
     end
     pushSpawnQueue(groupName)
