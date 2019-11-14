@@ -25,13 +25,18 @@ function M.pushSpawnQueue(groupName)
     table.insert(M.spawnQueue, groupName)
 end
 
-local function handleSpawnQueue()
+-- wrapped so we can stub this out in the tests
+function M.getMistGroupData(groupName)
+    return mist.getGroupData(groupName)
+end
+
+function M.handleSpawnQueue()
     -- get MIST group data for newly unpacked units (if it's available)
     log:info("Handling spawn queue (length $1)", #M.spawnQueue)
     for i = #M.spawnQueue, 1, -1 do
         local groupName = M.spawnQueue[i]
         log:info("Getting group data for spawned group $1", groupName)
-        local groupData = mist.getGroupData(groupName)
+        local groupData = M.getMistGroupData(groupName)
         if groupData ~= nil then
             log:info("Successfully got group data for $1", groupName)
             table.insert(state.persistentGroupData, groupData)
@@ -42,6 +47,10 @@ local function handleSpawnQueue()
         end
     end
     log:info("Spawn queue handling complete")
+end
+
+function M.getPersistentGroupData()
+    return mist.utils.deepCopy(state.persistentGroupData)
 end
 
 local function readStateFromDisk(filename)
@@ -129,7 +138,7 @@ end
 
 local function updateState()
     updateGroupData(state.persistentGroupData)
-    handleSpawnQueue()
+    M.handleSpawnQueue()
     state.ctld.nextGroupId = ctld.nextGroupId
     state.ctld.nextUnitId = ctld.nextUnitId
     state.baseOwnership = getAllBaseOwnership()

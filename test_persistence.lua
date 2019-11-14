@@ -4,8 +4,14 @@ local persistence = require("persistence")
 
 TestPersistence = {}
 
+local _getMistGroupData = persistence.getMistGroupData
+
 function TestPersistence:setUp()
     persistence.spawnQueue = {}
+end
+
+function TestPersistence:tearDown()
+    persistence.getMistGroupData = _getMistGroupData
 end
 
 function TestPersistence:testPushSpawnQueue()
@@ -13,6 +19,29 @@ function TestPersistence:testPushSpawnQueue()
     persistence.pushSpawnQueue("group1")
     persistence.pushSpawnQueue("group2")
     lu.assertEquals(persistence.spawnQueue, { "group1", "group2" })
+end
+
+function TestPersistence:testHandleSpawnQueueLeavesItemsInQueueIfNoDataFromMist()
+    persistence.pushSpawnQueue("group1")
+    persistence.pushSpawnQueue("group2")
+    persistence.handleSpawnQueue()
+
+    lu.assertEquals(persistence.spawnQueue, { "group1", "group2" })
+end
+
+function TestPersistence:testHandleSpawnQueuePutsGroupDataIntoStateAndRemovesFromQueue()
+    persistence.getMistGroupData = function(groupName)
+        return { groupName = groupName, pos = { x = 1, y = 2 } }
+    end
+    persistence.pushSpawnQueue("group1")
+    persistence.pushSpawnQueue("group2")
+    persistence.handleSpawnQueue()
+
+    lu.assertEquals(persistence.spawnQueue, {})
+    lu.assertEquals(persistence.getPersistentGroupData(), {
+        { groupName = "group2", pos = { x = 1, y = 2 } },
+        { groupName = "group1", pos = { x = 1, y = 2 } }
+    })
 end
 
 function TestPersistence:testRemoveGroupAndUnitIds()

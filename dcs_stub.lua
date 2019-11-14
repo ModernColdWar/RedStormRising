@@ -67,6 +67,9 @@ env = {
     info = function(str)
         print("INFO: " .. str)
     end,
+    warning = function(str)
+        print("WARNING: " .. str)
+    end,
     error = function(str)
         print("ERROR: " .. str)
     end,
