@@ -1,9 +1,6 @@
 local lu = require("luaunit")
 require("dcs_stub")
-require("mist_4_3_74")
 require("CTLD")
-rsr = {}
-rsr.devMode = true
 
 local handleMarkEvents = require("handleMarkEvents")
 
