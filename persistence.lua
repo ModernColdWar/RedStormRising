@@ -86,7 +86,7 @@ local function writeStateToDisk(_state, filename)
     log:info("Finished writing state to $1", filename)
 end
 
-local function updateGroupData(persistentGroupData)
+function M.updateGroupData(persistentGroupData)
     log:info("Updating persistent group data")
     for i = #persistentGroupData, 1, -1 do
         local groupData = persistentGroupData[i]
@@ -137,7 +137,7 @@ local function getAllBaseOwnership()
 end
 
 local function updateState()
-    updateGroupData(state.persistentGroupData)
+    M.updateGroupData(state.persistentGroupData)
     M.handleSpawnQueue()
     state.ctld.nextGroupId = ctld.nextGroupId
     state.ctld.nextUnitId = ctld.nextUnitId

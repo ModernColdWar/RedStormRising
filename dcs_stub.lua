@@ -234,13 +234,16 @@ Unit = {
 }
 
 function Unit:new(name)
+    if name == "deadUnit" then
+        return nil
+    end
     local u = {}
     u.name = name
     u.active = true
     u.life = 100
     u.coalition = coalition.side.RED
-    u.point = { x = 1, y = 2, z = 3 }
-    u.position = { p = { x = 4, y = 5, z = 6 }, x = u.point, y = u.point, z = u.point }
+    u.point = { x = 0, y = 0, z = 0 }
+    u.position = { p = { x = 1, y = 3, z = 2 }, x = u.point, y = u.point, z = u.point }
     u.id = 1001
     self.in_air = false
     setmetatable(u, self)
