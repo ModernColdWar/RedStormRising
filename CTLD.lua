@@ -20,6 +20,7 @@
       - Allow minimum distance from friendly logistics to be set
  ]]
 
+require("mist_4_3_74")
 require("CTLD_config")
 
 ctld.nextUnitId = 1;
