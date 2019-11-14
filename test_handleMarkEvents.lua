@@ -25,7 +25,7 @@ function TestMarkEvents:setUp()
 end
 
 function TestMarkEvents:testSpawnsCrate()
-    removeMarkWithText("-crate 751")
+    removeMarkWithText("-crate 501")
     dcsStub.assertOneCallTo("coalition.addStaticObject")
 end
 
