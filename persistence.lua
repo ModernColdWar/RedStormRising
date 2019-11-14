@@ -2,6 +2,8 @@
 local utils = require("utils")
 local JSON = require("JSON")
 
+local M = {}
+
 -- recently spawned units (from player unpacking via CTLD or via code)
 local spawnQueue = {}
 
@@ -198,7 +200,7 @@ local function restoreFromState(_state)
     log:info("Mission state restored")
 end
 
-if utils.runningInDcs() then
+function M.restore()
     if UTILS.FileExists(rsr.stateFileName) then
         local _state = readStateFromDisk(rsr.stateFileName)
         restoreFromState(_state)
@@ -218,3 +220,5 @@ if utils.runningInDcs() then
 
     mist.scheduleFunction(persistState, {}, timer.getTime() + rsr.writeInterval, rsr.writeInterval)
 end
+
+return M
