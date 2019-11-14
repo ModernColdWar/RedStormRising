@@ -9,6 +9,7 @@ local _logger = nil
 --- This is done lazily because we stub DCS before we load MIST
 local function log()
     if _logger == nil then
+        require("mist_4_3_74")
         _logger = mist.Logger:new("DCS_STUB", "info")
     end
     return _logger
