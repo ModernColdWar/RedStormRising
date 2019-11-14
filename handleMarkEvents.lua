@@ -30,8 +30,8 @@ function M.markRemoved(event)
     end
 end
 
-function M.registerHandlers()
-    if rsr.devMode then
+function M.registerHandlers(devMode)
+    if devMode then
         mist.addEventHandler(handleMarkEvents.markRemoved)
     end
 end

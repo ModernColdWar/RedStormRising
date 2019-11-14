@@ -135,12 +135,12 @@ local function updateState()
     state.baseOwnership = getAllBaseOwnership()
 end
 
-local function persistState()
+local function persistState(rsrConfig)
     updateState()
-    if UTILS.FileExists(rsr.stateFileName) then
-        utils.createBackup(rsr.stateFileName)
+    if UTILS.FileExists(rsrConfig.stateFileName) then
+        utils.createBackup(rsrConfig.stateFileName)
     end
-    writeStateToDisk(state, rsr.stateFileName)
+    writeStateToDisk(state, rsrConfig.stateFileName)
 end
 
 local function spawnGroup(groupData)
@@ -161,7 +161,7 @@ local function isReplacementGroup(group)
 end
 
 -- Base defences are defined as late-activated group groups in proximity to an airbase or helipad
-local function activateBaseDefences(baseOwnership)
+local function activateBaseDefences(rsrConfig, baseOwnership)
     local allLateActivatedGroundGroups = SET_GROUP:New()
                                                   :FilterCategories("ground")
                                                   :FilterActive(false)
@@ -171,7 +171,7 @@ local function activateBaseDefences(baseOwnership)
         for sideName, baseNames in pairs(ownershipData) do
             local side = sideName == "red" and coalition.side.RED or coalition.side.BLUE
             for _, baseName in pairs(baseNames) do
-                local radius = baseType == "airbases" and rsr.baseDefenceActivationRadiusAirbase or rsr.baseDefenceActivationRadiusFarp
+                local radius = baseType == "airbases" and rsrConfig.baseDefenceActivationRadiusAirbase or rsrConfig.baseDefenceActivationRadiusFarp
                 local activationZone = ZONE_AIRBASE:New(baseName, radius)
                 allLateActivatedGroundGroups:ForEachGroup(function(group)
                     -- we can't use any of the GROUP:InZone methods as these are late activated units
@@ -186,7 +186,7 @@ local function activateBaseDefences(baseOwnership)
 end
 
 --- Note that we don't directly update the state variable from here, this is done in handleSpawnQueue later
-local function restoreFromState(_state)
+local function restoreFromState(rsrConfig, _state)
     log:info("Restoring mission state")
 
     ctld.nextGroupId = _state.ctld.nextGroupId
@@ -198,18 +198,18 @@ local function restoreFromState(_state)
 
     -- use default ownerships if ownership is not in the passed state (ie it came from a file without baseOwnership)
     local baseOwnership = _state.baseOwnership or getAllBaseOwnership()
-    activateBaseDefences(baseOwnership)
+    activateBaseDefences(rsrConfig, baseOwnership)
 
     log:info("Mission state restored")
 end
 
-function M.restore()
-    if UTILS.FileExists(rsr.stateFileName) then
-        local _state = readStateFromDisk(rsr.stateFileName)
-        restoreFromState(_state)
+function M.restore(rsrConfig)
+    if UTILS.FileExists(rsrConfig.stateFileName) then
+        local _state = readStateFromDisk(rsrConfig.stateFileName)
+        restoreFromState(rsrConfig, _state)
     else
         log:info("No state file exists - setting up from defaults in code")
-        restoreFromState(state)
+        restoreFromState(rsrConfig, state)
     end
 
     -- register unpack callback so we can update our state
@@ -217,11 +217,12 @@ function M.restore()
         if _args.action and _args.action == "unpack" then
             log:info('Unpacked: $1', _args)
             local groupName = _args.spawnedGroup:getName()
-            pushSpawnQueue(groupName)
+            M.pushSpawnQueue(groupName)
         end
     end)
 
-    mist.scheduleFunction(persistState, {}, timer.getTime() + rsr.writeInterval, rsr.writeInterval)
+    mist.scheduleFunction(persistState, { rsrConfig },
+            timer.getTime() + rsrConfig.writeInterval, rsrConfig.writeInterval)
 end
 
 return M
