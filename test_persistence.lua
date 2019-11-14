@@ -12,7 +12,7 @@ function TestPersistence:testPushSpawnQueue()
     lu.assertEquals(persistence.spawnQueue, {})
     persistence.pushSpawnQueue("group1")
     persistence.pushSpawnQueue("group2")
-    lu.assertEquals(persistence.spawnQueue, { "group1", "group2"})
+    lu.assertEquals(persistence.spawnQueue, { "group1", "group2" })
 end
 
 function TestPersistence:testRemoveGroupAndUnitIds()

@@ -111,7 +111,7 @@ end
 local function getBaseOwnership(category)
     local baseOwnership = {}
     for _, side in ipairs({ coalition.side.RED, coalition.side.BLUE }) do
-        local sideName = side == coalition.side.RED and "red" or "blue"
+        local sideName = utils.getSideName(side)
         baseOwnership[sideName] = {}
         for _, base in ipairs(AIRBASE.GetAllAirbases(side, category)) do
             table.insert(baseOwnership[sideName], base:GetName())
@@ -156,6 +156,7 @@ local function spawnGroup(groupData)
     pushSpawnQueue(groupName)
 end
 
+
 local function isReplacementGroup(group)
     return string.find(group:GetName():lower(), "replacement")
 end
@@ -169,7 +170,7 @@ local function activateBaseDefences(rsrConfig, baseOwnership)
 
     for baseType, ownershipData in pairs(baseOwnership) do
         for sideName, baseNames in pairs(ownershipData) do
-            local side = sideName == "red" and coalition.side.RED or coalition.side.BLUE
+            local side = utils.getSide(sideName)
             for _, baseName in pairs(baseNames) do
                 local radius = baseType == "airbases" and rsrConfig.baseDefenceActivationRadiusAirbase or rsrConfig.baseDefenceActivationRadiusFarp
                 local activationZone = ZONE_AIRBASE:New(baseName, radius)

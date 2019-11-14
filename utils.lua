@@ -32,4 +32,25 @@ function M.createBackup(filename)
     backup:close()
 end
 
+local sideLookupTable = {
+    bySide = {
+        [coalition.side.RED] = "red",
+        [coalition.side.BLUE] = "blue",
+        [coalition.side.NEUTRAL] = "neutral",
+    },
+    byName = {
+        red = coalition.side.RED,
+        blue = coalition.side.BLUE,
+        neutral = coalition.side.NEUTRAL,
+    }
+}
+
+function M.getSideName(side)
+    return sideLookupTable.bySide[side]
+end
+
+function M.getSide(sideName)
+    return sideLookupTable.byName[sideName]
+end
+
 return M
