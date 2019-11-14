@@ -1,3 +1,7 @@
+require("mist_4_3_74")
+
+local log = mist.Logger:new("HandleMarkEvents", "info")
+
 local M = {}
 
 local function crate(text)

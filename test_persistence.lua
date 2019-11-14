@@ -1,9 +1,19 @@
 local lu = require("luaunit")
 require("dcs_stub")
-require("mist_4_3_74")
-require("persistence")
+local persistence = require("persistence")
 
 TestPersistence = {}
+
+function TestPersistence:setUp()
+    persistence.spawnQueue = {}
+end
+
+function TestPersistence:testPushSpawnQueue()
+    lu.assertEquals(persistence.spawnQueue, {})
+    persistence.pushSpawnQueue("group1")
+    persistence.pushSpawnQueue("group2")
+    lu.assertEquals(persistence.spawnQueue, { "group1", "group2"})
+end
 
 function TestPersistence:testRemoveGroupAndUnitIds()
     local groupData = {
@@ -22,7 +32,7 @@ function TestPersistence:testRemoveGroupAndUnitIds()
         }
     }
 
-    removeGroupAndUnitIds(groupData)
+    persistence.removeGroupAndUnitIds(groupData)
     lu.assertEquals(groupData, {
         [1] = {
             ["visible"] = false,

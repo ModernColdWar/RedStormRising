@@ -1,11 +1,14 @@
 --- Saving/loading/updating code for managing "live" units and persisting them across server restarts
 local utils = require("utils")
 local JSON = require("JSON")
+require("mist_4_3_74")
+
+local log = mist.Logger:new("Persistence", "info")
 
 local M = {}
 
 -- recently spawned units (from player unpacking via CTLD or via code)
-local spawnQueue = {}
+M.spawnQueue = {}
 
 -- The initial configuration of the persistent data we save to disk
 local state = {
@@ -16,6 +19,30 @@ local state = {
     persistentGroupData = {},
     baseOwnership = {} -- populated at startup if not from state file
 }
+
+function M.pushSpawnQueue(groupName)
+    log:info("Adding $1 to spawn queue", groupName)
+    table.insert(M.spawnQueue, groupName)
+end
+
+local function handleSpawnQueue()
+    -- get MIST group data for newly unpacked units (if it's available)
+    log:info("Handling spawn queue (length $1)", #spawnQueue)
+    for i = #M.spawnQueue, 1, -1 do
+        local groupName = M.spawnQueue[i]
+        log:info("Getting group data for spawned group $1", groupName)
+        local groupData = mist.getGroupData(groupName)
+        if groupData ~= nil then
+            log:info("Successfully got group data for $1", groupName)
+            table.insert(state.persistentGroupData, groupData)
+            log:info("Removing $1 from spawn queue", groupName)
+            table.remove(M.spawnQueue, i)
+        else
+            log:warn("Unable to get group data for $1; leaving in spawn queue", groupName)
+        end
+    end
+    log:info("Spawn queue handling complete")
+end
 
 local function readStateFromDisk(filename)
     log:info("Reading state from disk at $1", filename)
@@ -30,7 +57,7 @@ end
 --- Removes groupId and unitId from data so that upon respawn, MIST assigns new IDs
 --- Avoids accidental overwrite of units
 --- This is called at write-to-disk time
-function removeGroupAndUnitIds(persistentGroupData)
+function M.removeGroupAndUnitIds(persistentGroupData)
     for _, groupData in ipairs(persistentGroupData) do
         groupData["groupId"] = nil
         for _, unitData in ipairs(groupData.units) do
@@ -48,25 +75,6 @@ local function writeStateToDisk(_state, filename)
     f:write(json)
     f:close()
     log:info("Finished writing state to $1", filename)
-end
-
-local function handleSpawnQueue()
-    -- get MIST group data for newly unpacked units (if it's available)
-    log:info("Handling spawn queue (length $1)", #spawnQueue)
-    for i = #spawnQueue, 1, -1 do
-        local groupName = spawnQueue[i]
-        log:info("Getting group data for spawned group $1", groupName)
-        local groupData = mist.getGroupData(groupName)
-        if groupData ~= nil then
-            log:info("Successfully got group data for $1", groupName)
-            table.insert(state.persistentGroupData, groupData)
-            log:info("Removing $1 from spawn queue", groupName)
-            table.remove(spawnQueue, i)
-        else
-            log:warn("Unable to get group data for $1; leaving in spawn queue", groupName)
-        end
-    end
-    log:info("Spawn queue handling complete")
 end
 
 local function updateGroupData(persistentGroupData)
@@ -133,11 +141,6 @@ local function persistState()
         utils.createBackup(rsr.stateFileName)
     end
     writeStateToDisk(state, rsr.stateFileName)
-end
-
-local function pushSpawnQueue(groupName)
-    log:info("Adding $1 to spawn queue", groupName)
-    table.insert(spawnQueue, groupName)
 end
 
 local function spawnGroup(groupData)

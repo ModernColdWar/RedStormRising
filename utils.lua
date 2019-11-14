@@ -1,4 +1,8 @@
-M = {}
+require("mist_4_3_74")
+
+local M = {}
+
+local log = mist.Logger:new("Utils", "info")
 
 function M.runningInDcs()
     return dcsStub == nil

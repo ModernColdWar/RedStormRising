@@ -13,7 +13,7 @@ require("mist_4_3_74")
 require("CTLD")
 require("Moose")
 
-log = mist.Logger:new("RSR", "info")
+local log = mist.Logger:new("RSR", "info")
 
 require("RSR_config")
 if rsr.devMode then
@@ -29,6 +29,7 @@ if utils.runningInDcs() then
     trigger.action.setUserFlag("SSB", 100)
     handleMarkEvents.registerHandlers()
     persistence.restore()
+    trigger.action.outText("RSR ready", 10)
 end
 
-env.info("RSR ready")
+log:info("RSR ready")
