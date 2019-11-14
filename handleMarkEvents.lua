@@ -1,5 +1,7 @@
 local utils = require("utils")
 
+local M = {}
+
 local function crate(text)
     local weight = tonumber(text)
     log:info("Spawning red crate with weight $1 at $2", weight, event.pos)
@@ -16,7 +18,7 @@ local function destroy(text)
     end
 end
 --- Handles mark removals
-function markRemoved(event)
+function M.markRemoved(event)
     if event.id == world.event.S_EVENT_MARK_REMOVED and event.text ~= nil then
         if event.text:find("-crate") then
             crate(string.sub(event.text, 8))
@@ -27,5 +29,7 @@ function markRemoved(event)
 end
 
 if utils.runningInDcs() and rsr.devMode then
-    mist.addEventHandler(markRemoved)
+    mist.addEventHandler(M.markRemoved)
 end
+
+return M

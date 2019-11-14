@@ -5,7 +5,7 @@ require("CTLD")
 rsr = {}
 rsr.devMode = true
 
-require("handleMarkEvents")
+local handleMarkEvents = require("handleMarkEvents")
 
 log = mist.Logger:new("TestHandleMarkEvents", "info")
 
@@ -17,7 +17,7 @@ function removeMarkWithText(text)
         text = text,
         pos = { x = 1, y = 2, z = 3 }
     }
-    markRemoved(event)
+    handleMarkEvents.markRemoved(event)
 end
 
 function TestMarkEvents:setUp()
