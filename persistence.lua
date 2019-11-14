@@ -2,6 +2,7 @@
 local utils = require("utils")
 local JSON = require("JSON")
 require("mist_4_3_74")
+require("MOOSE")
 
 local log = mist.Logger:new("Persistence", "info")
 
@@ -117,7 +118,7 @@ function M.updateGroupData(persistentGroupData)
     log:info("Persistent group data update complete")
 end
 
-local function getBaseOwnership(category)
+function M.getBaseOwnership(category)
     local baseOwnership = {}
     for _, side in ipairs({ coalition.side.RED, coalition.side.BLUE }) do
         local sideName = utils.getSideName(side)
@@ -129,10 +130,10 @@ local function getBaseOwnership(category)
     return baseOwnership
 end
 
-local function getAllBaseOwnership()
+function M.getAllBaseOwnership()
     return {
-        airbases = getBaseOwnership(Airbase.Category.AIRDROME),
-        farps = getBaseOwnership(Airbase.Category.HELIPAD)
+        airbases = M.getBaseOwnership(Airbase.Category.AIRDROME),
+        farps = M.getBaseOwnership(Airbase.Category.HELIPAD)
     }
 end
 
@@ -141,7 +142,7 @@ local function updateState()
     M.handleSpawnQueue()
     state.ctld.nextGroupId = ctld.nextGroupId
     state.ctld.nextUnitId = ctld.nextUnitId
-    state.baseOwnership = getAllBaseOwnership()
+    state.baseOwnership = M.getAllBaseOwnership()
 end
 
 local function persistState(rsrConfig)
@@ -207,7 +208,7 @@ local function restoreFromState(rsrConfig, _state)
     end
 
     -- use default ownerships if ownership is not in the passed state (ie it came from a file without baseOwnership)
-    local baseOwnership = _state.baseOwnership or getAllBaseOwnership()
+    local baseOwnership = _state.baseOwnership or M.getAllBaseOwnership()
     activateBaseDefences(rsrConfig, baseOwnership)
 
     log:info("Mission state restored")

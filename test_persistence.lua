@@ -128,5 +128,15 @@ function TestPersistence:testUpdateGroupDataRemovesGroupWithNoUnits()
     lu.assertEquals(groupData, {})
 end
 
+function TestPersistence:testGetBaseOwnershipWhenEmpty()
+    local ownership = persistence.getBaseOwnership(Airbase.Category.AIRDROME)
+    lu.assertEquals(ownership, { red = {}, blue = {} })
+end
+
+function TestPersistence:testAllGetBaseOwnershipWhenEmpty()
+    local ownership = persistence.getAllBaseOwnership()
+    lu.assertEquals(ownership, { airbases = { blue = {}, red = {} }, farps = { blue = {}, red = {} } })
+end
+
 local runner = lu.LuaUnit.new()
 os.exit(runner:runSuite())
