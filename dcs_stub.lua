@@ -1,4 +1,5 @@
 --- Stubs DCS World for testing of scripts outside of the DCS runtime mission environment
+-- luacheck: ignore dcsStub AI Airbase Group StaticObject Unit coalition country env radio timer trigger world
 local lu = require("luaunit")
 
 dcsStub = {}
@@ -18,9 +19,9 @@ end
 dcsStub.recordedCalls = {}
 
 --- Logs the call name and arguments
-local function logCall(callName, ...)
-    text = callName .. "("
-    n = 0
+local function logCall(callName)
+    local text = callName .. "("
+    local n = 0
     for k, v in pairs(arg) do
         if k ~= "n" then
             if n > 0 then
@@ -43,8 +44,8 @@ local function logCall(callName, ...)
 end
 
 local function recordCall(callName)
-    return function(...)
-        logCall(callName, ...)
+    return function()
+        logCall(callName)
         table.insert(dcsStub.recordedCalls, callName)
     end
 end
@@ -69,7 +70,7 @@ env = {
     error = function(str)
         print("ERROR: " .. str)
     end,
-    setErrorMessageBoxEnabled = function(b)
+    setErrorMessageBoxEnabled = function()
     end
 }
 
@@ -131,7 +132,6 @@ world = {
         S_EVENT_MARK_ADDED = 24,
         S_EVENT_MARK_CHANGE = 25,
         S_EVENT_MARK_REMOVED = 26,
-        S_EVENT_MARK_REMOVED = 29,
         S_EVENT_MAX = 99,
     },
     addEventHandler = function()
@@ -178,30 +178,7 @@ country = {
     },
 }
 
-radio = {
-    modulation = {
-        AM,
-        FM
-    }
-}
-
-Position3 = {}
-
-function Position3:new(p)
-    p = p or {}
-    setmetatable(p, self)
-    self.__index = self
-    return p
-end
-
-Vec3 = {}
-
-function Vec3:new(v)
-    v = v or {}
-    setmetatable(v, self)
-    self.__index = self
-    return v
-end
+radio = { modulation = { "AM", "FM" } }
 
 Group = {
     Category = {
@@ -214,7 +191,7 @@ Group = {
 }
 
 function Group:new(name)
-    g = {}
+    local g = {}
     g.name = name
     g.coalition = coalition.side.RED
     setmetatable(g, self)
@@ -230,7 +207,7 @@ function Group:getCoalition()
     return self.coalition
 end
 
-function Group:getUnit(n)
+function Group:getUnit()
     return Unit.getByName(self.name)
 end
 
@@ -254,7 +231,7 @@ Unit = {
 }
 
 function Unit:new(name)
-    u = {}
+    local u = {}
     u.name = name
     u.active = true
     u.life = 100
@@ -262,6 +239,7 @@ function Unit:new(name)
     u.point = { x = 1, y = 2, z = 3 }
     u.position = { p = { x = 4, y = 5, z = 6 }, x = u.point, y = u.point, z = u.point }
     u.id = 1001
+    self.in_air = false
     setmetatable(u, self)
     self.__index = self
     return u
@@ -280,7 +258,7 @@ function Unit:getLife()
 end
 
 function Unit:inAir()
-    return false
+    return self.in_air
 end
 
 function Unit:getCoalition()

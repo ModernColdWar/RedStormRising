@@ -4,10 +4,10 @@ local log = mist.Logger:new("HandleMarkEvents", "info")
 
 local M = {}
 
-local function crate(text)
+local function crate(text, pos)
     local weight = tonumber(text)
-    log:info("Spawning red crate with weight $1 at $2", weight, event.pos)
-    ctld.spawnCrateAtPoint("red", weight, event.pos)
+    log:info("Spawning red crate with weight $1 at $2", weight, pos)
+    ctld.spawnCrateAtPoint("red", weight, pos)
 end
 
 local function destroy(text)
@@ -23,7 +23,7 @@ end
 function M.markRemoved(event)
     if event.id == world.event.S_EVENT_MARK_REMOVED and event.text ~= nil then
         if event.text:find("-crate") then
-            crate(string.sub(event.text, 8))
+            crate(string.sub(event.text, 8), event.pos)
         elseif event.text:find("-destroy") then
             destroy(string.sub(event.text, 10))
         end
@@ -32,7 +32,7 @@ end
 
 function M.registerHandlers(devMode)
     if devMode then
-        mist.addEventHandler(handleMarkEvents.markRemoved)
+        mist.addEventHandler(M.markRemoved)
     end
 end
 

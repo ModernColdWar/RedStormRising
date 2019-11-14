@@ -5,6 +5,7 @@ local M = {}
 local log = mist.Logger:new("Utils", "info")
 
 function M.runningInDcs()
+    -- luacheck: globals dcsStub
     return dcsStub == nil
 end
 

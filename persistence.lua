@@ -27,7 +27,7 @@ end
 
 local function handleSpawnQueue()
     -- get MIST group data for newly unpacked units (if it's available)
-    log:info("Handling spawn queue (length $1)", #spawnQueue)
+    log:info("Handling spawn queue (length $1)", #M.spawnQueue)
     for i = #M.spawnQueue, 1, -1 do
         local groupName = M.spawnQueue[i]
         log:info("Getting group data for spawned group $1", groupName)
@@ -68,7 +68,7 @@ end
 
 local function writeStateToDisk(_state, filename)
     local stateToWrite = mist.utils.deepCopy(_state)
-    removeGroupAndUnitIds(stateToWrite.persistentGroupData)
+    M.removeGroupAndUnitIds(stateToWrite.persistentGroupData)
     log:info("Writing state to disk at $1", filename)
     local json = JSON:encode_pretty(stateToWrite)
     local f = io.open(filename, "w")
@@ -83,13 +83,13 @@ local function updateGroupData(persistentGroupData)
         local groupData = persistentGroupData[i]
         local groupName = groupData.name
         log:info("Processing units in group $1", groupName)
-        for i = #groupData.units, 1, -1 do
-            local unitData = groupData.units[i]
+        for j = #groupData.units, 1, -1 do
+            local unitData = groupData.units[j]
             local unitName = unitData.unitName
             local unit = Unit.getByName(unitName)
             if unit == nil then
                 log:info("Removing persistent data for dead unit $1", unitName)
-                table.remove(groupData.units, i)
+                table.remove(groupData.units, j)
             else
                 log:info("Updating position information for unit $1", unitName)
                 local position = unit:getPosition().p
@@ -153,7 +153,7 @@ local function spawnGroup(groupData)
         log:info("Configuring group $1 to auto-lase on $2", groupName, _code)
         ctld.JTACAutoLase(groupName, _code)
     end
-    pushSpawnQueue(groupName)
+    M.pushSpawnQueue(groupName)
 end
 
 

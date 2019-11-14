@@ -8,8 +8,8 @@ log = mist.Logger:new("TestHandleMarkEvents", "info")
 
 TestMarkEvents = {}
 
-function removeMarkWithText(text)
-    event = {
+local function removeMarkWithText(text)
+    local event = {
         id = world.event.S_EVENT_MARK_REMOVED,
         text = text,
         pos = { x = 1, y = 2, z = 3 }

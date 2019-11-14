@@ -3,10 +3,6 @@ require("dcs_stub")
 
 TestDcsStub = {}
 
-function TestDcsStub:setUp()
-    dcsStub.reset()
-end
-
 function TestDcsStub:testNewUnit()
     local u = Unit:new('unitname')
     lu.assertEquals(u:getName(), 'unitname')
