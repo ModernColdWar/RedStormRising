@@ -16,7 +16,6 @@ require("Moose")
 log = mist.Logger:new("RSR", "info")
 
 require("RSR_config")
-require("handleMarkEvents")
 require("persistence")
 
 if rsr.devMode then
@@ -25,5 +24,11 @@ end
 
 -- set up simple slot block (moved from mission trigger)
 trigger.action.setUserFlag("SSB", 100)
+
+if utils.runningInDcs() and rsr.devMode then
+    local handleMarkEvents = require("handleMarkEvents")
+    mist.addEventHandler(handleMarkEvents.markRemoved)
+end
+
 
 env.info("RSR ready")

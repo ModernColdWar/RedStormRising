@@ -28,8 +28,4 @@ function M.markRemoved(event)
     end
 end
 
-if utils.runningInDcs() and rsr.devMode then
-    mist.addEventHandler(M.markRemoved)
-end
-
 return M
