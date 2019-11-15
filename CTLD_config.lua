@@ -650,7 +650,7 @@ ctld.spawnableCrates = {
     },
 
     ["IR SAMs & AAA"] = {
-        { weight = 840, desc = "ZSU-23-4 Shilka", unit = "ZSU-23-4 Shilka", side = 1, unitQuantity = 3,internal = 0 },
+        { weight = 840, desc = "ZSU-23-4 Shilka", unit = "ZSU-23-4 Shilka", side = 1, unitQuantity = 3, internal = 0 },
         { weight = 841, desc = "ZU-23 on Ural", unit = "Ural-375 ZU-23", side = 1, unitQuantity = 3, internal = 0 },
         { weight = 842, desc = "SA-19 Tunguska", unit = "2S6 Tunguska", side = 1, cratesRequired = 2, internal = 0 },
         { weight = 843, desc = "SA-9 Strela-1", unit = "Strela-1 9P31", side = 1, internal = 0 },
