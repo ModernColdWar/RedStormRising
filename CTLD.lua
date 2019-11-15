@@ -1311,7 +1311,7 @@ function ctld.generateTroopTypes(_side, _countOrTemplate, _country)
             if _side == 2 then
                 _troops = ctld.insertIntoTroopsArray("Soldier M4", _countOrTemplate.inf, _troops)
             else
-                _troops = ctld.insertIntoTroopsArray("Soldier AK", _countOrTemplate.inf, _troops)
+                _troops = ctld.insertIntoTroopsArray("Infantry AK", _countOrTemplate.inf, _troops)
             end
         end
 
