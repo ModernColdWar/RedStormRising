@@ -24,7 +24,7 @@ exclude_files = {
     "CTLD.lua",
     "CTLD_config.lua",
     "JSON.lua",
-    "luaunit.lua",
+    "tests/luaunit.lua",
     "mist_4_3_74.lua",
     "Moose.lua" }
 
