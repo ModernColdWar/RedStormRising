@@ -30,7 +30,7 @@ if utils.runningInDcs() then
     -- set up simple slot block (moved from mission trigger)
     trigger.action.setUserFlag("SSB", 100)
     handleMarkEvents.registerHandlers(rsrConfig.devMode)
-    persistence.start(rsrConfig)
+    persistence.restore(rsrConfig)
     trigger.action.outText("RSR ready", 10)
 end
 
