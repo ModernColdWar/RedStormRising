@@ -12,6 +12,12 @@ local M = {}
 -- recently spawned units (from player unpacking via CTLD or via code)
 M.spawnQueue = {}
 
+-- group ownerships by side and user - kept in memory only and updated in handleSpawnQueue
+M.groupOwnership = {
+    red = {},
+    blue = {}
+}
+
 -- The initial configuration of the persistent data we save to disk
 M.defaultState = {
     ctld = {
@@ -32,7 +38,6 @@ end
 function M.getState()
     return mist.utils.deepCopy(state)
 end
-
 
 function M.pushSpawnQueue(groupName)
     log:info("Adding $1 to spawn queue", groupName)
@@ -166,10 +171,17 @@ local function persistState(rsrConfig)
     writeStateToDisk(state, rsrConfig.stateFileName)
 end
 
-local function spawnGroup(groupData)
+function M.getPlayerNameFromGroupName(groupName)
+    -- match the inside of the part in parentheses at the end of the group name if present
+    -- this is the other half of the _groupName construction in ctld.spawnCrateGroup
+    return string.match(groupName, "%((.+)%)$")
+end
+
+function M.spawnGroup(groupData)
     -- Currently this code replicates the actions from ctld.unpackCrates
+    local sideName = utils.getSideName(tonumber(groupData.coalitionId))
     local groupName = groupData.groupName
-    log:info("Spawning $1 from saved state $2", groupName, groupData)
+    log:info("Spawning $1 $2 from groupData", sideName, groupName)
     mist.dynAdd(groupData)
     if ctld.isJTACUnitType(groupName) then
         local _code = ctld.getLaserCode(Group.getByName(groupName):getCoalition())
@@ -177,6 +189,35 @@ local function spawnGroup(groupData)
         ctld.JTACAutoLase(groupName, _code)
     end
     M.pushSpawnQueue(groupName)
+    local playerName = M.getPlayerNameFromGroupName(groupName)
+    if playerName ~= nil then
+        -- we have "old" groups without player names present
+        M.addGroupOwnership(M.groupOwnership, sideName, playerName, groupName)
+    end
+end
+
+function M.addGroupOwnership(groupOwnership, sideName, playerName, groupName)
+    if groupOwnership[sideName][playerName] == nil then
+        groupOwnership[sideName][playerName] = {}
+    end
+    table.insert(groupOwnership[sideName][playerName], groupName)
+end
+
+function M.getOwnedGroupCount(groupOwnership, sideName, playerName)
+    return groupOwnership[sideName][playerName] == nil and 0 or #groupOwnership[sideName][playerName]
+end
+
+function M.getOwnedJtacCount(groupOwnership, sideName, playerName)
+    if groupOwnership[sideName][playerName] == nil then
+        return 0
+    end
+    local count = 0
+    for _, groupName in ipairs(groupOwnership[sideName][playerName]) do
+        if ctld.isJTACUnitType(groupName) then
+            count = count + 1
+        end
+    end
+    return count
 end
 
 local function isReplacementGroup(group)
@@ -218,7 +259,7 @@ function M.restoreFromState(rsrConfig, _state)
     -- This ensures the data we get from MIST is always consistent between a CTLD spawn and a reload from disk
     local persistentGroupData = _state.persistentGroupData or {}
     for _, groupData in ipairs(persistentGroupData) do
-        spawnGroup(groupData)
+        M.spawnGroup(groupData)
     end
 
     -- use default ownerships if ownership is not in the passed state (ie it came from a file without baseOwnership)
@@ -245,6 +286,7 @@ function M.restore(rsrConfig)
             local groupName = _args.spawnedGroup:getName()
             log:info('Player $1 on $2 unpacked $3', playerName, sideName, groupName)
             M.pushSpawnQueue(groupName)
+            M.addGroupOwnership(M.groupOwnership, sideName, playerName, groupName)
         end
     end)
 

@@ -74,7 +74,7 @@ env = {
         print("ERROR: " .. str)
     end,
     setErrorMessageBoxEnabled = function()
-    end
+    end,
 }
 
 timer = {
@@ -153,6 +153,7 @@ coalition = {
         TANKER = 2,
         FAC = 3,
     },
+    addGroup = recordCall("coalition.addGroup"),
     addStaticObject = recordCall("coalition.addStaticObject"),
     getGroups = function()
     end,
@@ -319,7 +320,12 @@ function dcsStub.assertNoCalls()
 end
 
 function dcsStub.assertOneCallTo(callName)
-    lu.assertEquals(#dcsStub.recordedCalls, 1)
-    lu.assertEquals(dcsStub.recordedCalls[1], callName)
+    local callCount = 0
+    for _, recordedCall in ipairs(dcsStub.recordedCalls) do
+        if recordedCall == callName then
+            callCount = callCount + 1
+        end
+    end
+    lu.assertEquals(callCount, 1, mist.utils.oneLineSerialize(dcsStub.recordedCalls))
 end
 

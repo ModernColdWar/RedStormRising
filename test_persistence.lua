@@ -7,6 +7,7 @@ TestPersistence = {}
 local _getMistGroupData = persistence.getMistGroupData
 
 function TestPersistence:setUp()
+    dcsStub.reset()
     persistence.spawnQueue = {}
     persistence.resetState()
 end
@@ -137,6 +138,61 @@ end
 function TestPersistence:testAllGetBaseOwnershipWhenEmpty()
     local ownership = persistence.getAllBaseOwnership()
     lu.assertEquals(ownership, { airbases = { blue = {}, red = {} }, farps = { blue = {}, red = {} } })
+end
+
+function TestPersistence:testGetPlayerNameFromGroupName()
+    lu.assertEquals(persistence.getPlayerNameFromGroupName("CTLD_Tor 9A331_77 (Capt.Fdez)"), "Capt.Fdez")
+    lu.assertIsNil(persistence.getPlayerNameFromGroupName("CTLD_Tor 9A331_77"))
+end
+
+function TestPersistence:testSpawnGroup()
+    local groupData = {
+        ["country"] = "usa",
+        ["coalitionId"] = 2,
+        ["groupName"] = "CTLD_Tor 9A331_77 (Capt.Fdez)",
+        ["units"] = {
+            [1] = {
+                ["alt"] = 5.0000045435017,
+                ["heading"] = 2.7521738270529,
+                ["y"] = 570413.97585701,
+                ["x"] = -225602.16457669,
+                ["speed"] = 0,
+                ["unitName"] = "Unpacked Tor 9A331 #237",
+                ["skill"] = "Excellent",
+                ["type"] = "Tor 9A331", }
+        },
+        ["countryId"] = 2,
+        ["timeAdded"] = 27000.091,
+        ["name"] = "CTLD_Tor 9A331_77",
+        ["category"] = "vehicle",
+        ["coalition"] = "blue",
+        ["startTime"] = 0,
+        ["task"] = { },
+        ["hidden"] = false
+    }
+    persistence.spawnGroup(groupData)
+    dcsStub.assertOneCallTo("coalition.addGroup")
+    lu.assertEquals(persistence.groupOwnership.blue['Capt.Fdez'], { "CTLD_Tor 9A331_77 (Capt.Fdez)" })
+end
+
+function TestPersistence:testGroupOwnershipMetrics()
+    local ownership = { red = {}, blue = {} }
+    persistence.addGroupOwnership(ownership, "red", "Winston", "Amazeballs")
+    persistence.addGroupOwnership(ownership, "red", "Winston", "Amazeballs #2")
+    persistence.addGroupOwnership(ownership, "blue", "Winston", "Amazeballs #3")
+    persistence.addGroupOwnership(ownership, "blue", "Bunty", "Hummer")
+    persistence.addGroupOwnership(ownership, "red", "Slacker", "IGLA")
+
+    lu.assertEquals(persistence.getOwnedGroupCount(ownership, "red", "Alan"), 0)
+    lu.assertEquals(persistence.getOwnedGroupCount(ownership, "red", "Winston"), 2)
+    lu.assertEquals(persistence.getOwnedGroupCount(ownership, "blue", "Winston"), 1)
+    lu.assertEquals(persistence.getOwnedGroupCount(ownership, "blue", "Bunty"), 1)
+
+    lu.assertEquals(persistence.getOwnedJtacCount(ownership, "blue", "Winston"), 0)
+    lu.assertEquals(persistence.getOwnedJtacCount(ownership, "blue", "Bob"), 0)
+
+    persistence.addGroupOwnership(ownership, "red", "Winston", "UAZ-469")
+    lu.assertEquals(persistence.getOwnedJtacCount(ownership, "red", "Winston"), 1)
 end
 
 local function assertExpectedRestoredState()
