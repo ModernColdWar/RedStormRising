@@ -1303,7 +1303,7 @@ function ctld.generateTroopTypes(_side, _countOrTemplate, _country)
             if _side == 2 then
                 _troops = ctld.insertIntoTroopsArray("Stinger manpad", _countOrTemplate.aa, _troops)
             else
-                _troops = ctld.insertIntoTroopsArray("SA-18 Igla manpad", _countOrTemplate.aa, _troops)
+                _troops = ctld.insertIntoTroopsArray("SA-18 Igla-S manpad", _countOrTemplate.aa, _troops)
             end
         end
 
