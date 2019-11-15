@@ -8,6 +8,7 @@ local _getMistGroupData = persistence.getMistGroupData
 
 function TestPersistence:setUp()
     persistence.spawnQueue = {}
+    persistence.resetState()
 end
 
 function TestPersistence:tearDown()
@@ -136,6 +137,25 @@ end
 function TestPersistence:testAllGetBaseOwnershipWhenEmpty()
     local ownership = persistence.getAllBaseOwnership()
     lu.assertEquals(ownership, { airbases = { blue = {}, red = {} }, farps = { blue = {}, red = {} } })
+end
+
+local function assertExpectedRestoredState()
+    local state = persistence.getState()
+    lu.assertEquals(state.persistentGroupData, {})
+    lu.assertEquals(state.baseOwnership, { airbases = { blue = {}, red = {} }, farps = { blue = {}, red = {} } })
+end
+
+function TestPersistence:testRestoreFromCurrentVersionState()
+    persistence.restoreFromState({}, persistence.defaultState)
+    persistence.updateState()
+    assertExpectedRestoredState()
+end
+
+function TestPersistence:testRestoreFromOldVersionState()
+    -- use an empty table to simulate everything being missing
+    persistence.restoreFromState({}, {})
+    persistence.updateState()
+    assertExpectedRestoredState()
 end
 
 local runner = lu.LuaUnit.new()

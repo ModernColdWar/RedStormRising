@@ -2,6 +2,7 @@
 local utils = require("utils")
 local JSON = require("JSON")
 require("mist_4_3_74")
+require("CTLD")
 require("MOOSE")
 
 local log = mist.Logger:new("Persistence", "info")
@@ -12,7 +13,7 @@ local M = {}
 M.spawnQueue = {}
 
 -- The initial configuration of the persistent data we save to disk
-local state = {
+M.defaultState = {
     ctld = {
         nextGroupId = 1,
         nextUnitId = 1,
@@ -20,6 +21,18 @@ local state = {
     persistentGroupData = {},
     baseOwnership = {} -- populated at startup if not from state file
 }
+
+-- The actual state we save to disk and hold at runtime
+local state = mist.utils.deepCopy(M.defaultState)
+
+function M.resetState()
+    state = mist.utils.deepCopy(M.defaultState)
+end
+
+function M.getState()
+    return mist.utils.deepCopy(state)
+end
+
 
 function M.pushSpawnQueue(groupName)
     log:info("Adding $1 to spawn queue", groupName)
@@ -137,7 +150,7 @@ function M.getAllBaseOwnership()
     }
 end
 
-local function updateState()
+function M.updateState()
     M.updateGroupData(state.persistentGroupData)
     M.handleSpawnQueue()
     state.ctld.nextGroupId = ctld.nextGroupId
@@ -146,7 +159,7 @@ local function updateState()
 end
 
 local function persistState(rsrConfig)
-    updateState()
+    M.updateState()
     if UTILS.FileExists(rsrConfig.stateFileName) then
         utils.createBackup(rsrConfig.stateFileName)
     end
@@ -165,7 +178,6 @@ local function spawnGroup(groupData)
     end
     M.pushSpawnQueue(groupName)
 end
-
 
 local function isReplacementGroup(group)
     return string.find(group:GetName():lower(), "replacement")
@@ -196,14 +208,16 @@ local function activateBaseDefences(rsrConfig, baseOwnership)
     end
 end
 
---- Note that we don't directly update the state variable from here, this is done in handleSpawnQueue later
-local function restoreFromState(rsrConfig, _state)
+function M.restoreFromState(rsrConfig, _state)
     log:info("Restoring mission state")
 
-    ctld.nextGroupId = _state.ctld.nextGroupId
-    ctld.nextUnitId = _state.ctld.nextUnitId
+    ctld.nextGroupId = _state.ctld ~= nil and _state.ctld.nextGroupId or 1
+    ctld.nextUnitId = _state.ctld ~= nil and _state.ctld.nextUnitId or 1
 
-    for _, groupData in ipairs(_state.persistentGroupData) do
+    -- Note that we don't directly update persistentGroupData here, this is done in handleSpawnQueue later
+    -- This ensures the data we get from MIST is always consistent between a CTLD spawn and a reload from disk
+    local persistentGroupData = _state.persistentGroupData or {}
+    for _, groupData in ipairs(persistentGroupData) do
         spawnGroup(groupData)
     end
 
@@ -217,17 +231,19 @@ end
 function M.restore(rsrConfig)
     if UTILS.FileExists(rsrConfig.stateFileName) then
         local _state = readStateFromDisk(rsrConfig.stateFileName)
-        restoreFromState(rsrConfig, _state)
+        M.restoreFromState(rsrConfig, _state)
     else
         log:info("No state file exists - setting up from defaults in code")
-        restoreFromState(rsrConfig, state)
+        M.restoreFromState(rsrConfig, state)
     end
 
     -- register unpack callback so we can update our state
     ctld.addCallback(function(_args)
         if _args.action and _args.action == "unpack" then
-            log:info('Unpacked: $1', _args)
+            local sideName = utils.getSideName(_args.unit:getCoalition())
+            local playerName = ctld.getPlayerNameOrType(_args.unit)
             local groupName = _args.spawnedGroup:getName()
+            log:info('Player $1 on $2 unpacked $3', playerName, sideName, groupName)
             M.pushSpawnQueue(groupName)
         end
     end)
