@@ -1,5 +1,5 @@
-local lu = require("luaunit")
-require("dcs_stub")
+local lu = require("tests.luaunit")
+require("tests.dcs_stub")
 local persistence = require("persistence")
 
 TestPersistence = {}

@@ -1,5 +1,5 @@
-local lu = require("luaunit")
-require("dcs_stub")
+local lu = require("tests.luaunit")
+require("tests.dcs_stub")
 require("CTLD")
 
 local handleMarkEvents = require("handleMarkEvents")

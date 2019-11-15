@@ -29,4 +29,4 @@ exclude_files = {
     "Moose.lua" }
 
 -- ignore luaunit conventions which cause warnings
-files["test_*.lua"] = { ignore = { "111", "112", "212" } }
+files["tests/test_*.lua"] = { ignore = { "111", "112", "212" } }

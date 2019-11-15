@@ -1,6 +1,6 @@
 --- Stubs DCS World for testing of scripts outside of the DCS runtime mission environment
 -- luacheck: ignore dcsStub AI Airbase Group StaticObject Unit coalition country env radio timer trigger world
-local lu = require("luaunit")
+local lu = require("tests.luaunit")
 
 dcsStub = {}
 

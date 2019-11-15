@@ -1,7 +1,7 @@
 --- Red Storm Rising DCS mission LUA code
 -- stub DCS if we're running outside
 if env == nil then
-    require("dcs_stub")
+    require("tests.dcs_stub")
 else
     local module_folder = lfs.writedir() .. [[Scripts\RSR\]]
     package.path = module_folder .. "?.lua;" .. package.path
