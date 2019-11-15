@@ -105,6 +105,10 @@ local function writeStateToDisk(_state, filename)
     log:info("Finished writing state to $1", filename)
 end
 
+local function getSideNameFromGroupData(groupData)
+    return utils.getSideName(tonumber(groupData.coalitionId))
+end
+
 function M.updateGroupData(persistentGroupData)
     log:info("Updating persistent group data")
     for i = #persistentGroupData, 1, -1 do
@@ -131,6 +135,11 @@ function M.updateGroupData(persistentGroupData)
         if #groupData.units == 0 then
             log:info("Removing persistent data for dead group $1", groupName)
             table.remove(persistentGroupData, i)
+            local sideName = getSideNameFromGroupData(groupData)
+            local playerName = M.getPlayerNameFromGroupName(groupName)
+            if playerName ~= nil then
+                M.removeGroupOwnership(M.groupOwnership, sideName, playerName, groupName)
+            end
         end
     end
     log:info("Persistent group data update complete")
@@ -179,7 +188,7 @@ end
 
 function M.spawnGroup(groupData)
     -- Currently this code replicates the actions from ctld.unpackCrates
-    local sideName = utils.getSideName(tonumber(groupData.coalitionId))
+    local sideName = getSideNameFromGroupData(groupData)
     local groupName = groupData.groupName
     log:info("Spawning $1 $2 from groupData", sideName, groupName)
     mist.dynAdd(groupData)
@@ -201,6 +210,20 @@ function M.addGroupOwnership(groupOwnership, sideName, playerName, groupName)
         groupOwnership[sideName][playerName] = {}
     end
     table.insert(groupOwnership[sideName][playerName], groupName)
+end
+
+function M.removeGroupOwnership(groupOwnership, sideName, playerName, groupName)
+    local groupListForPlayer = groupOwnership[sideName][playerName]
+    if not groupListForPlayer then
+        return
+    end
+    for i, currentGroupName in ipairs(groupListForPlayer) do
+        if currentGroupName == groupName then
+            log:info("Removing ownership of $1 $2 from $3", sideName, groupName, playerName)
+            table.remove(groupListForPlayer, i)
+            return
+        end
+    end
 end
 
 function M.getOwnedGroupCount(groupOwnership, sideName, playerName)

@@ -175,7 +175,7 @@ function TestPersistence:testSpawnGroup()
     lu.assertEquals(persistence.groupOwnership.blue['Capt.Fdez'], { "CTLD_Tor 9A331_77 (Capt.Fdez)" })
 end
 
-function TestPersistence:testGroupOwnershipMetrics()
+function TestPersistence:testAddingGroupOwnership()
     local ownership = { red = {}, blue = {} }
     persistence.addGroupOwnership(ownership, "red", "Winston", "Amazeballs")
     persistence.addGroupOwnership(ownership, "red", "Winston", "Amazeballs #2")
@@ -193,6 +193,28 @@ function TestPersistence:testGroupOwnershipMetrics()
 
     persistence.addGroupOwnership(ownership, "red", "Winston", "UAZ-469")
     lu.assertEquals(persistence.getOwnedJtacCount(ownership, "red", "Winston"), 1)
+end
+
+function TestPersistence:testRemovingGroupOwnership()
+    -- no record for user
+    local ownership = { red = {}, blue = {} }
+    persistence.removeGroupOwnership(ownership, "red", "Winston", "groupName")
+    lu.assertEquals(ownership, { red = {}, blue = {} })
+
+    -- no groups in record
+    ownership = { red = { ["Winston"] = {} }, blue = {} }
+    persistence.removeGroupOwnership(ownership, "red", "Winston", "groupName")
+    lu.assertEquals(ownership, { red = { ["Winston"] = {} }, blue = {} })
+
+    -- group not in record
+    ownership = { red = { ["Winston"] = { "groupName" } }, blue = {} }
+    persistence.removeGroupOwnership(ownership, "red", "Winston", "foo")
+    lu.assertEquals(ownership, { red = { ["Winston"] = { "groupName" } }, blue = {} })
+
+    -- actually doing a removal
+    ownership = { red = { ["Winston"] = { "groupName" } }, blue = {} }
+    persistence.removeGroupOwnership(ownership, "red", "Winston", "groupName")
+    lu.assertEquals(ownership, { red = { ["Winston"] = {} }, blue = {} })
 end
 
 local function assertExpectedRestoredState()
