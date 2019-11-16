@@ -1,21 +1,15 @@
 --[[
     Combat Troop and Logistics Drop
-
     Allows Huey, Mi-8 and C130 to transport troops internally and Helicopters to transport Logistic / Vehicle units to the field via sling-loads
     without requiring external mods.
-
     Supports all of the original CTTS functionality such as AI auto troop load and unload as well as group spawning and preloading of troops into units.
-
     Supports deployment of Auto Lasing JTAC to the field
-
     See https://github.com/ciribob/DCS-CTLD for a user manual and the latest version
-
 	Contributors:
 	    - Steggles - https://github.com/Bob7heBuilder
 	    - mvee - https://github.com/mvee
 	    - jmontleon - https://github.com/jmontleon
 	    - emilianomolina - https://github.com/emilianomolina
-
     Version: 1.73 - 15/04/2018
       - Allow minimum distance from friendly logistics to be set
  ]]
@@ -156,16 +150,16 @@ ctld.JTAC_laserCode_BLUE = 1687
 
 --pickupZones = { "Zone name or Ship Unit Name", "smoke color", "limit (-1 unlimited)", "ACTIVE (yes/no)", "side (0 = Both sides / 1 = Red / 2 = Blue )", flag number (optional) }
 ctld.pickupZones = {
-    { "Senaki Red PickUp", "none", -1, "no", 1 },
-    { "Kutaisi Red PickUp", "none", -1, "no", 1 },
-    { "Kobuleti Red PickUp", "none", -1, "no", 1 },
-    { "Sukumi Red PickUp", "none", -1, "no", 1 },
-    { "Gudauta Red PickUp", "none", -1, "no", 1 },
-    { "Sochi Red PickUp", "none", -1, "no", 1 },
-    { "KN61 Red PickUp", "none", -1, "no", 1 },
-    { "GH05 Red PickUp", "none", -1, "no", 1 },
-    { "GH05 Red PickUp", "none", -1, "no", 1 },
-    { "GH05 Red PickUp", "none", -1, "no", 1 },
+    { "Senaki PickUp", "none", -1, "yes", 0 },
+    { "Kutaisi PickUp", "none", -1, "yes", 0 },
+    { "Kobuleti PickUp", "none", -1, "yes", 0 },
+    { "Sukumi PickUp", "none", -1, "yes", 0 },
+    { "Gudauta PickUp", "none", -1, "yes", 0 },
+    { "Sochi PickUp", "none", -1, "yes", 0 },
+    { "KN61 PickUp", "none", -1, "yes", 0 },
+    { "GH05 PickUp", "none", -1, "yes", 0 },
+    { "GH05 PickUp", "none", -1, "yes", 0 },
+    { "GH05 PickUp", "none", -1, "yes", 0 },
 
 
     { "pickzone11", "blue", 20, "no", 2 }, -- limits pickup zone 11 to 20 groups of soldiers or vehicles, only blue can pick up. Zone starts inactive!
