@@ -9,8 +9,12 @@ function TestSlotBlocker:testGetBaseAndSideNamesFromGroup()
     lu.assertEquals(baseName, "Gudauta")
     lu.assertEquals(sideName, "red")
 
-    baseName, sideName = slotBlocker.getBaseAndSideNamesFromGroup("S-K blUe")
+    baseName, sideName = slotBlocker.getBaseAndSideNamesFromGroup("S-K blUe plane")
     lu.assertEquals(baseName, "S-K")
+    lu.assertEquals(sideName, "blue")
+
+    baseName, sideName = slotBlocker.getBaseAndSideNamesFromGroup("FARP ABC2 Blue Helos #002")
+    lu.assertEquals(baseName, "FARP ABC2")
     lu.assertEquals(sideName, "blue")
 end
 

@@ -14,8 +14,14 @@ function M.initClientSet()
 end
 
 function M.getBaseAndSideNamesFromGroup(groupName)
-    local baseName, sideName = string.match(groupName, "^(%S+)%s+(%S+)")
-    return baseName, sideName:lower()
+    local blueIndex = string.find(groupName:lower(), " blue ")
+    local redIndex = string.find(groupName:lower(), " red ")
+    if blueIndex ~= nil then
+        return groupName:sub(1, blueIndex - 1), "blue"
+    end
+    if redIndex ~= nil then
+        return groupName:sub(1, redIndex - 1), "red"
+    end
 end
 
 local function startswith(string, prefix)
