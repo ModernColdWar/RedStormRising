@@ -1,9 +1,10 @@
 --- Saving/loading/updating code for managing "live" units and persisting them across server restarts
-local utils = require("utils")
-local JSON = require("JSON")
 require("mist_4_3_74")
 require("CTLD")
 require("MOOSE")
+local JSON = require("JSON")
+local utils = require("utils")
+local slotBlocker = require("slotBlocker")
 
 local log = mist.Logger:new("Persistence", "info")
 
@@ -248,7 +249,8 @@ local function isReplacementGroup(group)
 end
 
 -- Base defences are defined as late-activated group groups in proximity to an airbase or helipad
-local function activateBaseDefences(rsrConfig, baseOwnership)
+local function activateBaseDefencesAndSlots(rsrConfig, baseOwnership)
+    log:info("Activating base defences and slots")
     local allLateActivatedGroundGroups = SET_GROUP:New()
                                                   :FilterCategories("ground")
                                                   :FilterActive(false)
@@ -267,6 +269,7 @@ local function activateBaseDefences(rsrConfig, baseOwnership)
                         group:Activate()
                     end
                 end)
+                slotBlocker.configureSlotsForBase(baseName, sideName)
             end
         end
     end
@@ -286,8 +289,11 @@ function M.restoreFromState(rsrConfig, _state)
     end
 
     -- use default ownerships if ownership is not in the passed state (ie it came from a file without baseOwnership)
-    local baseOwnership = _state.baseOwnership or M.getAllBaseOwnership()
-    activateBaseDefences(rsrConfig, baseOwnership)
+    local baseOwnership = _state.baseOwnership
+    if baseOwnership == nil or #baseOwnership == 0 then
+        baseOwnership = M.getAllBaseOwnership()
+    end
+    activateBaseDefencesAndSlots(rsrConfig, baseOwnership)
 
     log:info("Mission state restored")
 end

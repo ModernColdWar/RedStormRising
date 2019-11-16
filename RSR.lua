@@ -25,10 +25,14 @@ end
 local utils = require("utils")
 local handleMarkEvents = require("handleMarkEvents")
 local persistence = require("persistence")
+local slotBlocker = require("slotBlocker")
+require("handleBaseCaptureEvents")
 
 if utils.runningInDcs() then
     -- set up simple slot block (moved from mission trigger)
     trigger.action.setUserFlag("SSB", 100)
+    slotBlocker.initClientSet()
+    slotBlocker.blockAllSlots()
     handleMarkEvents.registerHandlers(rsrConfig.devMode)
     persistence.restore(rsrConfig)
     trigger.action.outText("RSR ready", 10)
