@@ -250,7 +250,7 @@ end
 
 -- Base defences are defined as late-activated group groups in proximity to an airbase or helipad
 local function activateBaseDefencesAndSlots(rsrConfig, baseOwnership)
-    log:info("Activating base defences and slots")
+    log:info("Activating all base defences and slots")
     local allLateActivatedGroundGroups = SET_GROUP:New()
                                                   :FilterCategories("ground")
                                                   :FilterActive(false)
@@ -260,6 +260,7 @@ local function activateBaseDefencesAndSlots(rsrConfig, baseOwnership)
         for sideName, baseNames in pairs(ownershipData) do
             local side = utils.getSide(sideName)
             for _, baseName in pairs(baseNames) do
+                log:info("Activating base defences and slots for $1 base $2", sideName, baseName)
                 local radius = baseType == "airbases" and rsrConfig.baseDefenceActivationRadiusAirbase or rsrConfig.baseDefenceActivationRadiusFarp
                 local activationZone = ZONE_AIRBASE:New(baseName, radius)
                 allLateActivatedGroundGroups:ForEachGroup(function(group)
