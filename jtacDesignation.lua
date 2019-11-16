@@ -6,7 +6,10 @@ local function configureJtacs(jtacPrefix, hqName, sideName)
     local cc = COMMANDCENTER:New(hq, hqName)
     local jtacDetection = DETECTION_AREAS:New(jtacSetGroup, 5000)
     local attackSet = SET_GROUP:New():FilterCoalitions(sideName):FilterStart()
-    DESIGNATE:New(cc, jtacDetection, attackSet)
+    local designation = DESIGNATE:New(cc, jtacDetection, attackSet)
+    designation:SetThreatLevelPrioritization(true)
+    designation:GenerateLaserCodes()
+    designation:AddMenuLaserCode(1113, "Lase with %d for Ka-50/Su-25T")
 end
 
 function M.startCtldJtacDesignation()
