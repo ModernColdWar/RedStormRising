@@ -158,9 +158,6 @@ ctld.pickupZones = {
     { "Sochi PickUp", "none", -1, "yes", 0 },
     { "KN61 PickUp", "none", -1, "yes", 0 },
     { "GH05 PickUp", "none", -1, "yes", 0 },
-    { "GH05 PickUp", "none", -1, "yes", 0 },
-    { "GH05 PickUp", "none", -1, "yes", 0 },
-
 
     { "pickzone11", "blue", 20, "no", 2 }, -- limits pickup zone 11 to 20 groups of soldiers or vehicles, only blue can pick up. Zone starts inactive!
     { "pickzone12", "red", 20, "no", 1 }, -- limits pickup zone 11 to 20 groups of soldiers or vehicles, only blue can pick up. Zone starts inactive!
