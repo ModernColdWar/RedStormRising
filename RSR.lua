@@ -25,6 +25,7 @@ end
 local utils = require("utils")
 local handleMarkEvents = require("handleMarkEvents")
 local persistence = require("persistence")
+require("handleBaseCaptureEvents")
 
 if utils.runningInDcs() then
     -- set up simple slot block (moved from mission trigger)
