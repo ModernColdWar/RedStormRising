@@ -51,6 +51,11 @@ function M.matchesBaseName(baseName, groupPrefix)
         return true
     end
 
+    -- special case for typos!
+    if groupPrefix == "Sukumi" and baseName == "Sukhumi-Babushara" then
+        return true
+    end
+
     local baseNameParts = split(baseName, "-")
     local groupPrefixParts = split(groupPrefix, "-")
 

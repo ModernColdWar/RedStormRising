@@ -32,6 +32,8 @@ function TestSlotBlocker:testMatchesBaseName()
     lu.assertIsTrue(slotBlocker.matchesBaseName("Krasnodar-Pashkovsky", "K-Pash"))
     lu.assertIsFalse(slotBlocker.matchesBaseName("Krasnodar-Pashkovsky", "Kras-C"))
     lu.assertIsFalse(slotBlocker.matchesBaseName("Krasnodar-Pashkovsky", "Kras-P-D"))
+
+    lu.assertTrue(slotBlocker.matchesBaseName("Sukhumi-Babushara", "Sukumi"))
 end
 
 local runner = lu.LuaUnit.new()
