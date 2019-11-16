@@ -13,7 +13,7 @@ function M.initClientSet()
                           :FilterOnce()
 end
 
-function M.getBaseAndSideNames(groupName)
+function M.getBaseAndSideNamesFromGroup(groupName)
     local baseName, sideName = string.match(groupName, "^(%S+)%s+(%S+)")
     return baseName, sideName:lower()
 end
@@ -80,7 +80,19 @@ end
 
 function M.configureSlotsForBase(baseName, sideName)
     log:info("Configuring slots for $1 as owned by $2", baseName, sideName)
-
+    clientSet:ForEach(function(client)
+        local groupName = client.ClientName -- not actually true - this is the unit name (they must be the same!)
+        local groupBaseName, groupSideName = M.getBaseAndSideNamesFromGroup(groupName)
+        if groupBaseName ~= nil and groupSideName ~= nil then
+            if M.matchesBaseName(baseName, groupBaseName) then
+                if groupSideName == sideName then
+                    enableSlot(groupName)
+                else
+                    disableSlot(groupName)
+                end
+            end
+        end
+    end)
 end
 
 return M

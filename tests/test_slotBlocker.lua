@@ -4,12 +4,12 @@ local slotBlocker = require("slotBlocker")
 
 TestSlotBlocker = {}
 
-function TestSlotBlocker:testGetBaseAndSideNames()
-    local baseName, sideName = slotBlocker.getBaseAndSideNames("Gudauta Red Helos #001")
+function TestSlotBlocker:testGetBaseAndSideNamesFromGroup()
+    local baseName, sideName = slotBlocker.getBaseAndSideNamesFromGroup("Gudauta Red Helos #001")
     lu.assertEquals(baseName, "Gudauta")
     lu.assertEquals(sideName, "red")
 
-    baseName, sideName = slotBlocker.getBaseAndSideNames("S-K blUe")
+    baseName, sideName = slotBlocker.getBaseAndSideNamesFromGroup("S-K blUe")
     lu.assertEquals(baseName, "S-K")
     lu.assertEquals(sideName, "blue")
 end
