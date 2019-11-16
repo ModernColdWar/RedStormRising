@@ -12,7 +12,6 @@ env.info("RSR starting")
 require("mist_4_3_74")
 require("CTLD")
 require("Moose")
-SETTINGS:SetPlayerMenuOff()
 
 local log = mist.Logger:new("RSR", "info")
 
