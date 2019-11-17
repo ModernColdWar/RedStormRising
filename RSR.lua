@@ -12,6 +12,7 @@ env.info("RSR starting")
 require("mist_4_3_74")
 require("CTLD")
 require("Moose")
+SETTINGS:SetPlayerMenuOff()
 
 local log = mist.Logger:new("RSR", "info")
 
@@ -25,7 +26,6 @@ local utils = require("utils")
 local handleMarkEvents = require("handleMarkEvents")
 local persistence = require("persistence")
 local slotBlocker = require("slotBlocker")
-local jtacDesignation = require("jtacDesignation")
 require("handleBaseCaptureEvents")
 
 if utils.runningInDcs() then
@@ -34,7 +34,6 @@ if utils.runningInDcs() then
     slotBlocker.initClientSet()
     slotBlocker.blockAllSlots()
     handleMarkEvents.registerHandlers(rsrConfig.devMode)
-    jtacDesignation.startCtldJtacDesignation()
     persistence.restore(rsrConfig)
     trigger.action.outText("RSR ready", 10)
 end
