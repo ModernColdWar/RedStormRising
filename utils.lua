@@ -54,4 +54,52 @@ function M.getSide(sideName)
     return sideLookupTable.byName[sideName]
 end
 
+local function startswith(string, prefix)
+    if string:sub(1, #prefix) == prefix then
+        return true
+    end
+    return false
+end
+
+local function split(string, sep)
+    local fields = {}
+    local pattern = string.format("([^%s]+)", sep)
+    string:gsub(pattern, function(c)
+        fields[#fields + 1] = c
+    end)
+    return fields
+end
+
+-- Matches a base name against a prefix
+-- is fairly generous in that you only need the distinguishing prefix on the group
+-- with each word being treated independently
+function M.matchesBaseName(baseName, prefix)
+    if prefix == nil then
+        return false
+    end
+    if startswith(baseName, prefix) then
+        return true
+    end
+
+    -- special case for typos!
+    if prefix == "Sukumi" and baseName == "Sukhumi-Babushara" then
+        return true
+    end
+
+    local baseNameParts = split(baseName, "-")
+    local prefixParts = split(prefix, "-")
+
+    if #baseNameParts < #prefixParts then
+        return false
+    end
+    for i = 1, #prefixParts do
+        local baseNamePart = baseNameParts[i]
+        local groupPrefixPart = prefixParts[i]
+        if startswith(baseNamePart, groupPrefixPart) == false then
+            return false
+        end
+    end
+    return true
+end
+
 return M
