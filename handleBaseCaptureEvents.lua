@@ -2,7 +2,7 @@ require("mist_4_3_74")
 local utils = require("utils")
 local slotBlocker = require("slotBlocker")
 
-local baseCapturedEventHandler = EVENTHANDLER:New():HandleEvent(EVENTS.BaseCaptured)
+baseCapturedEventHandler = EVENTHANDLER:New():HandleEvent(EVENTS.BaseCaptured)
 
 function baseCapturedEventHandler:OnEventBaseCaptured(event)
     self:I({ event = event })
