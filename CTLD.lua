@@ -957,7 +957,7 @@ function ctld.spawnFOBCrateStatic(_country, _unitId, _point, _name)
     return _spawnedCrate
 end
 
-function ctld.spawnFOB(_country, _unitId, _point, _name)
+function ctld.spawnFOB(_country, _unitId, _point, _name, _heading)
 
     local _crate = {
         ["category"] = "Fortifications",
@@ -967,7 +967,7 @@ function ctld.spawnFOB(_country, _unitId, _point, _name)
         ["x"] = _point.x,
         ["name"] = _name,
         ["canCargo"] = false,
-        ["heading"] = 0,
+        ["heading"] = _heading ~= nil and ( _heading / 180 ) * math.pi or 0,
     }
 
     _crate["country"] = _country
@@ -985,7 +985,7 @@ function ctld.spawnFOB(_country, _unitId, _point, _name)
         ["name"] = "FOB Watchtower #" .. _id,
         ["category"] = "Fortifications",
         ["canCargo"] = false,
-        ["heading"] = 0,
+        ["heading"] = _heading ~= nil and ( _heading / 180 ) * math.pi or 0,
     }
     --coalition.addStaticObject(_country, _tower)
     _tower["country"] = _country
