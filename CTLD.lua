@@ -2437,7 +2437,15 @@ function ctld.unpackCrates(_arguments)
                         --       env.info("Added EWR")
                     end
 
-                    trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " successfully deployed " .. _crate.details.desc .. " to the field", 10)
+                    local quantityTxt = ""
+                    local plural = ""
+                    if _crate.details.unitQuantity ~= nil and _crate.details.unitQuantity > 1 then
+                        quantityTxt = tostring(_crate.details.unitQuantity) .. " "
+                        plural = "s"
+                    else
+                        
+                    end
+                    trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " successfully deployed " .. quantityTxt .. _crate.details.desc .. plural .. " to the field", 10)
 
                     if ctld.isJTACUnitType(_crate.details.unit) and ctld.JTAC_dropEnabled then
                         local _code = ctld.getLaserCode(_heli:getCoalition())
