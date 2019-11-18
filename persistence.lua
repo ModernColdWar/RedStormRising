@@ -251,7 +251,7 @@ local function isReplacementGroup(group)
 end
 
 -- Base defences are defined as late-activated group groups in proximity to an airbase or helipad
-local function activateBaseDefencesAndSlots(rsrConfig, baseOwnership)
+local function configureBasesAtStartup(rsrConfig, baseOwnership)
     log:info("Activating all base defences and slots")
     local allLateActivatedGroundGroups = SET_GROUP:New()
                                                   :FilterCategories("ground")
@@ -298,7 +298,7 @@ function M.restoreFromState(rsrConfig, _state)
     if baseOwnership == nil or #baseOwnership == 0 then
         baseOwnership = M.getAllBaseOwnership()
     end
-    activateBaseDefencesAndSlots(rsrConfig, baseOwnership)
+    configureBasesAtStartup(rsrConfig, baseOwnership)
 
     log:info("Mission state restored")
 end
