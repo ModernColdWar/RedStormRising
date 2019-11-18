@@ -497,18 +497,30 @@ ctld.extractableGroups = {
 -- When a logistic unit is destroyed, you will no longer be able to spawn crates
 
 ctld.logisticUnits = {
-    "Sochi_Logistic",
-    "Gudauta_Logistic",
-    "Sukumi_Logistic",
-    "FARP_GH05_Logistic",
-    "FARP_KN61_Logistic",
-    "Senaki_Logistic",
-    "Kutaisi_Logistic",
-    "Kobuleti_ Logistic",
-    "FARP_RIKE_Logistic",
-    "FARP_ZENI_Logistic",
+    "Sochi-Adler Logistics",
+    "Gudauta Logistics",
+    "Sukhumi-Babushara Logistics",
+    "GH05 Logistics",
+    "KN61 Logistics",
+    "Senaki-Kolkhi Logistics",
+    "Kutaisi Logistics",
+    "Kobuleti Logistics",
+    "RIKE Logistics",
+    "ZENI Logistics",
 }
 
+ctld.logisticUnitsHeadings = {
+    ["Sochi-Adler Logistics"] = 245,
+    ["Gudauta Logistics"] = 149,
+    ["Sukhumi-Babushara Logistics"] = 30,
+    ["GH05 Logistics"] = 29,
+    ["KN61 Logistics"] = 0,
+    ["Senaki-Kolkhi Logistics"] = 0,
+    ["Kutaisi Logistics"] = 0,
+    ["Kobuleti Logistics"] = 340,
+    ["RIKE Logistics"] = 313,
+    ["ZENI Logistics"] = 237,
+}
 
 -- ************** UNITS ABLE TO TRANSPORT VEHICLES ******************
 -- Add the model name of the unit that you want to be able to transport and deploy vehicles
