@@ -6,6 +6,7 @@ local JSON = require("JSON")
 local utils = require("utils")
 local slotBlocker = require("slotBlocker")
 local pickupZoneManager = require("pickupZoneManager")
+local logisticsManager = require("logisticsManager")
 
 local log = mist.Logger:new("Persistence", "info")
 
@@ -273,6 +274,7 @@ local function activateBaseDefencesAndSlots(rsrConfig, baseOwnership)
                 end)
                 slotBlocker.configureSlotsForBase(baseName, sideName)
                 pickupZoneManager.configurePickupZonesForBase(baseName, sideName)
+                logisticsManager.spawnLogisticsBuildingForBase(baseName, sideName)
             end
         end
     end
