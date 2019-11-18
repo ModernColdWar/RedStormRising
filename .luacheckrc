@@ -9,7 +9,8 @@ stds.dcs_stub = {
 stds.moose = {
     read_globals = {
         "AIRBASE", "COMMANDCENTER", "DESIGNATE", "DETECTION_AREAS", "EVENTHANDLER", "EVENTS", "GROUP",
-        "SET_CLIENT", "SET_GROUP", "SETTINGS", "SPAWN", "UTILS", "ZONE_AIRBASE"
+        "SET_CLIENT", "SET_GROUP", "SETTINGS", "SPAWN", "UTILS", "ZONE_AIRBASE",
+        "_SETTINGS"
     }
 }
 
