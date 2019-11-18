@@ -150,30 +150,16 @@ ctld.JTAC_laserCode_BLUE = 1687
 
 --pickupZones = { "Zone name or Ship Unit Name", "smoke color", "limit (-1 unlimited)", "ACTIVE (yes/no)", "side (0 = Both sides / 1 = Red / 2 = Blue )", flag number (optional) }
 ctld.pickupZones = {
-    { "Senaki PickUp", "none", -1, "yes", 0 },
-    { "Kutaisi PickUp", "none", -1, "yes", 0 },
-    { "Kobuleti PickUp", "none", -1, "yes", 0 },
-    { "Sukumi PickUp", "none", -1, "yes", 0 },
-    { "Gudauta PickUp", "none", -1, "yes", 0 },
-    { "Sochi PickUp", "none", -1, "yes", 0 },
-    { "KN61 PickUp", "none", -1, "yes", 0 },
-    { "GH05 PickUp", "none", -1, "yes", 0 },
-    { "ZENI PickUp", "none", -1, "yes", 0 },
-    { "RIKE PickUp", "none", -1, "yes", 0 },
-
-
-    { "pickzone11", "blue", 20, "no", 2 }, -- limits pickup zone 11 to 20 groups of soldiers or vehicles, only blue can pick up. Zone starts inactive!
-    { "pickzone12", "red", 20, "no", 1 }, -- limits pickup zone 11 to 20 groups of soldiers or vehicles, only blue can pick up. Zone starts inactive!
-    { "pickzone13", "none", -1, "yes", 0 },
-    { "pickzone14", "none", -1, "yes", 0 },
-    { "pickzone15", "none", -1, "yes", 0 },
-    { "pickzone16", "none", -1, "yes", 0 },
-    { "pickzone17", "none", -1, "yes", 0 },
-    { "pickzone18", "none", -1, "yes", 0 },
-    { "pickzone19", "none", 5, "yes", 0 },
-    { "pickzone20", "none", 10, "yes", 0, 1000 }, -- optional extra flag number to store the current number of groups available in
-
-    { "USA Carrier", "blue", 10, "yes", 0, 1001 }, -- instead of a Zone Name you can also use the UNIT NAME of a ship
+    { "Senaki PickUp", "none", -1, "no", 0 },
+    { "Kutaisi PickUp", "none", -1, "no", 0 },
+    { "Kobuleti PickUp", "none", -1, "no", 0 },
+    { "Sukumi PickUp", "none", -1, "no", 0 },
+    { "Gudauta PickUp", "none", -1, "no", 0 },
+    { "Sochi PickUp", "none", -1, "no", 0 },
+    { "KN61 PickUp", "none", -1, "no", 0 },
+    { "GH05 PickUp", "none", -1, "no", 0 },
+    { "ZENI PickUp", "none", -1, "no", 0 },
+    { "RIKE PickUp", "none", -1, "no", 0 },
 }
 
 
