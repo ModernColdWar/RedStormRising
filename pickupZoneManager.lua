@@ -5,7 +5,7 @@ local M = {}
 
 local log = mist.Logger:new("PickupZoneManager", "info")
 
-function setPickupZoneSide(pickupZone, sideName)
+local function setPickupZoneSide(pickupZone, sideName)
     local _zoneName = pickupZone[1]
     local ctldSide = sideName == "red" and 1 or 2
     log:info("Setting pickupZone " .. _zoneName .. " active only for " .. sideName)
