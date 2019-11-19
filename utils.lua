@@ -4,13 +4,13 @@ local M = {}
 
 local log = mist.Logger:new("Utils", "info")
 
-function M.runningInDcs()
+local function runningInDcs()
     -- luacheck: globals dcsStub
     return dcsStub == nil
 end
 
 function M.getFilePath(filename)
-    if M.runningInDcs() then
+    if runningInDcs() then
         return lfs.writedir() .. [[Scripts\RSR\]] .. filename
     else
         return filename

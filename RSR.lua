@@ -22,20 +22,18 @@ if rsrConfig.devMode then
     ctld.debug = true
 end
 
-local utils = require("utils")
 local handleMarkEvents = require("handleMarkEvents")
 local persistence = require("persistence")
 local slotBlocker = require("slotBlocker")
+local baseCapturedHandler = require("baseCapturedHandler")
 
-if utils.runningInDcs() then
-    -- set up simple slot block (moved from mission trigger)
-    trigger.action.setUserFlag("SSB", 100)
-    slotBlocker.initClientSet()
-    slotBlocker.blockAllSlots()
-    handleMarkEvents.registerHandlers(rsrConfig.devMode)
-    persistence.restore(rsrConfig)
-    require("handleBaseCaptureEvents")
-    trigger.action.outText("RSR ready", 10)
-end
+-- set up simple slot block (moved from mission trigger)
+trigger.action.setUserFlag("SSB", 100)
+slotBlocker.initClientSet()
+slotBlocker.blockAllSlots()
+handleMarkEvents.registerHandlers(rsrConfig.devMode)
+baseCapturedHandler.register()
+persistence.restore(rsrConfig)
 
+trigger.action.outText("RSR ready", 10)
 log:info("RSR ready")

@@ -112,6 +112,7 @@ function M.setBaseOwner(baseName, sideName)
     end
     setOwner(M.currentState.baseOwnership.airbases, baseName, sideName)
     setOwner(M.currentState.baseOwnership.farps, baseName, sideName)
+    log:info("Changed ownership of $1 from $2 to $3", baseName, currentOwner, sideName)
     return true
 end
 
