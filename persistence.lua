@@ -93,6 +93,7 @@ local function persistState(rsrConfig)
     M.handleSpawnQueue()
     state.copyFromCtld()
     state.updateBaseOwnership()
+    log:info("Number of persistent groups at save is $1", #state.currentState.persistentGroupData)
     utils.createBackup(rsrConfig.stateFileName)
     state.writeStateToDisk(rsrConfig.stateFileName)
 end
@@ -172,6 +173,7 @@ function M.restoreFromState(rsrConfig)
     -- We clear state.current.persistentGroupData here, as this is updated in handleSpawnQueue later
     -- This ensures the data we get from MIST is always consistent between a CTLD spawn and a reload from disk
     local persistentGroupData = state.currentState.persistentGroupData
+    log:info("Number of persistent groups at restore is $1", #state.currentState.persistentGroupData)
     state.currentState.persistentGroupData = {}
     for _, groupData in ipairs(persistentGroupData) do
         M.spawnGroup(groupData)
