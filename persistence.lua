@@ -103,11 +103,15 @@ function M.spawnGroup(groupData)
     local sideName = getSideNameFromGroupData(groupData)
     local groupName = groupData.groupName
     log:info("Spawning $1 $2 from groupData", sideName, groupName)
-    mist.dynAdd(groupData)
+    local spawnedGroup = Group.getByName(mist.dynAdd(groupData).name)
     if ctld.isJTACUnitType(groupName) then
         local _code = ctld.getLaserCode(Group.getByName(groupName):getCoalition())
         log:info("Configuring group $1 to auto-lase on $2", groupName, _code)
         ctld.JTACAutoLase(groupName, _code)
+    end
+    if string.match(groupName, "1L13 EWR") then
+        log:info("Configuring group $1 as EWR", groupName)
+        ctld.addEWRTask(spawnedGroup)
     end
     M.pushSpawnQueue(groupName)
     local playerName = utils.getPlayerNameFromGroupName(groupName)
