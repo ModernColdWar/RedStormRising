@@ -75,12 +75,57 @@ function TestState:testCopyFomCtld()
     lu.assertEquals(ctld.nextUnitId, 222)
 end
 
+function TestState:testGetOwner()
+    lu.assertIsNil(state.getOwner("foo"))
+    state.currentState.baseOwnership = { airbases = { red = { "foo" } } }
+    lu.assertEquals(state.getOwner("foo"), "red")
+end
+
 function TestState:testUpdateBaseOwnership()
     state.currentState.baseOwnership = nil
     state.updateBaseOwnership()
     lu.assertEquals(state.currentState.baseOwnership, {
         airbases = { blue = {}, neutral = {}, red = {} },
         farps = { blue = {}, neutral = {}, red = {} } })
+end
+
+function TestState:testSetBaseOwnerAirbaseChanged()
+    state.currentState.baseOwnership = {
+        airbases = { blue = { "Guduata" }, neutral = {}, red = {"A", "B"} },
+        farps = { blue = {}, neutral = {}, red = {} } }
+
+    lu.assertIsTrue(state.setBaseOwner("Guduata", "red"))
+
+    lu.assertEquals(state.currentState.baseOwnership, {
+        airbases = { blue = { }, neutral = {}, red = { "A", "B", "Guduata" } },
+        farps = { blue = {}, neutral = {}, red = {} } })
+
+    -- second event has no effect
+    lu.assertIsFalse(state.setBaseOwner("Guduata", "red"))
+end
+
+function TestState:testSetBaseOwnerFarpChanged()
+    state.currentState.baseOwnership = {
+        airbases = { blue = { }, neutral = {}, red = {} },
+        farps = { blue = {}, neutral = {}, red = { "Guduata", "Kutaisi" } } }
+
+    lu.assertIsTrue(state.setBaseOwner("Guduata", "blue"))
+
+    lu.assertEquals(state.currentState.baseOwnership, {
+        airbases = { blue = { }, neutral = {}, red = {} },
+        farps = { blue = { "Guduata" }, neutral = {}, red = { "Kutaisi" } } })
+end
+
+function TestState:testSetBaseOwnerNoChange()
+    state.currentState.baseOwnership = {
+        airbases = { blue = { }, neutral = {}, red = {} },
+        farps = { blue = {}, neutral = {}, red = { "Guduata", "Kutaisi" } } }
+
+    lu.assertIsFalse(state.setBaseOwner("Guduata", "red"))
+
+    lu.assertEquals(state.currentState.baseOwnership, {
+        airbases = { blue = { }, neutral = {}, red = {} },
+        farps = { blue = { }, neutral = {}, red = { "Guduata", "Kutaisi" } } })
 end
 
 function TestState:testSetCurrentStateFromFileWithNoFileLoadsBaseOwnershipFromDcs()

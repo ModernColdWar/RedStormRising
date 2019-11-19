@@ -69,6 +69,52 @@ function M.updateBaseOwnership()
     M.currentState.baseOwnership = queryDcs.getAllBaseOwnership()
 end
 
+function M.getOwner(baseName)
+    for _, baseOwnership in pairs(M.currentState.baseOwnership) do
+        for sideName, baseList in pairs(baseOwnership) do
+            for _, _baseName in ipairs(baseList) do
+                if _baseName == baseName then
+                    return sideName
+                end
+            end
+        end
+    end
+    return nil
+end
+
+local function setOwner(baseOwnership, baseName, sideName)
+    local found = false
+    local changed = false
+    for _sideName, baseList in pairs(baseOwnership) do
+        for i = #baseList, 1, -1 do
+            local _baseName = baseList[i]
+            if _baseName == baseName then
+                found = true
+                if _sideName ~= sideName then
+                    table.remove(baseList, i)
+                    changed = true
+                end
+            end
+        end
+    end
+    if found == false then
+        return
+    end
+    if changed then
+        table.insert(baseOwnership[sideName], baseName)
+    end
+end
+
+function M.setBaseOwner(baseName, sideName)
+    local currentOwner = M.getOwner(baseName)
+    if currentOwner == sideName then
+        return false
+    end
+    setOwner(M.currentState.baseOwnership.airbases, baseName, sideName)
+    setOwner(M.currentState.baseOwnership.farps, baseName, sideName)
+    return true
+end
+
 function M.setCurrentStateFromFile(stateFileName)
     if UTILS.FileExists(stateFileName) then
         M.currentState = M.readStateFromDisk(stateFileName)
