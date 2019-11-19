@@ -59,20 +59,28 @@ function TestState:testWriteStateToDisk()
     os.remove(filename)
 end
 
-function TestState:testUpdateCtldFromState()
+function TestState:testCopyToCtld()
     state.currentState.ctld.nextGroupId = 11
     state.currentState.ctld.nextUnitId = 22
-    state.updateCtldFromState()
+    state.copyToCtld()
     lu.assertEquals(ctld.nextGroupId, 11)
     lu.assertEquals(ctld.nextUnitId, 22)
 end
 
-function TestState:testUpdateStateFromCtld()
+function TestState:testCopyFomCtld()
     ctld.nextGroupId = 111
     ctld.nextUnitId = 222
-    state.updateStateFromCtld()
+    state.copyFromCtld()
     lu.assertEquals(ctld.nextGroupId, 111)
     lu.assertEquals(ctld.nextUnitId, 222)
+end
+
+function TestState:testUpdateBaseOwnership()
+    state.currentState.baseOwnership = nil
+    state.updateBaseOwnership()
+    lu.assertEquals(state.currentState.baseOwnership, {
+        airbases = { blue = {}, neutral = {}, red = {} },
+        farps = { blue = {}, neutral = {}, red = {} } })
 end
 
 function TestState:testSetCurrentStateFromFileWithNoFileLoadsBaseOwnershipFromDcs()

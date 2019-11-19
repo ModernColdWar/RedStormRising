@@ -55,14 +55,18 @@ function M.writeStateToDisk(stateFileName)
     log:info("Finished writing state to $1", stateFileName)
 end
 
-function M.updateCtldFromState()
+function M.copyToCtld()
     ctld.nextGroupId = M.currentState.ctld.nextGroupId
     ctld.nextUnitId = M.currentState.ctld.nextUnitId
 end
 
-function M.updateStateFromCtld()
+function M.copyFromCtld()
     M.currentState.ctld.nextGroupId = ctld.nextGroupId
     M.currentState.ctld.nextUnitId = ctld.nextUnitId
+end
+
+function M.updateBaseOwnership()
+    M.currentState.baseOwnership = queryDcs.getAllBaseOwnership()
 end
 
 function M.setCurrentStateFromFile(stateFileName)
@@ -71,7 +75,7 @@ function M.setCurrentStateFromFile(stateFileName)
     else
         log:info("No state file exists - setting up from defaults in code and base ownership from mission")
         M.currentState = mist.utils.deepCopy(M.defaultState)
-        M.currentState.baseOwnership = queryDcs.getAllBaseOwnership()
+        M.updateBaseOwnership()
     end
     log:info("Current state is:\n$1", mist.utils.tableShow(M.currentState))
 end
