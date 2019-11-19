@@ -109,7 +109,7 @@ function M.spawnGroup(groupData)
         log:info("Configuring group $1 to auto-lase on $2", groupName, _code)
         ctld.JTACAutoLase(groupName, _code)
     end
-    if string.match("1L13 EWR", groupName) then
+    if string.match(groupName, "1L13 EWR") then
         log:info("Configuring group $1 as EWR", groupName)
         ctld.addEWRTask(spawnedGroup)
     end
