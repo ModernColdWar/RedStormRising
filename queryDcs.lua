@@ -11,6 +11,10 @@ function M.getAllBaseOwnership()
     for _, base in ipairs(AIRBASE.GetAllAirbases()) do
         local baseName = base:GetName()
         local sideName = utils.getSideName(base:GetCoalition())
+        if sideName == nil then
+            log:info("Got no coalition for $1; setting to neutral", baseName)
+            sideName = "neutral"
+        end
         if base:GetAirbaseCategory() == Airbase.Category.AIRDROME then
             table.insert(baseOwnership.airbases[sideName], baseName)
         elseif base:GetAirbaseCategory() == Airbase.Category.HELIPAD then
