@@ -1,5 +1,4 @@
 require("mist_4_3_74")
-local utils = require("utils")
 
 local M = {}
 

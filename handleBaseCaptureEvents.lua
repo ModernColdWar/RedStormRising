@@ -3,6 +3,7 @@ local utils = require("utils")
 local slotBlocker = require("slotBlocker")
 local pickupZoneManager = require("pickupZoneManager")
 
+-- luacheck: globals baseCapturedEventHandler
 baseCapturedEventHandler = EVENTHANDLER:New():HandleEvent(EVENTS.BaseCaptured)
 
 function baseCapturedEventHandler:OnEventBaseCaptured(event)
