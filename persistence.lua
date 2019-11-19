@@ -2,11 +2,9 @@
 require("mist_4_3_74")
 require("CTLD")
 require("MOOSE")
+local bases = require("bases")
 local state = require("state")
 local utils = require("utils")
-local slotBlocker = require("slotBlocker")
-local pickupZoneManager = require("pickupZoneManager")
-local logisticsManager = require("logisticsManager")
 
 local log = mist.Logger:new("Persistence", "info")
 
@@ -158,35 +156,12 @@ function M.getOwnedJtacCount(groupOwnership, sideName, playerName)
     return count
 end
 
-local function isReplacementGroup(group)
-    return string.find(group:GetName():lower(), "replacement")
-end
-
 -- Base defences are defined as late-activated group groups in proximity to an airbase or helipad
 local function configureBasesAtStartup(rsrConfig, baseOwnership)
-    log:info("Activating all base defences and slots")
-    local allLateActivatedGroundGroups = SET_GROUP:New()
-                                                  :FilterCategories("ground")
-                                                  :FilterActive(false)
-                                                  :FilterOnce()
-
-    for baseType, ownershipData in pairs(baseOwnership) do
+    for _, ownershipData in pairs(baseOwnership) do
         for sideName, baseNames in pairs(ownershipData) do
-            local side = utils.getSide(sideName)
             for _, baseName in pairs(baseNames) do
-                log:info("Activating base defences and slots for $1 base $2", sideName, baseName)
-                local radius = baseType == "airbases" and rsrConfig.baseDefenceActivationRadiusAirbase or rsrConfig.baseDefenceActivationRadiusFarp
-                local activationZone = ZONE_AIRBASE:New(baseName, radius)
-                allLateActivatedGroundGroups:ForEachGroup(function(group)
-                    -- we can't use any of the GROUP:InZone methods as these are late activated units
-                    if group:GetCoalition() == side and activationZone:IsVec3InZone(group:GetVec3()) and not isReplacementGroup(group) then
-                        log:info("Activating $1 $2 base defence group $3", baseName, sideName, group:GetName())
-                        group:Activate()
-                    end
-                end)
-                slotBlocker.configureSlotsForBase(baseName, sideName)
-                pickupZoneManager.configurePickupZonesForBase(baseName, sideName)
-                logisticsManager.spawnLogisticsBuildingForBase(baseName, sideName)
+                bases.onMissionStart(baseName, sideName, rsrConfig)
             end
         end
     end
@@ -196,10 +171,10 @@ function M.restoreFromState(rsrConfig)
     log:info("Restoring mission state")
     state.copyToCtld()
 
-    -- Note that we don't directly update persistentGroupData here, this is done in handleSpawnQueue later
+    -- We clear state.current.persistentGroupData here, as this is updated in handleSpawnQueue later
     -- This ensures the data we get from MIST is always consistent between a CTLD spawn and a reload from disk
     local persistentGroupData = state.currentState.persistentGroupData
-    state.currentState.persistentGroupData = nil
+    state.currentState.persistentGroupData = {}
     for _, groupData in ipairs(persistentGroupData) do
         M.spawnGroup(groupData)
     end

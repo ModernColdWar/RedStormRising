@@ -1,7 +1,6 @@
 require("mist_4_3_74")
 local utils = require("utils")
-local slotBlocker = require("slotBlocker")
-local pickupZoneManager = require("pickupZoneManager")
+local bases = require("bases")
 
 -- luacheck: globals baseCapturedEventHandler
 baseCapturedEventHandler = EVENTHANDLER:New():HandleEvent(EVENTS.BaseCaptured)
@@ -13,6 +12,5 @@ function baseCapturedEventHandler:OnEventBaseCaptured(event)
     local message = baseName .. " has been captured by a " .. sideName .. " " .. event.IniTypeName
     self:I(message)
     trigger.action.outText(message, 10)
-    slotBlocker.configureSlotsForBase(baseName, sideName)
-    pickupZoneManager.configurePickupZonesForBase(baseName, sideName)
+    bases.onCapture(baseName, sideName)
 end
