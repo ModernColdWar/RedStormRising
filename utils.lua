@@ -17,19 +17,21 @@ function M.getFilePath(filename)
     end
 end
 
-function M.rotateBackups(filename, limit)
-    for i = limit, 1, -1 do
-        local backupFilename = string.format("%s.%03d", filename, i)
-        local srcFile = filename
-        if i == limit then
-            log:info("Deleting $1", backupFilename)
-            os.remove(backupFilename)
-        end
-        if i > 1 then
-            srcFile = string.format("%s.%03d", filename, i - 1)
-        end
-        log:info("Renaming $1 to $2", srcFile, backupFilename)
-        os.rename(srcFile, backupFilename)
+local function getBackupFilename(filename)
+    local beforeExtension = filename:match("^(.+)%..+$")
+    local extension = filename:match("^.+(%..+)$")
+    return beforeExtension .. "-backup" .. extension
+end
+
+function M.createBackup(filename)
+    if UTILS.FileExists(filename) then
+        local backupFilename = getBackupFilename(filename)
+        log:info("Backing up $1 to $2", filename, backupFilename)
+        local backup = io.open(backupFilename, "w")
+        local infile = io.open(filename, "r")
+        backup:write(infile:read("*all"))
+        infile:close()
+        backup:close()
     end
 end
 
