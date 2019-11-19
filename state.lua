@@ -1,6 +1,5 @@
 require("mist_4_3_74")
 require("CTLD")
-require("MOOSE")
 local JSON = require("JSON")
 local queryDcs = require("queryDcs")
 

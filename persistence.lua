@@ -93,9 +93,7 @@ local function persistState(rsrConfig)
     M.handleSpawnQueue()
     state.copyFromCtld()
     state.updateBaseOwnership()
-    if UTILS.FileExists(rsrConfig.stateFileName) then
-        utils.createBackup(rsrConfig.stateFileName)
-    end
+    utils.rotateBackups(rsrConfig.stateFileName, rsrConfig.backupLimit)
     state.writeStateToDisk(rsrConfig.stateFileName)
 end
 
