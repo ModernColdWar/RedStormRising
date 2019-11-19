@@ -34,6 +34,11 @@ function TestUtils:testMatchesBaseName()
     lu.assertTrue(utils.matchesBaseName("Sukhumi-Babushara", "Sukumi"))
 end
 
+function TestUtils:testGetPlayerNameFromGroupName()
+    lu.assertEquals(utils.getPlayerNameFromGroupName("CTLD_Tor 9A331_77 (Capt.Fdez)"), "Capt.Fdez")
+    lu.assertIsNil(utils.getPlayerNameFromGroupName("CTLD_Tor 9A331_77"))
+end
+
 local runner = lu.LuaUnit.new()
 os.exit(runner:runSuite())
 

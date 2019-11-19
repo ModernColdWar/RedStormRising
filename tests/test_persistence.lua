@@ -1,5 +1,6 @@
 local lu = require("tests.luaunit")
 require("tests.dcs_stub")
+local state = require("state")
 local persistence = require("persistence")
 
 TestPersistence = {}
@@ -8,8 +9,9 @@ local _getMistGroupData = persistence.getMistGroupData
 
 function TestPersistence:setUp()
     dcsStub.reset()
+    state.currentState = mist.utils.deepCopy(state.defaultState)
     persistence.spawnQueue = {}
-    persistence.resetState()
+    --persistence.resetState()
 end
 
 function TestPersistence:tearDown()
@@ -40,42 +42,9 @@ function TestPersistence:testHandleSpawnQueuePutsGroupDataIntoStateAndRemovesFro
     persistence.handleSpawnQueue()
 
     lu.assertEquals(persistence.spawnQueue, {})
-    lu.assertEquals(persistence.getPersistentGroupData(), {
+    lu.assertEquals(state.currentState.persistentGroupData, {
         { groupName = "group2", pos = { x = 1, y = 2 } },
         { groupName = "group1", pos = { x = 1, y = 2 } }
-    })
-end
-
-function TestPersistence:testRemoveGroupAndUnitIds()
-    local groupData = {
-        [1] = {
-            ["visible"] = false,
-            ["name"] = "groupName",
-            ["groupId"] = 1001,
-            ["units"] = {
-                [1] = {
-                    ["x"] = 1,
-                    ["y"] = 2,
-                    ["name"] = "unitName",
-                    ["unitId"] = 1002,
-                }
-            },
-        }
-    }
-
-    persistence.removeGroupAndUnitIds(groupData)
-    lu.assertEquals(groupData, {
-        [1] = {
-            ["visible"] = false,
-            ["name"] = "groupName",
-            ["units"] = {
-                [1] = {
-                    ["x"] = 1,
-                    ["y"] = 2,
-                    ["name"] = "unitName",
-                }
-            },
-        }
     })
 end
 
@@ -128,21 +97,6 @@ function TestPersistence:testUpdateGroupDataRemovesGroupWithNoUnits()
     local groupData = { { name = "groupName", units = { { unitName = "deadUnit" } } } }
     persistence.updateGroupData(groupData)
     lu.assertEquals(groupData, {})
-end
-
-function TestPersistence:testGetBaseOwnershipWhenEmpty()
-    local ownership = persistence.getBaseOwnership(Airbase.Category.AIRDROME)
-    lu.assertEquals(ownership, { red = {}, blue = {} })
-end
-
-function TestPersistence:testAllGetBaseOwnershipWhenEmpty()
-    local ownership = persistence.getAllBaseOwnership()
-    lu.assertEquals(ownership, { airbases = { blue = {}, red = {} }, farps = { blue = {}, red = {} } })
-end
-
-function TestPersistence:testGetPlayerNameFromGroupName()
-    lu.assertEquals(persistence.getPlayerNameFromGroupName("CTLD_Tor 9A331_77 (Capt.Fdez)"), "Capt.Fdez")
-    lu.assertIsNil(persistence.getPlayerNameFromGroupName("CTLD_Tor 9A331_77"))
 end
 
 function TestPersistence:testSpawnGroup()
@@ -215,25 +169,6 @@ function TestPersistence:testRemovingGroupOwnership()
     ownership = { red = { ["Winston"] = { "groupName" } }, blue = {} }
     persistence.removeGroupOwnership(ownership, "red", "Winston", "groupName")
     lu.assertEquals(ownership, { red = { ["Winston"] = {} }, blue = {} })
-end
-
-local function assertExpectedRestoredState()
-    local state = persistence.getState()
-    lu.assertEquals(state.persistentGroupData, {})
-    lu.assertEquals(state.baseOwnership, { airbases = { blue = {}, red = {} }, farps = { blue = {}, red = {} } })
-end
-
-function TestPersistence:testRestoreFromCurrentVersionState()
-    persistence.restoreFromState({}, persistence.defaultState)
-    persistence.updateState()
-    assertExpectedRestoredState()
-end
-
-function TestPersistence:testRestoreFromOldVersionState()
-    -- use an empty table to simulate everything being missing
-    persistence.restoreFromState({}, {})
-    persistence.updateState()
-    assertExpectedRestoredState()
 end
 
 local runner = lu.LuaUnit.new()

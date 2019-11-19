@@ -102,4 +102,10 @@ function M.matchesBaseName(baseName, prefix)
     return true
 end
 
+function M.getPlayerNameFromGroupName(groupName)
+    -- match the inside of the part in parentheses at the end of the group name if present
+    -- this is the other half of the _groupName construction in ctld.spawnCrateGroup
+    return string.match(groupName, "%((.+)%)$")
+end
+
 return M
