@@ -41,20 +41,36 @@ local function activateBaseDefences(baseName, sideName, rsrConfig)
     end)
 end
 
+local function checkNeutral(baseName, sideName)
+    if sideName == "neutral" then
+        log:info("Nothing to do for neutral base $1", baseName)
+        return true
+    end
+    return false
+end
 function M.configureForSide(baseName, sideName)
     log:info("Configuring base $1 for $2", baseName, sideName)
+    if checkNeutral(baseName, sideName) then
+        return
+    end
     slotBlocker.configureSlotsForBase(baseName, sideName)
     pickupZoneManager.configurePickupZonesForBase(baseName, sideName)
 end
 
 function M.resupply(baseName, sideName, rsrConfig)
     log:info("Configuring $1 resupplied by $2", baseName, sideName)
+    if checkNeutral(baseName, sideName) then
+        return
+    end
     activateBaseDefences(baseName, sideName, rsrConfig)
     logisticsManager.spawnLogisticsBuildingForBase(baseName, sideName)
 end
 
 function M.onMissionStart(baseName, sideName, rsrConfig)
-    log:info("Configuring $1 as $1 at mission start", baseName, sideName)
+    log:info("Configuring $1 as $2 at mission start", baseName, sideName)
+    if checkNeutral(baseName, sideName) then
+        return
+    end
     M.configureForSide(baseName, sideName)
     M.resupply(baseName, sideName, rsrConfig)
 end
