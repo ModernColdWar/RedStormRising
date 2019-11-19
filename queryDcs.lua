@@ -3,6 +3,8 @@ local utils = require("utils")
 
 local M = {}
 
+local log = mist.Logger:new("QueryDCS", "info")
+
 function M.getAllBaseOwnership()
     local baseOwnership = { airbases = { red = {}, blue = {}, neutral = {} },
                             farps = { red = {}, blue = {}, neutral = {} } }
@@ -15,6 +17,7 @@ function M.getAllBaseOwnership()
             table.insert(baseOwnership.farps[sideName], baseName)
         end
     end
+    log:info("Base ownership:\n$1", mist.utils.tableShow(baseOwnership))
     return baseOwnership
 end
 
