@@ -183,7 +183,7 @@ function M.restoreFromState(rsrConfig)
     log:info("Mission state restored")
 end
 
-function M.restore(rsrConfig)
+function M.onMissionStart(rsrConfig)
     state.setCurrentStateFromFile(rsrConfig.stateFileName)
     M.restoreFromState(rsrConfig)
 

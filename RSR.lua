@@ -30,7 +30,7 @@ local baseCapturedHandler = require("baseCapturedHandler")
 slotBlocker.onMissionStart()
 handleMarkEvents.registerHandlers(rsrConfig.devMode)
 baseCapturedHandler.register()
-persistence.restore(rsrConfig)
+persistence.onMissionStart(rsrConfig)
 
 trigger.action.outText("RSR ready", 10)
 log:info("RSR ready")
