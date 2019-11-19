@@ -4,13 +4,13 @@ local M = {}
 
 local log = mist.Logger:new("Utils", "info")
 
-function M.runningInDcs()
+local function runningInDcs()
     -- luacheck: globals dcsStub
     return dcsStub == nil
 end
 
 function M.getFilePath(filename)
-    if M.runningInDcs() then
+    if runningInDcs() then
         return lfs.writedir() .. [[Scripts\RSR\]] .. filename
     else
         return filename
@@ -24,13 +24,15 @@ local function getBackupFilename(filename)
 end
 
 function M.createBackup(filename)
-    local backupFilename = getBackupFilename(filename)
-    log:info("Backing up $1 to $2", filename, backupFilename)
-    local backup = io.open(backupFilename, "w")
-    local infile = io.open(filename, "r")
-    backup:write(infile:read("*all"))
-    infile:close()
-    backup:close()
+    if UTILS.FileExists(filename) then
+        local backupFilename = getBackupFilename(filename)
+        log:info("Backing up $1 to $2", filename, backupFilename)
+        local backup = io.open(backupFilename, "w")
+        local infile = io.open(filename, "r")
+        backup:write(infile:read("*all"))
+        infile:close()
+        backup:close()
+    end
 end
 
 local sideLookupTable = {
@@ -100,6 +102,23 @@ function M.matchesBaseName(baseName, prefix)
         end
     end
     return true
+end
+
+function M.getPlayerNameFromGroupName(groupName)
+    -- match the inside of the part in parentheses at the end of the group name if present
+    -- this is the other half of the _groupName construction in ctld.spawnCrateGroup
+    return string.match(groupName, "%((.+)%)$")
+end
+
+function M.getBaseAndSideNamesFromGroupName(groupName)
+    local blueIndex = string.find(groupName:lower(), " blue ")
+    local redIndex = string.find(groupName:lower(), " red ")
+    if blueIndex ~= nil then
+        return groupName:sub(1, blueIndex - 1), "blue"
+    end
+    if redIndex ~= nil then
+        return groupName:sub(1, redIndex - 1), "red"
+    end
 end
 
 return M

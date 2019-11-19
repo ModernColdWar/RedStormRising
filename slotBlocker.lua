@@ -5,25 +5,9 @@ local M = {}
 
 local log = mist.Logger:new("SlotBlocker", "info")
 
-local clientSet = nil
-
--- do this lazily so we can run tests outside DCS
-function M.initClientSet()
-    clientSet = SET_CLIENT:New()
+M.clientSet = SET_CLIENT:New()
                           :FilterActive(false)
                           :FilterOnce()
-end
-
-function M.getBaseAndSideNamesFromGroup(groupName)
-    local blueIndex = string.find(groupName:lower(), " blue ")
-    local redIndex = string.find(groupName:lower(), " red ")
-    if blueIndex ~= nil then
-        return groupName:sub(1, blueIndex - 1), "blue"
-    end
-    if redIndex ~= nil then
-        return groupName:sub(1, redIndex - 1), "red"
-    end
-end
 
 local function disableSlot(groupName)
     log:info("Disabling $1", groupName)
@@ -35,18 +19,24 @@ local function enableSlot(groupName)
     trigger.action.setUserFlag(groupName, 0)
 end
 
-function M.blockAllSlots()
+local function blockAllSlots()
     log:info("Blocking all slots")
-    clientSet:ForEach(function(client)
+    M.clientSet:ForEach(function(client)
         disableSlot(client.ClientName)
     end)
 end
 
+function M.onMissionStart()
+    -- enable simple slot block script
+    trigger.action.setUserFlag("SSB", 100)
+    blockAllSlots()
+end
+
 function M.configureSlotsForBase(baseName, sideName)
     log:info("Configuring slots for $1 as owned by $2", baseName, sideName)
-    clientSet:ForEach(function(client)
+    M.clientSet:ForEach(function(client)
         local groupName = client.ClientName -- not actually true - this is the unit name (they must be the same!)
-        local groupBaseName, groupSideName = M.getBaseAndSideNamesFromGroup(groupName)
+        local groupBaseName, groupSideName = utils.getBaseAndSideNamesFromGroupName(groupName)
         if groupBaseName ~= nil and groupSideName ~= nil then
             if utils.matchesBaseName(baseName, groupBaseName) then
                 if groupSideName == sideName then

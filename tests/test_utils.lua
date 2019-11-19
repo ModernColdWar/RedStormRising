@@ -34,6 +34,25 @@ function TestUtils:testMatchesBaseName()
     lu.assertTrue(utils.matchesBaseName("Sukhumi-Babushara", "Sukumi"))
 end
 
+function TestUtils:testGetPlayerNameFromGroupName()
+    lu.assertEquals(utils.getPlayerNameFromGroupName("CTLD_Tor 9A331_77 (Capt.Fdez)"), "Capt.Fdez")
+    lu.assertIsNil(utils.getPlayerNameFromGroupName("CTLD_Tor 9A331_77"))
+end
+
+function TestUtils:testGetBaseAndSideNamesFromGroupName()
+    local baseName, sideName = utils.getBaseAndSideNamesFromGroupName("Gudauta Red Helos #001")
+    lu.assertEquals(baseName, "Gudauta")
+    lu.assertEquals(sideName, "red")
+
+    baseName, sideName = utils.getBaseAndSideNamesFromGroupName("S-K blUe plane")
+    lu.assertEquals(baseName, "S-K")
+    lu.assertEquals(sideName, "blue")
+
+    baseName, sideName = utils.getBaseAndSideNamesFromGroupName("FARP ABC2 Blue Helos #002")
+    lu.assertEquals(baseName, "FARP ABC2")
+    lu.assertEquals(sideName, "blue")
+end
+
 local runner = lu.LuaUnit.new()
 os.exit(runner:runSuite())
 

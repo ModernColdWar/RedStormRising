@@ -3,4 +3,5 @@
 .project
 .settings/
 .idea/
-rsrState*.json
+rsrState.json*
+rsrState-backup.json

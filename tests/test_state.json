@@ -1,0 +1,55 @@
+{
+  "baseOwnership": {
+    "airbases": {
+      "blue": [
+        "Sukhumi-Babushara",
+        "Gudauta",
+        "Krasnodar-Pashkovsky",
+        "Sochi-Adler"
+      ],
+      "red": [
+        "Kobuleti",
+        "Senaki-Kolkhi",
+        "Kutaisi"
+      ]
+    },
+    "farps": {
+      "blue": [
+        "GH05",
+        "ZENI"
+      ],
+      "red": []
+    }
+  },
+  "ctld": {
+    "nextGroupId": 188,
+    "nextUnitId": 848
+  },
+  "persistentGroupData": [
+    {
+      "category": "vehicle",
+      "coalition": "blue",
+      "coalitionId": 2,
+      "country": "usa",
+      "countryId": 2,
+      "groupName": "CTLD_Tor 9A331_188 (Smitty)",
+      "hidden": false,
+      "name": "CTLD_Tor 9A331_188 (Smitty)",
+      "startTime": 0,
+      "task": [],
+      "timeAdded": 32400.091,
+      "units": [
+        {
+          "alt": 149.64992907402,
+          "heading": 0.61947918356337,
+          "skill": "Excellent",
+          "speed": 0,
+          "type": "Tor 9A331",
+          "unitName": "Unpacked Tor 9A331 #818",
+          "x": -245969.0156249,
+          "y": 629101.37500007
+        }
+      ]
+    }
+  ]
+}
