@@ -1,5 +1,6 @@
 local lu = require("tests.luaunit")
 require("tests.dcs_stub")
+local queryDcs = require("queryDcs")
 local state = require("state")
 
 TestState = {}
@@ -7,14 +8,6 @@ TestState = {}
 function TestState:setUp()
     -- reset state
     state.currentState = state.defaultState
-end
-
-function TestState:testAllGetBaseOwnershipWhenEmpty()
-    local ownership = state.getAllBaseOwnership()
-    lu.assertEquals(ownership, {
-        airbases = { blue = {}, red = {}, neutral = {} },
-        farps = { blue = {}, red = {}, neutral = {} } }
-    )
 end
 
 function TestState:testRemoveGroupAndUnitIds()
@@ -82,10 +75,10 @@ function TestState:testUpdateStateFromCtld()
     lu.assertEquals(ctld.nextUnitId, 222)
 end
 
-function TestState:testSetCurrentStateFromFileWithNoFile()
+function TestState:testSetCurrentStateFromFileWithNoFileLoadsBaseOwnershipFromDcs()
     state.setCurrentStateFromFile([[filedoesnotexist.json]])
     local expectedState = mist.utils.deepCopy(state.defaultState)
-    expectedState.baseOwnership = state.getAllBaseOwnership()
+    expectedState.baseOwnership = queryDcs.getAllBaseOwnership()
     lu.assertEquals(state.currentState, expectedState)
     lu.assertEquals(#state.currentState.persistentGroupData, 0)
 end

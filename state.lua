@@ -2,7 +2,7 @@ require("mist_4_3_74")
 require("CTLD")
 require("MOOSE")
 local JSON = require("JSON")
-local utils = require("utils")
+local queryDcs = require("queryDcs")
 
 local log = mist.Logger:new("State", "info")
 
@@ -20,21 +20,6 @@ M.defaultState = {
 
 -- set in M.setCurrentState(stateFileName)
 M.currentState = nil
-
-function M.getAllBaseOwnership()
-    local baseOwnership = { airbases = { red = {}, blue = {}, neutral = {} },
-                            farps = { red = {}, blue = {}, neutral = {} } }
-    for _, base in ipairs(AIRBASE.GetAllAirbases()) do
-        local baseName = base:GetName()
-        local sideName = utils.getSideName(base:GetCoalition())
-        if base:GetAirbaseCategory() == Airbase.Category.AIRDROME then
-            table.insert(baseOwnership.airbases[sideName], baseName)
-        elseif base:GetAirbaseCategory() == Airbase.Category.HELIPAD then
-            table.insert(baseOwnership.farps[sideName], baseName)
-        end
-    end
-    return baseOwnership
-end
 
 --- Removes groupId and unitId from data so that upon respawn, MIST assigns new IDs
 -- Avoids accidental overwrite of units
@@ -86,7 +71,7 @@ function M.setCurrentStateFromFile(stateFileName)
     else
         log:info("No state file exists - setting up from defaults in code and base ownership from mission")
         M.currentState = mist.utils.deepCopy(M.defaultState)
-        M.currentState.baseOwnership = M.getAllBaseOwnership()
+        M.currentState.baseOwnership = queryDcs.getAllBaseOwnership()
     end
     log:info("Current state is:\n$1", mist.utils.tableShow(M.currentState))
 end
