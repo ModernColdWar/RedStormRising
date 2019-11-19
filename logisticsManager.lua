@@ -9,6 +9,10 @@ function M.spawnLogisticsBuildingForBase(baseName, sideName)
     local country = sideName == "red" and country.id.RUSSIA or country.id.USA
     local logisticsName = baseName .. " Logistics"
     local heading = ctld.logisticUnitsHeadings[logisticsName]
+    if heading == nil then
+        log:warn("No heading found for logistics building '$1'; defaulting to 0", logisticsName)
+        heading = 0
+    end
     if trigger.misc.getZone(logisticsName) == nil then
         log:warn("No logistics zone called '$1' found; no logistics building will spawn", logisticsName)
         return
