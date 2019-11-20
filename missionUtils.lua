@@ -31,19 +31,19 @@ function M.getDictionaryValue(key)
 end
 
 function M.iterGroups(mission, groupCallback)
-    for _, coalition in pairs(mission.coalition) do
+    for sideName, coalition in pairs(mission.coalition) do
         for _, country in ipairs(coalition.country) do
             if country.plane ~= nil then
                 for _, groups in pairs(country.plane) do
                     for _, group in ipairs(groups) do
-                        groupCallback(group)
+                        groupCallback(group, sideName)
                     end
                 end
             end
             if country.helicopter ~= nil then
                 for _, groups in pairs(country.helicopter) do
                     for _, group in ipairs(groups) do
-                        groupCallback(group)
+                        groupCallback(group, sideName)
                     end
                 end
             end
