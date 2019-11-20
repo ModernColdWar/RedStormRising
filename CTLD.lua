@@ -957,7 +957,7 @@ function ctld.spawnFOBCrateStatic(_country, _unitId, _point, _name)
     return _spawnedCrate
 end
 
-function ctld.spawnFOB(_country, _unitId, _point, _name)
+function ctld.spawnFOB(_country, _unitId, _point, _name, _coalition)
 
     local _crate = {
         ["category"] = "Fortifications",
@@ -990,7 +990,7 @@ function ctld.spawnFOB(_country, _unitId, _point, _name)
     --coalition.addStaticObject(_country, _tower)
     _tower["country"] = _country
 
-    mist.dynAddStatic(_tower)
+    trigger.action.markToCoalition(_id, _name, _point, _coalition, true)
 
     return _spawnedCrate
 end
@@ -2538,7 +2538,7 @@ function ctld.unpackFOBCrates(_crates, _heli)
             local _unitId = ctld.getNextUnitId()
             local _name = "Deployed FOB #" .. _unitId
 
-            local _fob = ctld.spawnFOB(_args[2], _unitId, _args[1], _name)
+            local _fob = ctld.spawnFOB(_args[2], _unitId, _args[1], _name, _args[3])
 
             --make it able to deploy crates
             table.insert(ctld.logisticUnits, _fob:getName())
