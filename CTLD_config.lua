@@ -547,6 +547,9 @@ ctld.logisticUnits = {
     "Kobuleti Logistics",
     "GH31 Logistics",
     "GH13 Logistics",
+    -- make sure we keep these from v6.4 until we update to v6.5
+    "RIKE Logistics",
+    "ZENI Logistics",
 }
 
 ctld.logisticUnitsHeadings = {
