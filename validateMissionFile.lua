@@ -31,23 +31,6 @@ print("Checking client slots for problems")
 local transportPilotNames = {}
 missionUtils.iterGroups(mission, function(group)
     if missionUtils.isClientGroup(group) then
-        local unit = group.units[1]
-        if validateClientGroup(group) and missionUtils.isTransportType(unit.type) then
-            table.insert(transportPilotNames, missionUtils.getDictionaryValue(unit.name))
-        end
+        validateClientGroup(group)
     end
 end)
-
-local function printTable(variableName, tbl)
-    table.sort(tbl)
-    print("-- " .. tonumber(#tbl) .. " entries\n" .. variableName .. " = {")
-    for _, value in ipairs(tbl) do
-        print("    \"" .. value .. "\",")
-    end
-    print("}\n")
-end
-
-print("\n\nThe following variables should be put into CTLD_config.lua\n\n")
-
-printTable("ctld.pickupZones", missionUtils.getZoneNames(mission, " pickup$"))
-printTable("ctld.transportPilotNames", transportPilotNames)
