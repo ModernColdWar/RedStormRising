@@ -23,11 +23,16 @@ end
 
 function M.configurePickupZonesForBase(baseName, sideName)
     log:info("Configuring pickup zones for $1 as owned by $2", baseName, sideName)
+    local foundZone = false
     for _, pickupZone in ipairs(ctld.pickupZones) do
         local zoneBaseName = M.getBaseNameFromZoneName(pickupZone[1])
         if utils.matchesBaseName(baseName, zoneBaseName) then
             setPickupZoneSide(pickupZone, sideName)
+            foundZone = true
         end
+    end
+    if not foundZone then
+        log:warn("No pickup zone for $1 found; no pickup at this base will be possible", baseName)
     end
 end
 
