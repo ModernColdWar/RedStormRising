@@ -162,6 +162,10 @@ ctld.pickupZones = {
     { "GH05 PickUp", "none", -1, "no", 0 },
     { "GH13 PickUp", "none", -1, "no", 0 },
     { "GH31 PickUp", "none", -1, "no", 0 },
+
+    -- remove ZENI and RIKE when server on MIZ version 6.5+
+    { "ZENI PickUp", "none", -1, "no", 0 },
+    { "RIKE PickUp", "none", -1, "no", 0 },
 }
 
 
@@ -470,6 +474,42 @@ ctld.transportPilotNames = {
     "transport9",
     "transport10",
 
+    -- remove ZENI and RIKE units below when server is on mission 6.5+
+    "ZENI BLUE HELOS #001",
+    "ZENI BLUE HELOS #002",
+    "ZENI BLUE HELOS #003",
+    "ZENI BLUE HELOS #004",
+    "ZENI BLUE HELOS #005",
+    "ZENI BLUE HELOS #006",
+    "ZENI BLUE HELOS #007",
+    "ZENI BLUE HELOS #008",
+
+    "ZENI RED HELOS #001",
+    "ZENI RED HELOS #002",
+    "ZENI RED HELOS #003",
+    "ZENI RED HELOS #004",
+    "ZENI RED HELOS #005",
+    "ZENI RED HELOS #006",
+    "ZENI RED HELOS #007",
+    "ZENI RED HELOS #008",
+
+    "RIKE BLUE HELOS #001",
+    "RIKE BLUE HELOS #002",
+    "RIKE BLUE HELOS #003",
+    "RIKE BLUE HELOS #004",
+    "RIKE BLUE HELOS #005",
+    "RIKE BLUE HELOS #006",
+    "RIKE BLUE HELOS #007",
+    "RIKE BLUE HELOS #008",
+
+    "RIKE RED HELOS #001",
+    "RIKE RED HELOS #002",
+    "RIKE RED HELOS #003",
+    "RIKE RED HELOS #004",
+    "RIKE RED HELOS #005",
+    "RIKE RED HELOS #006",
+    "RIKE RED HELOS #007",
+    "RIKE RED HELOS #008",
 }
 
 -- *************** Optional Extractable GROUPS *****************
