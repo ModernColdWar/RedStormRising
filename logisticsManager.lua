@@ -1,4 +1,5 @@
 require("mist_4_3_74")
+local utils = require("utils")
 
 local M = {}
 
@@ -13,7 +14,7 @@ function M.spawnLogisticsBuildingForBase(baseName, sideName)
         return
     end
     local point = ZONE:New(logisticsName):GetPointVec2()
-    ctld.spawnFOB(country, nil, point, logisticsName)
+    ctld.spawnFOB(country, nil, point, logisticsName, utils.getSide(sideName))
     log:info("Spawned $1 $2 FOB", sideName, logisticsName)
 end
 
