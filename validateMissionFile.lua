@@ -28,7 +28,6 @@ end
 
 print("Checking client slots for problems")
 
-local transportPilotNames = {}
 missionUtils.iterGroups(mission, function(group)
     if missionUtils.isClientGroup(group) then
         validateClientGroup(group)
