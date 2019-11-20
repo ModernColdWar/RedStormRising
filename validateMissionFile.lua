@@ -34,6 +34,7 @@ if missionDir == nil then
     print("No mission dir specified")
     os.exit(1)
 end
+local write = #arg >= 2 and arg[2] == "--write"
 
 missionUtils.loadMission(missionDir)
 -- luacheck: read_globals mission
@@ -56,11 +57,10 @@ local function validateClientGroup(group)
 end
 
 local function description(unit)
-  return unit.type .. " '" .. missionUtils.getDictionaryValue(unit.name) .. "'"
+    return unit.type .. " '" .. missionUtils.getDictionaryValue(unit.name) .. "'"
 end
 
-local function setFuel(group)
-    local unit = group.units[1]
+local function setFuel(unit)
     local key = string.gsub(unit.type, "-", "_")
     local fuelDetails = fuelSettings[key]
     if fuelDetails == nil then
@@ -79,6 +79,12 @@ print("Checking client slots for problems")
 missionUtils.iterGroups(mission, function(group)
     if missionUtils.isClientGroup(group) then
         validateClientGroup(group)
-        setFuel(group)
+        setFuel(group.units[1])
     end
 end)
+
+if write then
+    missionUtils.serializeMission(mission, missionDir)
+end
+
+print("Done")

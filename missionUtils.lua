@@ -8,7 +8,11 @@ function M.loadMission(missionDir)
 end
 
 function M.serializeMission(mission, missionDir)
-    package.path = package.path .. ";" .. os.getenv("DCS_PATH") .. [[\Scripts\?.lua]]
+    local dcsPath = os.getenv("DCS_PATH")
+    if dcsPath == nil then
+        error("DCS_PATH environment variable must be set")
+    end
+    package.path = package.path .. ";" .. dcsPath .. [[\Scripts\?.lua]]
     local Serializer = require("Serializer")
     local missionfile = missionDir .. [[\mission]]
     print("Serializing to mission at " .. missionfile)
