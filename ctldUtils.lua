@@ -12,6 +12,16 @@ function M.getLogisticUnits(mission)
     return zones
 end
 
+function M.getPickupZones(mission)
+    local zones = missionUtils.getZoneNames(mission, " pickup$")
+    log:info("Pickup zones in mission are $1", mist.utils.oneLineSerialize(zones))
+    local pickupZones = {}
+    for _, zone in ipairs(zones) do
+        table.insert(pickupZones, { zone, "none", -1, "no", 0 })
+    end
+    return pickupZones
+end
+
 function M.getTransportPilotNames(mission)
     local transportPilotNames = {}
     missionUtils.iterGroups(mission, function(group)

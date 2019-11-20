@@ -152,22 +152,7 @@ ctld.JTAC_laserCode_BLUE = 1687
 -- Flag Number - Optional last field. If set the current number of groups remaining can be obtained from the flag value
 
 --pickupZones = { "Zone name or Ship Unit Name", "smoke color", "limit (-1 unlimited)", "ACTIVE (yes/no)", "side (0 = Both sides / 1 = Red / 2 = Blue )", flag number (optional) }
-ctld.pickupZones = {
-    { "Senaki PickUp", "none", -1, "no", 0 },
-    { "Kutaisi PickUp", "none", -1, "no", 0 },
-    { "Kobuleti PickUp", "none", -1, "no", 0 },
-    { "Sukumi PickUp", "none", -1, "no", 0 },
-    { "Gudauta PickUp", "none", -1, "no", 0 },
-    { "Sochi PickUp", "none", -1, "no", 0 },
-    { "KN61 PickUp", "none", -1, "no", 0 },
-    { "GH05 PickUp", "none", -1, "no", 0 },
-    { "GH13 PickUp", "none", -1, "no", 0 },
-    { "GH31 PickUp", "none", -1, "no", 0 },
-
-    -- remove ZENI and RIKE when server on MIZ version 6.5+
-    { "ZENI PickUp", "none", -1, "no", 0 },
-    { "RIKE PickUp", "none", -1, "no", 0 },
-}
+ctld.pickupZones = ctldUtils.getPickupZones(env.mission)
 
 
 -- dropOffZones = {"name","smoke colour",0,side 1 = Red or 2 = Blue or 0 = Both sides}
