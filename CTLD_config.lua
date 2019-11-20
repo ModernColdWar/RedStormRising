@@ -552,19 +552,6 @@ ctld.logisticUnits = {
     "ZENI Logistics",
 }
 
-ctld.logisticUnitsHeadings = {
-    ["Sochi-Adler Logistics"] = 245,
-    ["Gudauta Logistics"] = 149,
-    ["Sukhumi-Babushara Logistics"] = 30,
-    ["GH05 Logistics"] = 29,
-    ["KN61 Logistics"] = 0,
-    ["Senaki-Kolkhi Logistics"] = 0,
-    ["Kutaisi Logistics"] = 0,
-    ["Kobuleti Logistics"] = 340,
-    ["GH31 Logistics"] = 313,
-    ["GH13 Logistics"] = 237,
-}
-
 -- ************** UNITS ABLE TO TRANSPORT VEHICLES ******************
 -- Add the model name of the unit that you want to be able to transport and deploy vehicles
 -- units db has all the names or you can extract a mission.miz file by making it a zip and looking
