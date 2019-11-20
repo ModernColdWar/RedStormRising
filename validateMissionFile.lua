@@ -38,9 +38,6 @@ missionUtils.iterGroups(mission, function(group)
     end
 end)
 
-local pickupZones = missionUtils.getZoneNames(mission, " pickup$")
-local logisticsZones = missionUtils.getZoneNames(mission, " logistics$")
-
 local function printTable(variableName, tbl)
     table.sort(tbl)
     print("-- " .. tonumber(#tbl) .. " entries\n" .. variableName .. " = {")
@@ -52,6 +49,5 @@ end
 
 print("\n\nThe following variables should be put into CTLD_config.lua\n\n")
 
-printTable("ctld.pickupZones", pickupZones)
-printTable("ctld.logisticUnits", logisticsZones)
+printTable("ctld.pickupZones", missionUtils.getZoneNames(mission, " pickup$"))
 printTable("ctld.transportPilotNames", transportPilotNames)

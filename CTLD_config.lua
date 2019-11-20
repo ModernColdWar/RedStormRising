@@ -13,6 +13,7 @@
     Version: 1.73 - 15/04/2018
       - Allow minimum distance from friendly logistics to be set
  ]]
+local ctldUtils = require("ctldUtils")
 
 ctld = {} -- DONT REMOVE!
 
@@ -536,21 +537,7 @@ ctld.extractableGroups = {
 -- Use any of the predefined names or set your own ones
 -- When a logistic unit is destroyed, you will no longer be able to spawn crates
 
-ctld.logisticUnits = {
-    "Sochi-Adler Logistics",
-    "Gudauta Logistics",
-    "Sukhumi-Babushara Logistics",
-    "GH05 Logistics",
-    "KN61 Logistics",
-    "Senaki-Kolkhi Logistics",
-    "Kutaisi Logistics",
-    "Kobuleti Logistics",
-    "GH31 Logistics",
-    "GH13 Logistics",
-    -- make sure we keep these from v6.4 until we update to v6.5
-    "RIKE Logistics",
-    "ZENI Logistics",
-}
+ctld.logisticUnits = ctldUtils.getLogisticUnits(env.mission)
 
 -- ************** UNITS ABLE TO TRANSPORT VEHICLES ******************
 -- Add the model name of the unit that you want to be able to transport and deploy vehicles
