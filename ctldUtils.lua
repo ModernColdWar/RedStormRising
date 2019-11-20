@@ -27,7 +27,7 @@ function M.getTransportPilotNames(mission)
         if missionUtils.isClientGroup(group) then
             local unit = group.units[1]
             if missionUtils.isTransportType(unit.type) then
-                table.insert(transportPilotNames, unit.name)
+                table.insert(transportPilotNames, env.getValueDictByKey(unit.name))
             end
         end
     end)
