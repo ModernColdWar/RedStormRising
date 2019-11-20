@@ -30,6 +30,12 @@ local fuelSettings = {
     UH_1H = { capacity = 631, fraction = 0.3 },
 }
 
+local ropeLengths = {
+    Ka_50 = 20,
+    Mi_8MT = 20,
+    UH_1H = 10,
+}
+
 local radioSettings = {
     red = {
         MiG_21Bis = { { channels = { 243, 251, 124, 131, 141, 126, 130, 133, 122, 124, 134, 125, 135, 137, 136, 123, 132, 127, 129, 138 } } },
@@ -102,6 +108,17 @@ local function setRadio(unit, sideName)
     end
 end
 
+local function setRopeLength(unit)
+    local desiredRopeLength = ropeLengths[getSettingsKey(unit)]
+    if desiredRopeLength == nil then
+        return
+    end
+    if unit.ropeLength ~= desiredRopeLength then
+        print("WARN:  Changing rope length for " .. description(unit) .. " from " .. unit.ropeLength .. " to " .. desiredRopeLength)
+        unit.ropeLength = desiredRopeLength
+    end
+end
+
 print("Checking client slots for problems")
 missionUtils.iterGroups(mission, function(group, sideName)
     if missionUtils.isClientGroup(group) then
@@ -109,6 +126,7 @@ missionUtils.iterGroups(mission, function(group, sideName)
         local unit = group.units[1]
         setFuel(unit)
         setRadio(unit, sideName)
+        setRopeLength(unit)
     end
 end)
 
