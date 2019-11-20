@@ -4226,6 +4226,43 @@ function ctld.getUnitActions(_unitType)
 
 end
 
+-- add menu for spawning crates
+local function addCrateMenu(_rootPath, _crateTypeDescription, _unit, _groupId, _spawnableCrates, _weightMultiplier)
+    local _crateRootPath = missionCommands.addSubMenuForGroup(_groupId, _crateTypeDescription, _rootPath)
+    for _subMenuName, _crates in pairs(_spawnableCrates) do
+        local _cratePath = missionCommands.addSubMenuForGroup(_groupId, _subMenuName, _crateRootPath)
+        for _, _crate in pairs(_crates) do
+
+            if ctld.isJTACUnitType(_crate.unit) == false
+                    or (ctld.isJTACUnitType(_crate.unit) == true and ctld.JTAC_dropEnabled) then
+                if _crate.side == nil or (_crate.side == _unit:getCoalition()) then
+
+                    local _crateRadioMsg = _crate.desc
+
+                    --add details of crate count and unit quantity
+                    local _requiresMultipleCrates = _crate.cratesRequired ~= nil and _crate.cratesRequired > 1
+                    local _hasMultipleUnits = _crate.unitQuantity ~= nil and _crate.unitQuantity > 1
+                    if (_requiresMultipleCrates or _hasMultipleUnits) then
+                        _crateRadioMsg = _crateRadioMsg .. " ("
+                        if _requiresMultipleCrates then
+                            _crateRadioMsg = _crateRadioMsg .. _crate.cratesRequired .. "c"
+                            if _hasMultipleUnits then
+                                _crateRadioMsg = _crateRadioMsg .. ", " .. _crate.unitQuantity .. "q"
+                            end
+                        else
+                            if _hasMultipleUnits then
+                                _crateRadioMsg = _crateRadioMsg .. _crate.unitQuantity .. "q"
+                            end
+                        end
+                        _crateRadioMsg = _crateRadioMsg .. ")"
+                    end
+                    missionCommands.addCommandForGroup(_groupId, _crateRadioMsg, _cratePath, ctld.spawnCrate, { _unit:getName(), _crate.weight * _weightMultiplier, _crate.internal })
+                end
+            end
+        end
+    end
+end
+
 -- Adds menuitem to all heli units that are active
 function ctld.addF10MenuOptions()
     -- Loop through all Heli units
@@ -4288,43 +4325,8 @@ function ctld.addF10MenuOptions()
                         if ctld.enableCrates and _unitActions.crates then
 
                             if ctld.unitCanCarryVehicles(_unit) == false then
-
-                                -- local _cratePath = missionCommands.addSubMenuForGroup(_groupId, "Spawn Crate", _rootPath)
-                                -- add menu for spawning crates
-                                for _subMenuName, _crates in pairs(ctld.spawnableCrates) do
-
-                                    local _cratePath = missionCommands.addSubMenuForGroup(_groupId, _subMenuName, _rootPath)
-                                    for _, _crate in pairs(_crates) do
-
-                                        if ctld.isJTACUnitType(_crate.unit) == false
-                                                or (ctld.isJTACUnitType(_crate.unit) == true and ctld.JTAC_dropEnabled) then
-                                            if _crate.side == nil or (_crate.side == _unit:getCoalition()) then
-
-                                                local _crateRadioMsg = _crate.desc
-
-                                                --add details of crate count and unit quantity
-                                                local _requiresMultipleCrates = _crate.cratesRequired ~= nil and _crate.cratesRequired > 1
-                                                local _hasMultipleUnits = _crate.unitQuantity ~= nil and _crate.unitQuantity > 1
-                                                if (_requiresMultipleCrates or _hasMultipleUnits) then
-                                                    _crateRadioMsg = _crateRadioMsg .. " ("
-                                                    if _requiresMultipleCrates then
-                                                        _crateRadioMsg = _crateRadioMsg .. _crate.cratesRequired .. "c"
-                                                        if _hasMultipleUnits then
-                                                            _crateRadioMsg = _crateRadioMsg .. ", " .. _crate.unitQuantity .. "q"
-                                                        end
-                                                    else
-                                                        if _hasMultipleUnits then
-                                                            _crateRadioMsg = _crateRadioMsg .. _crate.unitQuantity .. "q"
-                                                        end
-                                                    end
-                                                    _crateRadioMsg = _crateRadioMsg .. ")"
-                                                end
-
-                                                missionCommands.addCommandForGroup(_groupId, _crateRadioMsg, _cratePath, ctld.spawnCrate, { _unitName, _crate.weight, _crate.internal })
-                                            end
-                                        end
-                                    end
-                                end
+                                addCrateMenu(_rootPath, "Light crates", _unit, _groupId, ctld.spawnableCrates, 1)
+                                addCrateMenu(_rootPath, "Heavy crates", _unit, _groupId, ctld.spawnableCrates, ctld.heavyCrateWeightMultiplier)
                             end
                         end
 
@@ -5396,6 +5398,7 @@ for _, _crates in pairs(ctld.spawnableCrates) do
         -- convert number to string otherwise we'll have a pointless giant
         -- table. String means 'hashmap' so it will only contain the right number of elements
         ctld.crateLookupTable[tostring(_crate.weight)] = _crate
+        ctld.crateLookupTable[tostring(_crate.weight * ctld.heavyCrateWeightMultiplier)] = _crate
     end
 end
 
