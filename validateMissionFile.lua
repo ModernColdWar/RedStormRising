@@ -1,4 +1,5 @@
 local missionUtils = require("missionUtils")
+local inspect = require("inspect")
 
 local fuelSettings = {
     A_10A = { capacity = 5029, fraction = 0.4 },
@@ -29,6 +30,14 @@ local fuelSettings = {
     UH_1H = { capacity = 631, fraction = 0.3 },
 }
 
+local radioSettings = {
+    red = {
+        MiG_21Bis = { { channels = { 243, 251, 124, 131, 141, 126, 130, 133, 122, 124, 134, 125, 135, 137, 136, 123, 132, 127, 129, 138 } } },
+    },
+    blue = {},
+
+}
+
 local missionDir = arg[1]
 if missionDir == nil then
     print("No mission dir specified")
@@ -38,6 +47,10 @@ local write = #arg >= 2 and arg[2] == "--write"
 
 missionUtils.loadMission(missionDir)
 -- luacheck: read_globals mission
+
+local function getSettingsKey(unit)
+    return string.gsub(unit.type, "-", "_")
+end
 
 local function validateClientGroup(group)
     local errors = {}
@@ -61,7 +74,7 @@ local function description(unit)
 end
 
 local function setFuel(unit)
-    local key = string.gsub(unit.type, "-", "_")
+    local key = getSettingsKey(unit)
     local fuelDetails = fuelSettings[key]
     if fuelDetails == nil then
         error("No fuel details available for " .. unit.type)
@@ -74,12 +87,28 @@ local function setFuel(unit)
     end
 end
 
-print("Checking client slots for problems")
+local function setRadio(unit, sideName)
+    if unit.Radio == nil then
+        -- FC3
+        return
+    end
+    local desiredSettings = radioSettings[sideName][getSettingsKey(unit)]
+    if desiredSettings == nil then
+        return
+    end
+    if inspect(unit.Radio) ~= inspect(desiredSettings) then
+        print("WARN:  Changing radio settings for " .. description(unit))
+        unit.Radio = desiredSettings
+    end
+end
 
-missionUtils.iterGroups(mission, function(group)
+print("Checking client slots for problems")
+missionUtils.iterGroups(mission, function(group, sideName)
     if missionUtils.isClientGroup(group) then
         validateClientGroup(group)
-        setFuel(group.units[1])
+        local unit = group.units[1]
+        setFuel(unit)
+        setRadio(unit, sideName)
     end
 end)
 
