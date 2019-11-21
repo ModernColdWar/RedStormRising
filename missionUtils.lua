@@ -142,7 +142,7 @@ function M.iterBases(mission, theatre, baseCallback)
             for _, group in ipairs(country.static.group) do
                 for _, unit in ipairs(group.units) do
                     if unit.type == "FARP" then
-                        baseCallback(M.getDictionaryValue(unit.name))
+                        baseCallback(M.getDictionaryValue(unit.name), warehouses.warehouses[unit.unitId])
                     end
                 end
             end
