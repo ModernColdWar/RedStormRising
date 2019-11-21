@@ -164,7 +164,11 @@ local function configureBasesAtStartup(rsrConfig, baseOwnership)
     for _, ownershipData in pairs(baseOwnership) do
         for sideName, baseNames in pairs(ownershipData) do
             for _, baseName in pairs(baseNames) do
-                bases.onMissionStart(baseName, sideName, rsrConfig)
+                if AIRBASE:FindByName(baseName) == nil then
+                    log:error("Unable to find base $1 on map but was in state file; skipping setup", baseName)
+                else
+                    bases.onMissionStart(baseName, sideName, rsrConfig)
+                end
             end
         end
     end
