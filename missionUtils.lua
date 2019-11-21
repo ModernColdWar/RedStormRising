@@ -60,8 +60,10 @@ end
 
 function M.iterCountries(mission, countryCallback)
     for sideName, coalition in pairs(mission.coalition) do
-        for _, country in ipairs(coalition.country) do
-            countryCallback(sideName, country)
+        if coalition.country ~= nil then
+            for _, country in ipairs(coalition.country) do
+                countryCallback(sideName, country)
+            end
         end
     end
 end
