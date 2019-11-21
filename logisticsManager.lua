@@ -7,15 +7,17 @@ local log = mist.Logger:new("LogisticsManager", "info")
 
 function M.spawnLogisticsBuildingForBase(baseName, sideName)
     log:info("Spawning FOB building for $1 as owned by $2", baseName, sideName)
-    local country = sideName == "red" and country.id.RUSSIA or country.id.USA
-    local logisticsName = baseName .. " Logistics"
-    if trigger.misc.getZone(logisticsName) == nil then
-        log:warn("No logistics zone called '$1' found; no logistics building will spawn", logisticsName)
-        return
+    for _, logisticsZoneName in ipairs(ctld.logisticUnits) do
+        local zoneBaseName = utils.getBaseNameFromZoneName(logisticsZoneName, "logistics")
+        if utils.matchesBaseName(baseName, zoneBaseName) then
+            local country = sideName == "red" and country.id.RUSSIA or country.id.USA
+            local point = ZONE:New(logisticsZoneName):GetPointVec2()
+            ctld.spawnFOB(country, nil, point, logisticsZoneName, utils.getSide(sideName))
+            log:info("Spawned $1 $2 FOB", sideName, logisticsZoneName)
+            return
+        end
     end
-    local point = ZONE:New(logisticsName):GetPointVec2()
-    ctld.spawnFOB(country, nil, point, logisticsName, utils.getSide(sideName))
-    log:info("Spawned $1 $2 FOB", sideName, logisticsName)
+    log:warn("No logistics zone called for $1 found; no logistics building will spawn", baseName)
 end
 
 return M
