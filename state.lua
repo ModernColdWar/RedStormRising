@@ -115,11 +115,36 @@ function M.setBaseOwner(baseName, sideName)
     return true
 end
 
+function M.getWinner()
+    local redCount = #M.currentState.baseOwnership.airbases.red
+    local blueCount = #M.currentState.baseOwnership.airbases.blue
+    local neutralCount = #M.currentState.baseOwnership.airbases.neutral
+    if neutralCount > 0 or (redCount + blueCount + neutralCount == 0) then
+        return nil
+    end
+    if redCount > 0 and blueCount == 0 then
+        return "red"
+    end
+    if blueCount > 0 and redCount == 0 then
+        return "blue"
+    end
+end
+
 function M.setCurrentStateFromFile(stateFileName)
+    local canUseStateFromFile = false
     if UTILS.FileExists(stateFileName) then
         M.currentState = M.readStateFromDisk(stateFileName)
+        if M.getWinner() == nil then
+            canUseStateFromFile = true
+        else
+            log:info("State file is from a victory - will not use")
+        end
     else
-        log:info("No state file exists - setting up from defaults in code and base ownership from mission")
+        log:info("No state file found")
+    end
+
+    if not canUseStateFromFile then
+        log:info("Setting up from defaults in code and base ownership from mission")
         M.currentState = mist.utils.deepCopy(M.defaultState)
         M.updateBaseOwnership()
     end

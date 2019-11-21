@@ -96,6 +96,10 @@ local function persistState(rsrConfig)
     log:info("Number of persistent groups at save is $1", #state.currentState.persistentGroupData)
     utils.createBackup(rsrConfig.stateFileName)
     state.writeStateToDisk(rsrConfig.stateFileName)
+    local winner = state.getWinner()
+    if winner ~= nil then
+        trigger.action.outText("VICTORY for the " .. winner .. " side!  The map will reset at the next restart", 30)
+    end
 end
 
 function M.spawnGroup(groupData)

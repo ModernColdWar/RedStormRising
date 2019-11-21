@@ -91,7 +91,7 @@ end
 
 function TestState:testSetBaseOwnerAirbaseChanged()
     state.currentState.baseOwnership = {
-        airbases = { blue = { "Guduata" }, neutral = {}, red = {"A", "B"} },
+        airbases = { blue = { "Guduata" }, neutral = {}, red = { "A", "B" } },
         farps = { blue = {}, neutral = {}, red = {} } }
 
     lu.assertIsTrue(state.setBaseOwner("Guduata", "red"))
@@ -145,6 +145,31 @@ function TestState:testSetCurrentStateFromFile()
     lu.assertEquals(#state.currentState.baseOwnership.farps.red, 0)
     lu.assertEquals(#state.currentState.baseOwnership.farps.blue, 2)
     lu.assertEquals(#state.currentState.persistentGroupData, 1)
+end
+
+function TestState:testWinnerNoOwnership()
+    state.currentState.baseOwnership = queryDcs.getAllBaseOwnership()
+    lu.assertIsNil(state.getWinner())
+end
+
+function TestState:testWinnerWasNeutral()
+    state.currentState.baseOwnership = { airbases = { red = { "A" }, blue = {}, neutral = { "B" } } }
+    lu.assertIsNil(state.getWinner())
+end
+
+function TestState:testWinnerWithMixedOwnership()
+    state.currentState.baseOwnership = { airbases = { red = { "A" }, blue = { "B" }, neutral = {} } }
+    lu.assertIsNil(state.getWinner())
+end
+
+function TestState:testWinnerRed()
+    state.currentState.baseOwnership = { airbases = { red = { "A", "B" }, blue = {}, neutral = {} } }
+    lu.assertEquals(state.getWinner(), "red")
+end
+
+function TestState:testWinnerBlue()
+    state.currentState.baseOwnership = { airbases = { red = {}, blue = { "A", "B" }, neutral = {} } }
+    lu.assertEquals(state.getWinner(), "blue")
 end
 
 local runner = lu.LuaUnit.new()
