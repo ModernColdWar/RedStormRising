@@ -1,5 +1,6 @@
 require("mist_4_3_74")
 require("CTLD")
+local inspect = require("inspect")
 local JSON = require("JSON")
 local queryDcs = require("queryDcs")
 
@@ -148,7 +149,7 @@ function M.setCurrentStateFromFile(stateFileName)
         M.currentState = mist.utils.deepCopy(M.defaultState)
         M.updateBaseOwnership()
     end
-    log:info("Current state is:\n$1", mist.utils.tableShow(M.currentState))
+    log:info("currentState = $1", inspect(M.currentState, { newline = " ", indent = "" }))
 end
 
 return M

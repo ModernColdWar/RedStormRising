@@ -1,6 +1,7 @@
 --- Stubs DCS World for testing of scripts outside of the DCS runtime mission environment
 -- luacheck: ignore dcsStub AI Airbase Group StaticObject Unit coalition country env radio timer trigger world
 local lu = require("tests.luaunit")
+local inspect = require("inspect")
 
 dcsStub = {}
 
@@ -29,7 +30,7 @@ local function logCall(callName)
             end
             if type(v) ~= "string" then
                 if type(v) == "table" then
-                    text = text .. mist.utils.oneLineSerialize(v)
+                    text = text .. inspect(v)
                 else
                     text = text .. tostring(v)
                 end
@@ -326,6 +327,6 @@ function dcsStub.assertOneCallTo(callName)
             callCount = callCount + 1
         end
     end
-    lu.assertEquals(callCount, 1, mist.utils.oneLineSerialize(dcsStub.recordedCalls))
+    lu.assertEquals(callCount, 1, inspect(dcsStub.recordedCalls))
 end
 

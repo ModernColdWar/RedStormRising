@@ -1,4 +1,5 @@
 require("MOOSE")
+local inspect = require("inspect")
 local utils = require("utils")
 
 local M = {}
@@ -21,7 +22,7 @@ function M.getAllBaseOwnership()
             table.insert(baseOwnership.farps[sideName], baseName)
         end
     end
-    log:info("Base ownership:\n$1", mist.utils.tableShow(baseOwnership))
+    log:info("baseOwnership = $1", inspect(baseOwnership, { newline = " ", indent = "" }))
     return baseOwnership
 end
 
