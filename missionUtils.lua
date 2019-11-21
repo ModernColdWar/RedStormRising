@@ -1,8 +1,36 @@
 local M = {}
 
+-- From https://wiki.hoggitworld.com/view/Category:Terrain_Information
+M.airbases = {
+    Caucasus = {
+        [12] = "Anapa-Vityazevo",
+        [13] = "Krasnodar-Center",
+        [14] = "Novorossiysk",
+        [15] = "Krymsk",
+        [16] = "Maykop-Khanskaya",
+        [17] = "Gelendzhik",
+        [18] = "Sochi-Adler",
+        [19] = "Krasnodar-Pashkovsky",
+        [20] = "Sukhumi-Babushara",
+        [21] = "Gudauta",
+        [22] = "Batumi",
+        [23] = "Senaki-Kolkhi",
+        [24] = "Kobuleti",
+        [25] = "Kutaisi",
+        [26] = "Mineralnye Vody",
+        [27] = "Nalchik",
+        [28] = "Mozdok",
+        [29] = "Tbilisi-Lochini",
+        [30] = "Soganlug",
+        [31] = "Vaziani",
+        [32] = "Beslan",
+    }
+}
+
 function M.loadMission(missionDir)
     print("Loading mission from " .. missionDir)
-    dofile(missionDir .. [[\mission]]);
+    dofile(missionDir .. [[\mission]])
+    dofile(missionDir .. [[\warehouses]])
     dofile(missionDir .. [[\l10n\DEFAULT\dictionary]])
     print("Mission loaded")
 end
@@ -51,6 +79,12 @@ function M.iterGroups(mission, groupCallback)
     end
 end
 
+function M.iterZones(mission, zoneCallback)
+    for _, zone in ipairs(mission.triggers.zones) do
+        zoneCallback(zone)
+    end
+end
+
 function M.isClientGroup(group)
     for _, unit in ipairs(group.units) do
         if unit.skill == "Client" then
@@ -82,14 +116,22 @@ end
 
 function M.getZoneNames(mission, pattern)
     local zones = {}
-    for _, zone in ipairs(mission.triggers.zones) do
+    M.iterZones(mission, function(zone)
         local zoneName = zone.name
         if string.match(zoneName:lower(), pattern) then
             table.insert(zones, zoneName)
         end
-    end
+    end)
     table.sort(zones)
     return zones
+end
+
+function M.iterBases(theatre, baseCallback)
+    -- luacheck: read_globals warehouses
+    for baseId, baseName in pairs(M.airbases[theatre]) do
+        baseCallback(baseName, warehouses.airports[baseId])
+    end
+    -- TODO: iterate over FARPs
 end
 
 return M

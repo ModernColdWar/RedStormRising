@@ -1,4 +1,6 @@
+require("tests.dcs_stub")
 local missionUtils = require("missionUtils")
+local utils = require("utils")
 local inspect = require("inspect")
 
 local fuelSettings = {
@@ -88,7 +90,7 @@ local function setFuel(unit)
     local desiredFuel = fuelDetails.capacity * fuelDetails.fraction
     local fuelError = math.abs(unit.payload.fuel - desiredFuel) / desiredFuel
     if fuelError > 0.01 then
-        print("WARN:  Changing fuel for " .. description(unit) .. " from " .. unit.payload.fuel .. " to " .. desiredFuel)
+        print("INFO:  Changing fuel for " .. description(unit) .. " from " .. unit.payload.fuel .. " to " .. desiredFuel)
         unit.payload.fuel = desiredFuel
     end
 end
@@ -103,7 +105,7 @@ local function setRadio(unit, sideName)
         return
     end
     if inspect(unit.Radio) ~= inspect(desiredSettings) then
-        print("WARN:  Changing radio settings for " .. description(unit))
+        print("INFO:  Changing radio settings for " .. description(unit))
         unit.Radio = desiredSettings
     end
 end
@@ -114,12 +116,42 @@ local function setRopeLength(unit)
         return
     end
     if unit.ropeLength ~= desiredRopeLength then
-        print("WARN:  Changing rope length for " .. description(unit) .. " from " .. unit.ropeLength .. " to " .. desiredRopeLength)
+        print("INFO:  Changing rope length for " .. description(unit) .. " from " .. unit.ropeLength .. " to " .. desiredRopeLength)
         unit.ropeLength = desiredRopeLength
     end
 end
 
-print("Checking client slots for problems")
+print("Checking bases for problems")
+missionUtils.iterBases("Caucasus", function(baseName, warehouse)
+    if warehouse.coalition == "NEUTRAL" then
+        print("WARN:  Skipping neutral base " .. baseName)
+        return
+    end
+    local foundLogisticsZone = false
+    local foundPickupZone = false
+    missionUtils.iterZones(mission, function(zone)
+        local zoneName = zone.name
+        local logisticsZoneBaseName = utils.getBaseNameFromZoneName(zoneName, "logistics")
+
+        if logisticsZoneBaseName ~= nil and utils.matchesBaseName(baseName, logisticsZoneBaseName) then
+            foundLogisticsZone = true
+        end
+
+        local pickupZoneBaseName = utils.getBaseNameFromZoneName(zoneName, "pickup")
+        if pickupZoneBaseName ~= nil and utils.matchesBaseName(baseName, pickupZoneBaseName) then
+            foundPickupZone = true
+        end
+    end)
+
+    if not foundLogisticsZone then
+        print("ERROR: No logistics zone found for " .. baseName)
+    end
+    if not foundPickupZone then
+        print("ERROR: No pickup zone found for " .. baseName)
+    end
+end)
+
+print("\nChecking client slots for problems")
 missionUtils.iterGroups(mission, function(group, sideName)
     if missionUtils.isClientGroup(group) then
         validateClientGroup(group)
