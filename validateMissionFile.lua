@@ -123,7 +123,7 @@ end
 
 print("Checking bases for problems")
 missionUtils.iterBases(mission, "Caucasus", function(baseName, warehouse)
-    if warehouse.coalition == "NEUTRAL" then
+    if warehouse ~= nil and warehouse.coalition == "NEUTRAL" then
         print("WARN:  Skipping neutral base " .. baseName)
         return
     end
