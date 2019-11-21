@@ -58,25 +58,31 @@ function M.getDictionaryValue(key)
     return dictionary[key]
 end
 
-function M.iterGroups(mission, groupCallback)
+function M.iterCountries(mission, countryCallback)
     for sideName, coalition in pairs(mission.coalition) do
         for _, country in ipairs(coalition.country) do
-            if country.plane ~= nil then
-                for _, groups in pairs(country.plane) do
-                    for _, group in ipairs(groups) do
-                        groupCallback(group, sideName)
-                    end
-                end
-            end
-            if country.helicopter ~= nil then
-                for _, groups in pairs(country.helicopter) do
-                    for _, group in ipairs(groups) do
-                        groupCallback(group, sideName)
-                    end
+            countryCallback(sideName, country)
+        end
+    end
+end
+
+function M.iterGroups(mission, groupCallback)
+    M.iterCountries(mission, function(sideName, country)
+        if country.plane ~= nil then
+            for _, groups in pairs(country.plane) do
+                for _, group in ipairs(groups) do
+                    groupCallback(group, sideName)
                 end
             end
         end
-    end
+        if country.helicopter ~= nil then
+            for _, groups in pairs(country.helicopter) do
+                for _, group in ipairs(groups) do
+                    groupCallback(group, sideName)
+                end
+            end
+        end
+    end)
 end
 
 function M.iterZones(mission, zoneCallback)
@@ -126,12 +132,11 @@ function M.getZoneNames(mission, pattern)
     return zones
 end
 
-function M.iterBases(theatre, baseCallback)
+function M.iterBases(mission, theatre, baseCallback)
     -- luacheck: read_globals warehouses
     for baseId, baseName in pairs(M.airbases[theatre]) do
         baseCallback(baseName, warehouses.airports[baseId])
     end
-    -- TODO: iterate over FARPs
 end
 
 return M

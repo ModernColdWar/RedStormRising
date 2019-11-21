@@ -105,7 +105,7 @@ local function setRadio(unit, sideName)
         return
     end
     if inspect(unit.Radio) ~= inspect(desiredSettings) then
-        print("INFO:  Changing radio settings for " .. description(unit))
+        print("INFO:  Changing radio settings for " .. sideName .. " " .. description(unit))
         unit.Radio = desiredSettings
     end
 end
@@ -122,7 +122,7 @@ local function setRopeLength(unit)
 end
 
 print("Checking bases for problems")
-missionUtils.iterBases("Caucasus", function(baseName, warehouse)
+missionUtils.iterBases(mission, "Caucasus", function(baseName, warehouse)
     if warehouse.coalition == "NEUTRAL" then
         print("WARN:  Skipping neutral base " .. baseName)
         return
