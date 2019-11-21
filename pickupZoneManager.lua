@@ -13,19 +13,11 @@ local function setPickupZoneSide(pickupZone, sideName)
     pickupZone[5] = ctldSide
 end
 
-function M.getBaseNameFromZoneName(zoneName)
-    local idx = zoneName:lower():find(" pickup")
-    if idx == nil then
-        return zoneName
-    end
-    return zoneName:sub(1, idx - 1)
-end
-
 function M.configurePickupZonesForBase(baseName, sideName)
     log:info("Configuring pickup zones for $1 as owned by $2", baseName, sideName)
     local foundZone = false
     for _, pickupZone in ipairs(ctld.pickupZones) do
-        local zoneBaseName = M.getBaseNameFromZoneName(pickupZone[1])
+        local zoneBaseName = utils.getBaseNameFromZoneName(pickupZone[1], "pickup")
         if utils.matchesBaseName(baseName, zoneBaseName) then
             setPickupZoneSide(pickupZone, sideName)
             foundZone = true

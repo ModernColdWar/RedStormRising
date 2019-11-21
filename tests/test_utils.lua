@@ -53,6 +53,13 @@ function TestUtils:testGetBaseAndSideNamesFromGroupName()
     lu.assertEquals(sideName, "blue")
 end
 
+function TestUtils:testGetBaseNameFromZoneName()
+    lu.assertEquals(utils.getBaseNameFromZoneName("Senaki PickUp", "PickUp"), "Senaki")
+    lu.assertEquals(utils.getBaseNameFromZoneName("Krasnodar-Pashkovsky PickUp", "pickup"), "Krasnodar-Pashkovsky")
+    lu.assertEquals(utils.getBaseNameFromZoneName("Abu Dhabi Logistics", "LOGISTICS"), "Abu Dhabi")
+    lu.assertEquals(utils.getBaseNameFromZoneName("Abu Dhabi pickup zone", "pickup"), "Abu Dhabi")
+end
+
 local runner = lu.LuaUnit.new()
 os.exit(runner:runSuite())
 

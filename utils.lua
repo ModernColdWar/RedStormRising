@@ -121,4 +121,12 @@ function M.getBaseAndSideNamesFromGroupName(groupName)
     end
 end
 
+function M.getBaseNameFromZoneName(zoneName, suffix)
+    local idx = zoneName:lower():find(" " .. suffix:lower())
+    if idx == nil then
+        return nil
+    end
+    return zoneName:sub(1, idx - 1)
+end
+
 return M
