@@ -13,6 +13,7 @@
     Version: 1.73 - 15/04/2018
       - Allow minimum distance from friendly logistics to be set
  ]]
+-- luacheck: no max comment line length
 local ctldUtils = require("ctldUtils")
 
 ctld = {} -- DONT REMOVE!

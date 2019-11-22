@@ -19,7 +19,7 @@
     Version: 1.73 - 15/04/2018
       - Allow minimum distance from friendly logistics to be set
  ]]
-
+-- luacheck: no max line length
 require("mist_4_3_74")
 require("CTLD_config")
 

@@ -1,8 +1,8 @@
 stds.dcs_stub = {
     read_globals = {
         "dcsStub",
-        "AI", "Airbase", "Group", "StaticObject", "Unit",
-        "coalition", "country", "env", "lfs", "radio", "timer", "trigger", "world"
+        "AI", "Airbase", "Controller", "Group", "Object", "Spot", "StaticObject", "Unit",
+        "coalition", "coord", "country", "env", "land", "lfs", "missionCommands", "radio", "timer", "trigger", "world"
     }
 }
 
@@ -23,8 +23,6 @@ max_line_length = 160
 
 -- ignore libraries about which we can do little/nothing
 exclude_files = {
-    "CTLD.lua",
-    "CTLD_config.lua",
     "JSON.lua",
     "tests/luaunit.lua",
     "mist_4_3_74.lua",
