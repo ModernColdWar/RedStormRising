@@ -2433,8 +2433,6 @@ function ctld.unpackCrates(_arguments)
                     if _crate.details.unitQuantity ~= nil and _crate.details.unitQuantity > 1 then
                         quantityTxt = tostring(_crate.details.unitQuantity) .. " "
                         plural = "s"
-                    else
-                        
                     end
                     trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " successfully deployed " .. quantityTxt .. _crate.details.desc .. plural .. " to the field", 10)
 
@@ -4378,8 +4376,6 @@ function ctld.addF10MenuOptions()
                         ctld.addedTo[tostring(_groupId)] = true
                     end
                 end
-            else
-                -- env.info(string.format("unit nil %s",_unitName))
             end
         end)
 
