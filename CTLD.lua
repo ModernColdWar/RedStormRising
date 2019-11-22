@@ -304,8 +304,6 @@ function ctld.countDroppedGroupsInZone(_zone, _blueFlag, _redFlag)
         return
     end
 
-    local _zonePos = mist.utils.zoneToVec3(_zone)
-
     local _redCount = 0;
     local _blueCount = 0;
 
@@ -350,8 +348,6 @@ function ctld.countDroppedUnitsInZone(_zone, _blueFlag, _redFlag)
         trigger.action.outText("CTLD.lua ERROR: Cant find zone called " .. _zone, 10)
         return
     end
-
-    local _zonePos = mist.utils.zoneToVec3(_zone)
 
     local _redCount = 0;
     local _blueCount = 0;
@@ -739,7 +735,7 @@ function ctld.spawnCrateAtZone(_side, _weight, _zone)
 
     local _name = string.format("%s #%i", _crateType.desc, _unitId)
 
-    local _spawnedCrate = ctld.spawnCrateStatic(_country, _unitId, _point, _name, _crateType.weight, _side)
+    ctld.spawnCrateStatic(_country, _unitId, _point, _name, _crateType.weight, _side)
 
 end
 
@@ -774,7 +770,7 @@ function ctld.spawnCrateAtPoint(_side, _weight, _point)
 
     local _name = string.format("%s #%i", _crateType.desc, _unitId)
 
-    local _spawnedCrate = ctld.spawnCrateStatic(_country, _unitId, _point, _name, _crateType.weight, _side)
+    ctld.spawnCrateStatic(_country, _unitId, _point, _name, _crateType.weight, _side)
 
 end
 
@@ -1044,8 +1040,6 @@ function ctld.spawnCrate(_arguments)
                 end
             end
 
-            local _position = _heli:getPosition()
-
             -- check crate spam
             if _heli:getPlayerName() ~= nil and ctld.crateWait[_heli:getPlayerName()] and ctld.crateWait[_heli:getPlayerName()] > timer.getTime() then
 
@@ -1068,7 +1062,7 @@ function ctld.spawnCrate(_arguments)
 
             local _name = string.format("%s #%i", _crateType.desc, _unitId)
 
-            local _spawnedCrate = ctld.spawnCrateStatic(_heli:getCountry(), _unitId, _point, _name, _crateType.weight, _side, _internal)
+            ctld.spawnCrateStatic(_heli:getCountry(), _unitId, _point, _name, _crateType.weight, _side, _internal)
 
 
             -- add to move table
@@ -1472,7 +1466,6 @@ end
 function ctld.loadUnloadFOBCrate(_args)
 
     local _heli = ctld.getTransportUnit(_args[1])
-    local _troops = _args[2]
 
     if _heli == nil then
         return
@@ -1506,7 +1499,7 @@ function ctld.loadUnloadFOBCrate(_args)
 
         local _name = string.format("FOB Crate #%i", _unitId)
 
-        local _spawnedCrate = ctld.spawnFOBCrateStatic(_heli:getCountry(), ctld.getNextUnitId(), { x = _point.x + _xOffset, z = _point.z + _yOffset }, _name)
+        ctld.spawnFOBCrateStatic(_heli:getCountry(), ctld.getNextUnitId(), { x = _point.x + _xOffset, z = _point.z + _yOffset }, _name)
 
         if _side == 1 then
             ctld.droppedFOBCratesRED[_name] = _name
@@ -2602,8 +2595,6 @@ function ctld.dropSlingCrate(_args)
 
         local _name = string.format("%s #%i", _currentCrate.desc, _unitId)
 
-        local _heightDiff = ctld.heightDiff(_heli)
-
         -- Ironwulf2000 internal cargo
         if (ctld.inAir(_heli) == false) and (ctld.internalCargo == true) then
             if (_heli:getTypeName() == "Mi-8MT") then
@@ -2642,7 +2633,7 @@ function ctld.dropSlingCrate(_args)
         --remove crate from cargo
         ctld.inTransitSlingLoadCrates[_heli:getName()] = nil
 
-        local _spawnedCrate = ctld.spawnCrateStatic(_heli:getCountry(), _unitId, _point, _name, _currentCrate.weight, _side, _currentCrate.internal)
+        ctld.spawnCrateStatic(_heli:getCountry(), _unitId, _point, _name, _currentCrate.weight, _side, _currentCrate.internal)
     end
 end
 
@@ -2887,7 +2878,6 @@ end
 function ctld.dropRadioBeacon(_args)
 
     local _heli = ctld.getTransportUnit(_args[1])
-    local _message = ""
 
     if _heli ~= nil and ctld.inAir(_heli) == false then
 
@@ -2913,7 +2903,6 @@ end
 function ctld.removeRadioBeacon(_args)
 
     local _heli = ctld.getTransportUnit(_args[1])
-    local _message = ""
 
     if _heli ~= nil and ctld.inAir(_heli) == false then
 
@@ -3168,7 +3157,6 @@ function ctld.unpackAASystem(_heli, _nearestCrate, _nearbyCrates, _aaSystemTempl
         end
     end
 
-    local _count = 0
     local _txt = ""
 
     local _posArray = {}
@@ -3435,8 +3423,6 @@ function ctld.spawnCrateGroup(_heli, _positions, _types, _unitQuantity)
 
     local _playerName = ctld.getPlayerNameOrType(_heli)
     local _groupName = 'CTLD_' .. _types[1] .. '_' .. _id .. ' (' .. _playerName .. ')' -- encountered some issues with using "type #number" on some servers
-
-    local _side = _heli:getCoalition()
 
     local _group = {
         ["visible"] = false,
@@ -4301,7 +4287,7 @@ function ctld.addF10MenuOptions()
 
                                 if ctld.enabledFOBBuilding and ctld.staticBugWorkaround == false then
 
-                                    missionCommands.addCommandForGroup(_groupId, "Load / Unload FOB Crate", _vehicleCommandsPath, ctld.loadUnloadFOBCrate, { _unitName, false })
+                                    missionCommands.addCommandForGroup(_groupId, "Load / Unload FOB Crate", _vehicleCommandsPath, ctld.loadUnloadFOBCrate, { _unitName })
                                 end
                                 missionCommands.addCommandForGroup(_groupId, "Check Cargo", _vehicleCommandsPath, ctld.checkTroopStatus, { _unitName })
                             end
@@ -4818,9 +4804,6 @@ function ctld.getCurrentUnit(_jtacUnit, _jtacGroupName)
 
     local _tempPoint = nil
     local _tempDist = nil
-    local _tempPosition = nil
-
-    local _jtacPosition = _jtacUnit:getPosition()
     local _jtacPoint = _jtacUnit:getPoint()
 
     if _unit ~= nil and _unit:getLife() > 0 and _unit:isActive() == true then
@@ -4852,8 +4835,6 @@ function ctld.findNearestVisibleEnemy(_jtacUnit, _targetType, _distance)
     --local startTime = os.clock()
 
     local _maxDistance = _distance or ctld.JTAC_maxDistance
-
-    local _nearestDistance = _maxDistance
 
     local _jtacPoint = _jtacUnit:getPoint()
     local _coa = _jtacUnit:getCoalition()
@@ -4934,8 +4915,6 @@ function ctld.findNearestVisibleEnemy(_jtacUnit, _targetType, _distance)
     end
 
     for _, _enemyUnit in ipairs(_unitList) do
-        local _enemyName = _enemyUnit.unit:getName()
-
         if (_targetType == "vehicle" and ctld.isVehicle(_enemyUnit.unit)) or _targetType == "all" then
             return _enemyUnit.unit
 
@@ -5020,8 +4999,6 @@ function ctld.getGroup(groupName)
     local _groupUnits = Group.getByName(groupName)
 
     local _filteredUnits = {} --contains alive units
-    local _x = 1
-
     if _groupUnits ~= nil and _groupUnits:isExist() then
 
         _groupUnits = _groupUnits:getUnits()
@@ -5063,7 +5040,6 @@ function ctld.getJTACStatus(_args)
 
     local _side = _playerUnit:getCoalition()
 
-    local _jtacGroupName = nil
     local _jtacUnit = nil
 
     local _message = "JTAC STATUS: \n\n"
@@ -5447,7 +5423,6 @@ end
 --sort out pickup zones
 for _, _zone in pairs(ctld.pickupZones) do
 
-    local _zoneName = _zone[1]
     local _zoneColor = _zone[2]
     local _zoneActive = _zone[4]
 
