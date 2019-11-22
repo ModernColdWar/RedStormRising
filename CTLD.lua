@@ -929,7 +929,7 @@ function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight, _side,
     return _spawnedCrate
 end
 
-function ctld.spawnFOBCrateStatic(_country, _unitId, _point, _name)
+function ctld.spawnFOBCrateStatic(_country, _point, _name)
 
     local _crate = {
         ["category"] = "Fortifications",
@@ -953,7 +953,7 @@ function ctld.spawnFOBCrateStatic(_country, _unitId, _point, _name)
     return _spawnedCrate
 end
 
-function ctld.spawnFOB(_country, _unitId, _point, _name, _coalition)
+function ctld.spawnFOB(_country, _point, _name, _coalition)
 
     local _crate = {
         ["category"] = "Fortifications",
@@ -1499,7 +1499,7 @@ function ctld.loadUnloadFOBCrate(_args)
 
         local _name = string.format("FOB Crate #%i", _unitId)
 
-        ctld.spawnFOBCrateStatic(_heli:getCountry(), ctld.getNextUnitId(), { x = _point.x + _xOffset, z = _point.z + _yOffset }, _name)
+        ctld.spawnFOBCrateStatic(_heli:getCountry(), { x = _point.x + _xOffset, z = _point.z + _yOffset }, _name)
 
         if _side == 1 then
             ctld.droppedFOBCratesRED[_name] = _name
@@ -2532,7 +2532,7 @@ function ctld.unpackFOBCrates(_crates, _heli)
             local _unitId = ctld.getNextUnitId()
             local _name = "Deployed FOB #" .. _unitId
 
-            local _fob = ctld.spawnFOB(_args[2], _unitId, _args[1], _name, _args[3])
+            local _fob = ctld.spawnFOB(_args[2], _args[1], _name, _args[3])
 
             --make it able to deploy crates
             table.insert(ctld.logisticUnits, _fob:getName())
@@ -4859,7 +4859,7 @@ function ctld.findNearestVisibleEnemy(_jtacUnit, _targetType, _distance)
                     and _unit:isActive()
                     and _unit:getCoalition() ~= _coa
                     and not _unit:inAir()
-                    and not ctld.alreadyTarget(_jtacUnit, _unit) then
+                    and not ctld.alreadyTarget(_unit) then
 
                 local _tempPoint = _unit:getPoint()
                 local _offsetEnemyPos = { x = _tempPoint.x, y = _tempPoint.y + 2.0, z = _tempPoint.z }
@@ -4978,7 +4978,7 @@ function ctld.listNearbyEnemies(_jtacUnit)
 end
 
 -- tests whether the unit is targeted by another JTAC
-function ctld.alreadyTarget(_jtacUnit, _enemyUnit)
+function ctld.alreadyTarget(_enemyUnit)
 
     for _, _jtacTarget in pairs(ctld.jtacCurrentTargets) do
 

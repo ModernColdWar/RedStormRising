@@ -12,7 +12,7 @@ function M.spawnLogisticsBuildingForBase(baseName, sideName)
         if utils.matchesBaseName(baseName, zoneBaseName) then
             local country = sideName == "red" and country.id.RUSSIA or country.id.USA
             local point = ZONE:New(logisticsZoneName):GetPointVec2()
-            ctld.spawnFOB(country, nil, point, logisticsZoneName, utils.getSide(sideName))
+            ctld.spawnFOB(country, point, logisticsZoneName, utils.getSide(sideName))
             log:info("Spawned $1 $2 FOB", sideName, logisticsZoneName)
             return
         end
