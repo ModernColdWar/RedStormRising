@@ -12,7 +12,6 @@ env.info("RSR starting")
 require("mist_4_3_74")
 require("CTLD")
 require("Moose")
-_SETTINGS:SetPlayerMenuOff()
 
 local log = mist.Logger:new("RSR", "info")
 
@@ -32,5 +31,6 @@ handleMarkEvents.registerHandlers(rsrConfig.devMode)
 baseCapturedHandler.register()
 persistence.onMissionStart(rsrConfig)
 
+_SETTINGS:SetPlayerMenuOff()
 trigger.action.outText("RSR ready", 10)
 log:info("RSR ready")
