@@ -180,7 +180,7 @@ function ctld.cratesInZone(_zone, _flagNumber)
 
     for _, _crates in pairs(_crateTables) do
 
-        for _crateName, _dontUse in pairs(_crates) do
+        for _crateName, _ in pairs(_crates) do
 
             --get crate
             local _crate = ctld.getCrateObject(_crateName)
@@ -1280,7 +1280,7 @@ end
 
 function ctld.insertIntoTroopsArray(_troopType, _count, _troopArray)
 
-    for _i = 1, _count do
+    for _ = 1, _count do
         local _unitId = ctld.getNextUnitId()
         table.insert(_troopArray, { type = _troopType, unitId = _unitId, name = string.format("Dropped %s #%i", _troopType, _unitId) })
     end
@@ -2260,7 +2260,7 @@ function ctld.getCratesAndDistance(_heli)
         _fobCrates = ctld.droppedFOBCratesBLUE
     end
 
-    for _crateName, _details in pairs(_fobCrates) do
+    for _crateName, _ in pairs(_fobCrates) do
 
         --get crate
         local _crate = ctld.getCrateObject(_crateName)
@@ -2860,7 +2860,7 @@ function ctld.listRadioBeacons(_args)
 
     if _heli ~= nil then
 
-        for _x, _details in pairs(ctld.deployedRadioBeacons) do
+        for _, _details in pairs(ctld.deployedRadioBeacons) do
 
             if _details.coalition == _heli:getCoalition() then
                 _message = _message .. _details.text .. "\n"
@@ -2912,7 +2912,7 @@ function ctld.removeRadioBeacon(_args)
         local _shortestDistance = -1
         local _distance = 0
 
-        for _x, _details in pairs(ctld.deployedRadioBeacons) do
+        for _, _details in pairs(ctld.deployedRadioBeacons) do
 
             if _details.coalition == _heli:getCoalition() then
 
@@ -2960,7 +2960,7 @@ end
 -- return proper DCS point with height
 function ctld.getCentroid(_points)
     local _tx, _ty = 0, 0
-    for _index, _point in ipairs(_points) do
+    for _, _point in ipairs(_points) do
         _tx = _tx + _point.x
         _ty = _ty + _point.z
     end
@@ -3118,7 +3118,7 @@ function ctld.countTableEntries(_table)
 
     local _count = 0
 
-    for _key, _value in pairs(_table) do
+    for _, _ in pairs(_table) do
 
         _count = _count + 1
     end
@@ -3220,7 +3220,7 @@ function ctld.unpackAASystem(_heli, _nearestCrate, _nearbyCrates, _aaSystemTempl
     else
 
         -- destroy crates
-        for _name, _systemPart in pairs(_systemParts) do
+        for _, _systemPart in pairs(_systemParts) do
 
             if _heli:getCoalition() == 1 then
                 ctld.spawnedCratesRED[_systemPart.crate.crateUnit:getName()] = nil
@@ -5095,7 +5095,7 @@ function ctld.isInfantry(_unit)
 
     local _soldierType = { "infantry", "paratrooper", "stinger", "manpad", "mortar" }
 
-    for _key, _value in pairs(_soldierType) do
+    for _, _value in pairs(_soldierType) do
         if string.match(_typeName, _value) then
             return true
         end
@@ -5410,7 +5410,7 @@ ctld.callbacks = {} -- function callback
 --end
 
 -- create crate lookup table
-for _subMenuName, _crates in pairs(ctld.spawnableCrates) do
+for _, _crates in pairs(ctld.spawnableCrates) do
 
     for _, _crate in pairs(_crates) do
         -- convert number to string otherwise we'll have a pointless giant
@@ -5623,9 +5623,9 @@ for _coalitionName, _coalitionData in pairs(env.mission.coalition) do
                                     and (type(_objectTypeData.group) == 'table')
                                     and (#_objectTypeData.group > 0)) then
 
-                                for _groupId, _group in pairs(_objectTypeData.group) do
+                                for _, _group in pairs(_objectTypeData.group) do
                                     if _group and _group.units and type(_group.units) == 'table' then
-                                        for _unitNum, _unit in pairs(_group.units) do
+                                        for _, _unit in pairs(_group.units) do
                                             if _unit.canCargo == true then
                                                 local _cargoName = env.getValueDictByKey(_unit.name)
                                                 ctld.missionEditorCargoCrates[_cargoName] = _cargoName
