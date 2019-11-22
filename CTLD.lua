@@ -999,11 +999,8 @@ function ctld.spawnCrate(_arguments)
         -- use the cargo weight to guess the type of unit as no way to add description :(
 
         local _crateType = ctld.crateLookupTable[tostring(_args[2])]
-        if _args[3] == 1 then
-            _internal = 1
-        else
-            _internal = 0
-        end --Ironwulf2000 added
+        --Ironwulf2000 added
+        local _internal = _args[3] == 1 and 1 or 0
         local _heli = ctld.getTransportUnit(_args[1])
 
         if _crateType ~= nil and _heli ~= nil and ctld.inAir(_heli) == false then
