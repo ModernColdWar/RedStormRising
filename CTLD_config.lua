@@ -373,7 +373,7 @@ ctld.spawnableCrates = {
         { weight = 868, desc = "BUK Search Radar", unit = "SA-11 Buk SR 9S18M1", side = 1, internal = 0 },
         { weight = 869, desc = "BUK CC Radar", unit = "SA-11 Buk CC 9S470M1", side = 1, internal = 0 },
 
-        { weight = 870, desc = "SA-8 Osa", unit = "SA-8 Osa LD 9T217", side = 1, cratesRequired = 2, internal = 0 },
+        { weight = 870, desc = "SA-8 Osa 9A33", unit = "Osa 9A33 ln", side = 1, cratesRequired = 2, internal = 0 },
 
         -- Hawk System
         { weight = 871, desc = "Hawk Launcher", unit = "Hawk ln", side = 2, internal = 0 },
