@@ -356,9 +356,9 @@ ctld.spawnableCrates = {
     -- weight range 801-849
     ["Radar SAM"] = {
         -- SA-3 system
-        { weight = 860, desc = "SA-3 Search Radar", unit = "p-19 s-125 sr", side = 1, internal = 0 },
-        { weight = 861, desc = "SA-3 Track Radar", unit = "snr s-125 tr", side = 1, internal = 0 },
-        { weight = 862, desc = "SA-3 Launcher", unit = "5p73 s-125 ln", side = 1, internal = 0 },
+        --{ weight = 860, desc = "SA-3 Search Radar", unit = "p-19 s-125 sr", side = 1, internal = 0 },
+        --{ weight = 861, desc = "SA-3 Track Radar", unit = "snr s-125 tr", side = 1, internal = 0 },
+        --{ weight = 862, desc = "SA-3 Launcher", unit = "5p73 s-125 ln", side = 1, internal = 0 },
 
         -- HQ-7 System (currently using just the launcher)
         { weight = 863, desc = "HQ-7 Launcher", unit = "HQ-7 Self-Propelled ln", side = 1, cratesRequired = 2, internal = 0 },
@@ -479,17 +479,17 @@ ctld.AASystemTemplate = {
         repair = "SAM Repair",
         systemType = "MR",
     },
-    {
-        name = "SA-3 SAM System",
-        count = 3,
-        parts = {
-
-            { name = "5p73 s-125 ln", desc = "SA-3 Launcher", launcher = true },
-            { name = "snr s-125 tr", desc = "SA-3 Track Radar" },
-            { name = "p-19 s-125 sr", desc = "SA-3 Search Radar" },
-        },
-        repair = "SAM Repair",
-        systemType = "MR",
-    },
+    --{
+    --    name = "SA-3 SAM System",
+    --    count = 3,
+    --    parts = {
+    --
+    --        { name = "5p73 s-125 ln", desc = "SA-3 Launcher", launcher = true },
+    --        { name = "snr s-125 tr", desc = "SA-3 Track Radar" },
+    --        { name = "p-19 s-125 sr", desc = "SA-3 Search Radar" },
+    --    },
+    --    repair = "SAM Repair",
+    --    systemType = "MR",
+    --},
 
 }
