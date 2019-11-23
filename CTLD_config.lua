@@ -360,8 +360,8 @@ ctld.spawnableCrates = {
         { weight = 861, desc = "SA-3 Track Radar", unit = "snr s-125 tr", side = 1, internal = 0 },
         { weight = 862, desc = "SA-3 Launcher", unit = "5p73 s-125 ln", side = 1, internal = 0 },
 
-        -- HQ-7 System
-        --{ weight = 863, desc = "HQ-7 Launcher", unit = "HQ-7 Self-Propelled ln", side = 1, internal = 0 },
+        -- HQ-7 System (currently using just the launcher)
+        { weight = 863, desc = "HQ-7 Launcher", unit = "HQ-7 Self-Propelled ln", side = 1, cratesRequired = 2, internal = 0 },
         --{ weight = 864, desc = "HQ-7 Search Radar", unit = "HQ-7 Self-Propelled str", side = 1, internal = 0 },
 
         -- KUB system
@@ -426,16 +426,16 @@ ctld.jtacUnitTypes = {
 --- Tells CTLD What multipart AA Systems there are and what parts they need
 -- A New system added here also needs the launcher added
 ctld.AASystemTemplate = {
-    {
-        name = "HQ-7 SAM System",
-        count = 2,
-        parts = {
-            { name = "HQ-7 Self-Propelled ln", desc = "HQ-7_LN_SP", launcher = true },
-            { name = "HQ-7 Self-Propelled str", desc = "HQ-7_STR_SP" },
-        },
-        repair = "SAM Repair",
-        systemType = "SR",
-    },
+    --{
+    --    name = "HQ-7 SAM System",
+    --    count = 2,
+    --    parts = {
+    --        { name = "HQ-7 Self-Propelled ln", desc = "HQ-7_LN_SP", launcher = true },
+    --        { name = "HQ-7 Self-Propelled str", desc = "HQ-7_STR_SP" },
+    --    },
+    --    repair = "SAM Repair",
+    --    systemType = "SR",
+    --},
     {
         name = "ROLAND SAM System",
         count = 2,
