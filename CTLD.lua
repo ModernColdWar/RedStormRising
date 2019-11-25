@@ -4072,7 +4072,7 @@ function ctld.getCargoUnloadPoint(_heli, _offset)
         return ctld.getPointAtXOclock(_heli, 3, 10)
     else
         -- in case of unit we havent thought of yet
-        return ctld.getPointAt12Oclock(_heli_, _offset)
+        return ctld.getPointAt12Oclock(_heli, _offset)
     end
 end
 
