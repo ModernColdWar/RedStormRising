@@ -2590,6 +2590,8 @@ function ctld.dropSlingCrate(_args)
 
         local _name = string.format("%s #%i", _currentCrate.desc, _unitId)
 
+        --local _heightDiff = ctld.heightDiff(_heli)
+
         -- Ironwulf2000 internal cargo
         if (ctld.inAir(_heli) == false) and (ctld.internalCargo == true) then
             if (_heli:getTypeName() == "Mi-8MT") then
