@@ -25,10 +25,12 @@ local handleMarkEvents = require("handleMarkEvents")
 local persistence = require("persistence")
 local slotBlocker = require("slotBlocker")
 local baseCapturedHandler = require("baseCapturedHandler")
+local hitEventHandler = require("hitEventHandler")
 
 slotBlocker.onMissionStart()
 handleMarkEvents.registerHandlers(rsrConfig.devMode)
 baseCapturedHandler.register()
+hitEventHandler.register()
 persistence.onMissionStart(rsrConfig)
 
 _SETTINGS:SetPlayerMenuOff()
