@@ -1321,6 +1321,7 @@ function ctld.generateTroopTypes(_side, _countOrTemplate, _country)
     else
         for _i = 1, _countOrTemplate do
 
+            -- luacheck: no unused
             local _unitType = "Soldier AK"
 
             if _side == 2 then
@@ -1487,8 +1488,6 @@ function ctld.loadUnloadFOBCrate(_args)
         local _yOffset = math.sin(_angle) * -60
 
         local _point = _heli:getPoint()
-
-        local _side = _heli:getCoalition()
 
         local _unitId = ctld.getNextUnitId()
 
@@ -2273,6 +2272,7 @@ function ctld.getCratesAndDistance(_heli)
     return _crates
 end
 
+-- luacheck: push no unused
 function ctld.getClosestCrate(_heli, _crates, _type)
 
     local _closetCrate = nil
@@ -2293,12 +2293,12 @@ function ctld.getClosestCrate(_heli, _crates, _type)
 
     return _closetCrate
 end
+-- luacheck: pop
 
 function ctld.findNearestAASystem(_heli, _aaSystem)
 
     local _closestHawkGroup = nil
     local _shortestDistance = -1
-    local _distance = 0
 
     for _groupName, _hawkDetails in pairs(ctld.completeAASystems) do
 
@@ -2313,7 +2313,7 @@ function ctld.findNearestAASystem(_heli, _aaSystem)
 
                 if _leader ~= nil and _leader:getLife() > 0 then
 
-                    _distance = ctld.getDistance(_leader:getPoint(), _heli:getPoint())
+                    local _distance = ctld.getDistance(_leader:getPoint(), _heli:getPoint())
 
                     if _distance ~= nil and (_shortestDistance == -1 or _distance < _shortestDistance) then
                         _shortestDistance = _distance
@@ -2577,8 +2577,6 @@ function ctld.dropSlingCrate(_args)
             ctld.displayMessageToGroup(_heli, "You are not currently transporting any crates. \n\nTo Pickup a crate - land and use F10 Crate Commands to load one.", 10)
         end
     else
-
-        local _heli = ctld.getTransportUnit(_args[1])
 
         --      local _point = _heli:getPoint()
         local _point = ctld.getCargoUnloadPoint(_heli, 30)
@@ -2905,7 +2903,6 @@ function ctld.removeRadioBeacon(_args)
 
         local _closetBeacon = nil
         local _shortestDistance = -1
-        local _distance = 0
 
         for _, _details in pairs(ctld.deployedRadioBeacons) do
 
@@ -2915,7 +2912,7 @@ function ctld.removeRadioBeacon(_args)
 
                 if _group ~= nil and #_group:getUnits() == 1 then
 
-                    _distance = ctld.getDistance(_heli:getPoint(), _group:getUnit(1):getPoint())
+                    local _distance = ctld.getDistance(_heli:getPoint(), _group:getUnit(1):getPoint())
                     if _distance ~= nil and (_shortestDistance == -1 or _distance < _shortestDistance) then
                         _shortestDistance = _distance
                         _closetBeacon = _details
@@ -3025,7 +3022,7 @@ function ctld.aaGetLaunchersFromType(_aaTemplate)
 
 end
 
-function ctld.rearmAASystem(_heli, _nearestCrate, _nearbyCrates, _aaSystemTemplate)
+function ctld.rearmAASystem(_heli, _nearestCrate, _aaSystemTemplate)
 
     -- are we adding to existing aa system?
     -- check to see if the crate is a launcher
@@ -3123,7 +3120,7 @@ end
 
 function ctld.unpackAASystem(_heli, _nearestCrate, _nearbyCrates, _aaSystemTemplate)
 
-    if ctld.rearmAASystem(_heli, _nearestCrate, _nearbyCrates, _aaSystemTemplate) then
+    if ctld.rearmAASystem(_heli, _nearestCrate, _aaSystemTemplate) then
         -- rearmed hawk
         return
     end
@@ -3474,8 +3471,8 @@ end
 function ctld.spawnDroppedGroup(_point, _details, _spawnBehind, _maxSearch, _formation)
 
     local _groupName = _details.groupName
-
     if _formation == nil then
+        -- luacheck: no unused
         _formation = "Off Road"
     end
 
@@ -4170,12 +4167,11 @@ function ctld.checkAIStatus()
 
                     if ctld.allowRandomAiTeamPickups == true then
                         -- Random troop pickup implementation
-                        local _team = nil
                         if _unit:getCoalition() == 1 then
-                            _team = math.floor((math.random(#ctld.redTeams * 100) / 100) + 1)
+                            local _team = math.floor((math.random(#ctld.redTeams * 100) / 100) + 1)
                             ctld.loadTroopsFromZone({ _unitName, true, ctld.loadableGroups[ctld.redTeams[_team]], true })
                         else
-                            _team = math.floor((math.random(#ctld.blueTeams * 100) / 100) + 1)
+                            local _team = math.floor((math.random(#ctld.blueTeams * 100) / 100) + 1)
                             ctld.loadTroopsFromZone({ _unitName, true, ctld.loadableGroups[ctld.blueTeams[_team]], true })
                         end
                     else
@@ -4795,17 +4791,15 @@ function ctld.getCurrentUnit(_jtacUnit, _jtacGroupName)
         _unit = Unit.getByName(ctld.jtacCurrentTargets[_jtacGroupName].name)
     end
 
-    local _tempPoint = nil
-    local _tempDist = nil
     local _jtacPoint = _jtacUnit:getPoint()
 
     if _unit ~= nil and _unit:getLife() > 0 and _unit:isActive() == true then
 
         -- calc distance
-        _tempPoint = _unit:getPoint()
+        local _tempPoint = _unit:getPoint()
         --   tempPosition = unit:getPosition()
 
-        _tempDist = ctld.getDistance(_unit:getPoint(), _jtacUnit:getPoint())
+        local _tempDist = ctld.getDistance(_unit:getPoint(), _jtacUnit:getPoint())
         if _tempDist < ctld.JTAC_maxDistance then
             -- calc visible
 
@@ -4844,13 +4838,13 @@ function ctld.findNearestVisibleEnemy(_jtacUnit, _targetType, _distance)
 
     local _unitList = {}
 
-    local _search = function(_unit, _coa)
+    local _search = function(_unit, _coalition)
         pcall(function()
 
             if _unit ~= nil
                     and _unit:getLife() > 0
                     and _unit:isActive()
-                    and _unit:getCoalition() ~= _coa
+                    and _unit:getCoalition() ~= _coalition
                     and not _unit:inAir()
                     and not ctld.alreadyTarget(_unit) then
 
@@ -4938,13 +4932,13 @@ function ctld.listNearbyEnemies(_jtacUnit)
     }
     local _enemies = nil
 
-    local _search = function(_unit, _coa)
+    local _search = function(_unit, _coalition)
         pcall(function()
 
             if _unit ~= nil
                     and _unit:getLife() > 0
                     and _unit:isActive()
-                    and _unit:getCoalition() ~= _coa
+                    and _unit:getCoalition() ~= _coalition
                     and not _unit:inAir() then
 
                 local _tempPoint = _unit:getPoint()
@@ -5142,11 +5136,10 @@ end
 function ctld.containsDigit(_number, _numberToFind)
 
     local _thisNumber = _number
-    local _thisDigit = 0
 
     while _thisNumber ~= 0 do
 
-        _thisDigit = _thisNumber % 10
+        local _thisDigit = _thisNumber % 10
         _thisNumber = math.floor(_thisNumber / 10)
 
         if _thisDigit == _numberToFind then
