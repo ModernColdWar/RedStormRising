@@ -4712,8 +4712,6 @@ function ctld.cancelLase(_jtacGroupName)
         ctld.jtacLaserPoints[_jtacGroupName] = nil
 
         --      env.info('Destroy laze  '..index)
-
-        _tempLase = nil
     end
 
     local _tempIR = ctld.jtacIRPoints[_jtacGroupName]
@@ -4723,8 +4721,6 @@ function ctld.cancelLase(_jtacGroupName)
         ctld.jtacIRPoints[_jtacGroupName] = nil
 
         --  env.info('Destroy laze  '..index)
-
-        _tempIR = nil
     end
 end
 
