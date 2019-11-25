@@ -312,8 +312,8 @@ ctld.spawnableCrates = {
     -- dont use that option with the HAWK Crates
 
     ["IFVs & Light Vehicles"] = {
-        { weight = 800, desc = "BTR-80", unit = "BTR-80", side = 1, cratesRequired = 1, internal = 0 },
-        { weight = 801, desc = "IFV BMP-1", unit = "BMP-1", side = 1, cratesRequired = 1, internal = 0 },
+        { weight = 800, desc = "BTR-80", unit = "BTR-80", side = 1, cratesRequired = 1, unitQuantity = 2, internal = 0 },
+        { weight = 801, desc = "IFV BMP-1", unit = "BMP-1", side = 1, cratesRequired = 1, unitQuantity = 2, internal = 0 },
         { weight = 802, desc = "IFV BMP-2", unit = "BMP-2", side = 1, cratesRequired = 1, internal = 0 },
         { weight = 803, desc = "IFV BMP-3", unit = "BMP-3", side = 1, cratesRequired = 2, internal = 0 },
         { weight = 804, desc = "IFV ZBD04A", unit = "ZBD04A", side = 1, cratesRequired = 2, internal = 0 },
