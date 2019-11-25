@@ -1049,8 +1049,6 @@ function ctld.spawnCrate(_arguments)
             end
             --   trigger.action.outText("Spawn Crate".._args[1].." ".._args[2],10)
 
-            local _heli = ctld.getTransportUnit(_args[1])
-
             local _point = ctld.getPointAt12Oclock(_heli, 30)
 
             local _unitId = ctld.getNextUnitId()
