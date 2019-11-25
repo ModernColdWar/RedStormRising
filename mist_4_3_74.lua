@@ -1126,7 +1126,7 @@ do -- the main scope
 	-- @function mist.init
 	function mist.init()
 		-- create logger
-		mist.log = mist.Logger:new("MIST")
+		mist.log = mist.Logger:new("MIST", 'info')
 		dbLog = mist.Logger:new('MISTDB', 'warning')
 		
 		log = mist.log -- log shorthand
