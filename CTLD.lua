@@ -5035,14 +5035,12 @@ function ctld.getJTACStatus(_args)
 
     local _side = _playerUnit:getCoalition()
 
-    local _jtacUnit = nil
-
     local _message = "JTAC STATUS: \n\n"
 
     for _jtacGroupName, _jtacDetails in pairs(ctld.jtacUnits) do
 
         --look up units
-        _jtacUnit = Unit.getByName(_jtacDetails.name)
+        local _jtacUnit = Unit.getByName(_jtacDetails.name)
 
         if _jtacUnit ~= nil and _jtacUnit:getLife() > 0 and _jtacUnit:isActive() == true and _jtacUnit:getCoalition() == _side then
 
