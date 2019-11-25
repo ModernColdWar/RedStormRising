@@ -82,6 +82,10 @@ ctld.enabledRadioBeaconDrop = true -- if its set to false then beacons cannot be
 ctld.allowRandomAiTeamPickups = false -- Allows the AI to randomize the loading of infantry teams (specified below) at pickup zones
 
 ctld.heavyCrateWeightMultiplier = 3 -- weight multiplier applied to the weight of light crates to create heavy ones
+
+ctld.ewrFrequencyRed = 124
+ctld.ewrFrequencyBlue = 121
+
 -- Simulated Sling load configuration
 
 ctld.minimumHoverHeight = 7.5 -- Lowest allowable height for crate hover

@@ -3690,10 +3690,32 @@ function ctld.addEWRTask(_group)
 
         if _grp ~= nil then
             local _controller = _grp:getController();
+            local _frequency = _grp:getCoalition() == 1 and ctld.ewrFrequencyRed or ctld.ewrFrequencyBlue
             local _EWR = {
-                id = 'EWR',
-                auto = true,
+                id = "ComboTask",
                 params = {
+                    tasks = { {
+                                  auto = true,
+                                  enabled = true,
+                                  id = "EWR",
+                                  number = 1,
+                                  params = {}
+                              }, {
+                                  auto = false,
+                                  enabled = true,
+                                  id = "WrappedAction",
+                                  number = 2,
+                                  params = {
+                                      action = {
+                                          id = "SetFrequency",
+                                          params = {
+                                              frequency = _frequency * 1000000,
+                                              modulation = 0,
+                                              power = 10
+                                          }
+                                      }
+                                  }
+                              } }
                 }
             }
             _controller:setTask(_EWR)
