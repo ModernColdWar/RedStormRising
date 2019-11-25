@@ -5397,8 +5397,20 @@ for _, _crates in pairs(ctld.spawnableCrates) do
     for _, _crate in pairs(_crates) do
         -- convert number to string otherwise we'll have a pointless giant
         -- table. String means 'hashmap' so it will only contain the right number of elements
-        ctld.crateLookupTable[tostring(_crate.weight)] = _crate
-        ctld.crateLookupTable[tostring(_crate.weight * ctld.heavyCrateWeightMultiplier)] = _crate
+        local key = tostring(_crate.weight)
+        local heavyKey = totring(_crate.weight * ctld.heavyCrateWeightMultiplier)
+
+        if ctld.crateLookupTable[key] ~= nil then
+            error("Cannot add crate with weight " .. key .. " as one already exists")
+        end
+        if ctld.crateLookupTable[heavyKey] ~= nil then
+            error("Cannot add heavy crate with weight " .. heavyKey .. " as one already exists")
+        end
+
+        ctld.crateLookupTable[key] = _crate
+        _heavyCrate = mist.utils.deepCopy(_crate)
+        _heavyCrate.weight = _heavyCrate.weight * ctld.heavyCrateWeightMultiplier
+        ctld.crateLookupTable[heavyKey] = _heavyCrate
     end
 end
 
