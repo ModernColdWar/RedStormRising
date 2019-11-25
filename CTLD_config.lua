@@ -327,7 +327,7 @@ ctld.spawnableCrates = {
     },
 
     ["Tanks"] = {
-        { weight = 820, desc = "T-55", unit = "T-55", side = 1, cratesRequired = 1, unitQuantity = 2, internal = 0 },
+        { weight = 820, desc = "T-55", unit = "T-55", side = 1, cratesRequired = 1, internal = 0 },
         { weight = 821, desc = "T-72", unit = "T-72B", side = 1, cratesRequired = 2, internal = 0 },
         { weight = 822, desc = "T-80UD", unit = "T-80UD", side = 1, cratesRequired = 3, internal = 0 },
         { weight = 823, desc = "T-90", unit = "T-90", side = 1, cratesRequired = 3, internal = 0 },
