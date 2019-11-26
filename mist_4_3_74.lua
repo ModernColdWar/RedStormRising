@@ -1227,7 +1227,7 @@ do -- the main scope
 				end
 			end
 		end
-		log:info(newObj)
+		--log:info(newObj)
 		
 		local cntry = newObj.country
 		if newObj.countryId then
