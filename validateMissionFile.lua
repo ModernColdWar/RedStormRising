@@ -121,6 +121,13 @@ local function setRopeLength(unit)
     end
 end
 
+local function setF14StoredAlignment(unit)
+    if not unit.AddPropAircraft.INSAlignmentStored then
+        print("INFO:  Setting stored alignment on for " .. description(unit))
+        unit.AddPropAircraft.INSAlignmentStored = true
+    end
+end
+
 print("Checking bases for problems")
 missionUtils.iterBases(mission, "Caucasus", function(baseName, warehouse)
     if warehouse.coalition:lower() == "neutral" then
@@ -159,6 +166,9 @@ missionUtils.iterGroups(mission, function(group, sideName)
         setFuel(unit)
         setRadio(unit, sideName)
         setRopeLength(unit)
+        if unit.type == "F-14B" then
+            setF14StoredAlignment(unit)
+        end
     end
 end)
 
