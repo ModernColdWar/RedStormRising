@@ -22,7 +22,12 @@ end
 local function blockAllSlots()
     log:info("Blocking all slots")
     M.clientSet:ForEach(function(client)
-        disableSlot(client.ClientName)
+        -- note that we pass unit names here while slot blocker uses group names - make sure they're the same!
+        if utils.startswith(client.ClientName, "Carrier") then
+            log:info("Not blocking carrier slot '$1'", client.ClientName)
+        else
+            disableSlot(client.ClientName)
+        end
     end)
 end
 

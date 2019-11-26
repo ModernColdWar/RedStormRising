@@ -56,7 +56,7 @@ function M.getSide(sideName)
     return sideLookupTable.byName[sideName]
 end
 
-local function startswith(string, prefix)
+function M.startswith(string, prefix)
     if string:sub(1, #prefix) == prefix then
         return true
     end
@@ -79,7 +79,7 @@ function M.matchesBaseName(baseName, prefix)
     if prefix == nil then
         return false
     end
-    if startswith(baseName, prefix) then
+    if M.startswith(baseName, prefix) then
         return true
     end
 
@@ -97,7 +97,7 @@ function M.matchesBaseName(baseName, prefix)
     for i = 1, #prefixParts do
         local baseNamePart = baseNameParts[i]
         local groupPrefixPart = prefixParts[i]
-        if startswith(baseNamePart, groupPrefixPart) == false then
+        if M.startswith(baseNamePart, groupPrefixPart) == false then
             return false
         end
     end
