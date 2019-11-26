@@ -30,7 +30,7 @@ local loggingEventHandler = require("loggingEventHandler")
 slotBlocker.onMissionStart()
 handleMarkEvents.registerHandlers(rsrConfig.devMode)
 baseCapturedHandler.register()
-loggingEventHandler.register()
+loggingEventHandler.register(rsrConfig.hitMessageDelay)
 persistence.onMissionStart(rsrConfig)
 
 _SETTINGS:SetPlayerMenuOff()
