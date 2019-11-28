@@ -109,6 +109,7 @@ function M.spawnGroup(groupData)
     local sideName = getSideNameFromGroupData(groupData)
     local groupName = groupData.groupName
     log:info("Spawning $1 $2 from groupData", sideName, groupName)
+    -- Fix issue where mist group data doesn't contain playerCanDrive flag (it's always true for our persisted units)
     for _, unitData in pairs(groupData.units) do
         unitData.playerCanDrive = true
     end
