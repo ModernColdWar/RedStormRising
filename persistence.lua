@@ -109,6 +109,9 @@ function M.spawnGroup(groupData)
     local sideName = getSideNameFromGroupData(groupData)
     local groupName = groupData.groupName
     log:info("Spawning $1 $2 from groupData", sideName, groupName)
+    for _, unitData in pairs(groupData.units) do
+        unitData.playerCanDrive = true
+    end
     local spawnedGroup = Group.getByName(mist.dynAdd(groupData).name)
     if ctld.isJTACUnitType(groupName) then
         local _code = ctld.getLaserCode(Group.getByName(groupName):getCoalition())
