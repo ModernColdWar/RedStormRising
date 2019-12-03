@@ -128,6 +128,14 @@ local function setF14StoredAlignment(unit)
     end
 end
 
+print("Checking options")
+-- luacheck: push globals options
+if options.plugins["MiG-21Bis"].Experimental ~= true then
+    print("WARN:  Settings MiG-21 experimental options (better SPO-10) to true")
+    options.plugins["MiG-21Bis"].Experimental = true
+end
+-- luacheck: pop
+
 print("Checking bases for problems")
 missionUtils.iterBases(mission, "Caucasus", function(baseName, warehouse)
     if warehouse.coalition:lower() == "neutral" then

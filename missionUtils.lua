@@ -30,6 +30,7 @@ M.airbases = {
 function M.loadMission(missionDir)
     print("Loading mission from " .. missionDir)
     dofile(missionDir .. [[\mission]])
+    dofile(missionDir .. [[\options]])
     dofile(missionDir .. [[\warehouses]])
     dofile(missionDir .. [[\l10n\DEFAULT\dictionary]])
     print("Mission loaded")
