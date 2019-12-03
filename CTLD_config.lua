@@ -367,7 +367,7 @@ ctld.spawnableCrates = {
         --{ weight = 862, desc = "SA-3 Launcher", unit = "5p73 s-125 ln", side = 1, internal = 0 },
 
         -- HQ-7 System (currently using just the launcher)
-        { weight = 863, desc = "HQ-7 Launcher", unit = "HQ-7_LN_SP", side = 1, cratesRequired = 2, internal = 0 },
+        { weight = 863, desc = "HQ-7 Launcher", unit = "HQ-7_LN_SP", side = 1, cratesRequired = 3, internal = 0 },
         --{ weight = 864, desc = "HQ-7 Search Radar", unit = "HQ-7_STR_SP", side = 1, internal = 0 },
 
         -- KUB system
