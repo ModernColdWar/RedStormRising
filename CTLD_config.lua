@@ -361,49 +361,53 @@ ctld.spawnableCrates = {
 
     -- weight range 801-849
     ["Radar SAM"] = {
+        -- SA-2 system
+        { weight = 860, desc = "SA-2 Launcher", unit = "S_75M_Volhov", side = 1, internal = 0 },
+        { weight = 861, desc = "SA-2 Search Radar", unit = "p-19 s-125 sr", side = 1, internal = 0 },
+        { weight = 862, desc = "SA-2 Track Radar", unit = "SNR_75V", side = 1, internal = 0 },
         -- SA-3 system
-        --{ weight = 860, desc = "SA-3 Search Radar", unit = "p-19 s-125 sr", side = 1, internal = 0 },
-        --{ weight = 861, desc = "SA-3 Track Radar", unit = "snr s-125 tr", side = 1, internal = 0 },
-        --{ weight = 862, desc = "SA-3 Launcher", unit = "5p73 s-125 ln", side = 1, internal = 0 },
+        --{ weight = 863, desc = "SA-3 Launcher", unit = "5p73 s-125 ln", side = 1, internal = 0 },
+        --{ weight = 864, desc = "SA-3 Search Radar", unit = "p-19 s-125 sr", side = 1, internal = 0 },
+        --{ weight = 865, desc = "SA-3 Track Radar", unit = "snr s-125 tr", side = 1, internal = 0 },
 
         -- HQ-7 System (currently using just the launcher)
-        { weight = 863, desc = "HQ-7 Launcher", unit = "HQ-7_LN_SP", side = 1, cratesRequired = 3, internal = 0 },
-        --{ weight = 864, desc = "HQ-7 Search Radar", unit = "HQ-7_STR_SP", side = 1, internal = 0 },
+        { weight = 866, desc = "HQ-7 Launcher", unit = "HQ-7_LN_SP", side = 1, cratesRequired = 3, internal = 0 },
+        --{ weight = 867, desc = "HQ-7 Search Radar", unit = "HQ-7_STR_SP", side = 1, internal = 0 },
 
         -- KUB system
-        { weight = 865, desc = "KUB Launcher", unit = "Kub 2P25 ln", side = 1, internal = 0 },
-        { weight = 866, desc = "KUB Radar", unit = "Kub 1S91 str", side = 1, internal = 0 },
+        { weight = 868, desc = "KUB Launcher", unit = "Kub 2P25 ln", side = 1, internal = 0 },
+        { weight = 869, desc = "KUB Radar", unit = "Kub 1S91 str", side = 1, internal = 0 },
 
         -- BUK system
-        { weight = 867, desc = "BUK Launcher", unit = "SA-11 Buk LN 9A310M1", side = 1, internal = 0 },
-        { weight = 868, desc = "BUK Search Radar", unit = "SA-11 Buk SR 9S18M1", side = 1, internal = 0 },
-        { weight = 869, desc = "BUK CC Radar", unit = "SA-11 Buk CC 9S470M1", side = 1, internal = 0 },
+        { weight = 870, desc = "BUK Launcher", unit = "SA-11 Buk LN 9A310M1", side = 1, internal = 0 },
+        { weight = 871, desc = "BUK Search Radar", unit = "SA-11 Buk SR 9S18M1", side = 1, internal = 0 },
+        { weight = 872, desc = "BUK CC Radar", unit = "SA-11 Buk CC 9S470M1", side = 1, internal = 0 },
 
-        { weight = 870, desc = "SA-8 Osa 9A33", unit = "Osa 9A33 ln", side = 1, cratesRequired = 2, internal = 0 },
+        --{ weight = 873, desc = "SA-8 Osa 9A33", unit = "Osa 9A33 ln", side = 1, cratesRequired = 2, internal = 0 },
 
         -- Hawk System
-        { weight = 871, desc = "Hawk Launcher", unit = "Hawk ln", side = 2, internal = 0 },
-        { weight = 872, desc = "Hawk Search Radar", unit = "Hawk sr", side = 2, internal = 0 },
-        { weight = 873, desc = "Hawk Track Radar", unit = "Hawk tr", side = 2, internal = 0 },
-        { weight = 874, desc = "Hawk PCP", unit = "Hawk pcp", side = 2, internal = 0 }, -- Remove this if on 1.2
+        { weight = 874, desc = "Hawk Launcher", unit = "Hawk ln", side = 2, internal = 0 },
+        { weight = 875, desc = "Hawk Search Radar", unit = "Hawk sr", side = 2, internal = 0 },
+        { weight = 876, desc = "Hawk Track Radar", unit = "Hawk tr", side = 2, internal = 0 },
+        { weight = 877, desc = "Hawk PCP", unit = "Hawk pcp", side = 2, internal = 0 }, -- Remove this if on 1.2
 
         -- Roland System
-        --{ weight = 875, desc = "Roland Launcher", unit = "SAM Roland ADS", side = 2, internal = 0 },
-        --{ weight = 876, desc = "Roland Radar", unit = "SAM Roland EWR", side = 2, internal = 0 },
+        --{ weight = 878, desc = "Roland Launcher", unit = "SAM Roland ADS", side = 2, internal = 0 },
+        --{ weight = 879, desc = "Roland Radar", unit = "SAM Roland EWR", side = 2, internal = 0 },
 
         -- Tor on both sides
-        { weight = 877, desc = "SA-15 Tor", unit = "Tor 9A331", cratesRequired = 2, internal = 0 },
+        { weight = 880, desc = "SA-15 Tor", unit = "Tor 9A331", cratesRequired = 2, internal = 0 },
 
 
     },
 
     ["Artillery"] = {
-        { weight = 880, desc = "SPH 2S19 Msta", unit = "SAU Msta", side = 1, cratesRequired = 2, internal = 0 },
-        { weight = 881, desc = "BM-27 MLRS", unit = "Uragan_BM-27", side = 1, cratesRequired = 2, internal = 0 },
-        { weight = 882, desc = "MLRS Smerch", unit = "Smerch", side = 1, cratesRequired = 2, internal = 0 },
+        { weight = 890, desc = "SPH 2S19 Msta", unit = "SAU Msta", side = 1, cratesRequired = 2, internal = 0 },
+        { weight = 891, desc = "BM-27 MLRS", unit = "Uragan_BM-27", side = 1, cratesRequired = 2, internal = 0 },
+        { weight = 892, desc = "MLRS Smerch", unit = "Smerch", side = 1, cratesRequired = 2, internal = 0 },
 
-        { weight = 885, desc = "M-109", unit = "M-109", side = 2, cratesRequired = 2, internal = 0 },
-        { weight = 886, desc = "MLRS", unit = "MLRS", side = 2, cratesRequired = 2, internal = 0 },
+        { weight = 895, desc = "M-109", unit = "M-109", side = 2, cratesRequired = 2, internal = 0 },
+        { weight = 896, desc = "MLRS", unit = "MLRS", side = 2, cratesRequired = 2, internal = 0 },
     },
 
     ["Support"] = {
@@ -481,6 +485,17 @@ ctld.AASystemTemplate = {
         parts = {
             { name = "Kub 2P25 ln", desc = "KUB Launcher", launcher = true },
             { name = "Kub 1S91 str", desc = "KUB Radar" },
+        },
+        repair = "SAM Repair",
+        systemType = "MR",
+    },
+    {
+        name = "SA-2 SAM System",
+        count = 3,
+        parts = {
+            { name = "S_75M_Volhov", desc = "SA-2 Launcher", launcher = true },
+            { name = "SNR_75V", desc = "SA-2 Track Radar" },
+            { name = "p-19 s-125 sr", desc = "SA-2 Search Radar" },
         },
         repair = "SAM Repair",
         systemType = "MR",
