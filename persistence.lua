@@ -218,7 +218,7 @@ function M.onMissionStart(rsrConfig)
     end)
 
     mist.scheduleFunction(persistState, { rsrConfig },
-            timer.getTime() + rsrConfig.writeInterval, rsrConfig.writeInterval)
+            rsrConfig.writeDelay + rsrConfig.writeInterval, rsrConfig.writeInterval)
 end
 
 return M
