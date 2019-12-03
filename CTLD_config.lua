@@ -370,30 +370,30 @@ ctld.spawnableCrates = {
         --{ weight = 864, desc = "SA-3 Search Radar", unit = "p-19 s-125 sr", side = 1, internal = 0 },
         --{ weight = 865, desc = "SA-3 Track Radar", unit = "snr s-125 tr", side = 1, internal = 0 },
 
-        -- HQ-7 System (currently using just the launcher)
-        { weight = 866, desc = "HQ-7 Launcher", unit = "HQ-7_LN_SP", side = 1, cratesRequired = 3, internal = 0 },
-        --{ weight = 867, desc = "HQ-7 Search Radar", unit = "HQ-7_STR_SP", side = 1, internal = 0 },
-
         -- KUB system
-        { weight = 868, desc = "KUB Launcher", unit = "Kub 2P25 ln", side = 1, internal = 0 },
-        { weight = 869, desc = "KUB Radar", unit = "Kub 1S91 str", side = 1, internal = 0 },
+        { weight = 866, desc = "KUB Launcher", unit = "Kub 2P25 ln", side = 1, internal = 0 },
+        { weight = 867, desc = "KUB Radar", unit = "Kub 1S91 str", side = 1, internal = 0 },
 
         -- BUK system
-        { weight = 870, desc = "BUK Launcher", unit = "SA-11 Buk LN 9A310M1", side = 1, internal = 0 },
-        { weight = 871, desc = "BUK Search Radar", unit = "SA-11 Buk SR 9S18M1", side = 1, internal = 0 },
-        { weight = 872, desc = "BUK CC Radar", unit = "SA-11 Buk CC 9S470M1", side = 1, internal = 0 },
+        { weight = 868, desc = "BUK Launcher", unit = "SA-11 Buk LN 9A310M1", side = 1, internal = 0 },
+        { weight = 869, desc = "BUK Search Radar", unit = "SA-11 Buk SR 9S18M1", side = 1, internal = 0 },
+        { weight = 870, desc = "BUK CC Radar", unit = "SA-11 Buk CC 9S470M1", side = 1, internal = 0 },
 
-        --{ weight = 873, desc = "SA-8 Osa 9A33", unit = "Osa 9A33 ln", side = 1, cratesRequired = 2, internal = 0 },
+        --{ weight = 871, desc = "SA-8 Osa 9A33", unit = "Osa 9A33 ln", side = 1, cratesRequired = 2, internal = 0 },
 
         -- Hawk System
-        { weight = 874, desc = "Hawk Launcher", unit = "Hawk ln", side = 2, internal = 0 },
-        { weight = 875, desc = "Hawk Search Radar", unit = "Hawk sr", side = 2, internal = 0 },
-        { weight = 876, desc = "Hawk Track Radar", unit = "Hawk tr", side = 2, internal = 0 },
-        { weight = 877, desc = "Hawk PCP", unit = "Hawk pcp", side = 2, internal = 0 }, -- Remove this if on 1.2
+        { weight = 872, desc = "Hawk Launcher", unit = "Hawk ln", side = 2, internal = 0 },
+        { weight = 873, desc = "Hawk Search Radar", unit = "Hawk sr", side = 2, internal = 0 },
+        { weight = 874, desc = "Hawk Track Radar", unit = "Hawk tr", side = 2, internal = 0 },
+        { weight = 875, desc = "Hawk PCP", unit = "Hawk pcp", side = 2, internal = 0 }, -- Remove this if on 1.2
 
         -- Roland System
-        --{ weight = 878, desc = "Roland Launcher", unit = "SAM Roland ADS", side = 2, internal = 0 },
-        --{ weight = 879, desc = "Roland Radar", unit = "SAM Roland EWR", side = 2, internal = 0 },
+        --{ weight = 876, desc = "Roland Launcher", unit = "SAM Roland ADS", side = 2, internal = 0 },
+        --{ weight = 877, desc = "Roland Radar", unit = "SAM Roland EWR", side = 2, internal = 0 },
+
+        -- HQ-7 System (currently using just the launcher)
+        { weight = 878, desc = "HQ-7 Launcher", unit = "HQ-7_LN_SP", side = 1, cratesRequired = 3, internal = 0 },
+        --{ weight = 879, desc = "HQ-7 Search Radar", unit = "HQ-7_STR_SP", side = 1, internal = 0 },
 
         -- Tor on both sides
         { weight = 880, desc = "SA-15 Tor", unit = "Tor 9A331", cratesRequired = 2, internal = 0 },
