@@ -15,6 +15,7 @@ local fuelSettings = {
     F_5E_3 = { capacity = 2046, fraction = 1.0 },
     FA_18C_hornet = { capacity = 4900, fraction = 0.5 },
     J_11A = { capacity = 9400, fraction = 0.5 },
+    JF_17 = { capacity = 2325, fraction = 0.5 },
     Ka_50 = { capacity = 1450, fraction = 0.5 },
     L_39ZA = { capacity = 823.2, fraction = 0.82 },
     M_2000C = { capacity = 3165, fraction = 0.5 },
