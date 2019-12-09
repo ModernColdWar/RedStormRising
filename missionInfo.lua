@@ -38,7 +38,7 @@ function M.eventHandler:createMissionInfoMenu(event)
         if playerName then
             self:I({ "Player Joined:", playerName })
             local playerGroup = iniUnit:GetGroup()
-            local menu = MENU_GROUP:New(playerGroup, "Mission info")
+            local menu = MENU_GROUP:New(playerGroup, "Mission information")
             MENU_GROUP_COMMAND:New(playerGroup, "Time until restart", menu, function()
                 local secondsUntilRestart = M.getSecondsUntilRestart(os.date("*t"), M._restartHours)
                 MESSAGE:New(string.format("The mission will restart in %s", M.getSecondsAsString(secondsUntilRestart)), 5):ToGroup(playerGroup)
