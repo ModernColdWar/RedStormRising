@@ -49,6 +49,11 @@ function TestState:testReadStateFromDisk()
     lu.assertEquals(_state.ctld.nextUnitId, 848)
 end
 
+function TestState:testReadCorruptStateFromDiskReturnsNil()
+    local _state = state.readStateFromDisk([[tests\test_state_corrupt.json]])
+    lu.assertIsNil(_state)
+end
+
 function TestState:testWriteStateToDisk()
     -- we're going to write the default state here
     local expectedState = state.defaultState

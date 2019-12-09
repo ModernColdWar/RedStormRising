@@ -6,6 +6,12 @@ local queryDcs = require("queryDcs")
 
 local log = mist.Logger:new("State", "info")
 
+--luacheck: push no unused
+function JSON:onDecodeError(message, text, location, etc)
+    log:error("Unable to parse JSON: $1 at position $2: '$3'", message, location, text)
+end
+--luacheck: pop
+
 local M = {}
 
 -- The default state that should be set on a reset or if missing from the state we're restoring from
