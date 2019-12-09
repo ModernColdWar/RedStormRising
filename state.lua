@@ -140,7 +140,11 @@ end
 function M.setCurrentStateFromFile(stateFileName)
     local canUseStateFromFile = false
     if UTILS.FileExists(stateFileName) then
-        M.currentState = M.readStateFromDisk(stateFileName)
+        local stateFromDisk = M.readStateFromDisk(stateFileName)
+        if stateFromDisk == nil then
+            return false
+        end
+        M.currentState = stateFromDisk
         if M.getWinner() == nil then
             canUseStateFromFile = true
         else
@@ -156,6 +160,7 @@ function M.setCurrentStateFromFile(stateFileName)
         M.updateBaseOwnership()
     end
     log:info("currentState = $1", inspect(M.currentState, { newline = " ", indent = "" }))
+    return true
 end
 
 return M
