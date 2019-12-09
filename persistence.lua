@@ -202,7 +202,11 @@ function M.restoreFromState(rsrConfig)
 end
 
 function M.onMissionStart(rsrConfig)
-    state.setCurrentStateFromFile(rsrConfig.stateFileName)
+    if not state.setCurrentStateFromFile(rsrConfig.stateFileName) then
+        local backupFilename = utils.getBackupFilename(rsrConfig.stateFileName)
+        log:warn("Unable to load state from $1, trying backup file $2", rsrConfig.stateFileName, backupFilename)
+        state.setCurrentStateFromFile(backupFilename)
+    end
     M.restoreFromState(rsrConfig)
 
     -- register unpack callback so we can update our state
