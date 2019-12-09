@@ -21,14 +21,12 @@ if rsrConfig.devMode then
     ctld.debug = true
 end
 
-local handleMarkEvents = require("handleMarkEvents")
 local persistence = require("persistence")
 local slotBlocker = require("slotBlocker")
 local baseCapturedHandler = require("baseCapturedHandler")
 local loggingEventHandler = require("loggingEventHandler")
 
 slotBlocker.onMissionStart()
-handleMarkEvents.registerHandlers(rsrConfig.devMode)
 baseCapturedHandler.register()
 loggingEventHandler.register(rsrConfig.hitMessageDelay)
 persistence.onMissionStart(rsrConfig)
