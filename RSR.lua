@@ -25,11 +25,13 @@ local persistence = require("persistence")
 local slotBlocker = require("slotBlocker")
 local baseCapturedHandler = require("baseCapturedHandler")
 local loggingEventHandler = require("loggingEventHandler")
+local restartInfo = require("restartInfo")
 
 slotBlocker.onMissionStart()
 baseCapturedHandler.register()
 loggingEventHandler.register(rsrConfig.hitMessageDelay)
 persistence.onMissionStart(rsrConfig)
+restartInfo.onMissionStart(rsrConfig)
 
 _SETTINGS:SetPlayerMenuOff()
 trigger.action.outText("RSR ready", 10)

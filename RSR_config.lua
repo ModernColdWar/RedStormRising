@@ -10,5 +10,6 @@ rsrConfig.writeDelay = rsrConfig.devMode and 0 or 180  -- initial delay for pers
 rsrConfig.baseDefenceActivationRadiusAirbase = 5000
 rsrConfig.baseDefenceActivationRadiusFarp = 2500
 rsrConfig.hitMessageDelay = 30
+rsrConfig.restartHours = { 1, 5, 9, 13, 17, 21}
 
 return rsrConfig
