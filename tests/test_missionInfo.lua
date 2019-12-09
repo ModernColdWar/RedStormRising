@@ -1,5 +1,5 @@
 local lu = require("tests.luaunit")
-local restartInfo = require("restartInfo")
+local restartInfo = require("missionInfo")
 
 TestRestartInfo = {}
 
