@@ -4,6 +4,10 @@ local utils = require("utils")
 
 TestUtils = {}
 
+function TestUtils:testGetBackupFilename()
+    lu.assertEquals(utils.getBackupFilename("rsrState.json"), "rsrState-backup.json")
+end
+
 function TestUtils:testGetSideName()
     lu.assertEquals(utils.getSideName(coalition.side.RED), "red")
     lu.assertEquals(utils.getSideName(coalition.side.BLUE), "blue")
