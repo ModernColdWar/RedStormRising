@@ -23,6 +23,7 @@ local fuelSettings = {
     MiG_19P = { capacity = 1800, fraction = 1.0 },
     MiG_21Bis = { capacity = 2280, fraction = 1.0 },
     MiG_29A = { capacity = 3376, fraction = 0.5 },
+    MiG_29G = { capacity = 3376, fraction = 0.5 },
     MiG_29S = { capacity = 3493, fraction = 0.5 },
     SA342L = { capacity = 416.33, fraction = 0.4 },
     SA342M = { capacity = 416.33, fraction = 0.4 },
@@ -131,7 +132,7 @@ end
 
 print("Checking options")
 -- luacheck: push globals options
-if options.plugins["MiG-21Bis"].Experimental ~= true then
+if options.plugins["MiG-21Bis"] ~= nil and options.plugins["MiG-21Bis"].Experimental ~= true then
     print("WARN:  Settings MiG-21 experimental options (better SPO-10) to true")
     options.plugins["MiG-21Bis"].Experimental = true
 end
