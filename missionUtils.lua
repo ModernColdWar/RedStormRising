@@ -36,22 +36,25 @@ function M.loadMission(missionDir)
     print("Mission loaded")
 end
 
+local function serialize(filename, name, object)
+    local Serializer = require("Serializer")
+    print("Serializing to " .. name .. " at " .. filename)
+    local outfile = io.open(filename, "w+")
+    -- Uses ED's serializer to make sure it's compatible
+    local serializer = Serializer.new(outfile)
+    serializer.fout = outfile -- Why this is required is beyond me, Serializer.new() does this already
+    serializer:serialize_simple2(name, object)
+    outfile:close()
+    print(name .. " serialized")
+end
 function M.serializeMission(mission, missionDir)
     local dcsPath = os.getenv("DCS_PATH")
     if dcsPath == nil then
         error("DCS_PATH environment variable must be set")
     end
     package.path = package.path .. ";" .. dcsPath .. [[\Scripts\?.lua]]
-    local Serializer = require("Serializer")
-    local missionfile = missionDir .. [[\mission]]
-    print("Serializing to mission at " .. missionfile)
-    local outfile = io.open(missionDir .. "\\mission", "w+")
-    -- Uses ED's serializer to make sure it's compatible
-    local serializer = Serializer.new(outfile)
-    serializer.fout = outfile -- Why this is required is beyond me, Serializer.new() does this already
-    serializer:serialize_simple2('mission', mission)
-    outfile:close()
-    print("Mission serialized")
+    serialize(missionDir .. [[\mission]], "mission", mission)
+    serialize(missionDir .. [[\warehouses]], "warehouses", warehouses)
 end
 
 function M.getDictionaryValue(key)
