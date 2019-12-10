@@ -34,6 +34,10 @@ local fuelSettings = {
     UH_1H = { capacity = 631, fraction = 0.3 },
 }
 
+local countermeasuresSettings = {
+    Su_25T = { flare = 192, chaff = 64 },
+}
+
 local ropeLengths = {
     Ka_50 = 20,
     Mi_8MT = 20,
@@ -45,7 +49,6 @@ local radioSettings = {
         MiG_21Bis = { { channels = { 243, 251, 124, 131, 141, 126, 130, 133, 122, 124, 134, 125, 135, 137, 136, 123, 132, 127, 129, 138 } } },
     },
     blue = {},
-
 }
 
 local missionDir = arg[1]
@@ -94,6 +97,22 @@ local function setFuel(unit)
     if fuelError > 0.01 then
         print("INFO:  Changing fuel for " .. description(unit) .. " from " .. unit.payload.fuel .. " to " .. desiredFuel)
         unit.payload.fuel = desiredFuel
+    end
+end
+
+local function setCountermeasures(unit)
+    local key = getSettingsKey(unit)
+    local countermeasures = countermeasuresSettings[key]
+    if countermeasures == nil then
+        return
+    end
+    if unit.payload.flare ~= countermeasures.flare then
+        print("INFO:  Changing flare count for " .. description(unit) .. " from " .. unit.payload.flare .. " to " .. countermeasures.flare)
+        unit.payload.flare = countermeasures.flare
+    end
+    if unit.payload.chaff ~= countermeasures.chaff then
+        print("INFO:  Changing chaff count for " .. description(unit) .. " from " .. unit.payload.chaff .. " to " .. countermeasures.chaff)
+        unit.payload.chaff = countermeasures.chaff
     end
 end
 
@@ -174,6 +193,7 @@ missionUtils.iterGroups(mission, function(group, sideName)
         validateClientGroup(group)
         local unit = group.units[1]
         setFuel(unit)
+        setCountermeasures(unit)
         setRadio(unit, sideName)
         setRopeLength(unit)
         if unit.type == "F-14B" then
