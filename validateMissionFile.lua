@@ -86,17 +86,6 @@ local function description(unit)
     return unit.type .. " '" .. missionUtils.getDictionaryValue(unit.name) .. "'"
 end
 
-local function setWeaponsQuantities(baseName, warehouse)
-    local desiredQuantity = 1000000
-    for _, weaponData in pairs(warehouse.weapons) do
-        local weaponDesc = inspect(weaponData.wsType)
-        if weaponData.initialAmount > 0 and weaponData.initialAmount ~= desiredQuantity then
-            print("Setting warehouse weapons quantities for " .. baseName  .. " " .. weaponDesc .. " to " .. desiredQuantity)
-            weaponData.initialAmount = desiredQuantity
-        end
-    end
-end
-
 local function setFuel(unit)
     local key = getSettingsKey(unit)
     local fuelDetails = fuelSettings[key]
@@ -162,7 +151,6 @@ end
 
 print("Checking bases for problems")
 missionUtils.iterBases(mission, "Caucasus", function(baseName, warehouse)
-    setWeaponsQuantities(baseName, warehouse)
     if warehouse.coalition:lower() == "neutral" then
         print("WARN:  Skipping neutral base " .. baseName)
         return
