@@ -455,7 +455,7 @@ ssb.rejectMessage = function(playerID)
 
   if _playerName ~= nil then
     --Disable chat message to user
-    local _chatMessage = string.format("*** Sorry %s - Slot is not currently active - Please choose another one. ***",_playerName)
+    local _chatMessage = string.format("*** Sorry %s, this slot is only active if your side controls this base ***",_playerName)
     net.send_chat_to(_chatMessage, playerID)
   end
 
