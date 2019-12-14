@@ -57,7 +57,7 @@ local ssb = {} -- DONT REMOVE!!!
 
 --]]
 
-ssb.showEnabledMessage = true -- if set to true, the player will be told that the slot is enabled when switching to it
+ssb.showEnabledMessage = false -- if set to true, the player will be told that the slot is enabled when switching to it
 ssb.controlNonAircraftSlots = true -- if true, only unique DCS Player ids will be allowed for the Commander / GCI / Observer Slots
 
 
