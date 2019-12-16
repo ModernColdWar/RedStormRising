@@ -388,15 +388,15 @@ ctld.spawnableCrates = {
         { weight = 875, desc = "Hawk PCP", unit = "Hawk pcp", side = 2, internal = 0 }, -- Remove this if on 1.2
 
         -- Roland System
-        --{ weight = 876, desc = "Roland Launcher", unit = "SAM Roland ADS", side = 2, internal = 0 },
-        --{ weight = 877, desc = "Roland Radar", unit = "SAM Roland EWR", side = 2, internal = 0 },
+        { weight = 876, desc = "Roland Launcher", unit = "Roland ADS", side = 2, internal = 0 },
+        { weight = 877, desc = "Roland Radar", unit = "Roland Radar", side = 2, internal = 0 },
 
         -- HQ-7 System (currently using just the launcher)
         { weight = 878, desc = "HQ-7 Launcher", unit = "HQ-7_LN_SP", side = 1, cratesRequired = 3, internal = 0 },
         --{ weight = 879, desc = "HQ-7 Search Radar", unit = "HQ-7_STR_SP", side = 1, internal = 0 },
 
         -- Tor on both sides
-        { weight = 880, desc = "SA-15 Tor", unit = "Tor 9A331", cratesRequired = 2, internal = 0 },
+        { weight = 880, desc = "SA-15 Tor", unit = "Tor 9A331", side = 1, cratesRequired = 2, internal = 0 },
 
 
     },
@@ -422,7 +422,7 @@ ctld.spawnableCrates = {
         { weight = 622, desc = "Kub Repair", unit = "Kub Repair", side = 1, internal = 0 },
         { weight = 623, desc = "Buk Repair", unit = "Buk Repair", side = 1, internal = 0 },
         { weight = 624, desc = "Hawk Repair", unit = "Hawk Repair", side = 2, internal = 0 },
-        --{ weight = 625, desc = "Roland Repair", unit = "Roland Repair", side = 2, internal = 0 },
+        { weight = 625, desc = "Roland Repair", unit = "Roland Repair", side = 2, internal = 0 },
         { weight = 626, desc = "HQ-7 Repair", unit = "HQ-7 Repair", side = 1, internal = 0 },
         { weight = 627, desc = "Early Warning Radar", unit = "1L13 EWR", internal = 0 },
     },
@@ -453,11 +453,11 @@ ctld.AASystemTemplate = {
     --    systemType = "SR",
     --},
     {
-        name = "ROLAND SAM System",
+        name = "Roland SAM System",
         count = 2,
         parts = {
-            { name = "SAM Roland ADS", desc = "Roland Launcher", launcher = true },
-            { name = "SAM Roland EWR", desc = "Roland Radar" },
+            { name = "Roland ADS", desc = "Roland Launcher", launcher = true },
+            { name = "Roland Radar", desc = "Roland Radar" },
         },
         repair = "Roland Repair",
         systemType = "SR",
