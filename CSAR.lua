@@ -817,7 +817,7 @@ function csar.initSARForPilot(_downedGroup, _freq)
     local
     _text = string.format("%s requests SAR at %s, beacon at %.2f KHz",
             _leader:getName(), _coordinatesText, _freq / 1000)
-
+    env.info("Setting up CSAR: " .. _text)
     local _randPercent = math.random(1, 100)
 
     -- Loop through all the medevac units
