@@ -287,7 +287,9 @@ function csar.eventHandler:onEvent(_event)
             local _spawnedGroup = csar.spawnGroup(_unit)
             csar.addSpecialParametersToGroup(_spawnedGroup)
 
-            trigger.action.outTextForCoalition(_unit:getCoalition(), "MAYDAY MAYDAY! " .. _unit:getTypeName() .. " shot down. Chute Spotted!", 10)
+            local message = "MAYDAY MAYDAY! " .. _unit:getTypeName() .. " shot down. Chute Spotted!"
+            trigger.action.outTextForCoalition(_unit:getCoalition(), message, 10)
+            env.info(message)
 
             local _freq = csar.generateADFFrequency()
 
