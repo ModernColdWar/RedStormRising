@@ -15,8 +15,8 @@ SRSAuto.SERVER_SEND_AUTO_CONNECT = true -- set to false to disable auto connect 
 SRSAuto.CHAT_COMMANDS_ENABLED = false -- if true type -freq, -freqs or -frequencies in ALL chat in multilayer to see the frequencies
 
 SRSAuto.SRS_FREQUENCIES = {
-    ["red"]= "ATC = 124, GCI = 126, Helicopters = 30FM", -- edit this to the red frequency list
-    ["blue"]= "ATC = 251, GCI = 264, Helicopters = 30FM", -- edit this to the blue frequency list
+    ["red"]= "ATC = 251, GCI = 126, Helicopters = 30FM", -- edit this to the red frequency list
+    ["blue"]= "ATC = 251, GCI = 126, Helicopters = 30FM", -- edit this to the blue frequency list
     ["neutral"]= "" -- edit this to the spectator frequency list
 }
 
