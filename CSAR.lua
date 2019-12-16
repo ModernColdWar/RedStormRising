@@ -256,6 +256,7 @@ function csar.eventHandler:onEvent(_event)
             local _unit = _event.initiator
 
             if _unit == nil then
+                env.warning("No unit found for ejection event")
                 return -- error!
             end
 
