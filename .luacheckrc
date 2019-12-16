@@ -18,7 +18,7 @@ stds.moose = {
 std = "lua51+dcs_stub+moose"
 
 read_globals = { "mist" }
-globals = { "ctld" }
+globals = { "csar", "ctld" }
 
 max_line_length = 160
 

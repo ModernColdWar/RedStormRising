@@ -7,6 +7,7 @@
 --      1 - Disable Aircraft when its down - Timeout to reenable aircraft
 --      2 - Disable Aircraft for Pilot when he's shot down -- timeout to reenable pilot for aircraft
 --      3 - Pilot Life Limit - No Aircraft Disabling 
+-- luacheck: no max line length
 
 csar = {}
 
