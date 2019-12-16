@@ -68,7 +68,7 @@ csar.enableForRED = true -- enable for red side
 
 csar.enableForBLUE = true -- enable for blue side
 
-csar.enableSlotBlocking = true -- if set to true, you need to put the csarSlotBlockGameGUI.lua
+csar.enableSlotBlocking = false -- if set to true, you need to put the csarSlotBlockGameGUI.lua
 -- in C:/Users/<YOUR USERNAME>/DCS/Scripts for 1.5 or C:/Users/<YOUR USERNAME>/DCS.openalpha/Scripts for 2.0
 -- For missions using FLAGS and this script, the CSAR flags will NOT interfere with your mission :)
 
