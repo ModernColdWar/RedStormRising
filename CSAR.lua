@@ -15,31 +15,11 @@ csar = {}
 -- SETTINGS FOR MISSION DESIGNER vvvvvvvvvvvvvvvvvv
 csar.csarUnits = ctldUtils.getTransportPilotNames(env.mission) -- List of all the MEDEVAC _UNIT NAMES_ (the line where it says "Pilot" in the ME)!
 
-csar.bluemash = {
-    "BlueMASH #1",
-    "BlueMASH #2",
-    "BlueMASH #3",
-    "BlueMASH #4",
-    "BlueMASH #5",
-    "BlueMASH #6",
-    "BlueMASH #7",
-    "BlueMASH #8",
-    "BlueMASH #9",
-    "BlueMASH #10"
-} -- The unit that serves as MASH for the blue side
+-- The units that serve as MASH for the blue side
+csar.bluemash = {}
 
-csar.redmash = {
-    "RedMASH #1",
-    "RedMASH #2",
-    "RedMASH #3",
-    "RedMASH #4",
-    "RedMASH #5",
-    "RedMASH #6",
-    "RedMASH #7",
-    "RedMASH #8",
-    "RedMASH #9",
-    "RedMASH #10"
-} -- The unit that serves as MASH for the red side
+-- The units that serve as MASH for the red side
+csar.redmash = {}
 
 
 csar.csarMode = 0
