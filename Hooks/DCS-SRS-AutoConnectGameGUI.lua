@@ -8,7 +8,7 @@
 
 -- User options --
 local SRSAuto = {}
-SRSAuto.SERVER_SRS_HOST = "127.0.0.1:5002"
+SRSAuto.SERVER_SRS_HOST = "68.225.230.142:5002"
 SRSAuto.SERVER_SEND_AUTO_CONNECT = true -- set to false to disable auto connect or just remove this file
 
 ---- SRS CHAT COMMANDS ----
