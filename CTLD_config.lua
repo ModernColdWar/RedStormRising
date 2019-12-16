@@ -370,14 +370,14 @@ ctld.spawnableCrates = {
         --{ weight = 864, desc = "SA-3 Search Radar", unit = "p-19 s-125 sr", side = 1, internal = 0 },
         --{ weight = 865, desc = "SA-3 Track Radar", unit = "snr s-125 tr", side = 1, internal = 0 },
 
-        -- KUB system
-        { weight = 866, desc = "KUB Launcher", unit = "Kub 2P25 ln", side = 1, internal = 0 },
-        { weight = 867, desc = "KUB Radar", unit = "Kub 1S91 str", side = 1, internal = 0 },
+        -- Kub system
+        { weight = 866, desc = "Kub Launcher", unit = "Kub 2P25 ln", side = 1, internal = 0 },
+        { weight = 867, desc = "Kub Radar", unit = "Kub 1S91 str", side = 1, internal = 0 },
 
-        -- BUK system
-        { weight = 868, desc = "BUK Launcher", unit = "SA-11 Buk LN 9A310M1", side = 1, internal = 0 },
-        { weight = 869, desc = "BUK Search Radar", unit = "SA-11 Buk SR 9S18M1", side = 1, internal = 0 },
-        { weight = 870, desc = "BUK CC Radar", unit = "SA-11 Buk CC 9S470M1", side = 1, internal = 0 },
+        -- Buk system
+        { weight = 868, desc = "Buk Launcher", unit = "SA-11 Buk LN 9A310M1", side = 1, internal = 0 },
+        { weight = 869, desc = "Buk Search Radar", unit = "SA-11 Buk SR 9S18M1", side = 1, internal = 0 },
+        { weight = 870, desc = "Buk CC Radar", unit = "SA-11 Buk CC 9S470M1", side = 1, internal = 0 },
 
         --{ weight = 871, desc = "SA-8 Osa 9A33", unit = "Osa 9A33 ln", side = 1, cratesRequired = 2, internal = 0 },
 
@@ -417,8 +417,14 @@ ctld.spawnableCrates = {
         { weight = 610, desc = "M978 HEMTT Tanker", unit = "M978 HEMTT Tanker", side = 2, cratesRequired = 1, internal = 0 },
         { weight = 611, desc = "M-818 Ammo Truck", unit = "M 818", side = 2, cratesRequired = 1, internal = 0 },
 
-        { weight = 620, desc = "SAM Repair", unit = "SAM Repair", internal = 0 },
-        { weight = 621, desc = "Early Warning Radar", unit = "1L13 EWR", internal = 0 },
+        { weight = 620, desc = "SA-2 Repair", unit = "SA-2 Repair", side = 1, internal = 0 },
+        --{ weight = 621, desc = "SA-3 Repair", unit = "SA-3 Repair", side = 1, internal = 0 },
+        { weight = 622, desc = "Kub Repair", unit = "Kub Repair", side = 1, internal = 0 },
+        { weight = 623, desc = "Buk Repair", unit = "Buk Repair", side = 1, internal = 0 },
+        { weight = 624, desc = "Hawk Repair", unit = "Hawk Repair", side = 2, internal = 0 },
+        --{ weight = 625, desc = "Roland Repair", unit = "Roland Repair", side = 2, internal = 0 },
+        { weight = 626, desc = "HQ-7 Repair", unit = "HQ-7 Repair", side = 1, internal = 0 },
+        { weight = 627, desc = "Early Warning Radar", unit = "1L13 EWR", internal = 0 },
     },
 
     ["Internal Cargo"] = {
@@ -443,7 +449,7 @@ ctld.AASystemTemplate = {
     --        { name = "HQ-7 Self-Propelled ln", desc = "HQ-7_LN_SP", launcher = true },
     --        { name = "HQ-7 Self-Propelled str", desc = "HQ-7_STR_SP" },
     --    },
-    --    repair = "SAM Repair",
+    --    repair = "HQ-7 Repair",
     --    systemType = "SR",
     --},
     {
@@ -453,7 +459,7 @@ ctld.AASystemTemplate = {
             { name = "SAM Roland ADS", desc = "Roland Launcher", launcher = true },
             { name = "SAM Roland EWR", desc = "Roland Radar" },
         },
-        repair = "SAM Repair",
+        repair = "Roland Repair",
         systemType = "SR",
     },
     {
@@ -465,28 +471,28 @@ ctld.AASystemTemplate = {
             { name = "Hawk sr", desc = "Hawk Search Radar" },
             { name = "Hawk pcp", desc = "Hawk PCP" },
         },
-        repair = "SAM Repair",
+        repair = "Hawk Repair",
         systemType = "MR",
     },
     {
-        name = "BUK SAM System",
+        name = "Buk SAM System",
         count = 3,
         parts = {
-            { name = "SA-11 Buk LN 9A310M1", desc = "BUK Launcher", launcher = true },
-            { name = "SA-11 Buk CC 9S470M1", desc = "BUK CC Radar" },
-            { name = "SA-11 Buk SR 9S18M1", desc = "BUK Search Radar" },
+            { name = "SA-11 Buk LN 9A310M1", desc = "Buk Launcher", launcher = true },
+            { name = "SA-11 Buk CC 9S470M1", desc = "Buk CC Radar" },
+            { name = "SA-11 Buk SR 9S18M1", desc = "Buk Search Radar" },
         },
-        repair = "SAM Repair",
+        repair = "Buk Repair",
         systemType = "MR"
     },
     {
-        name = "KUB SAM System",
+        name = "Kub SAM System",
         count = 2,
         parts = {
-            { name = "Kub 2P25 ln", desc = "KUB Launcher", launcher = true },
-            { name = "Kub 1S91 str", desc = "KUB Radar" },
+            { name = "Kub 2P25 ln", desc = "Kub Launcher", launcher = true },
+            { name = "Kub 1S91 str", desc = "Kub Radar" },
         },
-        repair = "SAM Repair",
+        repair = "Kub Repair",
         systemType = "MR",
     },
     {
@@ -497,7 +503,7 @@ ctld.AASystemTemplate = {
             { name = "SNR_75V", desc = "SA-2 Track Radar" },
             { name = "p-19 s-125 sr", desc = "SA-2 Search Radar" },
         },
-        repair = "SAM Repair",
+        repair = "SA-2 Repair",
         systemType = "MR",
     },
     --{
@@ -509,7 +515,7 @@ ctld.AASystemTemplate = {
     --        { name = "snr s-125 tr", desc = "SA-3 Track Radar" },
     --        { name = "p-19 s-125 sr", desc = "SA-3 Search Radar" },
     --    },
-    --    repair = "SAM Repair",
+    --    repair = "SA-3 Repair",
     --    systemType = "MR",
     --},
 
