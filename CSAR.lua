@@ -174,15 +174,14 @@ function csar.eventHandler:onEvent(_event)
         if _event == nil or _event.initiator == nil then
             return false
 
-        elseif _event.id == 3 then
-            -- taken offf
+        elseif _event.id == world.event.S_EVENT_TAKEOFF then
 
             if _event.initiator:getName() then
                 csar.takenOff[_event.initiator:getName()] = true
             end
 
             return true
-        elseif _event.id == 15 then
+        elseif _event.id == world.event.S_EVENT_BIRTH then
             --player entered unit
 
             if _event.initiator:getName() then
@@ -214,8 +213,7 @@ function csar.eventHandler:onEvent(_event)
 
             return true
 
-        elseif (_event.id == 9) then
-            -- Pilot dead
+        elseif _event.id == world.event.S_EVENT_PILOT_DEAD then
 
             env.info("Event unit - Pilot Dead")
 
