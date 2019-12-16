@@ -263,29 +263,33 @@ function csar.eventHandler:onEvent(_event)
             local _coalition = _unit:getCoalition()
 
             if _coalition == 1 and not csar.enableForRED then
+                env.info("Ignoring ejection as not enabled for red")
                 return --ignore!
             end
 
             if _coalition == 2 and not csar.enableForBLUE then
+                env.info("Ignoring ejection as not enabled for blue")
                 return --ignore!
             end
 
             -- TODO catch ejection on runway?
 
             if csar.enableForAI == false and _unit:getPlayerName() == nil then
-
+               env.info("Ignoring ejection as getPlayerName is nil")
                 return
             end
 
             if csar.takenOff[_event.initiator:getName()] ~= true and not _unit:inAir() then
-                env.info("Pilot Hasnt taken off, ignore")
+                env.info("Pilot hasn't taken off, ignoring")
                 return -- give up, pilot hasnt taken off
             end
 
             if csar.doubleEjection(_unit) then
+                env.info("Double ejection")
                 return
             end
 
+            env.info("Spawning CSAR group")
             local _spawnedGroup = csar.spawnGroup(_unit)
             csar.addSpecialParametersToGroup(_spawnedGroup)
 
