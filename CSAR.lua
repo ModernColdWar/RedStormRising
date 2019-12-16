@@ -81,8 +81,8 @@ csar.coordtype = 1 -- Use Lat/Long DDM (0), Lat/Long DMS (1), MGRS (2), Bullseye
 csar.coordaccuracy = 1 -- Precision of the reported coordinates, see MIST-docs at http://wiki.hoggit.us/view/GetMGRSString
 -- only applies to _non_ bullseye coords
 
-csar.immortalcrew = true -- Set to true to make wounded crew immortal
-csar.invisiblecrew = true -- Set to true to make wounded crew insvisible
+csar.immortalcrew = false -- Set to true to make wounded crew immortal
+csar.invisiblecrew = false -- Set to true to make wounded crew insvisible
 
 csar.messageTime = 30 -- Time to show the intial wounded message for in seconds
 
