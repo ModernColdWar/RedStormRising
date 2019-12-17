@@ -63,6 +63,20 @@ function TestLoggingEventHandler:testPlayerOnPlayerHit()
     "Bob in red F/A-18C hit Alan in blue ZSU-23 with AIM-120C")
 end
 
+function TestLoggingEventHandler:testPlayerOnPlayerFriendlyHit()
+    local event = {
+        IniPlayerName = "Bob",
+        IniCoalition = 1,
+        IniTypeName = "F/A-18C",
+        TgtCoalition = 1,
+        TgtTypeName = "ZSU-23",
+        WeaponName = "AIM-120C",
+        TgtPlayerName = "Alan",
+    }
+    lu.assertEquals(loggingEventHandler.buildHitMessage(event),
+    "FRIENDLY FIRE: Bob in red F/A-18C hit Alan in red ZSU-23 with AIM-120C")
+end
+
 function TestLoggingEventHandler:testAIOnAIHit()
     local event = {
         IniCoalition = 1,

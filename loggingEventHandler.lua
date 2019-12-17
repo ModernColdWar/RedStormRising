@@ -45,6 +45,11 @@ function M.buildHitMessage(event)
     if event.WeaponName ~= nil then
         message = message .. " with " .. event.WeaponName
     end
+
+    if event.IniPlayerName ~= nil and event.TgtPlayerName ~= nil and event.IniCoalition == event.TgtCoalition then
+        message = "FRIENDLY FIRE: " .. message
+    end
+
     return message:gsub("^%l", string.upper)
 end
 
@@ -56,7 +61,7 @@ function M.eventHandler:onHit(event)
         -- only print the same message again after 5 seconds
         if message ~= M.lastMessage or time - M.lastMessageTime > 5 then
             self:I(message)
-            if M.hitMessageDelay > 0 then
+            if M.hitMessageDelay > 0 and not utils.startswith(message, "FRIENDLY FIRE: ") then
                 timer.scheduleFunction(function(args)
                     trigger.action.outText(args[1], 10)
                 end, { message }, timer.getTime() + M.hitMessageDelay)
