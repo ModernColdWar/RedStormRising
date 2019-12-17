@@ -188,6 +188,8 @@ function M.restoreFromState(rsrConfig)
     log:info("Restoring mission state")
     state.copyToCtld()
 
+    configureBasesAtStartup(rsrConfig, state.currentState.baseOwnership)
+
     -- We clear state.current.persistentGroupData here, as this is updated in handleSpawnQueue later
     -- This ensures the data we get from MIST is always consistent between a CTLD spawn and a reload from disk
     local persistentGroupData = state.currentState.persistentGroupData
@@ -197,7 +199,6 @@ function M.restoreFromState(rsrConfig)
         M.spawnGroup(groupData)
     end
 
-    configureBasesAtStartup(rsrConfig, state.currentState.baseOwnership)
     log:info("Mission state restored")
 end
 
