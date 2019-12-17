@@ -5088,7 +5088,7 @@ function ctld.getJTACStatus(_args)
         _message = "No Active JTACs"
     end
 
-    ctld.notifyCoalition(_message, 10, _side)
+    ctld.displayMessageToGroup(_playerUnit, _message, 10)
 end
 
 function ctld.isInfantry(_unit)
