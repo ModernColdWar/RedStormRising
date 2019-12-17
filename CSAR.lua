@@ -239,8 +239,8 @@ function csar.eventHandler:onEvent(_event)
                 if csar.doubleEjection(_unit) then
                     return
                 end
-                local message = "MAYDAY MAYDAY!  " .. _unit:getTypeName() .. " was shot down. No chute spotted."
-                trigger.action.outTextForCoalition(_unit:getCoalition(), message, 10)
+                local message = "Mayday, mayday, mayday!  " .. _unit:getTypeName() .. " was shot down; no chute spotted"
+                --trigger.action.outTextForCoalition(_unit:getCoalition(), message, 10)
                 env.info(message)
                 csar.handleEjectOrCrash(_unit, true)
             else
@@ -293,7 +293,7 @@ function csar.eventHandler:onEvent(_event)
             local _spawnedGroup = csar.spawnGroup(_unit)
             csar.addSpecialParametersToGroup(_spawnedGroup)
 
-            local message = "MAYDAY MAYDAY!  " .. _unit:getTypeName() .. " was shot down. A chute was spotted."
+            local message = "Mayday, mayday, mayday!  " .. _unit:getTypeName() .. " was shot down; chute spotted"
             trigger.action.outTextForCoalition(_unit:getCoalition(), message, 10)
             env.info(message)
 
