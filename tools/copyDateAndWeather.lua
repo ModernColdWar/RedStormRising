@@ -21,7 +21,7 @@ local weather = mist.utils.deepCopy(mission.weather)
 
 
 missionUtils.loadMission(outputMissionDir)
-print(" * Copying weather to " .. outputMissionDir)
+print(" * Copying " .. inputMissionDir .. " weather to " .. outputMissionDir)
 mission.date = date
 mission.weather = weather
 
