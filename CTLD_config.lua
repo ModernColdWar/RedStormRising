@@ -338,6 +338,7 @@ ctld.spawnableCrates = {
         { weight = 822, desc = "T-80UD", unit = "T-80UD", side = 1, cratesRequired = 3, internal = 0 },
         { weight = 823, desc = "T-90", unit = "T-90", side = 1, cratesRequired = 3, internal = 0 },
         { weight = 824, desc = "LeClerc", unit = "Leclerc", side = 1, cratesRequired = 4, internal = 0 },
+        { weight = 825, desc = "ZTZ-96B", unit = "ZTZ96B", side = 1, cratesRequired = 4, internal = 0 },
 
         { weight = 830, desc = "Leopard 1A3", unit = "Leopard1A3", side = 2, cratesRequired = 1, internal = 0 },
         { weight = 831, desc = "Leopard 2", unit = "Leopard-2", side = 2, cratesRequired = 3, internal = 0 },
