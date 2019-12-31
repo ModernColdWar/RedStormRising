@@ -409,6 +409,7 @@ ctld.spawnableCrates = {
 
         { weight = 895, desc = "M-109", unit = "M-109", side = 2, cratesRequired = 2, internal = 0 },
         { weight = 896, desc = "MLRS", unit = "MLRS", side = 2, cratesRequired = 2, internal = 0 },
+		{ weight = 894, desc = "SpGH DANA", unit = "SpGH_Dana", side = 2, cratesRequired = 2, internal = 0 },
     },
 
     ["Support"] = {
