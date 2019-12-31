@@ -162,6 +162,22 @@ ssb.commanderPlayerUCID = {
   "3dd6e3bcd9f99a8826e8f9791dc15199", --Sakhalin66
   "4052f4b970efd04829623d087898a66f", --=KAG=Zakha
   "53c1017106f484956c9e56d8c4b85acb", --GenaPilot
+  "18228f3b7ecb8b5af9cb7965870d3f1b", --EARL 4-2 | H4nS0L0
+  "822f0042190141165d100ccffe8d2cbf", --EARL 1-4 | alxz
+  "fff7b6fabadc7339a246fa5330ceb3b2", --SaabFAN
+  "a1f7bf58006730415c9cdda22b2f89b2", --EARL 6-4 | CYPHER
+  "5d194005968acd3db845fdae1f1575e9", --Checklist
+  "07aa971b0e583a05c69dc06075bedabf", --HansPeter
+  "703a4d348871ec2fe9cac9cd2168f609", --NightStalker
+  "5cb74e04677581b97c65d7ac67872b99", --Woodstock
+  "a73cc77ec3926ac636a4fd419f1c0fb5", --8==D Jarhead
+  "c7dade15a8a58dca9d91e12402b77e65", --8==D Jarhead
+  "b7477d13cfac623b3ca55e1e2dd0df1f", --8==D Guns
+  "e64dcbab81dcdb157439018fc6e76488", --8==D Zooker
+  "e1277ddbc6cc620bfbc9ceb0f57dc19c", --Airplaneman321
+  "2e9713fc055304fe1bd6c6c778c0f620", --LeoNerd
+  "91ec71924c23f4f15d785f5d7105e6b3", --Salad
+  "87dd983a6c5b678de30c9adb55b18cf4", --n0xy standalone
 }
 
 
