@@ -249,7 +249,7 @@ ctld.unitLoadLimits = {
     ["SA342M"] = 2,
     ["CH-47D"] = 33,
     ["SA342Mistral"] = 1,
-    ["SA342L"] = 1,
+    ["SA342L"] = 2,
     ["C-101CC"] = 1,
     ["L-39ZA"] = 1,
 }
@@ -273,8 +273,8 @@ ctld.unitActions = {
 
     -- Remove the -- below to turn on options
     ["SA342Mistral"] = { crates = false, troops = false, internal = false },
-    ["SA342L"] = { crates = false, troops = false, internal = false },
-    ["SA342M"] = { crates = false, troops = false, internal = false },
+    ["SA342L"] = { crates = false, troops = true, internal = false },
+    ["SA342M"] = { crates = false, troops = true, internal = false },
     ["Ka-50"] = { crates = true, troops = false, internal = false },
     ["UH-1H"] = { crates = true, troops = true, internal = true },
     ["Mi-8MT"] = { crates = true, troops = true, internal = true },
