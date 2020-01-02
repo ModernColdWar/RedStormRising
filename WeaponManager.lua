@@ -2,6 +2,7 @@
     Weapon Manager Script - Version: 1.8 - 21/12/2019 by Theodossis Papadopoulos
     -- Requires MIST
        ]]
+-- luacheck: no max line length
 local msgTimer = 15
 local limitations = {} -- Do not touch
 
@@ -71,7 +72,7 @@ local playersSettedUp = {}
 local data = {}
 local tobedestroyed = {}
 -- ----------------------- MISC METHODS CODE ------------------------------------
-function tablelength(T)
+local function tablelength(T)
     local count = 0
     for _ in pairs(T) do
         count = count + 1
@@ -79,8 +80,8 @@ function tablelength(T)
     return count
 end
 
-function contains(tab, val)
-    for index, value in ipairs(tab) do
+local function contains(tab, val)
+    for _, value in ipairs(tab) do
         if value == val then
             return true
         end
@@ -88,19 +89,19 @@ function contains(tab, val)
     return false
 end
 
-function tableConcat(t1, t2)
+local function tableConcat(t1, t2)
     for i = 1, #t2 do
         t1[#t1 + 1] = t2[i]
     end
     return t1
 end
 -- --------------------DATA MANAGER--------------------
-function setup(playerName)
+local function setup(playerName)
     data[tablelength(data) + 1] = { ["PlayerName"] = playerName, ["Limitations"] = mist.utils.deepCopy(limitations) }
     playersSettedUp[tablelength(playersSettedUp) + 1] = playerName
 end
 
-function destroyerContains(unitName)
+local function destroyerContains(unitName)
     for i = 1, tablelength(tobedestroyed) do
         if (tobedestroyed[i].Unitname == unitName) then
             return true
@@ -109,7 +110,7 @@ function destroyerContains(unitName)
     return false
 end
 
-function makeMore(playerName, wpn, howMany)
+local function makeMore(playerName, wpn, howMany)
     local earlyBreak = false
     for i = 1, tablelength(data) do
         if (data[i].PlayerName == playerName) then
@@ -128,7 +129,7 @@ function makeMore(playerName, wpn, howMany)
     end
 end
 
-function destroyAfter5MINS(unitName)
+local function destroyAfter5MINS(unitName)
     for i = 1, tablelength(tobedestroyed) do
         if tobedestroyed[i].Unitname == unitName then
             -- FOUND HIM
@@ -140,7 +141,7 @@ function destroyAfter5MINS(unitName)
     end
 end
 
-function makeLess(playerName, wpn, howMany, unit)
+local function makeLess(playerName, wpn, howMany, unit)
     local earlyBreak = false
     for i = 1, tablelength(data) do
         if (data[i].PlayerName == playerName) then
@@ -166,7 +167,7 @@ function makeLess(playerName, wpn, howMany, unit)
     end
 end
 
-function validateLoadout(gpid)
+local function validateLoadout(gpid)
     local earlyBreak = false
     local blueUnits = mist.utils.deepCopy(coalition.getPlayers(coalition.side.BLUE))
     local redUnits = mist.utils.deepCopy(coalition.getPlayers(coalition.side.RED))
@@ -215,7 +216,7 @@ function validateLoadout(gpid)
     end
 end
 -- --------------------DATA PRINTER--------------------
-function printHowManyLeft(gpid)
+local function printHowManyLeft(gpid)
     local earlyBreak = false
     local blueUnits = mist.utils.deepCopy(coalition.getPlayers(coalition.side.BLUE))
     local redUnits = mist.utils.deepCopy(coalition.getPlayers(coalition.side.RED))
@@ -247,7 +248,9 @@ function printHowManyLeft(gpid)
     end
 end
 
+-- luacheck: globals EV_MANAGER
 EV_MANAGER = {}
+-- luacheck: push no unused
 function EV_MANAGER:onEvent(event)
     if event.id == world.event.S_EVENT_BIRTH then
         if event.initiator:getCategory() == Object.Category.UNIT then
@@ -269,7 +272,7 @@ function EV_MANAGER:onEvent(event)
         if event.initiator ~= nil then
             if event.initiator:getGroup():getCategory() == Group.Category.AIRPLANE then
                 if event.initiator:getAmmo() ~= nil then
-                    for i, ammo in pairs(event.initiator:getAmmo()) do
+                    for _, ammo in pairs(event.initiator:getAmmo()) do
                         for j = 1, tablelength(limitations) do
                             if (limitations[j].WP_NAME == ammo.desc.typeName) then
                                 makeLess(event.initiator:getPlayerName(), ammo.desc.typeName, ammo.count, event.initiator)
@@ -283,7 +286,7 @@ function EV_MANAGER:onEvent(event)
         if event.initiator ~= nil then
             if event.initiator:getGroup():getCategory() == Group.Category.AIRPLANE then
                 if event.initiator:getAmmo() ~= nil then
-                    for i, ammo in pairs(event.initiator:getAmmo()) do
+                    for _, ammo in pairs(event.initiator:getAmmo()) do
                         for j = 1, tablelength(limitations) do
                             if (limitations[j].WP_NAME == ammo.desc.typeName) then
                                 makeMore(event.initiator:getPlayerName(), ammo.desc.typeName, ammo.count)
@@ -346,5 +349,6 @@ function EV_MANAGER:onEvent(event)
         end
     end
 end
+-- luacheck: pop
 world.addEventHandler(EV_MANAGER)
 env.info("Weapon Manager loaded")
