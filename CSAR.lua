@@ -9,6 +9,7 @@
 --      3 - Pilot Life Limit - No Aircraft Disabling
 -- luacheck: no max line length
 local ctldUtils = require("ctldUtils")
+local missionUtils = require("missionUtils")
 
 csar = {}
 
@@ -658,7 +659,10 @@ function csar.checkDisabledAircraftStatus(_args)
                 return
 
             else
-
+                if missionUtils.isTransportType(_unit:getTypeName()) then
+                    -- no lives restriction for CSAR units
+                    return
+                end
                 local _text = string.format("You have run out of LIVES! Lives will be reset on mission restart or when your pilot is rescued.\n\nThis aircraft will be DESTROYED on takeoff! (Helicopters are exempt)")
 
                 --display message,
