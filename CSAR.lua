@@ -277,7 +277,7 @@ function csar.eventHandler:onEvent(event)
             -- TODO catch ejection on runway?
 
             if csar.enableForAI == false and _unit:getPlayerName() == nil then
-               env.info("Ignoring ejection as getPlayerName is nil")
+                env.info("Ignoring ejection as getPlayerName is nil")
                 return
             end
 
@@ -546,7 +546,7 @@ function csar.reactivateAircraft()
             end
         end
 
-    --elseif csar.csarMode == 3 then
+        --elseif csar.csarMode == 3 then
         -- No Disable - Just reduce player lives
     end
 end
@@ -856,7 +856,7 @@ function csar.initSARForPilot(_downedGroup, _freq)
                     -- Schedule timer to check when to pop smoke
                     timer.scheduleFunction(csar.checkWoundedGroupStatus, { _unitName, _groupName }, timer.getTime() + 1)
                 end
-            --else
+                --else
                 --env.warning(string.format("Medevac unit %s not active", _heliName), false)
 
                 -- Schedule timer for Dead unit so when the unit respawns he can still pickup units
@@ -1380,7 +1380,7 @@ function csar.getClosetDownedPilot(_heli)
         -- check group exists and not moving to someone else
         if #_tempWounded > 0 and (_tempWounded[1]:getCoalition() == _side) then
 
-           local _distance = csar.getDistance(_heli:getPoint(), _tempWounded[1]:getPoint())
+            local _distance = csar.getDistance(_heli:getPoint(), _tempWounded[1]:getPoint())
 
             if _distance ~= nil and (_shortestDistance == -1 or _distance < _shortestDistance) then
 
