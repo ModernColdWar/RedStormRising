@@ -464,7 +464,7 @@ function csar.handleEjectOrCrash(_unit, _crashed)
             end
 
             csar.pilotLives[_unit:getPlayerName()] = _lives - 1
-
+            env.info("Setting lives for " .. _unit:getPlayerName() .. " to " .. _lives - 2)
             trigger.action.setUserFlag("CSAR_PILOT" .. _unit:getPlayerName():gsub('%W', ''), _lives - 1)
         end
     end
