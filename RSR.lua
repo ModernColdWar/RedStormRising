@@ -29,7 +29,7 @@ local slotBlocker = require("slotBlocker")
 local baseCapturedHandler = require("baseCapturedHandler")
 local loggingEventHandler = require("loggingEventHandler")
 local missionInfo = require("missionInfo")
-require("WeaponManager")
+require("weaponManager")
 
 slotBlocker.onMissionStart()
 baseCapturedHandler.register()
