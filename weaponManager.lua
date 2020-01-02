@@ -3,6 +3,8 @@
     -- Requires MIST
        ]]
 -- luacheck: no max line length
+local M = {}
+
 local msgTimer = 15
 local limitations = {} -- Do not touch
 
@@ -352,3 +354,5 @@ end
 -- luacheck: pop
 world.addEventHandler(EV_MANAGER)
 env.info("Weapon Manager loaded")
+
+return M
