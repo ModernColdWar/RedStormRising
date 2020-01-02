@@ -334,3 +334,4 @@ function EV_MANAGER:onEvent(event)
   end
 end
 world.addEventHandler(EV_MANAGER)
+env.info("Weapon Manager loaded")
