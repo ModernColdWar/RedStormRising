@@ -6,8 +6,8 @@ local M = {}
 local log = mist.Logger:new("SlotBlocker", "info")
 
 M.clientSet = SET_CLIENT:New()
-                          :FilterActive(false)
-                          :FilterOnce()
+                        :FilterActive(false)
+                        :FilterOnce()
 
 local function disableSlot(groupName)
     log:info("Disabling $1", groupName)

@@ -6,7 +6,6 @@ local loggingEventHandler = require("loggingEventHandler")
 
 TestLoggingEventHandler = {}
 
-
 function TestLoggingEventHandler:testEmptyHitEvent()
     lu.assertIsNil(loggingEventHandler.buildHitMessage({}))
 end
@@ -21,7 +20,7 @@ function TestLoggingEventHandler:testAIHitOnPlayer()
         WeaponName = "weapons.shells.M2_12_7_T",
     }
     lu.assertEquals(loggingEventHandler.buildHitMessage(event),
-    "Blue M-1 Abrams hit Winston in red UH-1H with weapons.shells.M2_12_7_T")
+            "Blue M-1 Abrams hit Winston in red UH-1H with weapons.shells.M2_12_7_T")
 end
 
 function TestLoggingEventHandler:testPlayerHitOnAI()
@@ -34,7 +33,7 @@ function TestLoggingEventHandler:testPlayerHitOnAI()
         WeaponName = "AIM-120C",
     }
     lu.assertEquals(loggingEventHandler.buildHitMessage(event),
-    "Bob in red F/A-18C hit blue ZSU-23 with AIM-120C")
+            "Bob in red F/A-18C hit blue ZSU-23 with AIM-120C")
 end
 
 function TestLoggingEventHandler:testPlayerHitOnAINoWeaponName()
@@ -46,7 +45,7 @@ function TestLoggingEventHandler:testPlayerHitOnAINoWeaponName()
         TgtTypeName = "ZSU-23"
     }
     lu.assertEquals(loggingEventHandler.buildHitMessage(event),
-    "Bob in red F/A-18C hit blue ZSU-23")
+            "Bob in red F/A-18C hit blue ZSU-23")
 end
 
 function TestLoggingEventHandler:testPlayerOnPlayerHit()
@@ -60,7 +59,7 @@ function TestLoggingEventHandler:testPlayerOnPlayerHit()
         TgtPlayerName = "Alan",
     }
     lu.assertEquals(loggingEventHandler.buildHitMessage(event),
-    "Bob in red F/A-18C hit Alan in blue ZSU-23 with AIM-120C")
+            "Bob in red F/A-18C hit Alan in blue ZSU-23 with AIM-120C")
 end
 
 function TestLoggingEventHandler:testPlayerOnPlayerFriendlyHit()
@@ -74,7 +73,7 @@ function TestLoggingEventHandler:testPlayerOnPlayerFriendlyHit()
         TgtPlayerName = "Alan",
     }
     lu.assertEquals(loggingEventHandler.buildHitMessage(event),
-    "FRIENDLY FIRE: Bob in red F/A-18C hit Alan in red ZSU-23 with AIM-120C")
+            "FRIENDLY FIRE: Bob in red F/A-18C hit Alan in red ZSU-23 with AIM-120C")
 end
 
 function TestLoggingEventHandler:testAIOnAIHit()
@@ -112,7 +111,7 @@ function TestLoggingEventHandler:testSlungUnitHitOnPlayer()
         WeaponName = "weapons.shells.M2_12_7_T",
     }
     lu.assertEquals(loggingEventHandler.buildHitMessage(event),
-    "Winston's blue M-1 Abrams hit Alan in red UH-1H with weapons.shells.M2_12_7_T")
+            "Winston's blue M-1 Abrams hit Alan in red UH-1H with weapons.shells.M2_12_7_T")
 end
 
 function TestLoggingEventHandler:testPlayerHitOnSlungUnit()
@@ -126,7 +125,7 @@ function TestLoggingEventHandler:testPlayerHitOnSlungUnit()
         WeaponName = "AGM-65D",
     }
     lu.assertEquals(loggingEventHandler.buildHitMessage(event),
-    "Bob in red F/A-18C hit Winston's blue ZSU-23 with AGM-65D")
+            "Bob in red F/A-18C hit Winston's blue ZSU-23 with AGM-65D")
 end
 
 local runner = lu.LuaUnit.new()
