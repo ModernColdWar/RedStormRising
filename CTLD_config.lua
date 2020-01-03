@@ -84,7 +84,7 @@ ctld.allowRandomAiTeamPickups = false -- Allows the AI to randomize the loading 
 ctld.heavyCrateWeightMultiplier = 3 -- weight multiplier applied to the weight of light crates to create heavy ones
 
 ctld.ewrFrequencyRed = 124
-ctld.ewrFrequencyBlue = 121
+ctld.ewrFrequencyBlue = 124
 
 -- Simulated Sling load configuration
 
