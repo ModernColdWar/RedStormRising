@@ -2,6 +2,7 @@ require("mist_4_3_74")
 local bases = require("bases")
 local utils = require("utils")
 local state = require("state")
+local rsrConfig = require("RSR_config")
 
 local M = {}
 
@@ -23,6 +24,7 @@ function M.register()
         self:I(message)
         trigger.action.outText(message, 10)
         bases.configureForSide(baseName, sideName)
+        bases.resupply(baseName, sideName, rsrConfig)
     end
 end
 

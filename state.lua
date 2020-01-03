@@ -27,6 +27,9 @@ M.defaultState = {
 -- set in M.setCurrentState(stateFileName)
 M.currentState = nil
 
+-- used to mark whether base defences need to be spawned in at start (ie round reset)
+M.firstTimeSetup = false
+
 -- recently spawned units (from player unpacking via CTLD or via code)
 M.spawnQueue = {}
 
@@ -188,6 +191,7 @@ function M.setCurrentStateFromFile(stateFileName)
 
     if not canUseStateFromFile then
         log:info("Setting up from defaults in code and base ownership from mission")
+        M.firstTimeSetup = true
         M.currentState = mist.utils.deepCopy(M.defaultState)
         M.updateBaseOwnership()
     end

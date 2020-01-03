@@ -2,6 +2,7 @@ require("mist_4_3_74")
 local logisticsManager = require("logisticsManager")
 local pickupZoneManager = require("pickupZoneManager")
 local slotBlocker = require("slotBlocker")
+local state = require("state")
 local utils = require("utils")
 
 local M = {}
@@ -37,6 +38,7 @@ local function activateBaseDefences(baseName, sideName, rsrConfig)
         if group:GetCoalition() == side and activationZone:IsVec3InZone(group:GetVec3()) and not isReplacementGroup(group) then
             log:info("Activating $1 $2 base defence group $3", baseName, sideName, group:GetName())
             group:Activate()
+            state.pushSpawnQueue(group:GetName())
         end
     end)
 end
@@ -66,13 +68,19 @@ function M.resupply(baseName, sideName, rsrConfig)
     logisticsManager.spawnLogisticsBuildingForBase(baseName, sideName)
 end
 
-function M.onMissionStart(baseName, sideName, rsrConfig)
+function M.onMissionStart(baseName, sideName, rsrConfig, firstTimeSetup)
     log:info("Configuring $1 as $2 at mission start", baseName, sideName)
     if checkNeutral(baseName, sideName) then
         return
     end
     M.configureForSide(baseName, sideName)
-    M.resupply(baseName, sideName, rsrConfig)
+    if firstTimeSetup then
+        log:info("First time setup - resupplying")
+        M.resupply(baseName, sideName, rsrConfig)
+    else
+        log:info("Not first time setup - not doing any base resupply; only logistics")
+        logisticsManager.spawnLogisticsBuildingForBase(baseName, sideName)
+    end
 end
 
 return M

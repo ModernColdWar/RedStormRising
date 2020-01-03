@@ -139,14 +139,14 @@ function M.getOwnedJtacCount(groupOwnership, sideName, playerName)
 end
 
 -- Base defences are defined as late-activated group groups in proximity to an airbase or helipad
-local function configureBasesAtStartup(rsrConfig, baseOwnership)
+local function configureBasesAtStartup(rsrConfig, baseOwnership, firstTimeSetup)
     for _, ownershipData in pairs(baseOwnership) do
         for sideName, baseNames in pairs(ownershipData) do
             for _, baseName in pairs(baseNames) do
                 if AIRBASE:FindByName(baseName) == nil then
                     log:error("Unable to find base $1 on map but was in state file; skipping setup", baseName)
                 else
-                    bases.onMissionStart(baseName, sideName, rsrConfig)
+                    bases.onMissionStart(baseName, sideName, rsrConfig, firstTimeSetup)
                 end
             end
         end
@@ -157,7 +157,7 @@ function M.restoreFromState(rsrConfig)
     log:info("Restoring mission state")
     state.copyToCtld()
 
-    configureBasesAtStartup(rsrConfig, state.currentState.baseOwnership)
+    configureBasesAtStartup(rsrConfig, state.currentState.baseOwnership, state.firstTimeSetup)
 
     -- We clear state.current.persistentGroupData here, as this is updated in handleSpawnQueue later
     -- This ensures the data we get from MIST is always consistent between a CTLD spawn and a reload from disk
