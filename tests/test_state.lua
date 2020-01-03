@@ -5,9 +5,46 @@ local state = require("state")
 
 TestState = {}
 
+local _getMistGroupData = state.getMistGroupData
+
 function TestState:setUp()
     -- reset state
-    state.currentState = state.defaultState
+    state.currentState = mist.utils.deepCopy(state.defaultState)
+    state.spawnQueue = {}
+end
+
+function TestState:tearDown()
+    state.getMistGroupData = _getMistGroupData
+end
+
+function TestState:testPushSpawnQueue()
+    lu.assertEquals(state.spawnQueue, {})
+    state.pushSpawnQueue("group1")
+    state.pushSpawnQueue("group2")
+    lu.assertEquals(state.spawnQueue, { "group1", "group2" })
+end
+
+function TestState:testHandleSpawnQueueLeavesItemsInQueueIfNoDataFromMist()
+    state.pushSpawnQueue("group1")
+    state.pushSpawnQueue("group2")
+    state.handleSpawnQueue()
+
+    lu.assertEquals(state.spawnQueue, { "group1", "group2" })
+end
+
+function TestState:testHandleSpawnQueuePutsGroupDataIntoStateAndRemovesFromQueue()
+    state.getMistGroupData = function(groupName)
+        return { groupName = groupName, pos = { x = 1, y = 2 } }
+    end
+    state.pushSpawnQueue("group1")
+    state.pushSpawnQueue("group2")
+    state.handleSpawnQueue()
+
+    lu.assertEquals(state.spawnQueue, {})
+    lu.assertEquals(state.currentState.persistentGroupData, {
+        { groupName = "group2", pos = { x = 1, y = 2 } },
+        { groupName = "group1", pos = { x = 1, y = 2 } }
+    })
 end
 
 function TestState:testRemoveGroupAndUnitIds()

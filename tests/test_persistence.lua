@@ -1,6 +1,5 @@
 local lu = require("tests.luaunit")
 require("tests.dcs_stub")
-local state = require("state")
 local persistence = require("persistence")
 
 TestPersistence = {}
@@ -9,43 +8,10 @@ local _getMistGroupData = persistence.getMistGroupData
 
 function TestPersistence:setUp()
     dcsStub.reset()
-    state.currentState = mist.utils.deepCopy(state.defaultState)
-    persistence.spawnQueue = {}
-    --persistence.resetState()
 end
 
 function TestPersistence:tearDown()
     persistence.getMistGroupData = _getMistGroupData
-end
-
-function TestPersistence:testPushSpawnQueue()
-    lu.assertEquals(persistence.spawnQueue, {})
-    persistence.pushSpawnQueue("group1")
-    persistence.pushSpawnQueue("group2")
-    lu.assertEquals(persistence.spawnQueue, { "group1", "group2" })
-end
-
-function TestPersistence:testHandleSpawnQueueLeavesItemsInQueueIfNoDataFromMist()
-    persistence.pushSpawnQueue("group1")
-    persistence.pushSpawnQueue("group2")
-    persistence.handleSpawnQueue()
-
-    lu.assertEquals(persistence.spawnQueue, { "group1", "group2" })
-end
-
-function TestPersistence:testHandleSpawnQueuePutsGroupDataIntoStateAndRemovesFromQueue()
-    persistence.getMistGroupData = function(groupName)
-        return { groupName = groupName, pos = { x = 1, y = 2 } }
-    end
-    persistence.pushSpawnQueue("group1")
-    persistence.pushSpawnQueue("group2")
-    persistence.handleSpawnQueue()
-
-    lu.assertEquals(persistence.spawnQueue, {})
-    lu.assertEquals(state.currentState.persistentGroupData, {
-        { groupName = "group2", pos = { x = 1, y = 2 } },
-        { groupName = "group1", pos = { x = 1, y = 2 } }
-    })
 end
 
 function TestPersistence:testUpdateGroupDataWithEmptyData()

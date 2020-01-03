@@ -10,43 +10,12 @@ local log = mist.Logger:new("Persistence", "info")
 
 local M = {}
 
--- recently spawned units (from player unpacking via CTLD or via code)
-M.spawnQueue = {}
 
 -- group ownerships by side and user - kept in memory only and updated in handleSpawnQueue
 M.groupOwnership = {
     red = {},
     blue = {}
 }
-
-function M.pushSpawnQueue(groupName)
-    log:info("Adding $1 to spawn queue", groupName)
-    table.insert(M.spawnQueue, groupName)
-end
-
--- wrapped so we can stub this out in the tests
-function M.getMistGroupData(groupName)
-    return mist.getGroupData(groupName)
-end
-
-function M.handleSpawnQueue()
-    -- get MIST group data for newly unpacked units (if it's available)
-    log:info("Handling spawn queue (length $1)", #M.spawnQueue)
-    for i = #M.spawnQueue, 1, -1 do
-        local groupName = M.spawnQueue[i]
-        log:info("Getting group data for spawned group $1", groupName)
-        local groupData = M.getMistGroupData(groupName)
-        if groupData ~= nil then
-            log:info("Successfully got group data for $1", groupName)
-            table.insert(state.currentState.persistentGroupData, groupData)
-            log:info("Removing $1 from spawn queue", groupName)
-            table.remove(M.spawnQueue, i)
-        else
-            log:warn("Unable to get group data for $1; leaving in spawn queue", groupName)
-        end
-    end
-    log:info("Spawn queue handling complete")
-end
 
 local function getSideNameFromGroupData(groupData)
     return utils.getSideName(tonumber(groupData.coalitionId))
@@ -90,7 +59,7 @@ end
 
 local function persistState(rsrConfig)
     M.updateGroupData(state.currentState.persistentGroupData)
-    M.handleSpawnQueue()
+    state.handleSpawnQueue()
     state.copyFromCtld()
     state.updateBaseOwnership()
     log:info("Number of persistent groups at save is $1", #state.currentState.persistentGroupData)
@@ -123,7 +92,7 @@ function M.spawnGroup(groupData)
         log:info("Configuring group $1 as EWR", groupName)
         ctld.addEWRTask(spawnedGroup)
     end
-    M.pushSpawnQueue(groupName)
+    state.pushSpawnQueue(groupName)
     local playerName = utils.getPlayerNameFromGroupName(groupName)
     if playerName ~= nil then
         -- we have "old" groups without player names present
@@ -217,7 +186,7 @@ function M.onMissionStart(rsrConfig)
             local playerName = ctld.getPlayerNameOrType(_args.unit)
             local groupName = _args.spawnedGroup:getName()
             log:info('Player $1 on $2 unpacked $3', playerName, sideName, groupName)
-            M.pushSpawnQueue(groupName)
+            state.pushSpawnQueue(groupName)
             M.addGroupOwnership(M.groupOwnership, sideName, playerName, groupName)
         end
     end)

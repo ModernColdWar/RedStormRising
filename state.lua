@@ -27,6 +27,38 @@ M.defaultState = {
 -- set in M.setCurrentState(stateFileName)
 M.currentState = nil
 
+-- recently spawned units (from player unpacking via CTLD or via code)
+M.spawnQueue = {}
+
+function M.pushSpawnQueue(groupName)
+    log:info("Adding $1 to spawn queue", groupName)
+    table.insert(M.spawnQueue, groupName)
+end
+
+-- wrapped so we can stub this out in the tests
+function M.getMistGroupData(groupName)
+    return mist.getGroupData(groupName)
+end
+
+function M.handleSpawnQueue()
+    -- get MIST group data for newly unpacked units (if it's available)
+    log:info("Handling spawn queue (length $1)", #M.spawnQueue)
+    for i = #M.spawnQueue, 1, -1 do
+        local groupName = M.spawnQueue[i]
+        log:info("Getting group data for spawned group $1", groupName)
+        local groupData = M.getMistGroupData(groupName)
+        if groupData ~= nil then
+            log:info("Successfully got group data for $1", groupName)
+            table.insert(M.currentState.persistentGroupData, groupData)
+            log:info("Removing $1 from spawn queue", groupName)
+            table.remove(M.spawnQueue, i)
+        else
+            log:warn("Unable to get group data for $1; leaving in spawn queue", groupName)
+        end
+    end
+    log:info("Spawn queue handling complete")
+end
+
 --- Removes groupId and unitId from data so that upon respawn, MIST assigns new IDs
 -- Avoids accidental overwrite of units
 -- This is called at write-to-disk time
