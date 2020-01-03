@@ -208,7 +208,7 @@ function csar.eventHandler:onEvent(event)
                 end
             end
             -- FIXME: below is raising errors
-            if _event.initiator:getName() and _event.initiator:getPlayerName() then
+            if _event.initiator:getName() and _event.initiator.getPlayerName ~= nil and _event.initiator:getPlayerName() then
                 env.info("Checking Unit - " .. _event.initiator:getName())
                 csar.checkDisabledAircraftStatus({ _event.initiator:getName(), _event.initiator:getPlayerName() })
             end
