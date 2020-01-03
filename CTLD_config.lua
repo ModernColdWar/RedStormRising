@@ -403,20 +403,22 @@ ctld.spawnableCrates = {
     },
 
     ["Artillery"] = {
+        { weight = 888, desc = "2S9 Nona", unit = "2S9 Nona", side = 1, cratesRequired = 1, internal = 0 },
+        { weight = 889, desc = "SAU Gvozdika", unit = "SAU Gvozdika", side = 1, cratesRequired = 2, internal = 0 },
         { weight = 890, desc = "SPH 2S19 Msta", unit = "SAU Msta", side = 1, cratesRequired = 2, internal = 0 },
         { weight = 891, desc = "BM-27 MLRS", unit = "Uragan_BM-27", side = 1, cratesRequired = 2, internal = 0 },
         { weight = 892, desc = "MLRS Smerch", unit = "Smerch", side = 1, cratesRequired = 2, internal = 0 },
 
+        { weight = 897, desc = "SpGH DANA", unit = "SpGH_Dana", side = 2, cratesRequired = 2, internal = 0 },
         { weight = 895, desc = "M-109", unit = "M-109", side = 2, cratesRequired = 2, internal = 0 },
         { weight = 896, desc = "MLRS", unit = "MLRS", side = 2, cratesRequired = 2, internal = 0 },
-        { weight = 894, desc = "SpGH DANA", unit = "SpGH_Dana", side = 2, cratesRequired = 2, internal = 0 },
     },
 
     ["Support"] = {
         { weight = 600, desc = "ATZ-10 Fuel Truck", unit = "ATZ-10", side = 1, cratesRequired = 1, internal = 1 },
         { weight = 601, desc = "Ural-375 Ammo Truck", unit = "Ural-375", side = 1, cratesRequired = 1, internal = 0 },
 
-        { weight = 610, desc = "M978 HEMTT Tanker", unit = "M978 HEMTT Tanker", side = 2, cratesRequired = 1, internal = 0 },
+        { weight = 610, desc = "M978 HEMTT Tanker", unit = "M978 HEMTT Tanker", side = 2, cratesRequired = 1, internal = 1 },
         { weight = 611, desc = "M-818 Ammo Truck", unit = "M 818", side = 2, cratesRequired = 1, internal = 0 },
 
         { weight = 620, desc = "SA-2 Repair", unit = "SA-2 Repair", side = 1, internal = 0 },

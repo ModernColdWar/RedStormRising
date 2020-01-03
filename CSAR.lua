@@ -29,7 +29,7 @@ csar.csarMode = 3
 --      2 - Disable Aircraft for Pilot when he's shot down -- timeout to reenable pilot for aircraft
 --      3 - Pilot Life Limit - No Aircraft Disabling -- timeout to reset lives?
 
-csar.maxLives = 10 -- Maximum pilot lives
+csar.maxLives = 20 -- Maximum pilot lives
 
 csar.countCSARCrash = false -- If you set to true, pilot lives count for CSAR and CSAR aircraft will count.
 
@@ -38,7 +38,7 @@ csar.reenableIfCSARCrashes = true -- If a CSAR heli crashes, the pilots are coun
 -- - I recommend you leave the option on below IF USING MODE 1 otherwise the
 -- aircraft will be disabled for the duration of the mission
 csar.disableAircraftTimeout = true -- Allow aircraft to be used after 20 minutes if the pilot isnt rescued
-csar.disableTimeoutTime = 240 -- Time in minutes for TIMEOUT
+csar.disableTimeoutTime = 240 -- Time in minutes for TIMEOUT; not relevant for csarMode = 3
 
 csar.destructionHeight = 150 -- height in meters an aircraft will be destroyed at if the aircraft is disabled
 

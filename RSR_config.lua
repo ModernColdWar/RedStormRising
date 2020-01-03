@@ -10,6 +10,12 @@ rsrConfig.writeDelay = rsrConfig.devMode and 0 or 180  -- initial delay for pers
 rsrConfig.baseDefenceActivationRadiusAirbase = 5000
 rsrConfig.baseDefenceActivationRadiusFarp = 2500
 rsrConfig.hitMessageDelay = 30
-rsrConfig.restartHours = { 1, 5, 9, 13, 17, 21}
+
+-- Windows task scheduler, schedules the DCSTask Kill batch file to execute on these hours. These hours are placed here to configure
+-- the in-game message the players can query to find out the restart time
+-- TODO: you also should change
+--rsrConfig.restartHours = { 1, 5, 9, 13, 17, 21 } -- For restarts every 4 hours
+--rsrConfig.restartHours = { 1, 7, 13, 19 } -- For restarts every 6 hours
+rsrConfig.restartHours = { 1, 9, 17 } -- For restarts every 8 hours
 
 return rsrConfig
