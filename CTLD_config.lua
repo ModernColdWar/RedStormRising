@@ -404,7 +404,7 @@ ctld.spawnableCrates = {
 
     ["Artillery"] = {
         { weight = 890, desc = "2S9 Nona", unit = "2S9 Nona", side = 1, cratesRequired = 1, internal = 0 },
-        { weight = 801, desc = "SAU Gvozdika", unit = "SAU Gvozdika", side = 1, cratesRequired = 2, internal = 0 },
+        { weight = 891, desc = "SAU Gvozdika", unit = "SAU Gvozdika", side = 1, cratesRequired = 2, internal = 0 },
         { weight = 892, desc = "SPH 2S19 Msta", unit = "SAU Msta", side = 1, cratesRequired = 2, internal = 0 },
         { weight = 893, desc = "BM-27 MLRS", unit = "Uragan_BM-27", side = 1, cratesRequired = 2, internal = 0 },
         { weight = 894, desc = "MLRS Smerch", unit = "Smerch", side = 1, cratesRequired = 2, internal = 0 },
