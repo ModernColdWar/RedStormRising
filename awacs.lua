@@ -18,17 +18,17 @@ function M.onMissionStart()
     local krasOwner = state.getOwner("Krasnodar-Center")
     log:info("Krasnodar-Center owner is $1", krasOwner)
     if krasOwner == "red" then
-        spawnAWACS("Red AWACS")
+        spawnAWACS("Krasnodar-Center Red AWACS")
     elseif krasOwner == "blue" then
-        spawnAWACS("Blue AWACS")
+        spawnAWACS("Krasnodar-Center Blue AWACS")
     end
 
     local vazOwner = state.getOwner("Vaziani")
     log:info("Vaziani owner is $1", krasOwner)
     if vazOwner == "red" then
-        spawnAWACS("Red AWACS 2")
+        spawnAWACS("Vaziani Red AWACS")
     elseif vazOwner == "blue" then
-        spawnAWACS("Blue AWACS 2")
+        spawnAWACS("Vaziani Blue AWACS")
     end
 end
 
