@@ -12,10 +12,10 @@ local function spawnAWACS(spawnTemplatePrefix)
          :SpawnScheduled(1800, 0.1)
 end
 
-function M.onMissionStart()
+function M.onMissionStart(awacsBases)
     log:info("Configuring AWACS at mission start")
 
-    for _, baseName in pairs({ "Krasnodar-Center", "Vaziani" }) do
+    for _, baseName in pairs(awacsBases) do
         local baseOwner = state.getOwner(baseName)
         log:info("$1 owner is $2", baseName, baseOwner)
         if baseOwner == "red" then

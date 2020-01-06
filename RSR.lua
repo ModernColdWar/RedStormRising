@@ -37,7 +37,7 @@ baseCapturedHandler.register()
 loggingEventHandler.register(rsrConfig.hitMessageDelay)
 persistence.onMissionStart(rsrConfig)
 missionInfo.onMissionStart(rsrConfig)
-awacs.onMissionStart()
+awacs.onMissionStart(rsrConfig.awacsBases)
 
 _SETTINGS:SetPlayerMenuOff()
 trigger.action.outText("RSR ready", 10)

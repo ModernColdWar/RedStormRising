@@ -10,6 +10,7 @@ rsrConfig.writeDelay = rsrConfig.devMode and 0 or 180  -- initial delay for pers
 rsrConfig.baseDefenceActivationRadiusAirbase = 5000
 rsrConfig.baseDefenceActivationRadiusFarp = 2500
 rsrConfig.hitMessageDelay = 30
+rsrConfig.awacsBases = { "Krasnodar-Center", "Vaziani" } -- bases with linked AWACS spawns
 
 -- Windows task scheduler, schedules the DCSTask Kill batch file to execute on these hours. These hours are placed here to configure
 -- the in-game message the players can query to find out the restart time
