@@ -15,20 +15,14 @@ end
 function M.onMissionStart()
     log:info("Configuring AWACS at mission start")
 
-    local krasOwner = state.getOwner("Krasnodar-Center")
-    log:info("Krasnodar-Center owner is $1", krasOwner)
-    if krasOwner == "red" then
-        spawnAWACS("Krasnodar-Center Red AWACS")
-    elseif krasOwner == "blue" then
-        spawnAWACS("Krasnodar-Center Blue AWACS")
-    end
-
-    local vazOwner = state.getOwner("Vaziani")
-    log:info("Vaziani owner is $1", krasOwner)
-    if vazOwner == "red" then
-        spawnAWACS("Vaziani Red AWACS")
-    elseif vazOwner == "blue" then
-        spawnAWACS("Vaziani Blue AWACS")
+    for _, baseName in pairs({ "Krasnodar-Center", "Vaziani" }) do
+        local baseOwner = state.getOwner(baseName)
+        log:info("$1 owner is $2", baseName, baseOwner)
+        if baseOwner == "red" then
+            spawnAWACS(string.format("%s Red AWACS", baseName))
+        elseif baseOwner == "blue" then
+            spawnAWACS(string.format("%s Blue AWACS", baseName))
+        end
     end
 end
 
