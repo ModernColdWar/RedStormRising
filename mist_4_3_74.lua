@@ -1143,7 +1143,8 @@ do -- the main scope
 		--mist.addEventHandler(addDeadObject)
 
 		-- call main the first time therafter it reschedules itself.
-		mist.main()
+		-- main method call removed in RSR for performance reasons
+		--mist.main()
 		--log:msg('MIST version $1.$2.$3 loaded', mist.majorVersion, mist.minorVersion, mist.build)
 		return
 	end
