@@ -1717,10 +1717,12 @@ function csar.getClockDirection(_heli, _crate)
 end
 
 function csar.getGroupId(_unit)
-
-    local _unitDB = mist.DBs.unitsById[tonumber(_unit:getID())]
-    if _unitDB ~= nil and _unitDB.groupId then
-        return _unitDB.groupId
+    local Unit = UNIT:Find(_unit)
+    if Unit ~= nil then
+        local Group = Unit:GetGroup()
+        if Group ~= nil then
+            return Group:GetID()
+        end
     end
 
     return nil

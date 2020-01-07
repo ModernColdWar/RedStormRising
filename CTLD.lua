@@ -22,6 +22,7 @@
 -- luacheck: no max line length
 require("mist_4_3_74")
 require("CTLD_config")
+require("MOOSE")
 
 ctld.nextUnitId = 1;
 ctld.getNextUnitId = function()
@@ -4482,10 +4483,12 @@ function ctld.addJTACRadioCommand(_side)
 end
 
 function ctld.getGroupId(_unit)
-
-    local _unitDB = mist.DBs.unitsById[tonumber(_unit:getID())]
-    if _unitDB ~= nil and _unitDB.groupId then
-        return _unitDB.groupId
+    local Unit = UNIT:Find(_unit)
+    if Unit ~= nil then
+        local Group = Unit:GetGroup()
+        if Group ~= nil then
+            return Group:GetID()
+        end
     end
 
     return nil
