@@ -191,8 +191,8 @@ function M.onMissionStart(rsrConfig)
         end
     end)
 
-    mist.scheduleFunction(persistState, { rsrConfig },
-            rsrConfig.writeDelay + rsrConfig.writeInterval, rsrConfig.writeInterval)
+    SCHEDULER:New(nil, persistState, { rsrConfig },
+            rsrConfig.writeDelay, rsrConfig.writeInterval)
 end
 
 return M
