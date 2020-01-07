@@ -136,7 +136,7 @@ local function destroyAfter5MINS(unitName)
         if tobedestroyed[i].Unitname == unitName then
             -- FOUND HIM
             trigger.action.explosion(Unit.getByName(unitName):getPosition().p, 100)
-            mist.removeFunction(tobedestroyed[i].Funcid)
+            tobedestroyed[i].scheduler:Stop()
             table.remove(tobedestroyed, i)
             break
         end
@@ -155,8 +155,8 @@ local function makeLess(playerName, wpn, howMany, unit)
                     if (data[i].Limitations[j].QTY - howMany < 0) then
                         if not destroyerContains(unit:getName()) then
                             trigger.action.outTextForGroup(unit:getGroup():getID(), "LOADOUT NOT VALID, RETURN TO BASE FOR REARMING NOW OR YOU WILL BE DESTROYED IN 5 MINS", 300)
-                            local id = mist.scheduleFunction(destroyAfter5MINS, { unit:getName() }, timer.getTime() + 300)
-                            tobedestroyed[tablelength(tobedestroyed) + 1] = { ["Unitname"] = unit:getName(), ["Funcid"] = id }
+                            local scheduler = SCHEDULER:New(nil, destroyAfter5MINS, { unit:getName()}, 300)
+                            tobedestroyed[tablelength(tobedestroyed) + 1] = { ["Unitname"] = unit:getName(), ["scheduler"] = scheduler }
                         end
                     end
                     data[i].Limitations[j].QTY = data[i].Limitations[j].QTY - howMany
@@ -298,7 +298,7 @@ function EV_MANAGER:onEvent(event)
                     for i = 1, tablelength(tobedestroyed) do
                         if (tobedestroyed[i].Unitname == event.initiator:getName()) then
                             -- FOUND HIM
-                            mist.removeFunction(tobedestroyed[i].Funcid)
+                            tobedestroyed[i].scheduler:Stop()
                             table.remove(tobedestroyed, i)
                             trigger.action.outTextForGroup(event.initiator:getGroup():getID(), "Successfully returned back to base. You will not be destroyed", 300)
                             break
@@ -313,7 +313,7 @@ function EV_MANAGER:onEvent(event)
                 for i = 1, tablelength(tobedestroyed) do
                     if (tobedestroyed[i].Unitname == event.initiator:getName()) then
                         -- FOUND HIM
-                        mist.removeFunction(tobedestroyed[i].Funcid)
+                        tobedestroyed[i].scheduler:Stop()
                         table.remove(tobedestroyed, i)
                         trigger.action.outTextForGroup(event.initiator:getGroup():getID(), "You have been destroyed because you fired a limited weapon", msgTimer, true)
                         trigger.action.explosion(event.initiator:getPosition().p, 100)
@@ -330,7 +330,7 @@ function EV_MANAGER:onEvent(event)
                 for i = 1, tablelength(tobedestroyed) do
                     if (tobedestroyed[i].Unitname == event.initiator:getName()) then
                         -- FOUND HIM
-                        mist.removeFunction(tobedestroyed[i].Funcid)
+                        tobedestroyed[i].scheduler:Stop()
                         table.remove(tobedestroyed, i)
                         break
                     end
@@ -343,7 +343,7 @@ function EV_MANAGER:onEvent(event)
             for i = 1, tablelength(tobedestroyed) do
                 if (tobedestroyed[i].Unitname == event.initiator:getName()) then
                     -- FOUND HIM
-                    mist.removeFunction(tobedestroyed[i].Funcid)
+                    tobedestroyed[i].scheduler:Stop()
                     table.remove(tobedestroyed, i)
                     break
                 end
