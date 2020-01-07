@@ -54,7 +54,7 @@ function M.buildHitMessage(event)
 end
 
 function M.eventHandler:onHit(event)
-    self:logEvent(event)
+    -- self:logEvent(event)
     local message = M.buildHitMessage(event)
     if message ~= nil then
         local time = timer.getTime()
