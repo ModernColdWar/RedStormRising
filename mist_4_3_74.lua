@@ -1138,8 +1138,9 @@ do -- the main scope
 		initDBs()
 
 		-- add event handler for group spawns
-		mist.addEventHandler(groupSpawned)
-		mist.addEventHandler(addDeadObject)
+		-- these two event handlers removed in RSR for performance reasons - please use the MOOSE databases
+		--mist.addEventHandler(groupSpawned)
+		--mist.addEventHandler(addDeadObject)
 
 		-- call main the first time therafter it reschedules itself.
 		mist.main()
