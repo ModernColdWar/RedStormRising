@@ -3759,7 +3759,8 @@ function ctld.orderGroupToMoveToPoint(_leader, _destination)
             local _controller = _grp:getController();
             Controller.setOption(_controller, AI.Option.Ground.id.ALARM_STATE, AI.Option.Ground.val.ALARM_STATE.AUTO)
             Controller.setOption(_controller, AI.Option.Ground.id.ROE, AI.Option.Ground.val.ROE.OPEN_FIRE)
-            _controller:setTask(_arg[2])
+            -- RSR: remove setting waypoints for newly spawned units
+            --_controller:setTask(_arg[2])
         end
     end
     , { _group:getName(), _mission }, timer.getTime() + 2)
