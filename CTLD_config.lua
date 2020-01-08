@@ -110,7 +110,7 @@ ctld.aaSRLaunchers = 3 -- controls how many launchers to add to Short Range Miss
 ctld.aaMRLaunchers = 4 -- controls how many launchers to add to Medium Range Missile systems when spawned.
 ctld.aaLRLaunchers = 4 -- controls how many launchers to add to Long Range Missile systems when spawned.
 
-ctld.launcherRadius = 25 -- distance from crate for spawned launchers
+ctld.launcherRadius = 50 -- distance from crate for spawned launchers
 
 --END AA SYSTEM CONFIG --
 
