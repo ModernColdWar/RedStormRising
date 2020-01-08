@@ -68,7 +68,6 @@ function M.getGroupData(groupName)
         local unitData = {
             heading = mist.getHeading(unit, true),
             skill = "Excellent",
-            speed = 0,
             type = unit:getTypeName(),
             name = unit:getName(),
             x = position.p.x,
