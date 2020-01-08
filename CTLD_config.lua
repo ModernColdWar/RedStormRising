@@ -318,45 +318,45 @@ ctld.spawnableCrates = {
     -- dont use that option with the HAWK Crates
 
     ["IFVs & Light Vehicles"] = {
-        { weight = 800, desc = "BTR-80", unit = "BTR-80", side = 1, cratesRequired = 1, unitQuantity = 2, internal = 0 },
-        { weight = 801, desc = "IFV BMP-1", unit = "BMP-1", side = 1, cratesRequired = 1, unitQuantity = 2, internal = 0 },
-        { weight = 802, desc = "IFV BMP-2", unit = "BMP-2", side = 1, cratesRequired = 1, internal = 0 },
-        { weight = 803, desc = "IFV BMP-3", unit = "BMP-3", side = 1, cratesRequired = 2, internal = 0 },
-        { weight = 804, desc = "IFV ZBD04A", unit = "ZBD04A", side = 1, cratesRequired = 2, internal = 0 },
+        { weight = 800, desc = "BTR-80", unit = "BTR-80", side = 1, cratesRequired = 1, unitQuantity = 3, internal = 0 },
+        { weight = 801, desc = "IFV BMP-1", unit = "BMP-1", side = 1, cratesRequired = 1, unitQuantity = 3, internal = 0 },
+        { weight = 802, desc = "IFV BMP-2", unit = "BMP-2", side = 1, cratesRequired = 1, unitQuantity = 2, internal = 0 },
+        { weight = 803, desc = "IFV BMP-3", unit = "BMP-3", side = 1, cratesRequired = 2, unitQuantity = 3, internal = 0 },
+        { weight = 804, desc = "IFV ZBD04A", unit = "ZBD04A", side = 1, cratesRequired = 1, internal = 0 },
 
-        { weight = 810, desc = "HMMWV TOW", unit = "M1045 HMMWV TOW", side = 2, cratesRequired = 1, internal = 0 },
-        { weight = 811, desc = "HMMWV MG", unit = "M1043 HMMWV Armament", side = 2, cratesRequired = 1, internal = 0 },
-        { weight = 812, desc = "Stryker ATGM", unit = "M1134 Stryker ATGM", side = 2, internal = 0 },
-        { weight = 813, desc = "Stryker MGS", unit = "M1128 Stryker MGS", side = 2, internal = 0 },
-        { weight = 814, desc = "IFV BRADLEY", unit = "M-2 Bradley", side = 2, cratesRequired = 2, internal = 0 },
+        { weight = 810, desc = "HMMWV TOW", unit = "M1045 HMMWV TOW", side = 2, cratesRequired = 1, unitQuantity = 2, internal = 0 },
+        { weight = 811, desc = "HMMWV MG", unit = "M1043 HMMWV Armament", side = 2, cratesRequired = 1, unitQuantity = 2, internal = 0 },
+        { weight = 812, desc = "Stryker ATGM", unit = "M1134 Stryker ATGM", side = 2, unitQuantity = 2, internal = 0 },
+        { weight = 813, desc = "Stryker MGS", unit = "M1128 Stryker MGS", side = 2, unitQuantity = 2, internal = 0 },
+        { weight = 814, desc = "IFV BRADLEY", unit = "M-2 Bradley", side = 2, cratesRequired = 1, internal = 0 },
 
     },
 
     ["Tanks"] = {
-        { weight = 820, desc = "T-55", unit = "T-55", side = 1, cratesRequired = 1, internal = 0 },
-        { weight = 821, desc = "T-72", unit = "T-72B", side = 1, cratesRequired = 2, internal = 0 },
-        { weight = 822, desc = "T-80UD", unit = "T-80UD", side = 1, cratesRequired = 3, internal = 0 },
-        { weight = 823, desc = "T-90", unit = "T-90", side = 1, cratesRequired = 3, internal = 0 },
-        { weight = 824, desc = "LeClerc", unit = "Leclerc", side = 1, cratesRequired = 4, internal = 0 },
-        { weight = 825, desc = "ZTZ-96B", unit = "ZTZ96B", side = 1, cratesRequired = 3, internal = 0 },
+        { weight = 820, desc = "T-55", unit = "T-55", side = 1, cratesRequired = 1, unitQuantity = 2, internal = 0 },
+        { weight = 821, desc = "T-72", unit = "T-72B", side = 1, cratesRequired = 1, internal = 0 },
+        { weight = 822, desc = "T-80UD", unit = "T-80UD", side = 1, cratesRequired = 2, internal = 0 },
+        { weight = 823, desc = "T-90", unit = "T-90", side = 1, cratesRequired = 2, internal = 0 },
+        { weight = 824, desc = "LeClerc", unit = "Leclerc", side = 1, cratesRequired = 3, internal = 0 },
+        { weight = 825, desc = "ZTZ-96B", unit = "ZTZ96B", side = 1, cratesRequired = 2, internal = 0 },
 
-        { weight = 830, desc = "Leopard 1A3", unit = "Leopard1A3", side = 2, cratesRequired = 1, internal = 0 },
-        { weight = 831, desc = "Leopard 2", unit = "Leopard-2", side = 2, cratesRequired = 3, internal = 0 },
-        { weight = 832, desc = "Challenger II", unit = "Challenger2", side = 2, cratesRequired = 3, internal = 0 },
-        { weight = 833, desc = "M1A2 Abrams", unit = "M-1 Abrams", side = 2, cratesRequired = 4, internal = 0 },
+        { weight = 830, desc = "Leopard 1A3", unit = "Leopard1A3", side = 2, cratesRequired = 1, unitQuantity = 2, internal = 0 },
+        { weight = 831, desc = "Leopard 2", unit = "Leopard-2", side = 2, cratesRequired = 2, internal = 0 },
+        { weight = 832, desc = "Challenger II", unit = "Challenger2", side = 2, cratesRequired = 2, internal = 0 },
+        { weight = 833, desc = "M1A2 Abrams", unit = "M-1 Abrams", side = 2, cratesRequired = 3, internal = 0 },
     },
 
     ["IR SAMs & AAA"] = {
-        { weight = 840, desc = "ZSU-23-4 Shilka", unit = "ZSU-23-4 Shilka", side = 1, unitQuantity = 3, internal = 0 },
-        { weight = 841, desc = "ZU-23 on Ural", unit = "Ural-375 ZU-23", side = 1, unitQuantity = 3, internal = 0 },
-        { weight = 842, desc = "SA-19 Tunguska", unit = "2S6 Tunguska", side = 1, cratesRequired = 2, internal = 0 },
-        { weight = 843, desc = "SA-9 Strela-1", unit = "Strela-1 9P31", side = 1, internal = 0 },
-        { weight = 844, desc = "SA-13 Strela-10", unit = "Strela-10M3", side = 1, cratesRequired = 2, internal = 0 },
+        { weight = 840, desc = "ZSU-23-4 Shilka", unit = "ZSU-23-4 Shilka", side = 1, unitQuantity = 4, internal = 0 },
+        { weight = 841, desc = "ZU-23 on Ural", unit = "Ural-375 ZU-23", side = 1, unitQuantity = 4, internal = 0 },
+        { weight = 842, desc = "SA-19 Tunguska", unit = "2S6 Tunguska", side = 1, cratesRequired = 2, unitQuantity = 2, internal = 0 },
+        { weight = 843, desc = "SA-9 Strela-1", unit = "Strela-1 9P31", side = 1, unitQuantity = 2, internal = 0 },
+        { weight = 844, desc = "SA-13 Strela-10", unit = "Strela-10M3", side = 1, cratesRequired = 1, internal = 0 },
 
-        { weight = 850, desc = "M163 Vulcan", unit = "Vulcan", side = 2, unitQuantity = 3, internal = 0 },
-        { weight = 851, desc = "Gepard", unit = "Gepard", side = 2, unitQuantity = 2, internal = 0 },
-        { weight = 852, desc = "M1097 Avenger", unit = "M1097 Avenger", side = 2, cratesRequired = 2, internal = 0 },
-        { weight = 853, desc = "M6 Linebacker", unit = "M6 Linebacker", side = 2, cratesRequired = 2, internal = 0 },
+        { weight = 850, desc = "M163 Vulcan", unit = "Vulcan", side = 2, unitQuantity = 4, internal = 0 },
+        { weight = 851, desc = "Gepard", unit = "Gepard", side = 2, unitQuantity = 3, internal = 0 },
+        { weight = 852, desc = "M1097 Avenger", unit = "M1097 Avenger", side = 2, cratesRequired = 3, unitQuantity = 2, internal = 0 },
+        { weight = 853, desc = "M6 Linebacker", unit = "M6 Linebacker", side = 2, cratesRequired = 3, unitQuantity = 2, internal = 0 },
     },
 
 
@@ -393,25 +393,25 @@ ctld.spawnableCrates = {
         { weight = 877, desc = "Roland Radar", unit = "Roland Radar", side = 2, internal = 0 },
 
         -- HQ-7 (can also be configured as a system, but not currently doing so; just using the launcher)
-        { weight = 878, desc = "Crotale", unit = "HQ-7_LN_SP", side = 2, cratesRequired = 3, internal = 0 },
+        { weight = 878, desc = "Crotale", unit = "HQ-7_LN_SP", side = 2, cratesRequired = 3, unitQuantity = 2, internal = 0 },
         --{ weight = 879, desc = "HQ-7 Search Radar", unit = "HQ-7_STR_SP", side = 1, internal = 0 },
 
         -- Tor on both sides
-        { weight = 880, desc = "SA-15 Tor", unit = "Tor 9A331", side = 1, cratesRequired = 2, internal = 0 },
+        { weight = 880, desc = "SA-15 Tor", unit = "Tor 9A331", side = 1, cratesRequired = 2, unitQuantity = 2, internal = 0 },
 
 
     },
 
     ["Artillery"] = {
-        { weight = 890, desc = "2S9 Nona", unit = "2S9 Nona", side = 1, cratesRequired = 1, internal = 0 },
-        { weight = 891, desc = "SAU Gvozdika", unit = "SAU Gvozdika", side = 1, cratesRequired = 2, internal = 0 },
-        { weight = 892, desc = "SPH 2S19 Msta", unit = "SAU Msta", side = 1, cratesRequired = 2, internal = 0 },
-        { weight = 893, desc = "BM-27 MLRS", unit = "Uragan_BM-27", side = 1, cratesRequired = 2, internal = 0 },
-        { weight = 894, desc = "MLRS Smerch", unit = "Smerch", side = 1, cratesRequired = 2, internal = 0 },
+        { weight = 890, desc = "2S9 Nona", unit = "2S9 Nona", side = 1, cratesRequired = 1, unitQuantity = 2, internal = 0 },
+        { weight = 891, desc = "SAU Gvozdika", unit = "SAU Gvozdika", side = 1, cratesRequired = 1, internal = 0 },
+        { weight = 892, desc = "SPH 2S19 Msta", unit = "SAU Msta", side = 1, cratesRequired = 1, internal = 0 },
+        { weight = 893, desc = "BM-27 MLRS", unit = "Uragan_BM-27", side = 1, cratesRequired = 1, internal = 0 },
+        { weight = 894, desc = "MLRS Smerch", unit = "Smerch", side = 1, cratesRequired = 1, internal = 0 },
 
-        { weight = 895, desc = "SpGH DANA", unit = "SpGH_Dana", side = 2, cratesRequired = 2, internal = 0 },
-        { weight = 896, desc = "M-109", unit = "M-109", side = 2, cratesRequired = 2, internal = 0 },
-        { weight = 897, desc = "MLRS", unit = "MLRS", side = 2, cratesRequired = 2, internal = 0 },
+        { weight = 895, desc = "SpGH DANA", unit = "SpGH_Dana", side = 2, cratesRequired = 1, internal = 0 },
+        { weight = 896, desc = "M-109", unit = "M-109", side = 2, cratesRequired = 1, internal = 0 },
+        { weight = 897, desc = "MLRS", unit = "MLRS", side = 2, cratesRequired = 1, internal = 0 },
     },
 
     ["Support"] = {
