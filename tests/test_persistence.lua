@@ -18,8 +18,8 @@ function TestPersistence:testUpdateGroupDataSetsAltXY()
     local groupData = {
         { name = "groupName",
           units = {
-              { unitName = "unitName1" },
-              { unitName = "unitName2" }
+              { name = "unitName1" },
+              { name = "unitName2" }
           }
         }
     }
@@ -27,8 +27,8 @@ function TestPersistence:testUpdateGroupDataSetsAltXY()
     lu.assertEquals(groupData, {
         { name = "groupName",
           units = {
-              { alt = 3, heading = 0, unitName = "unitName1", x = 1, y = 2 },
-              { alt = 3, heading = 0, unitName = "unitName2", x = 1, y = 2 },
+              { alt = 3, heading = 0, name = "unitName1", x = 1, y = 2 },
+              { alt = 3, heading = 0, name = "unitName2", x = 1, y = 2 },
           }
         }
     })
@@ -38,8 +38,8 @@ function TestPersistence:testUpdateGroupDataRemovesDeadUnits()
     local groupData = {
         { name = "groupName",
           units = {
-              { unitName = "unitName1" },
-              { unitName = "deadUnit" }
+              { name = "unitName1" },
+              { name = "deadUnit" }
           }
         }
     }
@@ -47,14 +47,14 @@ function TestPersistence:testUpdateGroupDataRemovesDeadUnits()
     lu.assertEquals(groupData, {
         { name = "groupName",
           units = {
-              { alt = 3, heading = 0, unitName = "unitName1", x = 1, y = 2 },
+              { alt = 3, heading = 0, name = "unitName1", x = 1, y = 2 },
           }
         }
     })
 end
 
 function TestPersistence:testUpdateGroupDataRemovesGroupWithNoUnits()
-    local groupData = { { name = "groupName", units = { { unitName = "deadUnit" } } } }
+    local groupData = { { name = "groupName", units = { { name = "deadUnit" } } } }
     persistence.updateGroupData(groupData)
     lu.assertEquals(groupData, {})
 end

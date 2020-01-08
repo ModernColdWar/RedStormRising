@@ -3,6 +3,7 @@ require("CTLD")
 local inspect = require("inspect")
 local JSON = require("JSON")
 local queryDcs = require("queryDcs")
+local utils = require("utils")
 
 local log = mist.Logger:new("State", "info")
 
@@ -38,9 +39,45 @@ function M.pushSpawnQueue(groupName)
     table.insert(M.spawnQueue, groupName)
 end
 
--- wrapped so we can stub this out in the tests
 function M.getGroupData(groupName)
-    return mist.getGroupData(groupName)
+    local group = Group.getByName(groupName)
+    if group == nil then
+        log:warn("Unable to find group '$1'", groupName)
+        return nil
+    end
+    local firstUnit = group:getUnit(1)
+    if firstUnit == nil then
+        log:warn("Unable to find first unit in group '$1'", groupName)
+        return nil
+    end
+
+    local coalitionId = group:getCoalition()
+    local countryId = firstUnit:getCountry()
+
+    local groupData = {
+        category = "vehicle", -- don't need to call getCategory as we only save vehicles
+        coalition = utils.getSideName(coalitionId),
+        coalitionId = coalitionId,
+        countryId = countryId,
+        name = groupName,
+        units = {}
+    }
+
+    for _, unit in pairs(group:getUnits()) do
+        local position = unit:getPosition()
+        local unitData = {
+            heading = mist.getHeading(unit, true),
+            skill = "Excellent",
+            speed = 0,
+            type = unit:getTypeName(),
+            name = unit:getName(),
+            x = position.p.x,
+            y = position.p.z
+        }
+        table.insert(groupData.units, unitData)
+    end
+    --log:info("getGroupData($1) = $2", groupName, inspect(groupData))
+    return groupData
 end
 
 function M.handleSpawnQueue()

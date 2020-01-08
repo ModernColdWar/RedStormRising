@@ -29,7 +29,7 @@ function M.updateGroupData(persistentGroupData)
         log:info("Processing units in group $1", groupName)
         for j = #groupData.units, 1, -1 do
             local unitData = groupData.units[j]
-            local unitName = unitData.unitName
+            local unitName = unitData.name
             local unit = Unit.getByName(unitName)
             if unit == nil then
                 log:info("Removing persistent data for dead unit $1", unitName)
@@ -39,9 +39,7 @@ function M.updateGroupData(persistentGroupData)
                 local position = unit:getPosition().p
                 unitData.x = position.x
                 unitData.y = position.z
-                unitData.alt = position.y
                 unitData.heading = mist.getHeading(unit, true)
-                log:info("Updated position info for $1", unitName)
             end
         end
         if #groupData.units == 0 then
@@ -76,7 +74,7 @@ end
 function M.spawnGroup(groupData)
     -- Currently this code replicates the actions from ctld.unpackCrates
     local sideName = getSideNameFromGroupData(groupData)
-    local groupName = groupData.groupName
+    local groupName = groupData.name
     log:info("Spawning $1 $2 from groupData", sideName, groupName)
     -- Fix issue where mist group data doesn't contain playerCanDrive flag (it's always true for our persisted units)
     for _, unitData in pairs(groupData.units) do
