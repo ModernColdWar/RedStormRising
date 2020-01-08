@@ -3432,7 +3432,7 @@ function ctld.spawnCrateGroup(_heli, _positions, _types, _unitQuantity)
         for _i = 1, _unitQuantity do
             local _unitId = ctld.getNextUnitId()
             local _details = { type = _types[1], unitId = _unitId, name = string.format("Unpacked %s #%i", _types[1], _unitId) }
-            local _offset = _i * 20
+            local _offset = _i * 40
             _group.units[_i] = ctld.createUnit(_positions[1].x + _offset, _positions[1].z + _offset, 120, _details)
         end
 
