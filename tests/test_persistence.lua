@@ -4,14 +4,8 @@ local persistence = require("persistence")
 
 TestPersistence = {}
 
-local _getMistGroupData = persistence.getMistGroupData
-
 function TestPersistence:setUp()
     dcsStub.reset()
-end
-
-function TestPersistence:tearDown()
-    persistence.getMistGroupData = _getMistGroupData
 end
 
 function TestPersistence:testUpdateGroupDataWithEmptyData()

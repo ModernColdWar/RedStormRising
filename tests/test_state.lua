@@ -5,7 +5,7 @@ local state = require("state")
 
 TestState = {}
 
-local _getMistGroupData = state.getMistGroupData
+local _getGroupData = state.getGroupData
 
 function TestState:setUp()
     -- reset state
@@ -14,7 +14,7 @@ function TestState:setUp()
 end
 
 function TestState:tearDown()
-    state.getMistGroupData = _getMistGroupData
+    state.getGroupData = _getGroupData
 end
 
 function TestState:testPushSpawnQueue()
@@ -33,7 +33,7 @@ function TestState:testHandleSpawnQueueLeavesItemsInQueueIfNoDataFromMist()
 end
 
 function TestState:testHandleSpawnQueuePutsGroupDataIntoStateAndRemovesFromQueue()
-    state.getMistGroupData = function(groupName)
+    state.getGroupData = function(groupName)
         return { groupName = groupName, pos = { x = 1, y = 2 } }
     end
     state.pushSpawnQueue("group1")

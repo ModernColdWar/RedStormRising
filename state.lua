@@ -39,7 +39,7 @@ function M.pushSpawnQueue(groupName)
 end
 
 -- wrapped so we can stub this out in the tests
-function M.getMistGroupData(groupName)
+function M.getGroupData(groupName)
     return mist.getGroupData(groupName)
 end
 
@@ -49,7 +49,7 @@ function M.handleSpawnQueue()
     for i = #M.spawnQueue, 1, -1 do
         local groupName = M.spawnQueue[i]
         log:info("Getting group data for spawned group $1", groupName)
-        local groupData = M.getMistGroupData(groupName)
+        local groupData = M.getGroupData(groupName)
         if groupData ~= nil then
             log:info("Successfully got group data for $1", groupName)
             table.insert(M.currentState.persistentGroupData, groupData)
