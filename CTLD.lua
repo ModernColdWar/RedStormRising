@@ -4111,7 +4111,7 @@ function ctld.crateValidLoadPoint(_heli, _crate)
         end
     elseif _heli:getTypeName() == "UH-1H" then
         -- Huey is a special case as it can be loaded from either side
-        if (((_clockdirection > 2) and (_clockdirection < 4) and (_heli:getDrawArgumentValue(44) == 1)) or ((_clockdirection > 8) and (_clockdirection < 10) and (_heli:getDrawArgumentValue(43) == 1))) then
+        if (((_clockdirection > 1) and (_clockdirection < 5) and (_heli:getDrawArgumentValue(44) == 1)) or ((_clockdirection > 7) and (_clockdirection < 11) and (_heli:getDrawArgumentValue(43) == 1))) then
             -- exclude quadrants where the door is closed too!
             return true
         else
