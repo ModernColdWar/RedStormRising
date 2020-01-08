@@ -36,6 +36,18 @@ function TestLoggingEventHandler:testPlayerHitOnAI()
             "Bob in red F/A-18C hit blue ZSU-23 with AIM-120C")
 end
 
+function TestLoggingEventHandler:testPlayerHitOnAIWithNoIniCoalition()
+    local event = {
+        IniPlayerName = "Bob",
+        IniTypeName = "F/A-18C",
+        TgtCoalition = 2,
+        TgtTypeName = "ZSU-23",
+        WeaponName = "AIM-120C",
+    }
+    lu.assertEquals(loggingEventHandler.buildHitMessage(event),
+            "Bob in F/A-18C hit blue ZSU-23 with AIM-120C")
+end
+
 function TestLoggingEventHandler:testPlayerHitOnAINoWeaponName()
     local event = {
         IniPlayerName = "Bob",

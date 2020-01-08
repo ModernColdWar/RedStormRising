@@ -13,10 +13,11 @@ end
 
 local function getUnitDesc(coalition, groupName, typeName)
     local ownerName = groupName ~= nil and utils.getPlayerNameFromGroupName(groupName) or nil
+    local coalitionName = coalition ~= nil and utils.getSideName(coalition) .. " " or ""
     if ownerName == nil then
-        return string.format("%s %s", utils.getSideName(coalition), typeName)
+        return string.format("%s%s", coalitionName, typeName)
     else
-        return string.format("%s's %s %s", ownerName, utils.getSideName(coalition), typeName)
+        return string.format("%s's %s%s", ownerName, coalitionName, typeName)
     end
 end
 
