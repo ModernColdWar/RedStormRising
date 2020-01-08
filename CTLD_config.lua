@@ -393,7 +393,7 @@ ctld.spawnableCrates = {
         { weight = 877, desc = "Roland Radar", unit = "Roland Radar", side = 2, internal = 0 },
 
         -- HQ-7 System (currently using just the launcher)
-        { weight = 878, desc = "HQ-7 Launcher", unit = "HQ-7_LN_SP", side = 1, cratesRequired = 3, internal = 0 },
+        { weight = 878, desc = "Crotale", unit = "HQ-7_LN_SP", side = 2, cratesRequired = 3, internal = 0 },
         --{ weight = 879, desc = "HQ-7 Search Radar", unit = "HQ-7_STR_SP", side = 1, internal = 0 },
 
         -- Tor on both sides
@@ -427,7 +427,7 @@ ctld.spawnableCrates = {
         { weight = 623, desc = "Buk Repair", unit = "Buk Repair", side = 1, internal = 0 },
         { weight = 624, desc = "Hawk Repair", unit = "Hawk Repair", side = 2, internal = 0 },
         { weight = 625, desc = "Roland Repair", unit = "Roland Repair", side = 2, internal = 0 },
-        { weight = 626, desc = "HQ-7 Repair", unit = "HQ-7 Repair", side = 1, internal = 0 },
+        { weight = 626, desc = "HQ-7 Repair", unit = "HQ-7 Repair", side = 2, internal = 0 },
         { weight = 627, desc = "Early Warning Radar", unit = "1L13 EWR", internal = 0 },
     },
 

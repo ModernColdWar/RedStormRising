@@ -17,6 +17,7 @@ rsrConfig.awacsBases = { "Krasnodar-Center", "Vaziani" } -- bases with linked AW
 -- TODO: you also should change
 --rsrConfig.restartHours = { 1, 5, 9, 13, 17, 21 } -- For restarts every 4 hours
 --rsrConfig.restartHours = { 1, 7, 13, 19 } -- For restarts every 6 hours
-rsrConfig.restartHours = { 1, 9, 17 } -- For restarts every 8 hours
+--rsrConfig.restartHours = { 1, 9, 17 } -- For restarts every 8 hours
+rsrConfig.restartHours = { 5, 13, 21 } -- For restarts every 8 hours, shifted 4 hours to better fit GMT, Eastern Time Schedules
 
 return rsrConfig
