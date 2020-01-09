@@ -2,11 +2,13 @@ local utils = require("utils")
 
 local M = {}
 
-local HIT_EVENT_HANDLER = {
+M.eventHandler = nil -- constructed in onMissionStart
+
+M.HIT_EVENT_HANDLER = {
     ClassName = "HIT_EVENTHANDLER"
 }
 
-function HIT_EVENT_HANDLER:New(hitMessageDelay)
+function M.HIT_EVENT_HANDLER:New(hitMessageDelay)
     local _self = BASE:Inherit(self, EVENTHANDLER:New())
     _self.hitMessageDelay = hitMessageDelay
     _self.lastMessage = nil
@@ -14,7 +16,30 @@ function HIT_EVENT_HANDLER:New(hitMessageDelay)
     return _self
 end
 
-M.eventHandler = nil -- constructed in onMissionStart
+function M.HIT_EVENT_HANDLER:shouldSendMessage(message)
+    -- only print the same message again after 5 seconds
+    local time = timer.getTime()
+    local shouldSend = message ~= self.lastMessage or time - self.lastMessageTime > 5
+    self.lastMessage = message
+    self.lastMessageTime = time
+    return shouldSend
+end
+
+function M.HIT_EVENT_HANDLER:onHit(event)
+    local message = M.buildHitMessage(event)
+    if message ~= nil then
+        if self:shouldSendMessage(message) then
+            self:I(message)
+            if self.hitMessageDelay > 0 and not utils.startswith(message, "FRIENDLY FIRE: ") then
+                timer.scheduleFunction(function(args)
+                    trigger.action.outText(args[1], 10)
+                end, { message }, timer.getTime() + self.hitMessageDelay)
+            else
+                trigger.action.outText(message, 10)
+            end
+        end
+    end
+end
 
 local function getUnitDesc(coalition, groupName, typeName)
     local ownerName = groupName ~= nil and utils.getPlayerNameFromGroupName(groupName) or nil
@@ -59,33 +84,8 @@ function M.buildHitMessage(event)
     return message:gsub("^%l", string.upper)
 end
 
-function M.eventHandler:shouldSendMessage(message)
-    -- only print the same message again after 5 seconds
-    local time = timer.getTime()
-    local shouldSend = message ~= self.lastMessage or time - self.lastMessageTime > 5
-    self.lastMessage = message
-    self.lastMessageTime = time
-    return shouldSend
-end
-
-function M.eventHandler:onHit(event)
-    local message = M.buildHitMessage(event)
-    if message ~= nil then
-        if self:shouldSendMessage(message) then
-            self:I(message)
-            if self.hitMessageDelay > 0 and not utils.startswith(message, "FRIENDLY FIRE: ") then
-                timer.scheduleFunction(function(args)
-                    trigger.action.outText(args[1], 10)
-                end, { message }, timer.getTime() + self.hitMessageDelay)
-            else
-                trigger.action.outText(message, 10)
-            end
-        end
-    end
-end
-
 function M.onMissionStart(hitMessageDelay)
-    M.eventHandler = HIT_EVENT_HANDLER:New(hitMessageDelay)
+    M.eventHandler = M.HIT_EVENT_HANDLER:New(hitMessageDelay)
     M.eventHandler:HandleEvent(EVENTS.Hit, M.eventHandler.onHit)
 end
 
