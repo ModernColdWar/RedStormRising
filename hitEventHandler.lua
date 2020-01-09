@@ -58,12 +58,19 @@ function M.buildHitMessage(event)
     return message:gsub("^%l", string.upper)
 end
 
+function M.eventHandler:shouldSendMessage(message)
+    -- only print the same message again after 5 seconds
+    local time = timer.getTime()
+    local shouldSend = message ~= M.lastMessage or time - M.lastMessageTime > 5
+    M.lastMessage = message
+    M.lastMessageTime = time
+    return shouldSend
+end
+
 function M.eventHandler:onHit(event)
     local message = M.buildHitMessage(event)
     if message ~= nil then
-        local time = timer.getTime()
-        -- only print the same message again after 5 seconds
-        if message ~= M.lastMessage or time - M.lastMessageTime > 5 then
+        if self:shouldSendMessage(message) then
             self:I(message)
             if M.hitMessageDelay > 0 and not utils.startswith(message, "FRIENDLY FIRE: ") then
                 timer.scheduleFunction(function(args)
@@ -72,8 +79,6 @@ function M.eventHandler:onHit(event)
             else
                 trigger.action.outText(message, 10)
             end
-            M.lastMessage = message
-            M.lastMessageTime = time
         end
     end
 end
