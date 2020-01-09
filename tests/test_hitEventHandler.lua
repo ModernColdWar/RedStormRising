@@ -140,5 +140,14 @@ function TestHitEventHandler:testPlayerHitOnSlungUnit()
             "Bob in red F/A-18C hit Winston's blue ZSU-23 with AGM-65D")
 end
 
+function TestHitEventHandler:testShouldSendMessageRemovesImmediatelyRepeatedMessages()
+    local eventHandler = hitEventHandler.HIT_EVENT_HANDLER:New(30)
+    lu.assertIsTrue(eventHandler:shouldSendMessage("foo"))
+    lu.assertIsFalse(eventHandler:shouldSendMessage("foo"))
+    lu.assertIsTrue(eventHandler:shouldSendMessage("bar"))
+    lu.assertIsFalse(eventHandler:shouldSendMessage("bar"))
+    lu.assertIsTrue(eventHandler:shouldSendMessage("foo"))
+end
+
 local runner = lu.LuaUnit.new()
 os.exit(runner:runSuite())
