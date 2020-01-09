@@ -217,6 +217,10 @@ function Group:getUnit()
     return Unit.getByName(self.name)
 end
 
+function Group:getUnits()
+    return { Unit.getByName(self.name) }
+end
+
 StaticObject = {
     getByName = function()
     end
@@ -245,6 +249,8 @@ function Unit:new(name)
     u.active = true
     u.life = 100
     u.coalition = coalition.side.RED
+    u.country = country.id.USA
+    u.typeName = "Avenger"
     u.point = { x = 0, y = 0, z = 0 }
     u.position = { p = { x = 1, y = 3, z = 2 }, x = u.point, y = u.point, z = u.point }
     u.id = 1001
@@ -272,6 +278,14 @@ end
 
 function Unit:getCoalition()
     return self.coalition
+end
+
+function Unit:getCountry()
+    return self.country
+end
+
+function Unit:getTypeName()
+    return self.typeName
 end
 
 function Unit:getPoint()

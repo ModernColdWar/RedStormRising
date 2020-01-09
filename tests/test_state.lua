@@ -24,7 +24,10 @@ function TestState:testPushSpawnQueue()
     lu.assertEquals(state.spawnQueue, { "group1", "group2" })
 end
 
-function TestState:testHandleSpawnQueueLeavesItemsInQueueIfNoDataFromMist()
+function TestState:testHandleSpawnQueueLeavesItemsInQueueIfNoGroupDataFromDcs()
+    state.getGroupData = function(groupName)
+        return nil
+    end
     state.pushSpawnQueue("group1")
     state.pushSpawnQueue("group2")
     state.handleSpawnQueue()
