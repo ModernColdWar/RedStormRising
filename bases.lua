@@ -6,6 +6,7 @@ local state = require("state")
 local utils = require("utils")
 
 local M = {}
+M.mapMarkers = {}
 
 local log = mist.Logger:new("Utils", "info")
 
@@ -50,8 +51,20 @@ local function checkNeutral(baseName, sideName)
     end
     return false
 end
+
+local function setMapMarker(baseName, sideName)
+    local base = AIRBASE:FindByName(baseName)
+    local markText = baseName .. " (" .. string.upper(sideName) .. ")"
+    local existingMarkId = M.mapMarkers[baseName]
+    if existingMarkId ~= nil then
+        trigger.action.removeMark(existingMarkId)
+    end
+    M.mapMarkers[baseName] = COORDINATE:NewFromVec2(base:GetVec2()):MarkToAll(markText, true)
+end
+
 function M.configureForSide(baseName, sideName)
     log:info("Configuring base $1 for $2", baseName, sideName)
+    setMapMarker(baseName, sideName)
     if checkNeutral(baseName, sideName) then
         return
     end
