@@ -988,7 +988,7 @@ function ctld.spawnFOB(_country, _point, _name, _coalition)
     _tower["country"] = _country
 
     mist.dynAddStatic(_tower)
-    trigger.action.markToCoalition(_id, _name, _point, _coalition, true)
+    trigger.action.markToCoalition(UTILS.GetMarkID(), _name, _point, _coalition, true)
 
     return _spawnedCrate
 end
