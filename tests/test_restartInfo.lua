@@ -27,6 +27,16 @@ function TestRestartInfo:testGetSecondsAsString()
     lu.assertEquals(restartInfo.getSecondsAsString(12345), "03:25:45")
 end
 
+function TestRestartInfo:testGetSecondsUntilTimeBeforeRestart()
+    local now = { year = 2019, month = 9, day = 12, hour = 10, min = 45, sec = 0 }
+    lu.assertEquals(restartInfo.getSecondsUntilTimeBeforeRestart(now, { 12 }, 60 * 60), 15 * 60)
+    lu.assertEquals(restartInfo.getSecondsUntilTimeBeforeRestart(now, { 12 }, 30 * 60), 45 * 60)
+
+    lu.assertEquals(restartInfo.getSecondsUntilTimeBeforeRestart(now, { 11 }, 10 * 60), 5 * 60)
+    lu.assertIsNil(restartInfo.getSecondsUntilTimeBeforeRestart(now, { 11 }, 15 * 60))
+    lu.assertIsNil(restartInfo.getSecondsUntilTimeBeforeRestart(now, { 11 }, 20 * 60))
+end
+
 local runner = lu.LuaUnit.new()
 os.exit(runner:runSuite())
 

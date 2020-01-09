@@ -28,4 +28,32 @@ function M.getSecondsAsString(seconds)
     return string.format("%02d:%02d:%02d", hours, minutes, remSeconds)
 end
 
+function M.getSecondsUntilTimeBeforeRestart(now, restartHours, secondsBeforeRestart)
+    local secondsUnitRestart = M.getSecondsUntilRestart(now, restartHours)
+    local schedulerTime = secondsUnitRestart - secondsBeforeRestart
+    if schedulerTime <= 0 then
+        -- don't print out any message that's been missed
+        return nil
+    end
+    return schedulerTime
+end
+
+local function sendRestartWarning(args)
+    local minutesUntilRestart = args[1]
+    local plural = "s"
+    if minutesUntilRestart == 1 then
+        plural = ""
+    end
+    trigger.action.outText("The server will restart in " .. minutesUntilRestart .. " minute" .. plural, 15)
+end
+
+function M.onMissionStart(restartHours, restartWarningMinutes)
+    for _, restartWarningMinute in pairs(restartWarningMinutes) do
+        local schedulerTime = M.getSecondsUntilTimeBeforeRestart(os.date("*t"), restartHours, restartWarningMinute * 60)
+        if schedulerTime ~= nil then
+            timer.scheduleFunction(sendRestartWarning, { schedulerTime }, timer.getTime() + schedulerTime)
+        end
+    end
+end
+
 return M
