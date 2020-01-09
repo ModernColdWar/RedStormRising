@@ -143,9 +143,9 @@ function TestState:testUpdateBaseOwnershipFirstTime()
 end
 
 function TestState:testUpdateBaseOwnershipChangingSides()
-    stubDcsBaseOwnership({ airbases = { blue = { "Sochi" }, red = { "Vaziani" } } })
+    stubDcsBaseOwnership({ airbases = { blue = { "Sochi" }, red = { "Vaziani" }, neutral = {}} })
     state.updateBaseOwnership()
-    stubDcsBaseOwnership({ airbases = { blue = { "Sochi", "Vaziani" }, red = { } } })
+    stubDcsBaseOwnership({ airbases = { blue = { "Sochi", "Vaziani" }, red = { }, neutral = {} } })
     state.updateBaseOwnership()
 
     lu.assertEquals(state.currentState.baseOwnership.airbases, { blue = { "Sochi", "Vaziani" }, neutral = {}, red = { } })

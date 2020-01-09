@@ -156,18 +156,16 @@ function M.updateBaseOwnership()
     local newOwnership = { airbases = { red = {}, blue = {}, neutral = {} },
                             farps = { red = {}, blue = {}, neutral = {} } }
     for baseType, baseOwnership in pairs(dcsBaseOwnership) do
-        for dcsOwnerSideName, baseList in pairs(baseOwnership) do
-            for _, baseName in ipairs(baseList) do
-                if dcsOwnerSideName == "neutral" then
-                    local currentOwner = M.getOwner(baseName)
-                    if currentOwner == nil then
-                        currentOwner = "neutral"
-                    end
-                    table.insert(newOwnership[baseType][currentOwner], baseName)
-                else
-                    table.insert(newOwnership[baseType][dcsOwnerSideName], baseName)
-                end
+        -- copy blue and red ownerships directly from DCS
+        newOwnership[baseType].red = baseOwnership.red
+        newOwnership[baseType].blue = baseOwnership.blue
+        -- for bases DCS says are neutral, use our existing ownership
+        for _, baseName in pairs(baseOwnership.neutral) do
+            local currentOwner = M.getOwner(baseName)
+            if currentOwner == nil then
+                currentOwner = "neutral"
             end
+            table.insert(newOwnership[baseType][currentOwner], baseName)
         end
     end
     table.sort(newOwnership.airbases.red)
