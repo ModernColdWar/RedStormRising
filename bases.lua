@@ -70,10 +70,10 @@ end
 
 function M.onMissionStart(baseName, sideName, rsrConfig, firstTimeSetup)
     log:info("Configuring $1 as $2 at mission start", baseName, sideName)
+    M.configureForSide(baseName, sideName)
     if checkNeutral(baseName, sideName) then
         return
     end
-    M.configureForSide(baseName, sideName)
     if firstTimeSetup then
         log:info("First time setup - resupplying")
         M.resupply(baseName, sideName, rsrConfig)
