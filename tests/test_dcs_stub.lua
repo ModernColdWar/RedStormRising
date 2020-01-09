@@ -21,5 +21,16 @@ function TestDcsStub:testCallRecording()
     dcsStub.assertOneCallTo("trigger.action.outText")
 end
 
+function TestDcsStub:testGetTime()
+    lu.assertIsTrue(timer.getTime() < 1)
+end
+
+function TestDcsStub:testSetTimeOffset()
+    lu.assertIsTrue(timer.getTime() < 1)
+    dcsStub.setTimeOffset(5)
+    lu.assertIsTrue(timer.getTime() > 5)
+    lu.assertIsTrue(timer.getTime() < 6)
+end
+
 local runner = lu.LuaUnit.new()
 os.exit(runner:runSuite())

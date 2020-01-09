@@ -4,6 +4,7 @@ local lu = require("tests.luaunit")
 local inspect = require("inspect")
 
 dcsStub = {}
+dcsStub.timeOffset = 0
 
 local _logger = nil
 
@@ -80,7 +81,7 @@ env = {
 
 timer = {
     getTime = function()
-        return os.clock()
+        return os.clock() + dcsStub.timeOffset
     end,
     scheduleFunction = function()
     end
@@ -328,5 +329,9 @@ function dcsStub.assertOneCallTo(callName)
         end
     end
     lu.assertEquals(callCount, 1, inspect(dcsStub.recordedCalls))
+end
+
+function dcsStub.setTimeOffset(timeOffset)
+    dcsStub.timeOffset = timeOffset
 end
 
