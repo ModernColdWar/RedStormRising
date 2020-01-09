@@ -28,22 +28,4 @@ function M.getSecondsAsString(seconds)
     return string.format("%02d:%02d:%02d", hours, minutes, remSeconds)
 end
 
-M.eventHandler = EVENTHANDLER:New()
-
-function M.eventHandler:createMissionInfoMenu(event)
-    if event.IniPlayerName then
-        self:I("Adding mission info menu for " .. event.IniPlayerName)
-        local playerGroup = event.IniGroup
-        MENU_GROUP_COMMAND:New(playerGroup, "Time until restart", nil, function()
-            local secondsUntilRestart = M.getSecondsUntilRestart(os.date("*t"), M._restartHours)
-            MESSAGE:New(string.format("The mission will restart in %s", M.getSecondsAsString(secondsUntilRestart)), 5):ToGroup(playerGroup)
-        end)
-    end
-end
-
-function M.onMissionStart(rsrConfig)
-    M._restartHours = rsrConfig.restartHours
-    M.eventHandler:HandleEvent(EVENTS.Birth, M.eventHandler.createMissionInfoMenu)
-end
-
 return M
