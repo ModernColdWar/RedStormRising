@@ -3392,7 +3392,13 @@ function ctld.unpackMultiCrate(_heli, _nearestCrate, _nearbyCrates)
 
         ctld.processCallback({ unit = _heli, crate = _nearestCrate, spawnedGroup = _spawnedGroup, action = "unpack" })
 
-        local _txt = string.format("%s successfully deployed %s to the field using %d crates", ctld.getPlayerNameOrType(_heli), _nearestCrate.details.desc, #_nearbyMultiCrates)
+        local quantityTxt = ""
+        local plural = ""
+        if _nearestCrate.details.unitQuantity ~= nil and _nearestCrate.details.unitQuantity > 1 then
+            quantityTxt = tostring(_nearestCrate.details.unitQuantity) .. " "
+            plural = "s"
+        end
+        local _txt = string.format("%s successfully deployed %d%s%s to the field using %d crates", ctld.getPlayerNameOrType(_heli), quantityTxt, _nearestCrate.details.desc, plural, #_nearbyMultiCrates)
 
         trigger.action.outTextForCoalition(_heli:getCoalition(), _txt, 10)
 
