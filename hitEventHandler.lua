@@ -77,8 +77,6 @@ end
 
 function M.register(hitMessageDelay)
     M.hitMessageDelay = hitMessageDelay
-    M.eventHandler:HandleEvent(EVENTS.Takeoff, M.eventHandler.logEvent)
-    M.eventHandler:HandleEvent(EVENTS.Land, M.eventHandler.logEvent)
     M.eventHandler:HandleEvent(EVENTS.Hit, M.eventHandler.onHit)
 end
 
