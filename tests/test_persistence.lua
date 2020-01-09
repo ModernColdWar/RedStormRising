@@ -63,7 +63,7 @@ function TestPersistence:testSpawnGroup()
     local groupData = {
         ["country"] = "usa",
         ["coalitionId"] = 2,
-        ["groupName"] = "CTLD_Tor 9A331_77 (Capt.Fdez)",
+        ["name"] = "CTLD_Tor 9A331_77 (Capt.Fdez)",
         ["units"] = {
             [1] = {
                 ["alt"] = 5.0000045435017,
@@ -71,17 +71,13 @@ function TestPersistence:testSpawnGroup()
                 ["y"] = 570413.97585701,
                 ["x"] = -225602.16457669,
                 ["speed"] = 0,
-                ["unitName"] = "Unpacked Tor 9A331 #237",
+                ["name"] = "Unpacked Tor 9A331 #237",
                 ["skill"] = "Excellent",
                 ["type"] = "Tor 9A331", }
         },
         ["countryId"] = 2,
-        ["timeAdded"] = 27000.091,
-        ["name"] = "CTLD_Tor 9A331_77",
         ["category"] = "vehicle",
         ["coalition"] = "blue",
-        ["startTime"] = 0,
-        ["task"] = { },
         ["hidden"] = false
     }
     persistence.spawnGroup(groupData)
