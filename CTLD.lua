@@ -3398,7 +3398,7 @@ function ctld.unpackMultiCrate(_heli, _nearestCrate, _nearbyCrates)
             quantityTxt = tostring(_nearestCrate.details.unitQuantity) .. " "
             plural = "s"
         end
-        local _txt = string.format("%s successfully deployed %d%s%s to the field using %d crates", ctld.getPlayerNameOrType(_heli), quantityTxt, _nearestCrate.details.desc, plural, #_nearbyMultiCrates)
+        local _txt = string.format("%s successfully deployed %s%s%s to the field using %d crates", ctld.getPlayerNameOrType(_heli), quantityTxt, _nearestCrate.details.desc, plural, #_nearbyMultiCrates)
 
         trigger.action.outTextForCoalition(_heli:getCoalition(), _txt, 10)
 
