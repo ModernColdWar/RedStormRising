@@ -29,3 +29,5 @@ function M.onMissionStart(restartHours)
     M.eventHandler = M.BIRTH_EVENTHANDLER:New(restartHours)
     M.eventHandler:HandleEvent(EVENTS.Birth, M.eventHandler.createMissionInfoMenu)
 end
+
+return M
