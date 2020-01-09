@@ -145,7 +145,7 @@ function TestHitEventHandler:testPlayerHitOnSlungUnit()
 end
 
 function TestHitEventHandler:testShouldSendMessageRemovesImmediatelyRepeatedMessages()
-    local eventHandler = hitEventHandler.HIT_EVENT_HANDLER:New(30)
+    local eventHandler = hitEventHandler.HIT_EVENTHANDLER:New(30)
     lu.assertIsTrue(eventHandler:shouldSendMessage("foo"))
     lu.assertIsFalse(eventHandler:shouldSendMessage("foo"))
     lu.assertIsTrue(eventHandler:shouldSendMessage("bar"))
@@ -153,14 +153,14 @@ function TestHitEventHandler:testShouldSendMessageRemovesImmediatelyRepeatedMess
 end
 
 function TestHitEventHandler:testShouldSendMessageAllowsSameMessageAfter5Seconds()
-    local eventHandler = hitEventHandler.HIT_EVENT_HANDLER:New(30)
+    local eventHandler = hitEventHandler.HIT_EVENTHANDLER:New(30)
     lu.assertIsTrue(eventHandler:shouldSendMessage("foo"))
     dcsStub.setTimeOffset(5.01)
     lu.assertIsTrue(eventHandler:shouldSendMessage("foo"))
 end
 
 function TestHitEventHandler:testShouldSendMessageRemovesAlternatingMessages()
-    local eventHandler = hitEventHandler.HIT_EVENT_HANDLER:New(30)
+    local eventHandler = hitEventHandler.HIT_EVENTHANDLER:New(30)
     lu.assertIsTrue(eventHandler:shouldSendMessage("Hit by AP"))
     lu.assertIsTrue(eventHandler:shouldSendMessage("Hit by HE"))
     lu.assertIsFalse(eventHandler:shouldSendMessage("Hit by AP"))

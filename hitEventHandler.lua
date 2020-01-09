@@ -4,18 +4,18 @@ local M = {}
 
 M.eventHandler = nil -- constructed in onMissionStart
 
-M.HIT_EVENT_HANDLER = {
+M.HIT_EVENTHANDLER = {
     ClassName = "HIT_EVENTHANDLER"
 }
 
-function M.HIT_EVENT_HANDLER:New(hitMessageDelay)
+function M.HIT_EVENTHANDLER:New(hitMessageDelay)
     local _self = BASE:Inherit(self, EVENTHANDLER:New())
     _self.hitMessageDelay = hitMessageDelay
     _self.sentMessages = {}
     return _self
 end
 
-function M.HIT_EVENT_HANDLER:shouldSendMessage(message)
+function M.HIT_EVENTHANDLER:shouldSendMessage(message)
     -- only print the same message again after 5 seconds
     local time = timer.getTime()
     local lastSentTime = self.sentMessages[message]
@@ -24,7 +24,7 @@ function M.HIT_EVENT_HANDLER:shouldSendMessage(message)
     return shouldSend
 end
 
-function M.HIT_EVENT_HANDLER:onHit(event)
+function M.HIT_EVENTHANDLER:onHit(event)
     local message = M.buildHitMessage(event)
     if message ~= nil then
         if self:shouldSendMessage(message) then
@@ -84,7 +84,7 @@ function M.buildHitMessage(event)
 end
 
 function M.onMissionStart(hitMessageDelay)
-    M.eventHandler = M.HIT_EVENT_HANDLER:New(hitMessageDelay)
+    M.eventHandler = M.HIT_EVENTHANDLER:New(hitMessageDelay)
     M.eventHandler:HandleEvent(EVENTS.Hit, M.eventHandler.onHit)
 end
 
