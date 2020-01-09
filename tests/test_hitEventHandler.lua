@@ -2,15 +2,15 @@ local lu = require("tests.luaunit")
 require("tests.dcs_stub")
 require("MOOSE")
 
-local loggingEventHandler = require("loggingEventHandler")
+local hitEventHandler = require("hitEventHandler")
 
-TestLoggingEventHandler = {}
+TestHitEventHandler = {}
 
-function TestLoggingEventHandler:testEmptyHitEvent()
-    lu.assertIsNil(loggingEventHandler.buildHitMessage({}))
+function TestHitEventHandler:testEmptyHitEvent()
+    lu.assertIsNil(hitEventHandler.buildHitMessage({}))
 end
 
-function TestLoggingEventHandler:testAIHitOnPlayer()
+function TestHitEventHandler:testAIHitOnPlayer()
     local event = {
         IniCoalition = 2,
         IniTypeName = "M-1 Abrams",
@@ -19,11 +19,11 @@ function TestLoggingEventHandler:testAIHitOnPlayer()
         TgtTypeName = "UH-1H",
         WeaponName = "weapons.shells.M2_12_7_T",
     }
-    lu.assertEquals(loggingEventHandler.buildHitMessage(event),
+    lu.assertEquals(hitEventHandler.buildHitMessage(event),
             "Blue M-1 Abrams hit Winston in red UH-1H with weapons.shells.M2_12_7_T")
 end
 
-function TestLoggingEventHandler:testPlayerHitOnAI()
+function TestHitEventHandler:testPlayerHitOnAI()
     local event = {
         IniPlayerName = "Bob",
         IniCoalition = 1,
@@ -32,11 +32,11 @@ function TestLoggingEventHandler:testPlayerHitOnAI()
         TgtTypeName = "ZSU-23",
         WeaponName = "AIM-120C",
     }
-    lu.assertEquals(loggingEventHandler.buildHitMessage(event),
+    lu.assertEquals(hitEventHandler.buildHitMessage(event),
             "Bob in red F/A-18C hit blue ZSU-23 with AIM-120C")
 end
 
-function TestLoggingEventHandler:testPlayerHitOnAIWithNoIniCoalition()
+function TestHitEventHandler:testPlayerHitOnAIWithNoIniCoalition()
     local event = {
         IniPlayerName = "Bob",
         IniTypeName = "F/A-18C",
@@ -44,11 +44,11 @@ function TestLoggingEventHandler:testPlayerHitOnAIWithNoIniCoalition()
         TgtTypeName = "ZSU-23",
         WeaponName = "AIM-120C",
     }
-    lu.assertEquals(loggingEventHandler.buildHitMessage(event),
+    lu.assertEquals(hitEventHandler.buildHitMessage(event),
             "Bob in F/A-18C hit blue ZSU-23 with AIM-120C")
 end
 
-function TestLoggingEventHandler:testPlayerHitOnAINoWeaponName()
+function TestHitEventHandler:testPlayerHitOnAINoWeaponName()
     local event = {
         IniPlayerName = "Bob",
         IniCoalition = 1,
@@ -56,11 +56,11 @@ function TestLoggingEventHandler:testPlayerHitOnAINoWeaponName()
         TgtCoalition = 2,
         TgtTypeName = "ZSU-23"
     }
-    lu.assertEquals(loggingEventHandler.buildHitMessage(event),
+    lu.assertEquals(hitEventHandler.buildHitMessage(event),
             "Bob in red F/A-18C hit blue ZSU-23")
 end
 
-function TestLoggingEventHandler:testPlayerOnPlayerHit()
+function TestHitEventHandler:testPlayerOnPlayerHit()
     local event = {
         IniPlayerName = "Bob",
         IniCoalition = 1,
@@ -70,11 +70,11 @@ function TestLoggingEventHandler:testPlayerOnPlayerHit()
         WeaponName = "AIM-120C",
         TgtPlayerName = "Alan",
     }
-    lu.assertEquals(loggingEventHandler.buildHitMessage(event),
+    lu.assertEquals(hitEventHandler.buildHitMessage(event),
             "Bob in red F/A-18C hit Alan in blue ZSU-23 with AIM-120C")
 end
 
-function TestLoggingEventHandler:testPlayerOnPlayerFriendlyHit()
+function TestHitEventHandler:testPlayerOnPlayerFriendlyHit()
     local event = {
         IniPlayerName = "Bob",
         IniCoalition = 1,
@@ -84,11 +84,11 @@ function TestLoggingEventHandler:testPlayerOnPlayerFriendlyHit()
         WeaponName = "AIM-120C",
         TgtPlayerName = "Alan",
     }
-    lu.assertEquals(loggingEventHandler.buildHitMessage(event),
+    lu.assertEquals(hitEventHandler.buildHitMessage(event),
             "FRIENDLY FIRE: Bob in red F/A-18C hit Alan in red ZSU-23 with AIM-120C")
 end
 
-function TestLoggingEventHandler:testAIOnAIHit()
+function TestHitEventHandler:testAIOnAIHit()
     local event = {
         IniCoalition = 1,
         IniTypeName = "F/A-18C",
@@ -96,10 +96,10 @@ function TestLoggingEventHandler:testAIOnAIHit()
         TgtTypeName = "ZSU-23",
         WeaponName = "AIM-120C",
     }
-    lu.assertIsNil(loggingEventHandler.buildHitMessage(event))
+    lu.assertIsNil(hitEventHandler.buildHitMessage(event))
 end
 
-function TestLoggingEventHandler:testSlungOnSlungHit()
+function TestHitEventHandler:testSlungOnSlungHit()
     local event = {
         IniCoalition = 2,
         IniTypeName = "M-1 Abrams",
@@ -109,10 +109,10 @@ function TestLoggingEventHandler:testSlungOnSlungHit()
         WeaponName = "BFG",
         TgtGroupName = "CTLD_M-1 Abrams 33 (Steve)",
     }
-    lu.assertIsNil(loggingEventHandler.buildHitMessage(event))
+    lu.assertIsNil(hitEventHandler.buildHitMessage(event))
 end
 
-function TestLoggingEventHandler:testSlungUnitHitOnPlayer()
+function TestHitEventHandler:testSlungUnitHitOnPlayer()
     local event = {
         IniCoalition = 2,
         IniTypeName = "M-1 Abrams",
@@ -122,11 +122,11 @@ function TestLoggingEventHandler:testSlungUnitHitOnPlayer()
         TgtTypeName = "UH-1H",
         WeaponName = "weapons.shells.M2_12_7_T",
     }
-    lu.assertEquals(loggingEventHandler.buildHitMessage(event),
+    lu.assertEquals(hitEventHandler.buildHitMessage(event),
             "Winston's blue M-1 Abrams hit Alan in red UH-1H with weapons.shells.M2_12_7_T")
 end
 
-function TestLoggingEventHandler:testPlayerHitOnSlungUnit()
+function TestHitEventHandler:testPlayerHitOnSlungUnit()
     local event = {
         IniPlayerName = "Bob",
         IniCoalition = 1,
@@ -136,7 +136,7 @@ function TestLoggingEventHandler:testPlayerHitOnSlungUnit()
         TgtGroupName = "CTLD_ZSU_23 1 (Winston)",
         WeaponName = "AGM-65D",
     }
-    lu.assertEquals(loggingEventHandler.buildHitMessage(event),
+    lu.assertEquals(hitEventHandler.buildHitMessage(event),
             "Bob in red F/A-18C hit Winston's blue ZSU-23 with AGM-65D")
 end
 
