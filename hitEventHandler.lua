@@ -15,10 +15,6 @@ M.eventHandler = HIT_EVENT_HANDLER:New()
 M.lastMessage = nil
 M.lastMessageTime = 0
 
-function M.eventHandler:logEvent(event)
-    self:I({ event = event })
-end
-
 local function getUnitDesc(coalition, groupName, typeName)
     local ownerName = groupName ~= nil and utils.getPlayerNameFromGroupName(groupName) or nil
     local coalitionName = coalition ~= nil and utils.getSideName(coalition) .. " " or ""
@@ -63,7 +59,6 @@ function M.buildHitMessage(event)
 end
 
 function M.eventHandler:onHit(event)
-    -- self:logEvent(event)
     local message = M.buildHitMessage(event)
     if message ~= nil then
         local time = timer.getTime()
