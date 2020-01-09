@@ -6,6 +6,7 @@ local state = require("state")
 TestState = {}
 
 local _getGroupData = state.getGroupData
+local _getAllBaseOwnershipFromDcs = state.getAllBaseOwnershipFromDcs
 
 function TestState:setUp()
     -- reset state
@@ -15,6 +16,7 @@ end
 
 function TestState:tearDown()
     state.getGroupData = _getGroupData
+    state.getAllBaseOwnershipFromDcs = _getAllBaseOwnershipFromDcs
 end
 
 function TestState:testPushSpawnQueue()

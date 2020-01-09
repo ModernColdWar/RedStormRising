@@ -142,8 +142,13 @@ function M.copyFromCtld()
     M.currentState.ctld.nextUnitId = ctld.nextUnitId
 end
 
+-- here so we can stub this in the test
+function M.getAllBaseOwnershipFromDcs()
+    return queryDcs.getAllBaseOwnership()
+end
+
 function M.updateBaseOwnership()
-    M.currentState.baseOwnership = queryDcs.getAllBaseOwnership()
+    M.currentState.baseOwnership = M.getAllBaseOwnershipFromDcs()
 end
 
 function M.getOwner(baseName)
