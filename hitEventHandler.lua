@@ -6,14 +6,15 @@ local HIT_EVENT_HANDLER = {
     ClassName = "HIT_EVENTHANDLER"
 }
 
-function HIT_EVENT_HANDLER:New()
-    return BASE:Inherit(self, EVENTHANDLER:New())
+function HIT_EVENT_HANDLER:New(hitMessageDelay)
+    local _self = BASE:Inherit(self, EVENTHANDLER:New())
+    _self.hitMessageDelay = hitMessageDelay
+    _self.lastMessage = nil
+    _self.lastMessageTime = 0
+    return _self
 end
 
-M.eventHandler = HIT_EVENT_HANDLER:New()
-
-M.lastMessage = nil
-M.lastMessageTime = 0
+M.eventHandler = nil -- constructed in onMissionStart
 
 local function getUnitDesc(coalition, groupName, typeName)
     local ownerName = groupName ~= nil and utils.getPlayerNameFromGroupName(groupName) or nil
@@ -61,9 +62,9 @@ end
 function M.eventHandler:shouldSendMessage(message)
     -- only print the same message again after 5 seconds
     local time = timer.getTime()
-    local shouldSend = message ~= M.lastMessage or time - M.lastMessageTime > 5
-    M.lastMessage = message
-    M.lastMessageTime = time
+    local shouldSend = message ~= self.lastMessage or time - self.lastMessageTime > 5
+    self.lastMessage = message
+    self.lastMessageTime = time
     return shouldSend
 end
 
@@ -72,10 +73,10 @@ function M.eventHandler:onHit(event)
     if message ~= nil then
         if self:shouldSendMessage(message) then
             self:I(message)
-            if M.hitMessageDelay > 0 and not utils.startswith(message, "FRIENDLY FIRE: ") then
+            if self.hitMessageDelay > 0 and not utils.startswith(message, "FRIENDLY FIRE: ") then
                 timer.scheduleFunction(function(args)
                     trigger.action.outText(args[1], 10)
-                end, { message }, timer.getTime() + M.hitMessageDelay)
+                end, { message }, timer.getTime() + self.hitMessageDelay)
             else
                 trigger.action.outText(message, 10)
             end
@@ -83,8 +84,8 @@ function M.eventHandler:onHit(event)
     end
 end
 
-function M.register(hitMessageDelay)
-    M.hitMessageDelay = hitMessageDelay
+function M.onMissionStart(hitMessageDelay)
+    M.eventHandler = HIT_EVENT_HANDLER:New(hitMessageDelay)
     M.eventHandler:HandleEvent(EVENTS.Hit, M.eventHandler.onHit)
 end
 

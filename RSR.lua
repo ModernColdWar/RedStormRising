@@ -34,7 +34,7 @@ require("weaponManager")
 
 slotBlocker.onMissionStart()
 baseCapturedHandler.register()
-hitEventHandler.register(rsrConfig.hitMessageDelay)
+hitEventHandler.onMissionStart(rsrConfig.hitMessageDelay)
 persistence.onMissionStart(rsrConfig)
 missionInfo.onMissionStart(rsrConfig)
 awacs.onMissionStart(rsrConfig.awacsBases)
