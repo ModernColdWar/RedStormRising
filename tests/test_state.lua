@@ -142,6 +142,114 @@ function TestState:testUpdateBaseOwnershipFirstTime()
     lu.assertEquals(state.currentState.baseOwnership, { airbases = { blue = { "Sochi" }, red = { "Vaziani" } } })
 end
 
+function TestState:testUpdateBaseOwnershipChangingSides()
+    stubDcsBaseOwnership({ airbases = { blue = { "Sochi" }, red = { "Vaziani" } } })
+    state.updateBaseOwnership()
+    stubDcsBaseOwnership({ airbases = { blue = { "Sochi", "Vaziani" }, red = { } } })
+    state.updateBaseOwnership()
+
+    lu.assertEquals(state.currentState.baseOwnership.airbases, { blue = { "Sochi", "Vaziani" }, neutral = {}, red = { } })
+end
+
+function TestState:testUpdateBaseOwnershipNeutralFirstTimeNeutralIsRespected()
+    stubDcsBaseOwnership({ airbases = { blue = { "Sochi" }, red = { "Vaziani" }, neutral = { "Batumi" } } })
+    state.updateBaseOwnership()
+    lu.assertEquals(state.currentState.baseOwnership.airbases,
+            { blue = { "Sochi" }, red = { "Vaziani" }, neutral = { "Batumi" } })
+
+    -- Batumi neutral -> red
+    stubDcsBaseOwnership({ airbases = { blue = { "Sochi" }, red = { "Vaziani", "Batumi" }, neutral = { } } })
+    state.updateBaseOwnership()
+    lu.assertEquals(state.currentState.baseOwnership.airbases,
+            { blue = { "Sochi" }, red = { "Batumi", "Vaziani" }, neutral = { } })
+end
+
+function TestState:testUpdateBaseOwnershipGoingToNeutralFromCapturedIsIgnored()
+    stubDcsBaseOwnership({ airbases = { blue = { "Sochi" }, red = { "Vaziani" }, neutral = { } } })
+    state.updateBaseOwnership()
+    lu.assertEquals(state.currentState.baseOwnership.airbases,
+            { blue = { "Sochi" }, red = { "Vaziani" }, neutral = { } })
+
+    -- Vaziani red -> neutral
+    stubDcsBaseOwnership({ airbases = { blue = { "Sochi" }, red = { }, neutral = { "Vaziani" } } })
+    state.updateBaseOwnership()
+    -- keeps Vaziani as red
+    lu.assertEquals(state.currentState.baseOwnership.airbases,
+            { blue = { "Sochi" }, red = { "Vaziani" }, neutral = { } })
+end
+
+function TestState:testUpdateBaseOwnershipWithLotsOfData()
+    local baseOwnership1 = {
+        airbases = { red = { "AB1", "AB2", "AB3" }, blue = { "AB4", "AB5", "AB6" }, neutral = {} },
+        farps = { red = { "F1", "F2" }, blue = { "F3", "F4" }, neutral = {} }
+    }
+
+    stubDcsBaseOwnership(baseOwnership1)
+    state.updateBaseOwnership()
+    lu.assertEquals(state.currentState.baseOwnership, baseOwnership1)
+
+    -- AB2, F2, F3 and F4 go neutral - no change to their state
+    -- AB3 goes from red to blue
+    local baseOwnership2 = {
+        airbases = { red = { "AB1" }, blue = { "AB3", "AB4", "AB5", "AB6" }, neutral = { "AB2" } },
+        farps = { red = { "F1" }, blue = {}, neutral = { "F2", "F3", "F4" } }
+    }
+    stubDcsBaseOwnership(baseOwnership2)
+    state.updateBaseOwnership()
+    lu.assertEquals(state.currentState.baseOwnership, {
+        airbases = { red = { "AB1", "AB2" }, blue = { "AB3", "AB4", "AB5", "AB6" }, neutral = {} },
+        farps = { red = { "F1", "F2" }, blue = { "F3", "F4" }, neutral = {} }
+    })
+
+    -- AB2, F2, F4 go neutral to blue
+    local baseOwnership3 = {
+        airbases = { red = { "AB1" }, blue = { "AB2", "AB3", "AB4", "AB5", "AB6" }, neutral = {} },
+        farps = { red = { "F1" }, blue = { "F2", "F4" }, neutral = { "F3" } }
+    }
+    stubDcsBaseOwnership(baseOwnership3)
+    state.updateBaseOwnership()
+    lu.assertEquals(state.currentState.baseOwnership, {
+        airbases = { red = { "AB1" }, blue = { "AB2", "AB3", "AB4", "AB5", "AB6" }, neutral = {} },
+        farps = { red = { "F1" }, blue = { "F2", "F3", "F4" }, neutral = {} }
+    })
+
+    -- F3 goes neutral to red
+    local baseOwnership4 = {
+        airbases = { red = { "AB1" }, blue = { "AB2", "AB3", "AB4", "AB5", "AB6" }, neutral = {} },
+        farps = { red = { "F1", "F3" }, blue = { "F2", "F4" }, neutral = {} }
+    }
+    stubDcsBaseOwnership(baseOwnership4)
+    state.updateBaseOwnership()
+    lu.assertEquals(state.currentState.baseOwnership, {
+        airbases = { red = { "AB1" }, blue = { "AB2", "AB3", "AB4", "AB5", "AB6" }, neutral = {} },
+        farps = { red = { "F1", "F3" }, blue = { "F2", "F4" }, neutral = {} }
+    })
+
+    -- All airbases to blue, all FARPS to red
+    local baseOwnership5 = {
+        airbases = { red = {}, blue = { "AB1", "AB2", "AB3", "AB4", "AB5", "AB6" }, neutral = {} },
+        farps = { red = { "F1", "F2", "F3", "F4" }, blue = {}, neutral = {} }
+    }
+    stubDcsBaseOwnership(baseOwnership5)
+    state.updateBaseOwnership()
+    lu.assertEquals(state.currentState.baseOwnership, {
+        airbases = { red = {}, blue = { "AB1", "AB2", "AB3", "AB4", "AB5", "AB6" }, neutral = {} },
+        farps = { red = { "F1", "F2", "F3", "F4" }, blue = {}, neutral = {} }
+    })
+
+    -- Everything goes neutral; no change in state
+    local baseOwnership6 = {
+        airbases = { red = {}, blue = {}, neutral = {"AB1", "AB2", "AB3", "AB4", "AB5", "AB6" } },
+        farps = { red = { }, blue = {}, neutral = {"F1", "F2", "F3", "F4" } }
+    }
+    stubDcsBaseOwnership(baseOwnership6)
+    state.updateBaseOwnership()
+    lu.assertEquals(state.currentState.baseOwnership, {
+        airbases = { red = {}, blue = { "AB1", "AB2", "AB3", "AB4", "AB5", "AB6" }, neutral = {} },
+        farps = { red = { "F1", "F2", "F3", "F4" }, blue = {}, neutral = {} }
+    })
+end
+
 function TestState:testSetBaseOwnerAirbaseChanged()
     state.currentState.baseOwnership = {
         airbases = { blue = { "Guduata" }, neutral = {}, red = { "A", "B" } },
