@@ -20,7 +20,7 @@ function M.BIRTH_EVENTHANDLER:createMissionInfoMenu(event)
         local playerGroup = event.IniGroup
         MENU_GROUP_COMMAND:New(playerGroup, "Time until restart", nil, function()
             local secondsUntilRestart = restartInfo.getSecondsUntilRestart(os.date("*t"), self.restartHours)
-            MESSAGE:New(string.format("The mission will restart in %s", restartInfo.getSecondsAsString(secondsUntilRestart)), 5):ToGroup(playerGroup)
+            MESSAGE:New(string.format("The server will restart in %s", restartInfo.getSecondsAsString(secondsUntilRestart)), 5):ToGroup(playerGroup)
         end)
     end
 end
