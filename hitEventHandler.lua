@@ -2,7 +2,15 @@ local utils = require("utils")
 
 local M = {}
 
-M.eventHandler = EVENTHANDLER:New()
+local HIT_EVENT_HANDLER = {
+    ClassName = "HIT_EVENTHANDLER"
+}
+
+function HIT_EVENT_HANDLER:New()
+    return BASE:Inherit(self, EVENTHANDLER:New())
+end
+
+M.eventHandler = HIT_EVENT_HANDLER:New()
 
 M.lastMessage = nil
 M.lastMessageTime = 0
