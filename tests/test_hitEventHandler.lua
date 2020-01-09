@@ -146,7 +146,6 @@ function TestHitEventHandler:testShouldSendMessageRemovesImmediatelyRepeatedMess
     lu.assertIsFalse(eventHandler:shouldSendMessage("foo"))
     lu.assertIsTrue(eventHandler:shouldSendMessage("bar"))
     lu.assertIsFalse(eventHandler:shouldSendMessage("bar"))
-    lu.assertIsTrue(eventHandler:shouldSendMessage("foo"))
 end
 
 function TestHitEventHandler:testShouldSendMessageAllowsSameMessageAfter5Seconds()
