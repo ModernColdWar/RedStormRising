@@ -315,6 +315,7 @@ AI = {
 
 function dcsStub.reset()
     dcsStub.recordedCalls = {}
+    dcsStub.timeOffset = 0
 end
 
 function dcsStub.assertNoCalls()
