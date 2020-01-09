@@ -149,5 +149,12 @@ function TestHitEventHandler:testShouldSendMessageRemovesImmediatelyRepeatedMess
     lu.assertIsTrue(eventHandler:shouldSendMessage("foo"))
 end
 
+function TestHitEventHandler:testShouldSendMessageAllowsSameMessageAfter5Seconds()
+    local eventHandler = hitEventHandler.HIT_EVENT_HANDLER:New(30)
+    lu.assertIsTrue(eventHandler:shouldSendMessage("foo"))
+    dcsStub.setTimeOffset(5.01)
+    lu.assertIsTrue(eventHandler:shouldSendMessage("foo"))
+end
+
 local runner = lu.LuaUnit.new()
 os.exit(runner:runSuite())
