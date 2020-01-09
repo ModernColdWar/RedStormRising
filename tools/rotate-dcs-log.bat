@@ -9,6 +9,6 @@ set Min=%dt:~10,2%
 set Sec=%dt:~12,2%
 
 set stamp=%YYYY%-%MM%-%DD%_%HH%%Min%%Sec%
-set savedir=%systemdrive%%homepath%\Saved Games\DCS
+set savedir=%systemdrive%%homepath%\Saved Games\DCS.openbeta_server
 
 ren "%savedir%\dcs.log" "dcs_%stamp%.log"
