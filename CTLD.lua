@@ -3456,7 +3456,14 @@ function ctld.spawnCrateGroup(_heli, _positions, _types, _unitQuantity)
 
     --mist function
     _group.category = Group.Category.GROUND
-    _group.country = _heli:getCountry()
+    if _heli:getCoalition() == coalition.side.BLUE and _types[1] == "1L13 EWR" then
+        -- EWRs need to be from a country with numeric callsigns
+        -- see https://github.com/ModernColdWar/RedStormRising/issues/99
+        -- also see https://forums.eagle.ru/showthread.php?t=130723&page=4
+        _group.country = country.id.UKRAINE
+    else
+        _group.country = _heli:getCountry()
+    end
 
     local _spawnedGroup = Group.getByName(mist.dynAdd(_group).name)
 
