@@ -11,17 +11,16 @@ M.HIT_EVENT_HANDLER = {
 function M.HIT_EVENT_HANDLER:New(hitMessageDelay)
     local _self = BASE:Inherit(self, EVENTHANDLER:New())
     _self.hitMessageDelay = hitMessageDelay
-    _self.lastMessage = nil
-    _self.lastMessageTime = 0
+    _self.sentMessages = {}
     return _self
 end
 
 function M.HIT_EVENT_HANDLER:shouldSendMessage(message)
     -- only print the same message again after 5 seconds
     local time = timer.getTime()
-    local shouldSend = message ~= self.lastMessage or time - self.lastMessageTime > 5
-    self.lastMessage = message
-    self.lastMessageTime = time
+    local lastSentTime = self.sentMessages[message]
+    local shouldSend = lastSentTime == nil or time - lastSentTime > 5
+    self.sentMessages[message] = time
     return shouldSend
 end
 

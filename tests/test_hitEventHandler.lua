@@ -6,6 +6,10 @@ local hitEventHandler = require("hitEventHandler")
 
 TestHitEventHandler = {}
 
+function TestHitEventHandler:tearDown()
+    dcsStub.reset()
+end
+
 function TestHitEventHandler:testEmptyHitEvent()
     lu.assertIsNil(hitEventHandler.buildHitMessage({}))
 end
@@ -153,6 +157,19 @@ function TestHitEventHandler:testShouldSendMessageAllowsSameMessageAfter5Seconds
     lu.assertIsTrue(eventHandler:shouldSendMessage("foo"))
     dcsStub.setTimeOffset(5.01)
     lu.assertIsTrue(eventHandler:shouldSendMessage("foo"))
+end
+
+function TestHitEventHandler:testShouldSendMessageRemovesAlternatingMessages()
+    local eventHandler = hitEventHandler.HIT_EVENT_HANDLER:New(30)
+    lu.assertIsTrue(eventHandler:shouldSendMessage("Hit by AP"))
+    lu.assertIsTrue(eventHandler:shouldSendMessage("Hit by HE"))
+    lu.assertIsFalse(eventHandler:shouldSendMessage("Hit by AP"))
+    lu.assertIsFalse(eventHandler:shouldSendMessage("Hit by HE"))
+    lu.assertIsFalse(eventHandler:shouldSendMessage("Hit by AP"))
+    lu.assertIsFalse(eventHandler:shouldSendMessage("Hit by HE"))
+    dcsStub.setTimeOffset(5.01)
+    lu.assertIsTrue(eventHandler:shouldSendMessage("Hit by AP"))
+    lu.assertIsTrue(eventHandler:shouldSendMessage("Hit by HE"))
 end
 
 local runner = lu.LuaUnit.new()
