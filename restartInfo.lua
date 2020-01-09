@@ -48,10 +48,10 @@ local function sendRestartWarning(args)
 end
 
 function M.onMissionStart(restartHours, restartWarningMinutes)
-    for _, restartWarningMinute in pairs(restartWarningMinutes) do
-        local schedulerTime = M.getSecondsUntilTimeBeforeRestart(os.date("*t"), restartHours, restartWarningMinute * 60)
+    for _, minutesUntilRestart in pairs(restartWarningMinutes) do
+        local schedulerTime = M.getSecondsUntilTimeBeforeRestart(os.date("*t"), restartHours, minutesUntilRestart * 60)
         if schedulerTime ~= nil then
-            timer.scheduleFunction(sendRestartWarning, { schedulerTime }, timer.getTime() + schedulerTime)
+            timer.scheduleFunction(sendRestartWarning, { minutesUntilRestart }, timer.getTime() + schedulerTime)
         end
     end
 end
