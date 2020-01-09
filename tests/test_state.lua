@@ -12,11 +12,18 @@ function TestState:setUp()
     -- reset state
     state.currentState = mist.utils.deepCopy(state.defaultState)
     state.spawnQueue = {}
+    state.currentState.baseOwnership = {}
 end
 
 function TestState:tearDown()
     state.getGroupData = _getGroupData
     state.getAllBaseOwnershipFromDcs = _getAllBaseOwnershipFromDcs
+end
+
+local function stubDcsBaseOwnership(baseOwnership)
+    state.getAllBaseOwnershipFromDcs = function()
+        return baseOwnership
+    end
 end
 
 function TestState:testPushSpawnQueue()
@@ -128,12 +135,11 @@ function TestState:testGetOwner()
     lu.assertEquals(state.getOwner("foo"), "red")
 end
 
-function TestState:testUpdateBaseOwnership()
+function TestState:testUpdateBaseOwnershipFirstTime()
     state.currentState.baseOwnership = nil
+    stubDcsBaseOwnership({ airbases = { blue = { "Sochi" }, red = { "Vaziani" } } })
     state.updateBaseOwnership()
-    lu.assertEquals(state.currentState.baseOwnership, {
-        airbases = { blue = {}, neutral = {}, red = {} },
-        farps = { blue = {}, neutral = {}, red = {} } })
+    lu.assertEquals(state.currentState.baseOwnership, { airbases = { blue = { "Sochi" }, red = { "Vaziani" } } })
 end
 
 function TestState:testSetBaseOwnerAirbaseChanged()
