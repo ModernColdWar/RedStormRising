@@ -23,20 +23,20 @@ end
 
 function M.BIRTH_EVENTHANDLER:_AddMenus(event)
     if event.IniPlayerName then
-        local playerName = event.IniPlayerName
         local playerGroup = event.IniGroup
         if playerGroup then
-            self:I("Adding menus for " .. playerName)
+            self:I("Adding menus for " .. event.IniPlayerName)
             local groupId = playerGroup:GetDCSObject():getID()
+            local unitName = event.IniUnitName
             self:_AddTimeUntilRestart(playerGroup)
-            self:_AddJTACStatusMenu(groupId, playerName)
+            self:_AddJTACStatusMenu(groupId, unitName)
             if playerGroup:GetCategory() == Group.Category.AIRPLANE then
                 self:_AddWeaponsManagerMenus(groupId)
             end
             if missionUtils.isTransportType(playerGroup:GetTypeName()) then
-                -- add CTLD menus
+                self:_AddCTLDMenus(groupId, unitName)
             else
-                self:_AddRadioListMenu(groupId, playerName)
+                self:_AddRadioListMenu(groupId, unitName)
             end
         end
     end
@@ -49,9 +49,9 @@ function M.BIRTH_EVENTHANDLER:_AddTimeUntilRestart(playerGroup)
     end)
 end
 
-function M.BIRTH_EVENTHANDLER:_AddJTACStatusMenu(groupId, playerName)
+function M.BIRTH_EVENTHANDLER:_AddJTACStatusMenu(groupId, unitName)
     if ctld.JTAC_jtacStatusF10 then
-        missionCommands.addCommandForGroup(groupId, "JTAC Status", nil, ctld.getJTACStatus, { playerName })
+        missionCommands.addCommandForGroup(groupId, "JTAC Status", nil, ctld.getJTACStatus, { unitName })
     end
 end
 
@@ -60,9 +60,13 @@ function M.BIRTH_EVENTHANDLER:_AddWeaponsManagerMenus(groupId)
     missionCommands.addCommandForGroup(groupId, "Validate Loadout", nil, weaponManager.validateLoadout, groupId)
 end
 
-function M.BIRTH_EVENTHANDLER:_AddRadioListMenu(groupId, playerName)
+function M.BIRTH_EVENTHANDLER:_AddCTLDMenus(groupId, unitName)
+    ctld.addF10MenuOptions(unitName)
+end
+
+function M.BIRTH_EVENTHANDLER:_AddRadioListMenu(groupId, unitName)
     if ctld.ctld.enabledRadioBeaconDrop then
-        missionCommands.addCommandForGroup(groupId, "List Radio Beacons", nil, ctld.listRadioBeacons, { playerName })
+        missionCommands.addCommandForGroup(groupId, "List Radio Beacons", nil, ctld.listRadioBeacons, { unitName })
     end
 end
 
