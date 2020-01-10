@@ -4433,11 +4433,12 @@ function ctld.addF10MenuOptions()
         end
 
         if ctld.JTAC_jtacStatusF10 then
+            -- RSR: JTAC menus added via birth event handling
             -- get all BLUE players
-            ctld.addJTACRadioCommand(2)
+            --ctld.addJTACRadioCommand(2)
 
             -- get all RED players
-            ctld.addJTACRadioCommand(1)
+            --ctld.addJTACRadioCommand(1)
         end
 
     end)

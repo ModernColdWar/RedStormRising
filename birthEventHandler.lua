@@ -25,6 +25,7 @@ function M.BIRTH_EVENTHANDLER:_AddMenus(event)
         if playerGroup then
             self:I("Adding menus for " .. event.IniPlayerName)
             self:_AddTimeUntilRestart(playerGroup)
+            self:_AddJTACStatusMenu(playerGroup, event.IniPlayerName)
         end
     end
 end
@@ -34,6 +35,13 @@ function M.BIRTH_EVENTHANDLER:_AddTimeUntilRestart(playerGroup)
         local secondsUntilRestart = restartInfo.getSecondsUntilRestart(os.date("*t"), self.restartHours)
         MESSAGE:New(string.format("The server will restart in %s", restartInfo.getSecondsAsString(secondsUntilRestart)), 5):ToGroup(playerGroup)
     end)
+end
+
+function M.BIRTH_EVENTHANDLER:_AddJTACStatusMenu(playerGroup, playerName)
+    if ctld.JTAC_jtacStatusF10 then
+        local groupId = playerGroup:GetDCSObject():getID()
+        missionCommands.addCommandForGroup(groupId, "JTAC Status", nil, ctld.getJTACStatus, { playerName })
+    end
 end
 
 function M.onMissionStart(restartHours)
