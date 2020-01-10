@@ -263,9 +263,10 @@ function EV_MANAGER:onEvent(event)
                 if not contains(playersSettedUp, playerName) then
                     setup(playerName)
                 end
-                local gpid = event.initiator:getGroup():getID()
-                missionCommands.addCommandForGroup(gpid, "Show weapons left", nil, M.printHowManyLeft, gpid)
-                missionCommands.addCommandForGroup(gpid, "Validate Loadout", nil, M.validateLoadout, gpid)
+                -- RSR: menus added via birth event handling
+                --local gpid = event.initiator:getGroup():getID()
+                --missionCommands.addCommandForGroup(gpid, "Show weapons left", nil, M.printHowManyLeft, gpid)
+                --missionCommands.addCommandForGroup(gpid, "Validate Loadout", nil, M.validateLoadout, gpid)
                 --FOR WEAPON DEBUGGING
                 --for i, ammo in pairs(event.initiator:getAmmo()) do
                 --  trigger.action.outText(ammo.desc.typeName, msgTimer)

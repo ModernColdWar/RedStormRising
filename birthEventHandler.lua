@@ -1,4 +1,5 @@
 local restartInfo = require("restartInfo")
+local weaponManager = require("weaponManager")
 
 local M = {}
 
@@ -26,6 +27,9 @@ function M.BIRTH_EVENTHANDLER:_AddMenus(event)
             self:I("Adding menus for " .. event.IniPlayerName)
             self:_AddTimeUntilRestart(playerGroup)
             self:_AddJTACStatusMenu(playerGroup, event.IniPlayerName)
+            if playerGroup:GetCategory() == Group.Category.AIRPLANE then
+                self:_AddWeaponsManagerMenus(playerGroup)
+            end
         end
     end
 end
@@ -42,6 +46,12 @@ function M.BIRTH_EVENTHANDLER:_AddJTACStatusMenu(playerGroup, playerName)
         local groupId = playerGroup:GetDCSObject():getID()
         missionCommands.addCommandForGroup(groupId, "JTAC Status", nil, ctld.getJTACStatus, { playerName })
     end
+end
+
+function M.BIRTH_EVENTHANDLER:_AddWeaponsManagerMenus(playerGroup)
+    local groupId = playerGroup:GetDCSObject():getID()
+    missionCommands.addCommandForGroup(groupId, "Show weapons left", nil, weaponManager.printHowManyLeft, groupId)
+    missionCommands.addCommandForGroup(groupId, "Validate Loadout", nil, weaponManager.validateLoadout, groupId)
 end
 
 function M.onMissionStart(restartHours)
