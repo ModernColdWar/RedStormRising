@@ -68,7 +68,12 @@ function M.BIRTH_EVENTHANDLER:_AddWeaponsManagerMenus(groupId)
 end
 
 function M.BIRTH_EVENTHANDLER:_AddCTLDMenus(groupId, unitName)
+    -- light crates
+    -- heavy crates
+    -- unpack nearby crates
     ctld.addF10MenuOptions(unitName)
+    -- drop crate
+    -- troop transport
 end
 
 function M.BIRTH_EVENTHANDLER:_AddRadioListMenu(groupId, unitName)
