@@ -1495,7 +1495,7 @@ end
 function csar.addMedevacMenuItem()
     -- Loop through all Medevac units
 
-    timer.scheduleFunction(csar.addMedevacMenuItem, nil, timer.getTime() + 5)
+    --timer.scheduleFunction(csar.addMedevacMenuItem, nil, timer.getTime() + 5)
 
     for _, _unitName in pairs(csar.csarUnits) do
 
@@ -1731,7 +1731,7 @@ end
 csar.generateVHFrequencies()
 
 -- Schedule timer to add radio item
-timer.scheduleFunction(csar.addMedevacMenuItem, nil, timer.getTime() + 5)
+--timer.scheduleFunction(csar.addMedevacMenuItem, nil, timer.getTime() + 5)
 
 if csar.disableAircraftTimeout then
     -- Schedule timer to reactivate things
