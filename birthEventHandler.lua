@@ -14,6 +14,7 @@ function M.BIRTH_EVENTHANDLER:New(restartHours)
     local _self = BASE:Inherit(self, EVENTHANDLER:New())
     _self.restartHours = restartHours
     _self:HandleEvent(EVENTS.Birth, _self._OnBirth)
+    _self.groupsMenusAdded = {}
     return _self
 end
 
@@ -25,8 +26,14 @@ function M.BIRTH_EVENTHANDLER:_AddMenus(event)
     if event.IniPlayerName then
         local playerGroup = event.IniGroup
         if playerGroup then
-            self:I("Adding menus for " .. event.IniPlayerName)
             local groupId = playerGroup:GetDCSObject():getID()
+            local groupName = playerGroup:GetName()
+            if self.groupsMenusAdded[groupName] then
+                self:I("Not adding menus again for " .. groupName)
+                return
+            end
+            self:I("Adding menus for " .. playerGroup:GetName())
+            self.groupsMenusAdded[groupName] = true
             local unitName = event.IniUnitName
             self:_AddTimeUntilRestart(playerGroup)
             self:_AddJTACStatusMenu(groupId, unitName)
