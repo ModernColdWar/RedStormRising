@@ -171,7 +171,7 @@ local function makeLess(playerName, wpn, howMany, unit)
     end
 end
 
-local function validateLoadout(gpid)
+function M.validateLoadout(gpid)
     local earlyBreak = false
     local blueUnits = mist.utils.deepCopy(coalition.getPlayers(coalition.side.BLUE))
     local redUnits = mist.utils.deepCopy(coalition.getPlayers(coalition.side.RED))
@@ -220,7 +220,7 @@ local function validateLoadout(gpid)
     end
 end
 -- --------------------DATA PRINTER--------------------
-local function printHowManyLeft(gpid)
+function M.printHowManyLeft(gpid)
     local earlyBreak = false
     local blueUnits = mist.utils.deepCopy(coalition.getPlayers(coalition.side.BLUE))
     local redUnits = mist.utils.deepCopy(coalition.getPlayers(coalition.side.RED))
@@ -264,8 +264,8 @@ function EV_MANAGER:onEvent(event)
                     setup(playerName)
                 end
                 local gpid = event.initiator:getGroup():getID()
-                missionCommands.addCommandForGroup(gpid, "Show weapons left", nil, printHowManyLeft, gpid)
-                missionCommands.addCommandForGroup(gpid, "Validate Loadout", nil, validateLoadout, gpid)
+                missionCommands.addCommandForGroup(gpid, "Show weapons left", nil, M.printHowManyLeft, gpid)
+                missionCommands.addCommandForGroup(gpid, "Validate Loadout", nil, M.validateLoadout, gpid)
                 --FOR WEAPON DEBUGGING
                 --for i, ammo in pairs(event.initiator:getAmmo()) do
                 --  trigger.action.outText(ammo.desc.typeName, msgTimer)
