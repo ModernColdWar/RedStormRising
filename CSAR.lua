@@ -1492,34 +1492,31 @@ end
 
 
 -- Adds menuitem to all medevac units that are active
-function csar.addMedevacMenuItem()
+function csar.addMedevacMenuItem(_unitName)
     -- Loop through all Medevac units
 
     --timer.scheduleFunction(csar.addMedevacMenuItem, nil, timer.getTime() + 5)
 
-    for _, _unitName in pairs(csar.csarUnits) do
+    local _unit = csar.getSARHeli(_unitName)
 
-        local _unit = csar.getSARHeli(_unitName)
+    if _unit ~= nil then
 
-        if _unit ~= nil then
+        local _groupId = csar.getGroupId(_unit)
 
-            local _groupId = csar.getGroupId(_unit)
+        if _groupId then
 
-            if _groupId then
+            if csar.addedTo[tostring(_groupId)] == nil then
 
-                if csar.addedTo[tostring(_groupId)] == nil then
+                csar.addedTo[tostring(_groupId)] = true
 
-                    csar.addedTo[tostring(_groupId)] = true
+                local _rootPath = missionCommands.addSubMenuForGroup(_groupId, "CSAR")
 
-                    local _rootPath = missionCommands.addSubMenuForGroup(_groupId, "CSAR")
+                missionCommands.addCommandForGroup(_groupId, "List Active CSAR", _rootPath, csar.displayActiveSAR,
+                        _unitName)
 
-                    missionCommands.addCommandForGroup(_groupId, "List Active CSAR", _rootPath, csar.displayActiveSAR,
-                            _unitName)
+                missionCommands.addCommandForGroup(_groupId, "Check Onboard", _rootPath, csar.checkOnboard, _unitName)
 
-                    missionCommands.addCommandForGroup(_groupId, "Check Onboard", _rootPath, csar.checkOnboard, _unitName)
-
-                    missionCommands.addCommandForGroup(_groupId, "Request Signal Flare", _rootPath, csar.signalFlare, _unitName)
-                end
+                missionCommands.addCommandForGroup(_groupId, "Request Signal Flare", _rootPath, csar.signalFlare, _unitName)
             end
         end
     end
