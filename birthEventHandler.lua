@@ -69,12 +69,26 @@ function M.BIRTH_EVENTHANDLER:_AddWeaponsManagerMenus(groupId)
 end
 
 function M.BIRTH_EVENTHANDLER:_AddCTLDMenus(groupId, unitName)
-    -- light crates
-    -- heavy crates
-    -- unpack nearby crates
+    local _unit = ctld.getTransportUnit(unitName)
+    local _unitActions = ctld.getUnitActions(_unit:getTypeName())
+    if ctld.enableCrates and _unitActions.crates then
+        if ctld.unitCanCarryVehicles(_unit) == false then
+            ctld.addCrateMenu(nil, "Light crates", _unit, groupId, ctld.spawnableCrates, 1)
+            ctld.addCrateMenu(nil, "Heavy crates", _unit, groupId, ctld.spawnableCrates, ctld.heavyCrateWeightMultiplier)
+        end
+    end
+    if (ctld.enabledFOBBuilding or ctld.enableCrates) and _unitActions.crates then
+        missionCommands.addCommandForGroup(groupId, "Unpack Nearby Crate", nil, ctld.unpackCrates, { unitName })
+    end
     ctld.addF10MenuOptions(unitName)
-    -- drop crate
-    -- troop transport
+    if (ctld.enabledFOBBuilding or ctld.enableCrates) and _unitActions.crates then
+        if (ctld.slingLoad == false) or (ctld.internalCargo == true) then
+            missionCommands.addCommandForGroup(groupId, "Drop Crate", nil, ctld.dropSlingCrate, { unitName })
+        end
+    end
+    if _unitActions.troops then
+        missionCommands.addCommandForGroup(groupId, "Unload / Extract Troops", nil, ctld.unloadExtractTroops, { unitName })
+    end
 end
 
 function M.BIRTH_EVENTHANDLER:_AddCSARMenu(unitName)
