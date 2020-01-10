@@ -11,6 +11,7 @@ rsrConfig.baseDefenceActivationRadiusAirbase = 5000
 rsrConfig.baseDefenceActivationRadiusFarp = 2500
 rsrConfig.hitMessageDelay = 30
 rsrConfig.awacsBases = { "Krasnodar-Center", "Vaziani" } -- bases with linked AWACS spawns
+rsrConfig.awacsSpawnLimit = 4
 
 rsrConfig.restartWarningMinutes = { 60, 45, 30, 20, 15, 10, 5, 3, 1 } -- times in minutes before restart to broadcast message
 -- Windows task scheduler, schedules the DCSTask Kill batch file to execute on these hours. These hours are placed here to configure
