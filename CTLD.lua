@@ -4425,11 +4425,12 @@ function ctld.addF10MenuOptions()
 
         -- now do any player controlled aircraft that ARENT transport units
         if ctld.enabledRadioBeaconDrop then
+            -- RSR: Radio menus added via birth event handling
             -- get all BLUE players
-            ctld.addRadioListCommand(2)
+            --ctld.addRadioListCommand(2)
 
             -- get all RED players
-            ctld.addRadioListCommand(1)
+            --ctld.addRadioListCommand(1)
         end
 
         if ctld.JTAC_jtacStatusF10 then
