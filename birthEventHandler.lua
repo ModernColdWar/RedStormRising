@@ -42,6 +42,7 @@ function M.BIRTH_EVENTHANDLER:_AddMenus(event)
             end
             if missionUtils.isTransportType(playerGroup:GetTypeName()) then
                 self:_AddCTLDMenus(groupId, unitName)
+                self:_AddCSARMenu(unitName)
             else
                 self:_AddRadioListMenu(groupId, unitName)
             end
@@ -74,6 +75,10 @@ function M.BIRTH_EVENTHANDLER:_AddCTLDMenus(groupId, unitName)
     ctld.addF10MenuOptions(unitName)
     -- drop crate
     -- troop transport
+end
+
+function M.BIRTH_EVENTHANDLER:_AddCSARMenu(unitName)
+    csar.addMedevacMenuItem(unitName)
 end
 
 function M.BIRTH_EVENTHANDLER:_AddRadioListMenu(groupId, unitName)
