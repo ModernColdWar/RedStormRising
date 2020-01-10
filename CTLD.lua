@@ -4306,7 +4306,7 @@ end
 function ctld.addF10MenuOptions()
     -- Loop through all Heli units
 
-    timer.scheduleFunction(ctld.addF10MenuOptions, nil, timer.getTime() + 10)
+    --timer.scheduleFunction(ctld.addF10MenuOptions, nil, timer.getTime() + 10)
 
     for _, _unitName in pairs(ctld.transportPilotNames) do
 
@@ -5610,7 +5610,7 @@ timer.scheduleFunction(function()
 
     timer.scheduleFunction(ctld.refreshRadioBeacons, nil, timer.getTime() + 5)
     timer.scheduleFunction(ctld.refreshSmoke, nil, timer.getTime() + 5)
-    timer.scheduleFunction(ctld.addF10MenuOptions, nil, timer.getTime() + 5)
+    --timer.scheduleFunction(ctld.addF10MenuOptions, nil, timer.getTime() + 5)
 
     if ctld.enableCrates == true and ctld.slingLoad == false and ctld.hoverPickup == true then
         timer.scheduleFunction(ctld.checkHoverStatus, nil, timer.getTime() + 1)
