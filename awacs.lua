@@ -8,8 +8,9 @@ local log = mist.Logger:new("AWACS", "info")
 local function spawnAWACS(spawnTemplatePrefix)
     log:info("Spawning $1", spawnTemplatePrefix)
     SPAWN:New(spawnTemplatePrefix)
-         :InitLimit(1, 99)
-         :SpawnScheduled(1800, 0.1)
+         :InitLimit(1, 4)
+         :InitRepeat()
+         :SpawnScheduled(3600, 0.05)
 end
 
 function M.onMissionStart(awacsBases)
