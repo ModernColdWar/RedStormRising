@@ -4266,7 +4266,7 @@ function ctld.getUnitActions(_unitType)
 end
 
 -- add menu for spawning crates
-local function addCrateMenu(_rootPath, _crateTypeDescription, _unit, _groupId, _spawnableCrates, _weightMultiplier)
+function ctld.addCrateMenu(_rootPath, _crateTypeDescription, _unit, _groupId, _spawnableCrates, _weightMultiplier)
     local _crateRootPath = missionCommands.addSubMenuForGroup(_groupId, _crateTypeDescription, _rootPath)
     for _subMenuName, _crates in pairs(_spawnableCrates) do
         local _cratePath = missionCommands.addSubMenuForGroup(_groupId, _subMenuName, _crateRootPath)
@@ -4357,8 +4357,8 @@ function ctld.addF10MenuOptions(_unitName)
                     if ctld.enableCrates and _unitActions.crates then
 
                         if ctld.unitCanCarryVehicles(_unit) == false then
-                            addCrateMenu(_rootPath, "Light crates", _unit, _groupId, ctld.spawnableCrates, 1)
-                            addCrateMenu(_rootPath, "Heavy crates", _unit, _groupId, ctld.spawnableCrates, ctld.heavyCrateWeightMultiplier)
+                            ctld.addCrateMenu(_rootPath,"Light crates", _unit, _groupId, ctld.spawnableCrates, 1)
+                            ctld.addCrateMenu(_rootPath, "Heavy crates", _unit, _groupId, ctld.spawnableCrates, ctld.heavyCrateWeightMultiplier)
                         end
                     end
 
