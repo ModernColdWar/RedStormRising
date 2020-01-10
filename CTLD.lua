@@ -4421,32 +4421,31 @@ function ctld.addF10MenuOptions()
         end
     end
 
-    local status, error = pcall(function()
-
-        -- now do any player controlled aircraft that ARENT transport units
-        if ctld.enabledRadioBeaconDrop then
-            -- RSR: Radio menus added via birth event handling
-            -- get all BLUE players
-            --ctld.addRadioListCommand(2)
-
-            -- get all RED players
-            --ctld.addRadioListCommand(1)
-        end
-
-        if ctld.JTAC_jtacStatusF10 then
-            -- RSR: JTAC menus added via birth event handling
-            -- get all BLUE players
-            --ctld.addJTACRadioCommand(2)
-
-            -- get all RED players
-            --ctld.addJTACRadioCommand(1)
-        end
-
-    end)
-
-    if (not status) then
-        env.error(string.format("Error adding f10 to other players: %s", error), false)
-    end
+    -- RSR: these menus added in birthEventHandler
+    --local status, error = pcall(function()
+    --
+    --    -- now do any player controlled aircraft that ARENT transport units
+    --    if ctld.enabledRadioBeaconDrop then
+    --        -- get all BLUE players
+    --        ctld.addRadioListCommand(2)
+    --
+    --        -- get all RED players
+    --        ctld.addRadioListCommand(1)
+    --    end
+    --
+    --    if ctld.JTAC_jtacStatusF10 then
+    --        -- get all BLUE players
+    --        ctld.addJTACRadioCommand(2)
+    --
+    --        -- get all RED players
+    --        ctld.addJTACRadioCommand(1)
+    --    end
+    --
+    --end)
+    --
+    --if (not status) then
+    --    env.error(string.format("Error adding f10 to other players: %s", error), false)
+    --end
 
 
 end
