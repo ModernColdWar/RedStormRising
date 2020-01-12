@@ -1528,7 +1528,7 @@ function csar.addMedevacMenuItem()
 end
 
 --get distance in meters assuming a Flat world
-function csar.getDistance(_point1, _point2)
+function csar.getDistance(_point1, _point2) --mr: duplicate function to ctld.getDistance
 
     local xUnit = _point1.x
     local yUnit = _point1.z

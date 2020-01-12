@@ -41,6 +41,6 @@ hitEventHandler.onMissionStart(rsrConfig.hitMessageDelay)
 birthEventHandler.onMissionStart(rsrConfig.restartHours)
 restartInfo.onMissionStart(rsrConfig.restartHours, rsrConfig.restartWarningMinutes)
 
-_SETTINGS:SetPlayerMenuOff()
+-- _SETTINGS:SetPlayerMenuOff()
 trigger.action.outText("RSR ready", 10)
 log:info("RSR ready")

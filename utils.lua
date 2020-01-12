@@ -129,4 +129,22 @@ function M.getBaseNameFromZoneName(zoneName, suffix)
     return zoneName:sub(1, idx - 1)
 end
 
+--mr: copied from MIST
+-- acc the accuracy of each easting/northing. Can be: 0, 1, 2, 3, 4, or 5.
+-- added -1 as additional accuracy setting to remove UTMZone and condense to simple grid e.g. MN61
+function M.tostringMGRSnoUTM(MGRS, acc)
+	if acc == -1 then
+		local _gridAcc = 1
+		return MGRS.MGRSDigraph .. string.format('%0' .. _gridAcc .. 'd', mist.utils.round(MGRS.Easting/(10^(5-_gridAcc)), 0))
+		.. string.format('%0' .. _gridAcc .. 'd', mist.utils.round(MGRS.Northing/(10^(5-_gridAcc)), 0))
+	end
+	
+	if acc == 0 then
+		return MGRS.MGRSDigraph
+	else
+		return MGRS.MGRSDigraph .. ' ' .. string.format('%0' .. acc .. 'd', mist.utils.round(MGRS.Easting/(10^(5-acc)), 0))
+		.. ' ' .. string.format('%0' .. acc .. 'd', mist.utils.round(MGRS.Northing/(10^(5-acc)), 0))
+	end
+end
+
 return M
