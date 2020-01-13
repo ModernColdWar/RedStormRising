@@ -109,4 +109,14 @@ function M.getBaseNameFromZoneName(zoneName, suffix)
     return zoneName:sub(1, idx - 1)
 end
 
+function M.getRestartHours(firstRestart, missionDuration)
+    local restartHours = {}
+    local nextRestart = firstRestart
+    while nextRestart < 24 do
+        table.insert(restartHours, nextRestart)
+        nextRestart = nextRestart + missionDuration
+    end
+    return restartHours
+end
+
 return M

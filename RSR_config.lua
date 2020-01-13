@@ -3,23 +3,30 @@ local utils = require("utils")
 
 local rsrConfig = {}
 
-rsrConfig.devMode = false -- enables "developer mode"; extra logging, saving, menu options and debug features
+ -- enables "developer mode"; removes crate spawning/unpacking restrictions, more frequent saves
+rsrConfig.devMode = false
+
+-- state saving
 rsrConfig.stateFileName = utils.getFilePath("rsrState.json") -- default name for state file
 rsrConfig.writeInterval = rsrConfig.devMode and 10 or 300 -- how often to update and write the state to disk in seconds
 rsrConfig.writeDelay = rsrConfig.devMode and 0 or 180  -- initial delay for persistence, to move last one closer to restart
+
+-- base defences
 rsrConfig.baseDefenceActivationRadiusAirbase = 5000
 rsrConfig.baseDefenceActivationRadiusFarp = 2500
-rsrConfig.hitMessageDelay = 30
-rsrConfig.awacsBases = { "Krasnodar-Center", "Vaziani" } -- bases with linked AWACS spawns
-rsrConfig.awacsSpawnLimit = 4
 
+-- restart schedule
+rsrConfig.firstRestartHour = 5
+rsrConfig.missionDurationInHours = 8
+rsrConfig.restartHours = utils.getRestartHours(rsrConfig.firstRestartHour, rsrConfig.missionDurationInHours)
+
+-- global message configuration
 rsrConfig.restartWarningMinutes = { 60, 45, 30, 20, 15, 10, 5, 3, 1 } -- times in minutes before restart to broadcast message
--- Windows task scheduler, schedules the DCSTask Kill batch file to execute on these hours. These hours are placed here to configure
--- the in-game message the players can query to find out the restart time
--- TODO: you also should change
---rsrConfig.restartHours = { 1, 5, 9, 13, 17, 21 } -- For restarts every 4 hours
---rsrConfig.restartHours = { 1, 7, 13, 19 } -- For restarts every 6 hours
---rsrConfig.restartHours = { 1, 9, 17 } -- For restarts every 8 hours
-rsrConfig.restartHours = { 5, 13, 21 } -- For restarts every 8 hours, shifted 4 hours to better fit GMT, Eastern Time Schedules
+rsrConfig.hitMessageDelay = 30
+
+-- AWACS configuration
+rsrConfig.awacsBases = { "Krasnodar-Center", "Vaziani" } -- bases with linked AWACS spawns
+rsrConfig.awacsSpawnLimit = math.floor(rsrConfig.missionDurationInHours / 2)
+
 
 return rsrConfig
