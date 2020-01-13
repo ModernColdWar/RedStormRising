@@ -76,6 +76,13 @@ local function persistState(rsrConfig)
     end
 end
 
+local function disableDisperseOnAttack(group)
+    -- delayed 2 second to work around bug (as per ctld.addEWRTask and ctld.orderGroupToMoveToPoint)
+    timer.scheduleFunction(function(_group)
+        _group:getController():setOption(AI.Option.Ground.id.DISPERSE_ON_ATTACK, 0)
+    end, group, timer.getTime() + 2)
+end
+
 function M.spawnGroup(groupData)
     -- Currently this code replicates the actions from ctld.unpackCrates
     local sideName = getSideNameFromGroupData(groupData)
@@ -86,15 +93,20 @@ function M.spawnGroup(groupData)
         unitData.playerCanDrive = true
     end
     local spawnedGroup = Group.getByName(mist.dynAdd(groupData).name)
+
     if ctld.isJTACUnitType(groupName) then
         local _code = ctld.getLaserCode(Group.getByName(groupName):getCoalition())
         log:info("Configuring group $1 to auto-lase on $2", groupName, _code)
         ctld.JTACAutoLase(groupName, _code)
     end
+
     if string.match(groupName, "1L13 EWR") then
         log:info("Configuring group $1 as EWR", groupName)
         ctld.addEWRTask(spawnedGroup)
     end
+
+    disableDisperseOnAttack(spawnedGroup)
+
     state.pushSpawnQueue(groupName)
     local playerName = utils.getPlayerNameFromGroupName(groupName)
     if playerName ~= nil then
