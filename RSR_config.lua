@@ -21,7 +21,7 @@ rsrConfig.missionDurationInHours = 8
 rsrConfig.restartHours = utils.getRestartHours(rsrConfig.firstRestartHour, rsrConfig.missionDurationInHours)
 
 -- life points configuration
-rsrConfig.livesPerHour = 1.5
+rsrConfig.livesPerHour = 1.25
 rsrConfig.maxLives = math.floor(rsrConfig.missionDurationInHours * rsrConfig.livesPerHour + 0.5)
 
 -- global message configuration
