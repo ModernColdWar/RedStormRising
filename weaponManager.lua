@@ -8,40 +8,42 @@ local M = {}
 local msgTimer = 15
 local limitations = {} -- Do not touch
 
+local rsrConfig = require("RSR_config")
+local perLife = rsrConfig.maxLives
 -- ---------------------------LIMITATIONS-----------------------------------
 limitations[1] = {
     WP_NAME = "AIM_120C",
-    QTY = 40,
+    QTY = 4 * perLife,
     DISPLAY_NAME = "AIM 120C"
 }
 limitations[2] = {
     WP_NAME = "AIM_120",
-    QTY = 10,
+    QTY = 1 * perLife,
     DISPLAY_NAME = "AIM 120B"
 }
 limitations[3] = {
     WP_NAME = "SD-10",
-    QTY = 40,
+    QTY = 4 * perLife,
     DISPLAY_NAME = "SD-10"
 }
 limitations[4] = {
     WP_NAME = "P_77",
-    QTY = 100,
+    QTY = 8 * perLife,
     DISPLAY_NAME = "R-77"
 }
 limitations[5] = {
     WP_NAME = "AIM_54A_Mk47",
-    QTY = 10,
+    QTY = 1 * perLife,
     DISPLAY_NAME = "AIM 54A-Mk47"
 }
 limitations[6] = {
     WP_NAME = "AIM_54A_Mk60",
-    QTY = 40,
+    QTY = 4 * perLife,
     DISPLAY_NAME = "AIM 54A-Mk60"
 }
 limitations[7] = {
     WP_NAME = "AIM_54C_Mk47",
-    QTY = 10,
+    QTY = 1 * perLife,
     DISPLAY_NAME = "AIM 54C-Mk47"
 }
 limitations[8] = {
@@ -61,12 +63,12 @@ limitations[10] = {
 }
 --limitations[11] = {
 --  WP_NAME = "P_27TE",
---  QTY = 6,
+--  QTY = 1 * perLife,
 --  DISPLAY_NAME = "R-27ET"
 --}
 --limitations[12] = {
 --  WP_NAME = "P_27EP",
---  QTY = 6,
+--  QTY = 1 * perLife,
 --  DISPLAY_NAME = "R-27ER"
 --}
 -- ----------------------- DO NOT TOUCH UNDER HERE-------------------------------
