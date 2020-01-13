@@ -61,7 +61,6 @@ local function persistState(rsrConfig)
     state.copyFromCtld()
     state.updateBaseOwnership()
     log:info("Number of persistent groups at save is $1", #state.currentState.persistentGroupData)
-    utils.createBackup(rsrConfig.stateFileName)
     state.writeStateToDisk(rsrConfig.stateFileName)
     local winner = state.getWinner()
     if winner ~= nil then
@@ -171,9 +170,8 @@ end
 
 function M.onMissionStart(rsrConfig)
     if not state.setCurrentStateFromFile(rsrConfig.stateFileName) then
-        local backupFilename = utils.getBackupFilename(rsrConfig.stateFileName)
-        log:warn("Unable to load state from $1, trying backup file $2", rsrConfig.stateFileName, backupFilename)
-        state.setCurrentStateFromFile(backupFilename)
+        log:error("Unable to load state from $1", rsrConfig.stateFileName)
+        return
     end
     M.restoreFromState(rsrConfig)
 

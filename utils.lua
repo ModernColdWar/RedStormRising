@@ -2,8 +2,6 @@ require("mist_4_3_74")
 
 local M = {}
 
-local log = mist.Logger:new("Utils", "info")
-
 local function runningInDcs()
     -- luacheck: globals dcsStub
     return dcsStub == nil
@@ -14,24 +12,6 @@ function M.getFilePath(filename)
         return lfs.writedir() .. [[Scripts\RSR\]] .. filename
     else
         return filename
-    end
-end
-
-function M.getBackupFilename(filename)
-    local beforeExtension = filename:match("^(.+)%..+$")
-    local extension = filename:match("^.+(%..+)$")
-    return beforeExtension .. "-backup" .. extension
-end
-
-function M.createBackup(filename)
-    if UTILS.FileExists(filename) then
-        local backupFilename = M.getBackupFilename(filename)
-        log:info("Backing up $1 to $2", filename, backupFilename)
-        local backup = io.open(backupFilename, "w")
-        local infile = io.open(filename, "r")
-        backup:write(infile:read("*all"))
-        infile:close()
-        backup:close()
     end
 end
 
