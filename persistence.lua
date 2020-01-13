@@ -56,12 +56,18 @@ function M.updateGroupData(persistentGroupData)
 end
 
 local function persistState(rsrConfig)
-    M.updateGroupData(state.currentState.persistentGroupData)
-    state.handleSpawnQueue()
-    state.copyFromCtld()
-    state.updateBaseOwnership()
-    log:info("Number of persistent groups at save is $1", #state.currentState.persistentGroupData)
-    state.writeStateToDisk(rsrConfig.stateFileName)
+    local status, err = pcall(function()
+        M.updateGroupData(state.currentState.persistentGroupData)
+        state.handleSpawnQueue()
+        state.copyFromCtld()
+        state.updateBaseOwnership()
+    end)
+    if status then
+        log:info("Number of persistent groups at save is $1", #state.currentState.persistentGroupData)
+        state.writeStateToDisk(rsrConfig.stateFileName)
+    else
+        log:error(string.format("Error while trying to update state: %s", err), false)
+    end
     local winner = state.getWinner()
     if winner ~= nil then
         local message = "VICTORY for the " .. winner .. " side!  The map will reset at the next restart"
