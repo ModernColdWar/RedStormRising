@@ -1,4 +1,4 @@
-local missionUtils = require("missinUtils")
+local missionUtils = require("missionUtils")
 local restartInfo = require("restartInfo")
 local weaponManager = require("weaponManager")
 
@@ -96,7 +96,7 @@ function M.BIRTH_EVENTHANDLER:_AddCSARMenu(unitName)
 end
 
 function M.BIRTH_EVENTHANDLER:_AddRadioListMenu(groupId, unitName)
-    if ctld.ctld.enabledRadioBeaconDrop then
+    if ctld.enabledRadioBeaconDrop then
         missionCommands.addCommandForGroup(groupId, "List Radio Beacons", nil, ctld.listRadioBeacons, { unitName })
     end
 end
