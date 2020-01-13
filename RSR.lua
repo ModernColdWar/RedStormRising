@@ -24,6 +24,10 @@ if rsrConfig.devMode then
     ctld.crateWaitTime = 1
 end
 
+local maxLives = math.floor(rsrConfig.missionDurationInHours * rsrConfig.livesPerHour + 0.5)
+log:info("Setting max lives to $1", maxLives)
+csar.maxLives = maxLives
+
 local persistence = require("persistence")
 local slotBlocker = require("slotBlocker")
 local baseCapturedHandler = require("baseCapturedHandler")

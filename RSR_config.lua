@@ -20,6 +20,9 @@ rsrConfig.firstRestartHour = 5
 rsrConfig.missionDurationInHours = 8
 rsrConfig.restartHours = utils.getRestartHours(rsrConfig.firstRestartHour, rsrConfig.missionDurationInHours)
 
+-- life points configuration
+rsrConfig.livesPerHour = 1.5
+
 -- global message configuration
 rsrConfig.restartWarningMinutes = { 60, 45, 30, 20, 15, 10, 5, 3, 1 } -- times in minutes before restart to broadcast message
 rsrConfig.hitMessageDelay = 30
