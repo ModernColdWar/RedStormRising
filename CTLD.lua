@@ -5228,26 +5228,48 @@ function ctld.getJTACStatus(_args)
 		
 	else
 		--sort JTACs by distance to player  --mr: Add to utils.lua for use elsewhere?
+		-- _discoveredJTACsUnsorted = {{"UNIT1", 6800, -1, "MSG1"},{"UNIT2", 300, -1, "MSG2"},{"UNIT3", 8453, -1, "MSG3"},{"UNIT4", 1111, -1, "MSG4"},{"UNIT5", 23, -1, "MSG5"},{"UNIT6", 4056, -1, "MSG6"}}
+		
+		-- https://stackoverflow.com/questions/9168058/how-to-dump-a-table-to-console
+		--[[
+			function tprint (t, s)
+				for k, v in pairs(t) do
+					local kfmt = '["' .. tostring(k) ..'"]'
+					if type(k) ~= 'string' then
+						kfmt = '[' .. k .. ']'
+					end
+					local vfmt = '"'.. tostring(v) ..'"'
+					if type(v) == 'table' then
+						tprint(v, (s or '')..kfmt)
+					else
+						if type(v) ~= 'string' then
+							vfmt = tostring(v)
+						end
+						print(type(t)..(s or '')..kfmt..' = '..vfmt)
+					end
+				end
+			end
+		--]]
 		
 		--sort table of JTACs that have discovered targets by distance to player
-		if _discoveredJTACsCount > 0 then
+		if _discoveredJTACsCount > 0 then	
 			local _dist = {}
-			_discoveredJTACs = _discoveredJTACsUnsorted --copy table so that intial unsorted table can be compared for debug if required
-			for _i in ipairs(_discoveredJTACs) do table.insert(_dist,_i) end
-			table.sort (_dist, function (_Ja,_Jb) return _discoveredJTACs[_Ja][2] < _discoveredJTACs[_Jb][2] end) -- order table  from closest to furtherest by "<"
-			for _j,_i in ipairs(_dist) do 
-				_discoveredJTACs[_i][3] = tonumber(_j) --change original reference number now that table is sorted, tonumber to ensure integer
+			for _i in ipairs(_discoveredJTACsUnsorted) do table.insert(_dist,_i) end
+			table.sort (_dist, function (_Ja,_Jb) return _discoveredJTACsUnsorted[_Ja][2] < _discoveredJTACsUnsorted[_Jb][2] end) -- closest to furtherest by "<"
+			for _j,_i in ipairs(_dist) do --_dist table now represents table keys for _discoveredJTACsUnsorted ordered from closest to furtherest
+				table.insert(_discoveredJTACs,_j,_discoveredJTACsUnsorted[_i])
+				_discoveredJTACs[_j][3] = tonumber(_j) --change original reference number now that table is sorted, tonumber to ensure integer
 			end
 		end
 		
 		--sort table of JTACs that are still searching for a target by distance to player
-		if _searchingJTACsCount > 0 then
+		if _searchingJTACsCount > 0 then	
 			local _dist = {}
-			_searchingJTACs = _searchingJTACsUnsorted --copy table so that intiial unsorted table can be compared for debug if required
-			for _i in ipairs(_searchingJTACs) do table.insert(_dist,_i) end
-			table.sort (_dist, function (_Ja,_Jb) return _searchingJTACs[_Ja][3] < _searchingJTACs[_Jb][3] end) -- order from closest to furtherest by "<"
-			for _j,_i in ipairs(_dist) do 
-				_searchingJTACs[_i][3] = tonumber(_j) + _discoveredJTACsCount --ref # for JTACs still searching not as important but set anyway
+			for _i in ipairs(_searchingJTACsUnsorted) do table.insert(_dist,_i) end
+			table.sort (_dist, function (_Ja,_Jb) return _searchingJTACsUnsorted[_Ja][2] < _searchingJTACsUnsorted[_Jb][2] end) -- closest to furtherest by "<"
+			for _j,_i in ipairs(_dist) do --_dist table now represents table keys for _searchingJTACsUnsorted ordered from closest to furtherest
+				table.insert(_searchingJTACs,_j,_searchingJTACsUnsorted[_i])
+				_searchingJTACs[_j][3] = tonumber(_j) + _discoveredJTACsCount --ref # for JTACs still searching not as important but set anyway
 				-- env.info("mrDEBUG01: SearchingJTACs (ordered): [KEY:" .. _j .. "]" .. " ,INDEX:" .. _i .. " ,REF:" .. _searchingJTACs[_i][3] .. " ,MSG:" .. _searchingJTACs[_i][4] .. " ,DIST:" .. _searchingJTACs[_i][2]) --mrDEBUG01
 			end
 		end
