@@ -2552,7 +2552,8 @@ function ctld.unpackFOBCrates(_crates, _heli)
 
         ctld.processCallback({ unit = _heli, position = _centroid, action = "fob" })
 
-        trigger.action.smoke(_centroid, trigger.smokeColor.Green)
+        -- RSR: remove green smoke on FOB spawn
+        --trigger.action.smoke(_centroid, trigger.smokeColor.Green)
 
         trigger.action.outTextForCoalition(_heli:getCoalition(), _txt, 10)
     else
