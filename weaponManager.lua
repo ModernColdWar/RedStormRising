@@ -3,6 +3,8 @@
     -- Requires MIST
        ]]
 -- luacheck: no max line length
+-- luacheck: globals EV_MANAGER
+
 local M = {}
 
 local msgTimer = 15
@@ -255,8 +257,6 @@ function M.printHowManyLeft(gpid)
     end
 end
 
--- luacheck: globals EV_MANAGER
-EV_MANAGER = {}
 local function sendToRsrBot(event)
     if not rsrConfig.udpEventReporting then
         return
@@ -306,6 +306,7 @@ local function sendToRsrBot(event)
     end
 end
 
+EV_MANAGER = {}
 -- luacheck: push no unused
 function EV_MANAGER:onEvent(event)
     if event.id == world.event.S_EVENT_BIRTH then
