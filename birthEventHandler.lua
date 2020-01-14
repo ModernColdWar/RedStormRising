@@ -83,6 +83,7 @@ function M.BIRTH_EVENTHANDLER:_AddCTLDMenus(groupId, unitName)
     ctld.addF10MenuOptions(unitName)
     if (ctld.enabledFOBBuilding or ctld.enableCrates) and _unitActions.crates then
         if (ctld.slingLoad == false) or (ctld.internalCargo == true) then
+            missionCommands.addCommandForGroup(groupId, "Load Nearby Crate", nil, ctld.loadNearbyCrate, { unitName })
             missionCommands.addCommandForGroup(groupId, "Drop Crate", nil, ctld.dropSlingCrate, { unitName })
         end
     end
