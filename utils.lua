@@ -109,6 +109,16 @@ function M.getBaseNameFromZoneName(zoneName, suffix)
     return zoneName:sub(1, idx - 1)
 end
 
+function M.getRestartHours(firstRestart, missionDuration)
+    local restartHours = {}
+    local nextRestart = firstRestart
+    while nextRestart < 24 do
+        table.insert(restartHours, nextRestart)
+        nextRestart = nextRestart + missionDuration
+    end
+    return restartHours
+end
+
 --mr: copied from MIST
 -- acc the accuracy of each easting/northing. Can be: 0, 1, 2, 3, 4, or 5.
 -- added -1 as additional accuracy setting to remove UTMZone and condense to simple grid e.g. MN61
@@ -126,5 +136,4 @@ function M.tostringMGRSnoUTM(MGRS, acc)
 		.. ' ' .. string.format('%0' .. acc .. 'd', mist.utils.round(MGRS.Northing/(10^(5-acc)), 0))
 	end
 end
-
 return M

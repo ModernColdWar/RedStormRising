@@ -24,6 +24,9 @@ if rsrConfig.devMode then
     ctld.crateWaitTime = 1
 end
 
+log:info("Setting csar.maxLives to $1", rsrConfig.maxLives)
+csar.maxLives = rsrConfig.maxLives
+
 local persistence = require("persistence")
 local slotBlocker = require("slotBlocker")
 local baseCapturedHandler = require("baseCapturedHandler")

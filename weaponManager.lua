@@ -3,45 +3,52 @@
     -- Requires MIST
        ]]
 -- luacheck: no max line length
+-- luacheck: globals EV_MANAGER
+
 local M = {}
 
 local msgTimer = 15
 local limitations = {} -- Do not touch
 
+local rsrConfig = require("RSR_config")
+local perLife = rsrConfig.maxLives
+local JSON = require("json")
+local socket = require("socket")
+
 -- ---------------------------LIMITATIONS-----------------------------------
 limitations[1] = {
     WP_NAME = "AIM_120C",
-    QTY = 40,
+    QTY = 4 * perLife,
     DISPLAY_NAME = "AIM 120C"
 }
 limitations[2] = {
     WP_NAME = "AIM_120",
-    QTY = 10,
+    QTY = 1 * perLife,
     DISPLAY_NAME = "AIM 120B"
 }
 limitations[3] = {
     WP_NAME = "SD-10",
-    QTY = 40,
+    QTY = 4 * perLife,
     DISPLAY_NAME = "SD-10"
 }
 limitations[4] = {
     WP_NAME = "P_77",
-    QTY = 100,
+    QTY = 8 * perLife,
     DISPLAY_NAME = "R-77"
 }
 limitations[5] = {
     WP_NAME = "AIM_54A_Mk47",
-    QTY = 10,
+    QTY = 1 * perLife,
     DISPLAY_NAME = "AIM 54A-Mk47"
 }
 limitations[6] = {
     WP_NAME = "AIM_54A_Mk60",
-    QTY = 40,
+    QTY = 4 * perLife,
     DISPLAY_NAME = "AIM 54A-Mk60"
 }
 limitations[7] = {
     WP_NAME = "AIM_54C_Mk47",
-    QTY = 10,
+    QTY = 1 * perLife,
     DISPLAY_NAME = "AIM 54C-Mk47"
 }
 limitations[8] = {
@@ -61,12 +68,12 @@ limitations[10] = {
 }
 --limitations[11] = {
 --  WP_NAME = "P_27TE",
---  QTY = 6,
+--  QTY = 1 * perLife,
 --  DISPLAY_NAME = "R-27ET"
 --}
 --limitations[12] = {
 --  WP_NAME = "P_27EP",
---  QTY = 6,
+--  QTY = 1 * perLife,
 --  DISPLAY_NAME = "R-27ER"
 --}
 -- ----------------------- DO NOT TOUCH UNDER HERE-------------------------------
@@ -155,7 +162,7 @@ local function makeLess(playerName, wpn, howMany, unit)
                     if (data[i].Limitations[j].QTY - howMany < 0) then
                         if not destroyerContains(unit:getName()) then
                             trigger.action.outTextForGroup(unit:getGroup():getID(), "LOADOUT NOT VALID, RETURN TO BASE FOR REARMING NOW OR YOU WILL BE DESTROYED IN 5 MINS", 300)
-                            local scheduler = SCHEDULER:New(nil, destroyAfter5MINS, { unit:getName()}, 300)
+                            local scheduler = SCHEDULER:New(nil, destroyAfter5MINS, { unit:getName() }, 300)
                             tobedestroyed[tablelength(tobedestroyed) + 1] = { ["Unitname"] = unit:getName(), ["scheduler"] = scheduler }
                         end
                     end
@@ -169,7 +176,7 @@ local function makeLess(playerName, wpn, howMany, unit)
     end
 end
 
-local function validateLoadout(gpid)
+function M.validateLoadout(gpid)
     local earlyBreak = false
     local blueUnits = mist.utils.deepCopy(coalition.getPlayers(coalition.side.BLUE))
     local redUnits = mist.utils.deepCopy(coalition.getPlayers(coalition.side.RED))
@@ -218,7 +225,7 @@ local function validateLoadout(gpid)
     end
 end
 -- --------------------DATA PRINTER--------------------
-local function printHowManyLeft(gpid)
+function M.printHowManyLeft(gpid)
     local earlyBreak = false
     local blueUnits = mist.utils.deepCopy(coalition.getPlayers(coalition.side.BLUE))
     local redUnits = mist.utils.deepCopy(coalition.getPlayers(coalition.side.RED))
@@ -250,7 +257,55 @@ local function printHowManyLeft(gpid)
     end
 end
 
--- luacheck: globals EV_MANAGER
+local function sendToRsrBot(event)
+    if not rsrConfig.udpEventReporting then
+        return
+    end
+    if (event.id ~= 1 and event.id < 10) then
+        local event2send = {
+            ["id"] = event.id,
+            ["time"] = event.time,
+            ["initiator"] = "",
+            ["initiatorCoalition"] = 0,
+            ["target"] = "",
+            ["targetCoalition"] = 0,
+            ["weapon"] = "",
+        }
+        if event.target then
+            --some events dont have a target
+            if event.target:getPlayerName() then
+                --check for AI or Player
+                event2send.target = event.target:getPlayerName()
+            else
+                event2send.target = "AI"
+            end
+            event2send.targetCoalition = event.target:getCoalition()
+        end
+        if event.weapon_name then
+            --check the event has a weapon associated with it (some dont)
+            event2send.weapon = event.weapon_name
+        end
+        if event.initiator then
+            --check the event has an initiator
+            if event.initiator:getPlayerName() then
+                --check for AI or Player
+                event2send.initiator = event.initiator:getPlayerName()
+            else
+                event2send.initiator = "AI"
+            end
+            event2send.initiatorCoalition = event.initiator:getCoalition()
+        end
+        --PrintTable(event)
+        local udp = assert(socket.udp())
+        udp:settimeout(0.01)
+        assert(udp:setsockname("*", 0))
+        assert(udp:setpeername(rsrConfig.udpEventHost, rsrConfig.udpEventPort))
+        local jsonEventTableForBot = JSON:encode(event2send) --Encode the event table
+        assert(udp:send(jsonEventTableForBot))
+        --env.info(jsonEventTableForBot)
+    end
+end
+
 EV_MANAGER = {}
 -- luacheck: push no unused
 function EV_MANAGER:onEvent(event)
@@ -261,9 +316,10 @@ function EV_MANAGER:onEvent(event)
                 if not contains(playersSettedUp, playerName) then
                     setup(playerName)
                 end
-                local gpid = event.initiator:getGroup():getID()
-                missionCommands.addCommandForGroup(gpid, "Show weapons left", nil, printHowManyLeft, gpid)
-                missionCommands.addCommandForGroup(gpid, "Validate Loadout", nil, validateLoadout, gpid)
+                -- RSR: menus added via birth event handling
+                --local gpid = event.initiator:getGroup():getID()
+                --missionCommands.addCommandForGroup(gpid, "Show weapons left", nil, M.printHowManyLeft, gpid)
+                --missionCommands.addCommandForGroup(gpid, "Validate Loadout", nil, M.validateLoadout, gpid)
                 --FOR WEAPON DEBUGGING
                 --for i, ammo in pairs(event.initiator:getAmmo()) do
                 --  trigger.action.outText(ammo.desc.typeName, msgTimer)
@@ -350,6 +406,12 @@ function EV_MANAGER:onEvent(event)
             end
         end
     end
+    -- wrap in pcall as we're doing I/O (even if UDP)
+    local status, err = pcall(sendToRsrBot, event)
+    if not status then
+        env.error(string.format("Error inside sendToRsrBot: %s", err))
+    end
+
 end
 -- luacheck: pop
 world.addEventHandler(EV_MANAGER)
