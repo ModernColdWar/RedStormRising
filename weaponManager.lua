@@ -158,7 +158,7 @@ local function makeLess(playerName, wpn, howMany, unit)
                     if (data[i].Limitations[j].QTY - howMany < 0) then
                         if not destroyerContains(unit:getName()) then
                             trigger.action.outTextForGroup(unit:getGroup():getID(), "LOADOUT NOT VALID, RETURN TO BASE FOR REARMING NOW OR YOU WILL BE DESTROYED IN 5 MINS", 300)
-                            local scheduler = SCHEDULER:New(nil, destroyAfter5MINS, { unit:getName()}, 300)
+                            local scheduler = SCHEDULER:New(nil, destroyAfter5MINS, { unit:getName() }, 300)
                             tobedestroyed[tablelength(tobedestroyed) + 1] = { ["Unitname"] = unit:getName(), ["scheduler"] = scheduler }
                         end
                     end
@@ -256,47 +256,52 @@ end
 -- luacheck: globals EV_MANAGER
 EV_MANAGER = {}
 -- luacheck: push no unused
-      --SEND TO RSR BOT
-       if (event.id~=1 and event.id < 10) then
-              local event2send = {
-                     ["id"] = event.id,
-                     ["time"] = event.time,
-                     ["initiator"] = "",
-                     ["initiatorCoalition"] = 0,
-                     ["target"] = "",
-                     ["targetCoalition"] = 0,
-                     ["weapon"] = "",
-              }
-              if event.target then  --some events dont have a target
-                     if event.target:getPlayerName() then     --check for AI or Player     
-                            event2send.target = event.target:getPlayerName() 
-                     else   
-                            event2send.target = "AI"
-                     end
-                     event2send.targetCoalition = event.target:getCoalition()
-              end
-              if event.weapon_name then --check the event has a weapon associated with it (some dont)
-                     event2send.weapon = event.weapon_name
-              end
-              if event.initiator then --check the event has an initiator
-                     if event.initiator:getPlayerName() then     --check for AI or Player     
-                            event2send.initiator = event.initiator:getPlayerName() 
-                     else   
-                            event2send.initiator = "AI"
-                     end
-                     event2send.initiatorCoalition = event.initiator:getCoalition()
-              end
-              --PrintTable(event)
-              local jsonEventTableForBot = JSON:encode(event2send) --Encode the event table 
-              local socket = require("socket")
-              local udp = assert(socket.udp())
-              udp:settimeout(0.01)
-              assert(udp:setsockname("*",0))
-              assert(udp:setpeername("walsh.systems",9696))
-              assert(udp:send(jsonEventTableForBot))
-              --env.info(jsonEventTableForBot)
-       end
-       --end BOT CODE
+--SEND TO RSR BOT
+if (event.id ~= 1 and event.id < 10) then
+    local event2send = {
+        ["id"] = event.id,
+        ["time"] = event.time,
+        ["initiator"] = "",
+        ["initiatorCoalition"] = 0,
+        ["target"] = "",
+        ["targetCoalition"] = 0,
+        ["weapon"] = "",
+    }
+    if event.target then
+        --some events dont have a target
+        if event.target:getPlayerName() then
+            --check for AI or Player
+            event2send.target = event.target:getPlayerName()
+        else
+            event2send.target = "AI"
+        end
+        event2send.targetCoalition = event.target:getCoalition()
+    end
+    if event.weapon_name then
+        --check the event has a weapon associated with it (some dont)
+        event2send.weapon = event.weapon_name
+    end
+    if event.initiator then
+        --check the event has an initiator
+        if event.initiator:getPlayerName() then
+            --check for AI or Player
+            event2send.initiator = event.initiator:getPlayerName()
+        else
+            event2send.initiator = "AI"
+        end
+        event2send.initiatorCoalition = event.initiator:getCoalition()
+    end
+    --PrintTable(event)
+    local jsonEventTableForBot = JSON:encode(event2send) --Encode the event table
+    local socket = require("socket")
+    local udp = assert(socket.udp())
+    udp:settimeout(0.01)
+    assert(udp:setsockname("*", 0))
+    assert(udp:setpeername("walsh.systems", 9696))
+    assert(udp:send(jsonEventTableForBot))
+    --env.info(jsonEventTableForBot)
+end
+--end BOT CODE
 function EV_MANAGER:onEvent(event)
     if event.id == world.event.S_EVENT_BIRTH then
         if event.initiator:getCategory() == Object.Category.UNIT then
