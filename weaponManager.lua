@@ -11,6 +11,8 @@ local limitations = {} -- Do not touch
 local rsrConfig = require("RSR_config")
 local perLife = rsrConfig.maxLives
 local JSON = require("json")
+local socket = require("socket")
+
 -- ---------------------------LIMITATIONS-----------------------------------
 limitations[1] = {
     WP_NAME = "AIM_120C",
@@ -292,7 +294,6 @@ local function sendToRsrBot(event)
         end
         --PrintTable(event)
         local jsonEventTableForBot = JSON:encode(event2send) --Encode the event table
-        local socket = require("socket")
         local udp = assert(socket.udp())
         udp:settimeout(0.01)
         assert(udp:setsockname("*", 0))
