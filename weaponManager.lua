@@ -296,11 +296,11 @@ local function sendToRsrBot(event)
             event2send.initiatorCoalition = event.initiator:getCoalition()
         end
         --PrintTable(event)
-        local jsonEventTableForBot = JSON:encode(event2send) --Encode the event table
         local udp = assert(socket.udp())
         udp:settimeout(0.01)
         assert(udp:setsockname("*", 0))
         assert(udp:setpeername(rsrConfig.udpEventHost, rsrConfig.udpEventPort))
+        local jsonEventTableForBot = JSON:encode(event2send) --Encode the event table
         assert(udp:send(jsonEventTableForBot))
         --env.info(jsonEventTableForBot)
     end
