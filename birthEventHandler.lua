@@ -77,13 +77,17 @@ function M.BIRTH_EVENTHANDLER:_AddCTLDMenus(groupId, unitName)
             ctld.addCrateMenu(nil, "Heavy crates", _unit, groupId, ctld.spawnableCrates, ctld.heavyCrateWeightMultiplier)
         end
     end
+    ctld.addF10MenuOptions(unitName)
     if (ctld.enabledFOBBuilding or ctld.enableCrates) and _unitActions.crates then
         missionCommands.addCommandForGroup(groupId, "Unpack Nearby Crate", nil, ctld.unpackCrates, { unitName })
     end
-    ctld.addF10MenuOptions(unitName)
     if (ctld.enabledFOBBuilding or ctld.enableCrates) and _unitActions.crates then
+        if ctld.hoverPickup == false then
+            if ((ctld.slingLoad == false) or ((ctld.internalCargo == true) and (_unitActions.internal == true))) then
+                missionCommands.addCommandForGroup(groupId, "Load Nearby Crate", nil, ctld.loadNearbyCrate, unitName)
+            end
+        end
         if (ctld.slingLoad == false) or (ctld.internalCargo == true) then
-            missionCommands.addCommandForGroup(groupId, "Load Nearby Crate", nil, ctld.loadNearbyCrate, { unitName })
             missionCommands.addCommandForGroup(groupId, "Drop Crate", nil, ctld.dropSlingCrate, { unitName })
         end
     end
