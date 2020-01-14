@@ -4656,10 +4656,8 @@ function ctld.JTACAutoLase(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
 				end
 			--]]
 			ctld.notifyCoalition("ALERT - ENEMY TARGET LOST: " .. _tempUnitInfo.unitType .. ", Grid: " .. _mapGrid .. ", JTAC: " .. _jtacOwner .. ". Rescanning area.", 10, _jtacUnit:getCoalition())
-			--ctld.notifyCoalition(_jtacGroupName .. " target " .. _tempUnitInfo.unitType .. " lost. Scanning for Targets. ", 10, _jtacUnit:getCoalition())
         else
 			ctld.notifyCoalition("ALERT - ENEMY TARGET DESTROYED: " .. _tempUnitInfo.unitType .. ", Grid: " .. _mapGrid .. ", JTAC: " .. _jtacOwner .. ". Rescanning area.", 10, _jtacUnit:getCoalition())
-            --ctld.notifyCoalition(_jtacGroupName .. " target " .. _tempUnitInfo.unitType .. " KIA. Good Job! Scanning for Targets. ", 10, _jtacUnit:getCoalition())
         end
 
         --remove from smoke list
@@ -4693,9 +4691,6 @@ function ctld.JTACAutoLase(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
 			--]]
 			
 			ctld.notifyCoalition("ALERT - NEW ENEMY TARGET: " .. _targetName .. ", Grid: " .. _mapGrid .. ", JTAC: " .. _jtacOwner .. ", Laser Code: " .. _laserCode, 10, _jtacUnit:getCoalition())
-
-			--OLD 'NEW TARGET' ALERT
-            -- ctld.notifyCoalition(_jtacGroupName .. " lasing new target " .. _enemyUnit:getTypeName() .. '. CODE: ' .. _laserCode .. ctld.getPositionString(_enemyUnit), 10, _jtacUnit:getCoalition())
 
             -- create smoke
             if _smoke == true then
@@ -4906,13 +4901,24 @@ function ctld.findNearestVisibleEnemy(_jtacUnit, _targetType, _distance)
 
     local _search = function(_unit, _coalition)
         pcall(function()
-
+			
+			local _playerControlledUnit = false
+			--inclue if AI unit but it's player controlled
+			--DCS func getPlayerName: AI units don't have names BUT "Returns a string value of the name of the player if the unit is currently controlled by a player. If a unit is controlled by AI the function returns nil."
+			-- Group.Category = {AIRPLANE = 0, HELICOPTER = 1, GROUND = 2, SHIP = 3, TRAIN = 4}
+			-- Unit.Category = {AIRPLANE,HELICOPTER,GROUND_UNIT,SHIP,STRUCTURE} --mr: player aircraft and ground units all = 1 = AIRPLANE!
+			if _unit:getPlayerName() ~= nil then
+				if (_enemyUnit:getGroup():getCategory()) == 2 then
+					_playerControlledUnit = true
+				end
+			end
+-- env.info ("mrDEBUG31 _playerControlledUnit " .. (_playerControlledUnit and 'true' or 'false')) --mrDEBUG31		
             if _unit ~= nil
                     and _unit:getLife() > 0
                     and _unit:isActive()
                     and _unit:getCoalition() ~= _coalition
-                    and not _unit:inAir() --BUG: not enough to exclude player aircraft on ground e.g. landed helo, plane on ramp --mr
-					and _unit:getPlayerName() == nil --AI don't have names therefore exclude all player aircraft
+                    and not _unit:inAir() --not enough to exclude player aircraft on ground e.g. landed helo, plane on ramp
+					and (_unit:getPlayerName() == nil or _playerControlledUnit)
                     and not ctld.alreadyTarget(_unit) then
 
                 local _tempPoint = _unit:getPoint()
@@ -5001,13 +5007,25 @@ function ctld.listNearbyEnemies(_jtacUnit)
 
     local _search = function(_unit, _coalition)
         pcall(function()
+			
+			local _playerControlledUnit = false
+			--inclue if AI unit but it's player controlled
+			--DCS func getPlayerName: AI units don't have names BUT "Returns a string value of the name of the player if the unit is currently controlled by a player. If a unit is controlled by AI the function returns nil."
+			-- Group.Category = {AIRPLANE = 0, HELICOPTER = 1, GROUND = 2, SHIP = 3, TRAIN = 4}
+			-- Unit.Category = {AIRPLANE,HELICOPTER,GROUND_UNIT,SHIP,STRUCTURE} --mr: player aircraft and ground units all = 1 = AIRPLANE!
+			if _unit:getPlayerName() ~= nil then
+				if (_enemyUnit:getGroup():getCategory()) == 2 then
+					_playerControlledUnit = true
+				end
+			end
 
             if _unit ~= nil
                     and _unit:getLife() > 0
                     and _unit:isActive()
+					
                     and _unit:getCoalition() ~= _coalition
-                    and not _unit:inAir() --BUG: not enough to exclude player aircraft on ground e.g. landed helo, plane on ramp --mr
-					and _unit:getPlayerName() == nil --AI don't have names therefore exclude all player aircraft
+                    and not _unit:inAir() --not enough to exclude player aircraft on ground e.g. landed helo, plane on ramp
+					and (_unit:getPlayerName() == nil or _playerControlledUnit)
 			    then 
 
                 local _tempPoint = _unit:getPoint()
@@ -5104,12 +5122,10 @@ function ctld.getJTACStatus(_args)
 	local _discoveredJTACsCount = 0 --count of JTACs that have discovered a target
 	local _discoveredJTACsUnsorted = {} --intiial nested table of JTACs that have discovered a target: {Reference #,JTAC, message, distance to player}
 	local _discoveredJTACs = {} --nested table of JTACs ranked from closest to furthest from player
-	-- local _discoveredJTACsMSG = "" --final contructed message from all JTACs that have discovered targets
 	
 	local _searchingJTACsCount = 0 --count of JTACs that are still searching for a target
 	local _searchingJTACsUnsorted = {} --intiial nested table of JTACs that are still searching for a target: {Reference #, JTACS, message, distance to player}
 	local _searchingJTACs = {} --nested table of JTACs ranked from closest to furthest from player
-	-- local _searchingJTACsMSG = "" --final contructed message from all JTACs that have discovered targets
 	
 	local _activeJTACsCount = 0
 	
@@ -5125,7 +5141,6 @@ function ctld.getJTACStatus(_args)
 
         --look up units
         local _jtacUnit = Unit.getByName(_jtacDetails.name)
-		-- env.info("mrDEBUG04: _jtacGroupName: " .. _jtacGroupName) --mrDEBUG04
 		local _jtacOwner = utils.getPlayerNameFromGroupName(_jtacGroupName) --_groupName = 'CTLD_' .. _types[1] .. '_' .. _id .. ' (' .. _playerName .. ')'
 
         if _jtacUnit ~= nil and _jtacUnit:getLife() > 0 and _jtacUnit:isActive() == true and _jtacUnit:getCoalition() == _side then
@@ -5156,6 +5171,9 @@ function ctld.getJTACStatus(_args)
                 end
 				--]]
 				
+-- env.info ("mrDEBUG23 GROUP CATEGORY: " .. "EnemyUnit-Grp-Cat: " .. (_enemyUnit:getGroup():getCategory()) .. ";  PlayerUnit-Grp-Cat: " .. (_playerUnit:getGroup():getCategory())) --mrDEBUG23
+-- env.info ("mrDEBUG24 UNIT CATEGORY: " .. "EnemyUnit-Unit-Cat: " .. (_enemyUnit:getCategory()) .. ";  PlayerUnit-Unit-Cat: " .. (_playerUnit:getCategory())) --mrDEBUG24
+				
 				--Discovered JTAC Format: [180 : 55.3km] Grid: MN61, Target: M1A2, JTAC: mad rabbit --one line per JTAC
 				-- local _unit = _enemyUnit --mr: possible exploit with JTAC STATUS spam whilst flying over moving target
 				local _unit = _jtacUnit
@@ -5175,9 +5193,14 @@ function ctld.getJTACStatus(_args)
 				
 				_mapGrid = utils.tostringMGRSnoUTM(coord.LLtoMGRS(coord.LOtoLL(_enemyUnit:getPosition().p)), -1) --coordinate spam should not be exploitable
 				
-				--[[
+				---[[
 				-- env.info("mrDEBUG011: Moose playerMenu enabled: " .. tostring(SETTINGS.ShowPlayerMenu)) --mrDEBUG011
-				env.info("mrDEBUG012: Moose MenuMGRS_Accuracy: " .. tostring(SETTINGS:GetMGRS_Accuracy())) --mrDEBUG012
+				-- ":" = self, needed as settings client specific
+				-- dedicated server test: GetMGRS_Accuracy = 5 (default setting) even when client radio specifies 2.  Need to test further.
+				-- mrDEBUG13 ore mrDEBUG14 = nothing seems to be getting set by MOOSE player menu...
+--env.info("mrDEBUG12: Moose MenuMGRS_Accuracy: " .. (SETTINGS:GetMGRS_Accuracy())) --mrDEBUG12 
+--env.info("mrDEBUG13: Moose SETTINGS:IsMetric: " .. (SETTINGS:IsMetric() and 'true' or 'false')) --mrDEBUG13
+--env.info("mrDEBUG14: Moose SETTINGS:IsImperial: " .. (SETTINGS:IsImperial() and 'true' or 'false')) --mrDEBUG14
 				--Moose.lua: line 7723: playerMenu unit selection and accuracy
 		
 				if (SETTINGS.ShowPlayerMenu ~= nil and SETTINGS.ShowPlayerMenu == true) then
@@ -5189,11 +5212,7 @@ function ctld.getJTACStatus(_args)
 				--]]
 				
 				-- can't use utf8.char(730) for degree symbol as DCS = LUA v5.2 not v5.3
-				_discoveredJTACsUnsorted[_discoveredJTACsCount] = {_jtacUnit,_distToPlayer,_JTACref,"" .. "[" .. _azFromPlayerStr --[[.. utf8.char(730)]] .. " : " .. _roundedDist .. "km] " .. _coordinateTitle .. ": " .. _mapGrid .. ", Target: " .. _targetName .. ", JTAC: " .. _jtacOwner .. _visualOnMsg}
-				
-				--OLD JTAC REPORT FORMAT:
-				-- _discoveredJTACsUnsorted[_discoveredJTACsCount] = {_jtacUnit,_distToPlayer,_JTACref,"" .. _jtacGroupName .. " targeting " .. _enemyUnit:getTypeName() .. " CODE: " .. _laserCode .. ctld.getPositionString(_unit) .. "\n"}
-								
+				_discoveredJTACsUnsorted[_discoveredJTACsCount] = {_jtacUnit,_distToPlayer,_JTACref,"" .. "[" .. _azFromPlayerStr --[[.. utf8.char(730)]] .. " : " .. _roundedDist .. "km] " .. _coordinateTitle .. ": " .. _mapGrid .. ", Target: " .. _targetName .. ", JTAC: " .. _jtacOwner .. _visualOnMsg}--DCS = LUA 5.2, UTF-8 support = LUA 5.3
 
             else
 				_searchingJTACsCount = _searchingJTACsCount + 1
@@ -5214,9 +5233,8 @@ function ctld.getJTACStatus(_args)
 				-- _mapGrid = mist.tostringMGRS(coord.LLtoMGRS(coord.LOtoLL(_jtacUnit:getPosition().p)), 1)
 				_mapGrid = utils.tostringMGRSnoUTM(coord.LLtoMGRS(coord.LOtoLL(_jtacUnit:getPosition().p)), -1) --Moose.lua: line 7723: playerMenu unit selection and accuracy
 				
-				_searchingJTACsUnsorted[_searchingJTACsCount] = {_jtacUnit,_distToPlayer,_JTACref,"" .. "[" .. _azFromPlayerStr --[[.. utf8.char(730)]] .. " : " .. _roundedDist .. "km] Grid: " .. _mapGrid .. ", JTAC: " .. _jtacOwner .. " | "}
-				
-				-- _searchingJTACsUnsorted[_searchingJTACsCount] = {_jtacUnit,_distToPlayer,_JTACref,"" .. _jtacGroupName .. " searching for targets" .. ctld.getPositionString(_jtacUnit) .. "\n"}
+				_searchingJTACsUnsorted[_searchingJTACsCount] = {_jtacUnit,_distToPlayer,_JTACref,"" .. "[" .. _azFromPlayerStr --[[.. utf8.char(730)]] .. " : " .. _roundedDist .. "km] Grid: " .. _mapGrid .. ", JTAC: " .. _jtacOwner .. " | "} --DCS = LUA 5.2, UTF-8 support = LUA 5.3
+
             end
         end
     end
@@ -5228,49 +5246,26 @@ function ctld.getJTACStatus(_args)
 		
 	else
 		--sort JTACs by distance to player  --mr: Add to utils.lua for use elsewhere?
-		-- _discoveredJTACsUnsorted = {{"UNIT1", 6800, -1, "MSG1"},{"UNIT2", 300, -1, "MSG2"},{"UNIT3", 8453, -1, "MSG3"},{"UNIT4", 1111, -1, "MSG4"},{"UNIT5", 23, -1, "MSG5"},{"UNIT6", 4056, -1, "MSG6"}}
-		
-		-- https://stackoverflow.com/questions/9168058/how-to-dump-a-table-to-console
-		--[[
-			function tprint (t, s)
-				for k, v in pairs(t) do
-					local kfmt = '["' .. tostring(k) ..'"]'
-					if type(k) ~= 'string' then
-						kfmt = '[' .. k .. ']'
-					end
-					local vfmt = '"'.. tostring(v) ..'"'
-					if type(v) == 'table' then
-						tprint(v, (s or '')..kfmt)
-					else
-						if type(v) ~= 'string' then
-							vfmt = tostring(v)
-						end
-						print(type(t)..(s or '')..kfmt..' = '..vfmt)
-					end
-				end
-			end
-		--]]
 		
 		--sort table of JTACs that have discovered targets by distance to player
 		if _discoveredJTACsCount > 0 then	
 			local _dist = {}
-			for _i in ipairs(_discoveredJTACsUnsorted) do table.insert(_dist,_i) end
+			for _jT in ipairs(_discoveredJTACsUnsorted) do table.insert(_dist,_jT) end
 			table.sort (_dist, function (_Ja,_Jb) return _discoveredJTACsUnsorted[_Ja][2] < _discoveredJTACsUnsorted[_Jb][2] end) -- closest to furtherest by "<"
-			for _j,_i in ipairs(_dist) do --_dist table now represents table keys for _discoveredJTACsUnsorted ordered from closest to furtherest
-				table.insert(_discoveredJTACs,_j,_discoveredJTACsUnsorted[_i])
-				_discoveredJTACs[_j][3] = tonumber(_j) --change original reference number now that table is sorted, tonumber to ensure integer
+			for _key,_jT in ipairs(_dist) do --_dist table now represents table keys for _discoveredJTACsUnsorted ordered from closest to furtherest
+				table.insert(_discoveredJTACs,_key,_discoveredJTACsUnsorted[_jT]) --set JTAC table _jT from sorted _keys in _dist to empty table _discoveredJTACs
+				_discoveredJTACs[_key][3] = tonumber(_key) --change original reference number now that table is sorted, tonumber to ensure integer
 			end
 		end
 		
 		--sort table of JTACs that are still searching for a target by distance to player
 		if _searchingJTACsCount > 0 then	
 			local _dist = {}
-			for _i in ipairs(_searchingJTACsUnsorted) do table.insert(_dist,_i) end
+			for _jT in ipairs(_searchingJTACsUnsorted) do table.insert(_dist,_jT) end
 			table.sort (_dist, function (_Ja,_Jb) return _searchingJTACsUnsorted[_Ja][2] < _searchingJTACsUnsorted[_Jb][2] end) -- closest to furtherest by "<"
-			for _j,_i in ipairs(_dist) do --_dist table now represents table keys for _searchingJTACsUnsorted ordered from closest to furtherest
-				table.insert(_searchingJTACs,_j,_searchingJTACsUnsorted[_i])
-				_searchingJTACs[_j][3] = tonumber(_j) + _discoveredJTACsCount --ref # for JTACs still searching not as important but set anyway
-				-- env.info("mrDEBUG01: SearchingJTACs (ordered): [KEY:" .. _j .. "]" .. " ,INDEX:" .. _i .. " ,REF:" .. _searchingJTACs[_i][3] .. " ,MSG:" .. _searchingJTACs[_i][4] .. " ,DIST:" .. _searchingJTACs[_i][2]) --mrDEBUG01
+			for _key,_jT in ipairs(_dist) do --_dist table now represents table keys for _searchingJTACsUnsorted ordered from closest to furtherest
+				table.insert(_searchingJTACs,_key,_searchingJTACsUnsorted[_jT])
+				_searchingJTACs[_key][3] = tonumber(_key) + _discoveredJTACsCount --ref # for JTACs still searching not as important but set anyway
 			end
 		end
 
@@ -5282,9 +5277,9 @@ function ctld.getJTACStatus(_args)
 		
 			_message = _message .. "\n" ..  "JTACs with Targets [" .. _discoveredJTACsCount .. "of" .. _activeJTACsCount ..  "] : \n"
 			local _dJTACref = ""
-			for _j,_i in ipairs(_discoveredJTACs) do
-				-- local _dJTACref = "J" .. _discoveredJTACs[_j][3] .. " - " -- ref# designation for better re-refrencing?
-				_message = _message .. _dJTACref .. _discoveredJTACs[_j][4] .. "\n"
+			for _key,_jT in ipairs(_discoveredJTACs) do
+				-- local _dJTACref = "J" .. _discoveredJTACs[_key][3] .. " - " -- ref# designation for better re-refrencing?
+				_message = _message .. _dJTACref .. _discoveredJTACs[_key][4] .. "\n"
 			end
 		end
 		
@@ -5292,13 +5287,13 @@ function ctld.getJTACStatus(_args)
 		
 			_message = _message .. "\n" ..  "JTACs Searching for Targets [" .. _searchingJTACsCount .. "of" .. _activeJTACsCount .. "] : \n"
 			local _sJTACref = ""
-			for _j,_i in ipairs(_searchingJTACs) do
-				-- local _sJTACref = "J" .. _searchingJTACs[_j][3] .. " - " -- ref# designation for better re-refrencing esp. when not targeting anything?
-				_message = _message .. _sJTACref .. _searchingJTACs[_j][4]
+			for _key,_jT in ipairs(_searchingJTACs) do
+				-- local _sJTACref = "J" .. _searchingJTACs[_key][3] .. " - " -- ref# designation for better re-refrencing esp. when not targeting anything?
+				_message = _message .. _sJTACref .. _searchingJTACs[_key][4]
 			end
 		end
     end
-	env.info("mrDEBUG03: Final JTAC STATUS MESSAGE: " .. _message) --mrDEBUG03
+
     ctld.displayMessageToGroup(_playerUnit, _message, 10)
 end
 
