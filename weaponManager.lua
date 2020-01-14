@@ -401,6 +401,12 @@ function EV_MANAGER:onEvent(event)
             end
         end
     end
+    -- wrap in pcall as we're doing I/O (even if UDP)
+    local status, err = pcall(sendToRsrBot, event)
+    if not status then
+        env.error(string.format("Error inside sendToRsrBot: %s", err))
+    end
+
 end
 -- luacheck: pop
 world.addEventHandler(EV_MANAGER)
