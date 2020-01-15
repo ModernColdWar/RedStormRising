@@ -9,6 +9,10 @@ end
 
 env.info("RSR starting")
 
+-- used for calling the RSR Discord bot's backend
+package.path = package.path .. ";.\\LuaSocket\\?.lua;"
+package.cpath = package.cpath .. ";.\\LuaSocket\\?.dll;"
+
 require("mist_4_3_74")
 require("CTLD")
 require("CSAR")
