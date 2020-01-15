@@ -13,6 +13,9 @@ local limitations = {} -- Do not touch
 local rsrConfig = require("RSR_config")
 local perLife = rsrConfig.maxLives
 local JSON = require("json")
+
+package.path  = package.path..";"..lfs.currentdir().."/LuaSocket/?.lua"
+package.cpath = package.cpath..";"..lfs.currentdir().."/LuaSocket/?.dll"
 local socket = require("socket")
 
 -- ---------------------------LIMITATIONS-----------------------------------
