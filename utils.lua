@@ -119,4 +119,11 @@ function M.getRestartHours(firstRestart, missionDuration)
     return restartHours
 end
 
+function M.setGroupControllerOptions(group)
+    -- delayed 2 second to work around bug (as per ctld.addEWRTask and ctld.orderGroupToMoveToPoint)
+    timer.scheduleFunction(function(_group)
+        _group:getController():setOption(AI.Option.Ground.id.DISPERSE_ON_ATTACK, 0)
+    end, group, timer.getTime() + 2)
+end
+
 return M

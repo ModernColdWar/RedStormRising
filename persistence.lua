@@ -76,13 +76,6 @@ local function persistState(rsrConfig)
     end
 end
 
-local function disableDisperseOnAttack(group)
-    -- delayed 2 second to work around bug (as per ctld.addEWRTask and ctld.orderGroupToMoveToPoint)
-    timer.scheduleFunction(function(_group)
-        _group:getController():setOption(AI.Option.Ground.id.DISPERSE_ON_ATTACK, 0)
-    end, group, timer.getTime() + 2)
-end
-
 function M.spawnGroup(groupData)
     -- Currently this code replicates the actions from ctld.unpackCrates
     local sideName = getSideNameFromGroupData(groupData)
@@ -105,7 +98,7 @@ function M.spawnGroup(groupData)
         ctld.addEWRTask(spawnedGroup)
     end
 
-    disableDisperseOnAttack(spawnedGroup)
+    utils.setGroupControllerOptions(spawnedGroup)
 
     state.pushSpawnQueue(groupName)
     local playerName = utils.getPlayerNameFromGroupName(groupName)
