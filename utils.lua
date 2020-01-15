@@ -122,7 +122,14 @@ end
 function M.setGroupControllerOptions(group)
     -- delayed 2 second to work around bug (as per ctld.addEWRTask and ctld.orderGroupToMoveToPoint)
     timer.scheduleFunction(function(_group)
-        _group:getController():setOption(AI.Option.Ground.id.DISPERSE_ON_ATTACK, 0)
+        -- make sure nothing "bad" happened in time since spawn
+        if not _group:isExist() or #_group:getUnits() < 1 then
+            return
+        end
+        local controller = _group:getController()
+        controller:setOption(AI.Option.Ground.id.ALARM_STATE, AI.Option.Ground.val.ALARM_STATE.AUTO)
+        controller:setOption(AI.Option.Ground.id.ROE, AI.Option.Ground.val.ROE.OPEN_FIRE)
+        controller:setOption(AI.Option.Ground.id.DISPERSE_ON_ATTACK, 0)
     end, group, timer.getTime() + 2)
 end
 
