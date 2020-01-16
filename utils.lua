@@ -145,7 +145,7 @@ function M.setGroupControllerOptions(group)
         controller:setOption(AI.Option.Ground.id.ALARM_STATE, AI.Option.Ground.val.ALARM_STATE.AUTO)
         controller:setOption(AI.Option.Ground.id.ROE, AI.Option.Ground.val.ROE.OPEN_FIRE)
         controller:setOption(AI.Option.Ground.id.DISPERSE_ON_ATTACK, 0)
-        local leader = group:getUnits(1)
+        local leader = group:getUnit(1)
         local position = leader:getPoint()
         local formation = isInfantry(leader) and AI.Task.VehicleFormation.CONE or AI.Task.VehicleFormation.OFF_ROAD
         local mission = {
@@ -157,6 +157,7 @@ function M.setGroupControllerOptions(group)
                             action = formation,
                             x = position.x,
                             y = position.z,
+                            type = 'Turning Point'
                         }
                     }
                 },
