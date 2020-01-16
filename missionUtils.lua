@@ -55,6 +55,7 @@ function M.serializeMission(mission, missionDir)
     end
     package.path = package.path .. ";" .. dcsPath .. [[\Scripts\?.lua]]
     serialize(missionDir .. [[\mission]], "mission", mission)
+    serialize(missionDir .. [[\warehouses]], "warehouses", warehouses)
 end
 
 function M.getDictionaryValue(key)

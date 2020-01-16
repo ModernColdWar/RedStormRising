@@ -46,6 +46,7 @@ local countermeasuresSettings = {
     Su_25T = { flare = 192, chaff = 64 },
 }
 
+
 -- default length in mission editor is 15m
 local ropeLengths = {
     Ka_50 = 25,
@@ -95,6 +96,12 @@ end
 
 local function description(unit)
     return unit.type .. " '" .. missionUtils.getDictionaryValue(unit.name) .. "'"
+end
+
+local function setWeaponsUnlimited(baseName, warehouse)
+    print("Setting warehouse weapons to unlimited for " .. baseName)
+    warehouse.weapons = {}
+    warehouse.unlimitedMunitions = true
 end
 
 local function setFuel(unit)
@@ -162,6 +169,7 @@ end
 
 print("Checking bases for problems")
 missionUtils.iterBases(mission, "Caucasus", function(baseName, warehouse)
+    setWeaponsUnlimited(baseName, warehouse)
     if warehouse.coalition:lower() == "neutral" then
         print("WARN:  Skipping neutral base " .. baseName)
         return
