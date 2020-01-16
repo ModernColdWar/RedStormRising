@@ -164,6 +164,7 @@ function M.setGroupControllerOptions(group)
             },
         }
         controller:setTask(mission)
+        env.info("Set controller options for " .. _group:getName())
     end, group, timer.getTime() + 2)
 end
 
