@@ -22,7 +22,8 @@
 -- luacheck: no max line length
 require("mist_4_3_74")
 require("CTLD_config")
-require("Moose")
+require("MOOSE")
+
 local utils = require("utils")
 
 ctld.nextUnitId = 1;
@@ -3473,10 +3474,11 @@ function ctld.spawnCrateGroup(_heli, _positions, _types, _unitQuantity)
 
     --activate by moving and so we can set ROE and Alarm state
 
-    local _dest = _spawnedGroup:getUnit(1):getPoint()
-    _dest = { x = _dest.x + 0.5, _y = _dest.y + 0.5, z = _dest.z + 0.5 }
+    --local _dest = _spawnedGroup:getUnit(1):getPoint()
+    --_dest = { x = _dest.x + 0.5, _y = _dest.y + 0.5, z = _dest.z + 0.5 }
 
-    ctld.orderGroupToMoveToPoint(_spawnedGroup:getUnit(1), _dest)
+    utils.setGroupControllerOptions(_spawnedGroup)
+    --ctld.orderGroupToMoveToPoint(_spawnedGroup:getUnit(1), _dest)
 
     return _spawnedGroup
 end
@@ -3543,20 +3545,21 @@ function ctld.spawnDroppedGroup(_point, _details, _spawnBehind, _maxSearch, _for
 
 
     -- find nearest enemy and head there
-    if _maxSearch == nil then
-        _maxSearch = ctld.maximumSearchDistance
-    end
+    --if _maxSearch == nil then
+    --    _maxSearch = ctld.maximumSearchDistance
+    --end
 
-    local _wpZone = ctld.inWaypointZone(_point, _spawnedGroup:getCoalition())
+    --local _wpZone = ctld.inWaypointZone(_point, _spawnedGroup:getCoalition())
 
-    if _wpZone.inZone then
-        ctld.orderGroupToMoveToPoint(_spawnedGroup:getUnit(1), _wpZone.point)
-        env.info("Heading to waypoint - In Zone " .. _wpZone.name)
-    else
-        local _enemyPos = ctld.findNearestEnemy(_details.side, _point, _maxSearch)
-
-        ctld.orderGroupToMoveToPoint(_spawnedGroup:getUnit(1), _enemyPos)
-    end
+    --if _wpZone.inZone then
+    --    ctld.orderGroupToMoveToPoint(_spawnedGroup:getUnit(1), _wpZone.point)
+    --    env.info("Heading to waypoint - In Zone " .. _wpZone.name)
+    --else
+    --    local _enemyPos = ctld.findNearestEnemy(_details.side, _point, _maxSearch)
+    --
+    --    ctld.orderGroupToMoveToPoint(_spawnedGroup:getUnit(1), _enemyPos)
+    --end
+    utils.setGroupControllerOptions(_spawnedGroup)
 
     return _spawnedGroup
 end
@@ -4358,7 +4361,7 @@ function ctld.addF10MenuOptions(_unitName)
                     if ctld.enableCrates and _unitActions.crates then
 
                         if ctld.unitCanCarryVehicles(_unit) == false then
-                            ctld.addCrateMenu(_rootPath,"Light crates", _unit, _groupId, ctld.spawnableCrates, 1)
+                            ctld.addCrateMenu(_rootPath, "Light crates", _unit, _groupId, ctld.spawnableCrates, 1)
                             ctld.addCrateMenu(_rootPath, "Heavy crates", _unit, _groupId, ctld.spawnableCrates, ctld.heavyCrateWeightMultiplier)
                         end
                     end

@@ -119,6 +119,7 @@ function M.getRestartHours(firstRestart, missionDuration)
     return restartHours
 end
 
+<<<<<<< HEAD
 --mr: copied from MIST
 -- acc the accuracy of each easting/northing. Can be: 0, 1, 2, 3, 4, or 5.
 -- added -1 as additional accuracy setting to remove UTMZone and condense to simple grid e.g. MN61
@@ -136,4 +137,55 @@ function M.tostringMGRSnoUTM(MGRS, acc)
 		.. ' ' .. string.format('%0' .. acc .. 'd', mist.utils.round(MGRS.Northing/(10^(5-acc)), 0))
 	end
 end
+=======
+-- based on ctld.isInfantry
+local function isInfantry(unit)
+    local typeName = string.lower(unit:getTypeName() .. "")
+    local soldierType = { "infantry", "paratrooper", "stinger", "manpad", "mortar" }
+
+    for _, value in pairs(soldierType) do
+        if string.match(typeName, value) then
+            return true
+        end
+    end
+
+    return false
+
+end
+
+function M.setGroupControllerOptions(group)
+    -- delayed 2 second to work around bug (as per ctld.addEWRTask and ctld.orderGroupToMoveToPoint)
+    timer.scheduleFunction(function(_group)
+        -- make sure nothing "bad" happened in time since spawn
+        if not _group:isExist() or #_group:getUnits() < 1 then
+            return
+        end
+        local controller = _group:getController()
+        controller:setOption(AI.Option.Ground.id.ALARM_STATE, AI.Option.Ground.val.ALARM_STATE.AUTO)
+        controller:setOption(AI.Option.Ground.id.ROE, AI.Option.Ground.val.ROE.OPEN_FIRE)
+        controller:setOption(AI.Option.Ground.id.DISPERSE_ON_ATTACK, 0)
+        local leader = group:getUnit(1)
+        local position = leader:getPoint()
+        local formation = isInfantry(leader) and AI.Task.VehicleFormation.CONE or AI.Task.VehicleFormation.OFF_ROAD
+        local mission = {
+            id = 'Mission',
+            params = {
+                route = {
+                    points = {
+                        [1] = {
+                            action = formation,
+                            x = position.x,
+                            y = position.z,
+                            type = 'Turning Point'
+                        }
+                    }
+                },
+            },
+        }
+        controller:setTask(mission)
+        env.info("Set controller options for " .. _group:getName())
+    end, group, timer.getTime() + 2)
+end
+
+>>>>>>> 250a5f1e9dd216b72dd6f20854588f21c44e77a4
 return M
