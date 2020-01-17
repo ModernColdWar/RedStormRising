@@ -13,10 +13,6 @@ local limitations = {} -- Do not touch
 local rsrConfig = require("RSR_config")
 local perLife = rsrConfig.maxLives
 local JSON = require("json")
-<<<<<<< HEAD
-=======
-
->>>>>>> 250a5f1e9dd216b72dd6f20854588f21c44e77a4
 local socket = require("socket")
 
 -- ---------------------------LIMITATIONS-----------------------------------

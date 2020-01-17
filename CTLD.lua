@@ -5111,10 +5111,7 @@ function ctld.getJTACStatus(_args)
     end
 
     local _side = _playerUnit:getCoalition()
-	local _sideLaserCode = ctld.getLaserCode(_playerUnit:getCoalition())
-	local _laserCodeTitle = UTILS.GetCoalitionName(_side) .. " Team Laser Code: " .. _sideLaserCode --UTILS.GetCoalitionName from MOOSE
-	
-	local _JTACsMSGtitle = "STATUS OF JTACs: \n" .. "Detection Range: " .. mist.utils.round((ctld.JTAC_maxDistance/1000),1) .. "km , " .. _laserCodeTitle .. "\n"
+	local _JTACsMSGtitle = "STATUS OF JTACs: \n"
 	local _message = ""
 	
 	local _discoveredJTACsCount = 0 --count of JTACs that have discovered a target
@@ -5268,8 +5265,9 @@ function ctld.getJTACStatus(_args)
 		end
 
 		--Compile final message for display. Do this after distance ranking so that discovered JTACs are placed above searhcing JTACs in STATUS
-		
-		_message = _message .. _JTACsMSGtitle
+		local _laserCodeTitle = UTILS.GetCoalitionName(_side) .. " Team Laser Code: "  --UTILS.GetCoalitionName from MOOSE
+		local _sideLaserCode = ctld.getLaserCode(_playerUnit:getCoalition())
+		_message = _message .. _JTACsMSGtitle .. "Detection Range: " .. mist.utils.round((ctld.JTAC_maxDistance/1000),1) .. "km , " .. _laserCodeTitle .. _sideLaserCode .. "\n"
 		
 		if _discoveredJTACsCount > 0 then
 		
