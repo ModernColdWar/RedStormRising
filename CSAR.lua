@@ -652,7 +652,7 @@ function csar.checkDisabledAircraftStatus(_args)
                 end
 
                 -- -1 for lives as we use 1 to indicate out of lives!
-                local _text = string.format("CSAR ACTIVE! \n\nYou have " .. (_lives - 1) .. " lives remaining. Make sure you eject! This way you can be rescued by a friend or yourself to regain the life.")
+                local _text = string.format("CSAR ACTIVE! \n\nYou have " .. (_lives - 1) .. " lives remaining. Make sure you eject! This way you can be rescued by a friend or yourself to regain the life.\n\nSome weapons are limited; check F10 menu for more information")
 
                 csar.displayMessageToSAR(_unit, _text, 20, true)
 
