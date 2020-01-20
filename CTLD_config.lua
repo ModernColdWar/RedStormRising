@@ -393,8 +393,10 @@ ctld.spawnableCrates = {
         { weight = 877, desc = "Roland Radar", unit = "Roland Radar", side = 2, internal = 0 },
 
         -- HQ-7 (can also be configured as a system, but not currently doing so; just using the launcher)
-        { weight = 878, desc = "Crotale", unit = "HQ-7_LN_SP", side = 2, cratesRequired = 3, unitQuantity = 2, internal = 0 },
+        --{ weight = 878, desc = "Crotale", unit = "HQ-7_LN_SP", side = 2, cratesRequired = 3, unitQuantity = 2, internal = 0 },
         --{ weight = 879, desc = "HQ-7 Search Radar", unit = "HQ-7_STR_SP", side = 1, internal = 0 },
+        { weight = 881, desc = "HQ-7", unit = "HQ-7_LN_SP", side = 1, cratesRequired = 3, unitQuantity = 2, internal = 0 },
+        { weight = 882, desc = "HQ-7 Search Radar", unit = "HQ-7_STR_SP", side = 1, internal = 0 },
 
         -- Tor on both sides
         { weight = 880, desc = "SA-15 Tor", unit = "Tor 9A331", side = 1, cratesRequired = 2, unitQuantity = 2, internal = 0 },
