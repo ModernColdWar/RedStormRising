@@ -39,8 +39,17 @@ local function activateBaseDefences(baseName, sideName, rsrConfig)
         if group:GetCoalition() == side and activationZone:IsVec3InZone(group:GetVec3()) and not isReplacementGroup(group) then
             log:info("Activating $1 $2 base defence group $3", baseName, sideName, group:GetName())
             group:Activate()
-            state.pushSpawnQueue(group:GetName())
+            local groupName = group:GetName()
+            state.pushSpawnQueue(groupName)
             utils.setGroupControllerOptions(group:GetDCSObject())
+            if ctld.isJTACUnitType(groupName) then
+                timer.scheduleFunction(function(_groupName)
+                    -- do this 2 seconds later so that group has time to be activated
+                    local _code = ctld.getLaserCode(Group.getByName(_groupName):getCoalition())
+                    log:info("Configuring base defences group $1 to auto-lase on $2", _groupName, _code)
+                    ctld.JTACAutoLase(_groupName, _code)
+                end, groupName, timer.getTime() + 2)
+            end
         end
     end)
 end
