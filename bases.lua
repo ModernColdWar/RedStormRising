@@ -40,7 +40,7 @@ local function activateBaseDefences(baseName, sideName, rsrConfig)
             log:info("Activating $1 $2 base defence group $3", baseName, sideName, group:GetName())
             group:Activate()
             state.pushSpawnQueue(group:GetName())
-            utils.setGroupControllerOptions(group)
+            utils.setGroupControllerOptions(group:GetDCSObject())
         end
     end)
 end
