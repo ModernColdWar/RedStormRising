@@ -1,5 +1,5 @@
 local missionUtils = require("missionUtils")
-local restartInfo = require("restartInfo")
+local missionInfoMenu = require("missionInfoMenu")
 local weaponManager = require("weaponManager")
 
 local M = {}
@@ -35,7 +35,7 @@ function M.BIRTH_EVENTHANDLER:_AddMenus(event)
             self:I("Adding menus for " .. playerGroup:GetName())
             self.groupsMenusAdded[groupName] = true
             local unitName = event.IniUnitName
-            self:_AddTimeUntilRestart(playerGroup)
+            self:_AddMissionInfoMenu(playerGroup)
             self:_AddJTACStatusMenu(groupId, unitName)
             if playerGroup:GetCategory() == Group.Category.AIRPLANE then
                 self:_AddWeaponsManagerMenus(groupId)
@@ -49,11 +49,8 @@ function M.BIRTH_EVENTHANDLER:_AddMenus(event)
     end
 end
 
-function M.BIRTH_EVENTHANDLER:_AddTimeUntilRestart(playerGroup)
-    MENU_GROUP_COMMAND:New(playerGroup, "Time until restart", nil, function()
-        local secondsUntilRestart = restartInfo.getSecondsUntilRestart(os.date("*t"), self.restartHours)
-        MESSAGE:New(string.format("The server will restart in %s", restartInfo.getSecondsAsString(secondsUntilRestart)), 5):ToGroup(playerGroup)
-    end)
+function M.BIRTH_EVENTHANDLER:_AddMissionInfoMenu(playerGroup)
+    missionInfoMenu.addMenu(playerGroup, self.restartHours)
 end
 
 function M.BIRTH_EVENTHANDLER:_AddJTACStatusMenu(groupId, unitName)
