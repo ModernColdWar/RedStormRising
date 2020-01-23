@@ -1,6 +1,6 @@
 local lu = require("tests.luaunit")
 require("tests.dcs_stub")
-require("MOOSE")
+require ("Moose")
 
 local hitEventHandler = require("hitEventHandler")
 

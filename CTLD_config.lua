@@ -280,7 +280,7 @@ ctld.unitActions = {
     ["Mi-8MT"] = { crates = true, troops = true, internal = true },
     ["C-101CC"] = { crates = true, troops = true, internal = true },
     ["L-39ZA"] = { crates = true, troops = true, internal = true },
-
+	-- ["TF-51"] = { crates = true, troops = true, internal = true }, --mr: get proper name for TF-51.  As DEV team for other cargo planes they'd like added.
 }
 
 -- ************** INFANTRY GROUPS FOR PICKUP ******************
@@ -301,6 +301,12 @@ ctld.loadableGroups = {
     { name = "Mortar Squad", mortar = 6 },
     -- {name = "Mortar Squad Red", inf = 2, mortar = 5, side =1 }, --would make a group loadable by RED only
 }
+
+-- ************** CC / Logistic Centre Building Types ******************
+
+ctld.logisticCentreL1 = "FARP Tent"
+ctld.logisticCentreL2 = "outpost"
+ctld.logisticCentreL3 = ".Command Center"
 
 -- ************** SPAWNABLE CRATES ******************
 -- Weights must be unique as we use the weight to change the cargo to the correct unit

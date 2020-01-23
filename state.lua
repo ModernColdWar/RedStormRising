@@ -143,7 +143,7 @@ function M.copyFromCtld()
 end
 
 function M.updateBaseOwnership()
-    M.currentState.baseOwnership = queryDcs.getAllBaseOwnership()
+    M.currentState.baseOwnership = queryDcs.getAllBaseOwnership(M.firstTimeSetup) --mr: intercept first time campaign setup here to read FOB ownership from Trigger Zone Name
 end
 
 function M.getOwner(baseName)
@@ -188,7 +188,7 @@ function M.setBaseOwner(baseName, sideName)
         return false
     end
     setOwner(M.currentState.baseOwnership.airbases, baseName, sideName)
-    setOwner(M.currentState.baseOwnership.farps, baseName, sideName)
+    setOwner(M.currentState.baseOwnership.FOBs, baseName, sideName)
     log:info("Changed ownership of $1 from $2 to $3", baseName, currentOwner, sideName)
     return true
 end
@@ -226,10 +226,10 @@ function M.setCurrentStateFromFile(stateFileName)
     end
 
     if not canUseStateFromFile then
-        log:info("Setting up from defaults in code and base ownership from mission")
+        log:info("Setting up from defaults in code, base ownership from mission and FOB ownership from FOBinit Trigger Zone color")
         M.firstTimeSetup = true
         M.currentState = mist.utils.deepCopy(M.defaultState)
-        M.updateBaseOwnership()
+		M.updateBaseOwnership() --mr: intercept first time campaign setup here to read FOB ownership from Trigger Zone Name
     end
     log:info("currentState = $1", inspect(M.currentState, { newline = " ", indent = "" }))
     return true

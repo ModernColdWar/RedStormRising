@@ -22,8 +22,7 @@
 -- luacheck: no max line length
 require("mist_4_3_74")
 require("CTLD_config")
-require("MOOSE")
-
+require ("Moose")
 local utils = require("utils")
 
 ctld.nextUnitId = 1;
@@ -958,7 +957,7 @@ end
 
 function ctld.spawnFOB(_country, _point, _name, _coalition)
 
-    local _crate = {
+    local _logiCentre = {
         ["category"] = "Fortifications",
         ["type"] = "outpost",
         --  ["unitId"] = _unitId,
@@ -969,11 +968,12 @@ function ctld.spawnFOB(_country, _point, _name, _coalition)
         ["heading"] = 0,
     }
 
-    _crate["country"] = _country
-    mist.dynAddStatic(_crate)
-    local _spawnedCrate = StaticObject.getByName(_crate["name"])
+    _logiCentre["country"] = _country
+    mist.dynAddStatic(_logiCentre)
+    local _spawnedCrate = StaticObject.getByName(_logiCentre["name"])
     --local _spawnedCrate = coalition.addStaticObject(_country, _crate)
-
+	
+--[[
     local _id = ctld.getNextUnitId()
     local _tower = {
         ["type"] = "house2arm",
@@ -990,6 +990,8 @@ function ctld.spawnFOB(_country, _point, _name, _coalition)
     _tower["country"] = _country
 
     mist.dynAddStatic(_tower)
+--]]
+
     trigger.action.markToCoalition(UTILS.GetMarkID(), _name, _point, _coalition, true)
 
     return _spawnedCrate
@@ -2526,9 +2528,9 @@ function ctld.unpackFOBCrates(_crates, _heli)
         timer.scheduleFunction(function(_args)
 
             local _unitId = ctld.getNextUnitId()
-            local _name = "Deployed FOB #" .. _unitId
+            local _name = "Deployed FOB #" .. _unitId --mr: add side to FOB name to allow static object to be neutral but be able to interogate name for coalition
 
-            local _fob = ctld.spawnFOB(_args[2], _args[1], _name, _args[3])
+            local _fob = ctld.spawnFOB(_args[2], _args[1], _name, _args[3]) --country, point, name, coalition
 
             --make it able to deploy crates
             table.insert(ctld.logisticUnits, _fob:getName())
@@ -4276,29 +4278,33 @@ function ctld.addCrateMenu(_rootPath, _crateTypeDescription, _unit, _groupId, _s
         local _cratePath = missionCommands.addSubMenuForGroup(_groupId, _subMenuName, _crateRootPath)
         for _, _crate in pairs(_crates) do
 
-            if ctld.isJTACUnitType(_crate.unit) == false
-                    or (ctld.isJTACUnitType(_crate.unit) == true and ctld.JTAC_dropEnabled) then
+            if ctld.isJTACUnitType(_crate.unit) == false or (ctld.isJTACUnitType(_crate.unit) == true and ctld.JTAC_dropEnabled) then
                 if _crate.side == nil or (_crate.side == _unit:getCoalition()) then
 
-                    local _crateRadioMsg = _crate.desc
+                    local _crateRadioMsg = ""
 
                     --add details of crate count and unit quantity
                     local _requiresMultipleCrates = _crate.cratesRequired ~= nil and _crate.cratesRequired > 1
                     local _hasMultipleUnits = _crate.unitQuantity ~= nil and _crate.unitQuantity > 1
                     if (_requiresMultipleCrates or _hasMultipleUnits) then
-                        _crateRadioMsg = _crateRadioMsg .. " ("
+                        _crateRadioMsg = _crateRadioMsg .. "["
                         if _requiresMultipleCrates then
-                            _crateRadioMsg = _crateRadioMsg .. _crate.cratesRequired .. "c"
+                            _crateRadioMsg = _crateRadioMsg .. _crate.cratesRequired .. "C"
                             if _hasMultipleUnits then
-                                _crateRadioMsg = _crateRadioMsg .. ", " .. _crate.unitQuantity .. "q"
+                                _crateRadioMsg = _crateRadioMsg .. ";" .. _crate.unitQuantity .. "Q"
                             end
                         else
                             if _hasMultipleUnits then
-                                _crateRadioMsg = _crateRadioMsg .. _crate.unitQuantity .. "q"
+                                _crateRadioMsg = _crateRadioMsg .. "1C," .. _crate.unitQuantity .. "Q"
                             end
                         end
-                        _crateRadioMsg = _crateRadioMsg .. ")"
-                    end
+                        _crateRadioMsg = _crateRadioMsg .. "] "
+                    else
+						_crateRadioMsg = _crateRadioMsg .. "[1C;1Q] "
+					end
+					
+					_crateRadioMsg = _crateRadioMsg .. _crate.desc --add unit description to end of crate and quantity prefix e.g. "[1C;1Q] Avenger"
+					
                     missionCommands.addCommandForGroup(_groupId, _crateRadioMsg, _cratePath, ctld.spawnCrate, { _unit:getName(), _crate.weight * _weightMultiplier, _crate.internal })
                 end
             end

@@ -1,7 +1,7 @@
 --- Saving/loading/updating code for managing "live" units and persisting them across server restarts
 require("mist_4_3_74")
 require("CTLD")
-require("MOOSE")
+require ("Moose")
 local bases = require("bases")
 local state = require("state")
 local utils = require("utils")
@@ -22,17 +22,17 @@ local function getSideNameFromGroupData(groupData)
 end
 
 function M.updateGroupData(persistentGroupData)
-    log:info("Updating persistent group data")
+    --log:info("Updating persistent group data") --mr: commented out to cleanup log during development
     for i = #persistentGroupData, 1, -1 do
         local groupData = persistentGroupData[i]
         local groupName = groupData.name
-        log:info("Processing units in group $1", groupName)
+        --log:info("Processing units in group $1", groupName) --mr: commented out to cleanup log during development
         for j = #groupData.units, 1, -1 do
             local unitData = groupData.units[j]
             local unitName = unitData.name
             local unit = Unit.getByName(unitName)
             if unit == nil then
-                log:info("Removing persistent data for dead unit $1", unitName)
+                --log:info("Removing persistent data for dead unit $1", unitName) --mr: commented out to cleanup log during development
                 table.remove(groupData.units, j)
             else
                 log:info("Updating position information for unit $1", unitName)
@@ -43,7 +43,7 @@ function M.updateGroupData(persistentGroupData)
             end
         end
         if #groupData.units == 0 then
-            log:info("Removing persistent data for dead group $1", groupName)
+            --log:info("Removing persistent data for dead group $1", groupName) --mr: commented out to cleanup log during development
             table.remove(persistentGroupData, i)
             local sideName = getSideNameFromGroupData(groupData)
             local playerName = utils.getPlayerNameFromGroupName(groupName)
@@ -52,7 +52,7 @@ function M.updateGroupData(persistentGroupData)
             end
         end
     end
-    log:info("Persistent group data update complete")
+    --log:info("Persistent group data update complete") --mr: commented out to cleanup log during development
 end
 
 local function persistState(rsrConfig)
