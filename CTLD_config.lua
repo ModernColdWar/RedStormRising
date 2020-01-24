@@ -280,7 +280,7 @@ ctld.unitActions = {
     ["Mi-8MT"] = { crates = true, troops = true, internal = true },
     ["C-101CC"] = { crates = true, troops = true, internal = true },
     ["L-39ZA"] = { crates = true, troops = true, internal = true },
-	-- ["TF-51"] = { crates = true, troops = true, internal = true }, --mr: get proper name for TF-51.  As DEV team for other cargo planes they'd like added.
+	-- ["TF-51"] = { crates = true, troops = true, internal = true }, --mr: get proper name for TF-51.  Ask DEV team for other cargo planes they'd like added.
 }
 
 -- ************** INFANTRY GROUPS FOR PICKUP ******************
@@ -307,6 +307,9 @@ ctld.loadableGroups = {
 ctld.logisticCentreL1 = "FARP Tent"
 ctld.logisticCentreL2 = "outpost"
 ctld.logisticCentreL3 = ".Command Center"
+
+--mr: need to ensure country is part of neutral coalition e.g. Greece, as neutral static objects will not block DCS rearm/refuel
+ctld.neutralCountry = "Greece"
 
 -- ************** SPAWNABLE CRATES ******************
 -- Weights must be unique as we use the weight to change the cargo to the correct unit

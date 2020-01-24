@@ -185,4 +185,41 @@ function M.setGroupControllerOptions(group)
     end, group, timer.getTime() + 2)
 end
 
+--searches for FOB name in baseOwnership nested table to determine currently assigned side
+--mr: find more efficient way to transvere nested table
+
+function M.getCurrFOBside (_FOBname)
+	local _bOFOBside = "ERROR"
+	for _k, _b in pairs(baseOwnership.FOBs.red) do
+	  if _b == _FOBname then
+		_bOFOBside = "red"
+		break
+	  end
+	end
+
+	if _bOFOBside == "ERROR" then
+		for _k, _b in pairs(baseOwnership.FOBs.blue) do
+		  if _b == _FOBname then
+			_bOFOBside = "blue"
+			break
+		  end
+		end
+	end
+	
+	if _bOFOBside == "ERROR" then
+		for _k, _b in pairs(baseOwnership.FOBs.neutral) do
+		  if _b == _FOBname then
+			_bOFOBside = "neutral"
+			break
+		  end
+		end
+	end
+	
+	if _bOFOBside == "ERROR" then 
+		log=error("$1 FOB not found in 'baseOwnership.FOBs' sides. Reporting as neutral to allow contested check.",_FOBname)
+		_bOFOBside = "neutral"
+	end
+	return _bOFOBside
+end	
+
 return M

@@ -39,6 +39,22 @@ ctld.getNextGroupId = function()
     return ctld.nextGroupId
 end
 
+--check if neutralCountry set correctly in Mission Editor
+function ctld.checkNeutralCountry ()
+	local _neutralCoalitionCountries = env.mission.coalition.neutrals.country
+	local _neutralCountrySetCorrectly = false
+	for _k, _country in ipairs(_neutralCoalitionCountries) do
+		local _countryName = _country.name
+		if _countryName == ctld.neutralCountry then
+			_neutralCountrySetCorrectly = true
+			return (env.info("CTLD_config.lua: " .. _countryName .. " assigned as neutral country correctly"))
+		end
+	end
+	if not _neutralCountrySetCorrectly then
+		retrun (env.error("CTLD_config.lua: " .. ctld.neutralCountry .. " not assigned to neutral coalition in Mission Editor"))
+	end
+end
+
 -- ***************************************************************
 -- **************** Mission Editor Functions *********************
 -- ***************************************************************
@@ -956,41 +972,32 @@ function ctld.spawnFOBCrateStatic(_country, _point, _name)
 end
 
 function ctld.spawnFOB(_country, _point, _name, _coalition)
-
+	
     local _logiCentre = {
         ["category"] = "Fortifications",
-        ["type"] = "outpost",
+        --["type"] = "outpost",
+		["type"] = ctld.logisticCentreL3,
         --  ["unitId"] = _unitId,
         ["y"] = _point.z,
         ["x"] = _point.x,
         ["name"] = _name,
         ["canCargo"] = false,
         ["heading"] = 0,
+		--["RSRside"] = _coalition --mr: is it possible to assign are own tables within an DCS object's table?
     }
-
-    _logiCentre["country"] = _country
+    _logiCentre["country"] = ctld.neutralCountry --mr: need to ensure country is part of neutral coalition e.g. Greece = neutral static object
+	--_logiCentre["country"] = _country
     mist.dynAddStatic(_logiCentre)
     local _spawnedCrate = StaticObject.getByName(_logiCentre["name"])
     --local _spawnedCrate = coalition.addStaticObject(_country, _crate)
 	
---[[
-    local _id = ctld.getNextUnitId()
-    local _tower = {
-        ["type"] = "house2arm",
-        --   ["unitId"] = _id,
-        ["rate"] = 100,
-        ["y"] = _point.z + -36.57142857,
-        ["x"] = _point.x + 14.85714286,
-        ["name"] = "FOB Watchtower #" .. _id,
-        ["category"] = "Fortifications",
-        ["canCargo"] = false,
-        ["heading"] = 0,
-    }
-    --coalition.addStaticObject(_country, _tower)
-    _tower["country"] = _country
-
-    mist.dynAddStatic(_tower)
---]]
+	--[[
+		mist.dynAddStatic => addStaticObject
+		https://wiki.hoggitworld.com/view/DCS_func_addStaticObject
+		Static Objects name cannot be shared with an existing object, if it is the existing object will be destroyed on the spawning of the new object. - If unitId is not specified or matches an existing object, a new Id will be generated. - Coalition of the object is defined based on the country the object is spawning to.
+		
+		["rate"] = number value for the "score" of the object when it is killed --mr: use to allow assigning points for logistic centre kills
+	--]]
 
     trigger.action.markToCoalition(UTILS.GetMarkID(), _name, _point, _coalition, true)
 
@@ -2528,9 +2535,10 @@ function ctld.unpackFOBCrates(_crates, _heli)
         timer.scheduleFunction(function(_args)
 
             local _unitId = ctld.getNextUnitId()
-            local _name = "Deployed FOB #" .. _unitId --mr: add side to FOB name to allow static object to be neutral but be able to interogate name for coalition
+			--mr: add side to logistics centre name to allow static object to be neutral but be able to interogate name for coalition
+            local _name = "Deployed FOB #" .. _unitId --.. " " .. _args[3]
 
-            local _fob = ctld.spawnFOB(_args[2], _args[1], _name, _args[3]) --country, point, name, coalition
+            local _fob = ctld.spawnFOB(_args[2], _args[1], _name, _args[3]) --country (determines coaltion), point, name, coalition (only for construction message)
 
             --make it able to deploy crates
             table.insert(ctld.logisticUnits, _fob:getName())
@@ -2550,7 +2558,7 @@ function ctld.unpackFOBCrates(_crates, _heli)
             else
                 trigger.action.outTextForCoalition(_args[3], "Finished building FOB! Crates can now be picked up.", 10)
             end
-        end, { _centroid, _heli:getCountry(), _heli:getCoalition() }, timer.getTime() + ctld.buildTimeFOB)
+        end, { _centroid, _heli:getCountry(), _heli:getCoalition() }, timer.getTime() + ctld.buildTimeFOB) --_args[2], _args[1], _args[3]
 
         local _txt = string.format("%s started building FOB using %d FOB crates, it will be finished in %d seconds.", ctld.getPlayerNameOrType(_heli), _totalCrates, ctld.buildTimeFOB)
 
@@ -3914,8 +3922,8 @@ function ctld.inWaypointZone(_point, _coalition)
     return { inZone = false }
 end
 
--- are we near friendly logistics zone
-function ctld.inLogisticsZone(_heli)
+-- are we near friendly logistics zone --mr: this does not check whether player is in base zone, only crate deploy zone
+function ctld.inLogisticsZone(_heli) 
 
     if ctld.inAir(_heli) then
         return false
@@ -3927,7 +3935,7 @@ function ctld.inLogisticsZone(_heli)
 
         local _logistic = StaticObject.getByName(_name)
 
-        if _logistic ~= nil and _logistic:getCoalition() == _heli:getCoalition() then
+        if _logistic ~= nil and _logistic:getCoalition() == _heli:getCoalition() then --mr: need to remove dependency on static object side to allow neutral CCs
 
             --get distance
             local _dist = ctld.getDistance(_heliPoint, _logistic:getPoint())
@@ -4291,7 +4299,7 @@ function ctld.addCrateMenu(_rootPath, _crateTypeDescription, _unit, _groupId, _s
                         if _requiresMultipleCrates then
                             _crateRadioMsg = _crateRadioMsg .. _crate.cratesRequired .. "C"
                             if _hasMultipleUnits then
-                                _crateRadioMsg = _crateRadioMsg .. ";" .. _crate.unitQuantity .. "Q"
+                                _crateRadioMsg = _crateRadioMsg .. "," .. _crate.unitQuantity .. "Q"
                             end
                         else
                             if _hasMultipleUnits then
@@ -4300,10 +4308,10 @@ function ctld.addCrateMenu(_rootPath, _crateTypeDescription, _unit, _groupId, _s
                         end
                         _crateRadioMsg = _crateRadioMsg .. "] "
                     else
-						_crateRadioMsg = _crateRadioMsg .. "[1C;1Q] "
+						_crateRadioMsg = _crateRadioMsg .. "[1C,1Q] "
 					end
 					
-					_crateRadioMsg = _crateRadioMsg .. _crate.desc --add unit description to end of crate and quantity prefix e.g. "[1C;1Q] Avenger"
+					_crateRadioMsg = _crateRadioMsg .. _crate.desc --add unit description to end of crate and quantity prefix e.g. "[1C,1Q] Avenger"
 					
                     missionCommands.addCommandForGroup(_groupId, _crateRadioMsg, _cratePath, ctld.spawnCrate, { _unit:getName(), _crate.weight * _weightMultiplier, _crate.internal })
                 end
@@ -4911,6 +4919,7 @@ function ctld.findNearestVisibleEnemy(_jtacUnit, _targetType, _distance)
 			--DCS func getPlayerName: AI units don't have names BUT "Returns a string value of the name of the player if the unit is currently controlled by a player. If a unit is controlled by AI the function returns nil."
 			-- Group.Category = {AIRPLANE = 0, HELICOPTER = 1, GROUND = 2, SHIP = 3, TRAIN = 4}
 			-- Unit.Category = {AIRPLANE,HELICOPTER,GROUND_UNIT,SHIP,STRUCTURE} --mr: player aircraft and ground units all = 1 = AIRPLANE!
+			-- KNOWN BUG: Unit.getPlayerName() doesnt work on client controlled CA units.  Therefore _playerControlledUnit check probably unnecessary.
 			if _unit:getPlayerName() ~= nil then
 				if (_enemyUnit:getGroup():getCategory()) == 2 then
 					_playerControlledUnit = true

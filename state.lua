@@ -143,7 +143,7 @@ function M.copyFromCtld()
 end
 
 function M.updateBaseOwnership()
-    M.currentState.baseOwnership = queryDcs.getAllBaseOwnership(M.firstTimeSetup) --mr: intercept first time campaign setup here to read FOB ownership from Trigger Zone Name
+    M.currentState.baseOwnership = queryDcs.getAllBaseOwnership(M.firstTimeSetup) --mr: intercept first time campaign setup here to read FOB ownership from Trigger Zone color
 end
 
 function M.getOwner(baseName)

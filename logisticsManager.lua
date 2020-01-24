@@ -10,9 +10,11 @@ function M.spawnLogisticsBuildingForBase(baseName, sideName)
     for _, logisticsZoneName in ipairs(ctld.logisticUnits) do
         local zoneBaseName = utils.getBaseNameFromZoneName(logisticsZoneName, "logistics")
         if utils.matchesBaseName(baseName, zoneBaseName) then
-            local country = sideName == "red" and country.id.RUSSIA or country.id.USA
+            local country = sideName == "red" and country.id.RUSSIA or country.id.USA --should this be country.id.AGGRESSORS (USAF Aggressors)?
             local point = ZONE:New(logisticsZoneName):GetPointVec2()
-            ctld.spawnFOB(country, point, logisticsZoneName, utils.getSide(sideName))
+			--mr: add side to logistics centre name to allow static object to be neutral but be able to interogate name for coalition
+            ctld.spawnFOB(country, point, (logisticsZoneName .. " " .. string.upper(sideName)), utils.getSide(sideName)) --(_country, _point, _name, _coalition)
+			-- ctld.spawnFOB(country, point, logisticsZoneName, utils.getSide(sideName))
             log:info("Spawned $1 $2 FOB", sideName, logisticsZoneName)
             return
         end

@@ -61,12 +61,13 @@ function M.getAllBaseOwnership(_firstTimeSetup)
 		
 		--mr: assign by Trigger Zone color, i.e.  RGB values 0 to 1: [1,0,0] = red, [0,1,0] = green (netural), [0,0,1] = blue
 		for _k, _anyZone in ipairs(env.mission.triggers.zones) do
+			local _initZoneNameContains = "FOBcaptureRadius" --mr: combined use of "FOBcaptureRadius" Trigger Zones for possible unit counting using RSR radiuses?
 			local _zoneName = _anyZone.name
-			if string.match(_zoneName, "FOBinit") then --mr: add "FOB" to "init" in zone name just in case "init" string elsewhere in MIZ file
+			if string.match(_zoneName, _initZoneNameContains) then --mr: add "FOB" to "init" in zone name just in case "init" string elsewhere in MIZ file
 			
-				local _initZoneName = string.match(_zoneName,("^%w+")) --"MM75 FOBinit" = "MM75"
+				local _initZoneName = string.match(_zoneName,("^%w+")) --"MM75 FOBcaptureRadius" = "MM75"
 				local _zoneColor = _anyZone.color
-				local _FOBside = "none"
+				local _FOBside = "ERROR"
 				local _whiteInitZoneCheck = 0
 				if _zoneColor[1] == 1 then 
 					_FOBside = "red" 
@@ -79,12 +80,11 @@ function M.getAllBaseOwnership(_firstTimeSetup)
 					_whiteInitZoneCheck = _whiteInitZoneCheck + 1
 				end
 				
-				if _FOBside == "none" then
+				if _FOBside == "ERROR" then
 					if _whiteInitZoneCheck == 3 then
-						log:error("$1 FOBinit Trigger Zone color not changed from white. Setting as neutral",_initZoneName)
-					else
-					
-						log:error("$1 FOBinit Trigger Zone color not set to red, blue or green. Setting as neutral",_initZoneName)
+						log:error("$1 $2 Trigger Zone color not changed from white. Setting as neutral",_initZoneName, _initZoneNameContains)
+					elseif _whiteInitZoneCheck > 1 then
+						log:error("$1 $2 Trigger Zone color not correctly set to only red, blue or green. Setting as neutral",_initZoneName, _initZoneNameContains)
 					end
 					_FOBside = "neutral"
 				end
@@ -93,9 +93,12 @@ function M.getAllBaseOwnership(_firstTimeSetup)
 		end
 	end
 	
+	--mr: consider adding ~10min LOCKDOWN to prevent fast capture-recapture problems = base added to LOCKDOWN global array upon capture
+	 --mr: queryDCS.lua should be modified to only set baseOwnership at start of campaign or mission.  CHANGE of ownernship should always flow from baseCapturedHandler.lua
     for _, base in ipairs(AIRBASE.GetAllAirbases()) do
         local baseName = base:GetName()
         local sideName = utils.getSideName(base:GetCoalition())
+		local _isBaseContested = false
         if sideName == nil then
             log:info("Got no coalition for $1; setting to neutral", baseName)
             sideName = "neutral"
@@ -105,28 +108,20 @@ function M.getAllBaseOwnership(_firstTimeSetup)
 
 		--mr: intercept to respect previous FOB ownership = prevents slot blocker = allow spawning even when no friendly units in 2km of FARP helipad
         elseif base:GetAirbaseCategory() == Airbase.Category.HELIPAD and not _firstTimeSetup then
-			
-			--mr: TODO CHECK sidename as set by DCS against current baseOwnership.  If mismatch, then detect current CC owner.
-			--[[
-			local _currBaseOwner = {}
-			for _k, _FOBzoneName in ipairs(baseOwnership.FOBs) do
+		
+			---[[
+			--mr: check sideName as determined by DCS, against current baseOwnership setting determined by RSR.  If mismatch, then detect current CC owner to determine true owner.
+			local _currFOBside = M.getCurrFOBside(baseName)
+			_isBaseContested = false
+			if _currFOBside ~= sideName then
+				if _currFOBside == "neutral" then
+					table.insert(baseOwnership.FOBs[sideName], baseName)
+				else
+					--mr: interograte CC static object to determine true RSR side
+					--mr: side specific notification that base being attacked 
+					-- trigger.action.outTextForCoalition(_args[3], "Finished building FOB! Crates and Troops can now be picked up.", 10)
+					-- trigger.action.outText("The server will restart in " .. minutesUntilRestart .. " minute" .. plural, 15)
 				
-					local _initZoneName = string.match(baseName)
-					local _zoneColor = _anyZone.color
-					_FOBside = "none"
-					if _zoneColor[1] == 255 then 
-						_FOBside = "red" 
-					elseif _zoneColor[3] == 255 then 
-						_FOBside = "blue"
-					elseif _zoneColor[2] == 255 then --green
-						_FOBside = "neutral"
-					end
-					
-					if _FOBside == "none" then
-						--log:error("No side specified by FOBinit trigger zone colour $1", inspect(_initZoneName))
-					end
-					
-					table.insert(baseOwnership.FOBs[_FOBside], _initZoneName)
 				end
 			end
 			--]]
