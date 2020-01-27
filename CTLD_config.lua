@@ -157,6 +157,9 @@ ctld.JTAC_laserCode_BLUE = 1687
 
 -- Flag Number - Optional last field. If set the current number of groups remaining can be obtained from the flag value
 
+
+ctld.RSRbaseCaptureZones = ctldUtils.getRSRbaseCaptureZones(env.mission)
+
 --pickupZones = { "Zone name or Ship Unit Name", "smoke color", "limit (-1 unlimited)", "ACTIVE (yes/no)", "side (0 = Both sides / 1 = Red / 2 = Blue )", flag number (optional) }
 ctld.pickupZones = ctldUtils.getPickupZones(env.mission)
 
@@ -220,7 +223,7 @@ ctld.extractableGroups = {
 -- Use any of the predefined names or set your own ones
 -- When a logistic unit is destroyed, you will no longer be able to spawn crates
 
-ctld.logisticUnits = ctldUtils.getLogisticUnits(env.mission)
+ctld.logisticCentreObjects = ctldUtils.getLogisticCentreObjects(env.mission)
 
 -- ************** UNITS ABLE TO TRANSPORT VEHICLES ******************
 -- Add the model name of the unit that you want to be able to transport and deploy vehicles
@@ -308,7 +311,7 @@ ctld.logisticCentreL1 = "FARP Tent"
 ctld.logisticCentreL2 = "outpost"
 ctld.logisticCentreL3 = ".Command Center"
 
---mr: need to ensure country is part of neutral coalition e.g. Greece, as neutral static objects will not block DCS rearm/refuel
+--mr: need to ensure country is part of neutral coalition e.g. Greece, as neutral static objects will not block DCS controlled rearm/refuel
 ctld.neutralCountry = "Greece"
 
 -- ************** SPAWNABLE CRATES ******************

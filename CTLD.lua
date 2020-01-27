@@ -47,11 +47,11 @@ function ctld.checkNeutralCountry ()
 		local _countryName = _country.name
 		if _countryName == ctld.neutralCountry then
 			_neutralCountrySetCorrectly = true
-			return (env.info("CTLD_config.lua: " .. _countryName .. " assigned as neutral country correctly"))
+			return (env.info("RSR MIZ SETUP: CTLD_config.lua: " .. _countryName .. " assigned as neutral country correctly"))
 		end
 	end
 	if not _neutralCountrySetCorrectly then
-		retrun (env.error("CTLD_config.lua: " .. ctld.neutralCountry .. " not assigned to neutral coalition in Mission Editor"))
+		retrun (env.error("RSR MIZ SETUP: CTLD_config.lua: " .. ctld.neutralCountry .. " not assigned to neutral coalition in Mission Editor"))
 	end
 end
 
@@ -982,14 +982,16 @@ function ctld.spawnFOB(_country, _point, _name, _coalition)
         ["x"] = _point.x,
         ["name"] = _name,
         ["canCargo"] = false,
-        ["heading"] = 0,
-		--["RSRside"] = _coalition --mr: is it possible to assign are own tables within an DCS object's table?
+        ["heading"] = 0
+		
+		--mr: use team so as not to be confused with other DCS settings. is it possible to assign are own tables within an DCS object's table?
+		--mr: even if this is possible, would need to reassign this after server restart as custom entry for respawned static objects?
+		--["RSRteam"] = utils.getSideName(_coalition) 
     }
     _logiCentre["country"] = ctld.neutralCountry --mr: need to ensure country is part of neutral coalition e.g. Greece = neutral static object
 	--_logiCentre["country"] = _country
     mist.dynAddStatic(_logiCentre)
-    local _spawnedCrate = StaticObject.getByName(_logiCentre["name"])
-    --local _spawnedCrate = coalition.addStaticObject(_country, _crate)
+    local _spawnedLogiCentre = StaticObject.getByName(_logiCentre["name"])
 	
 	--[[
 		mist.dynAddStatic => addStaticObject
@@ -1001,7 +1003,7 @@ function ctld.spawnFOB(_country, _point, _name, _coalition)
 
     trigger.action.markToCoalition(UTILS.GetMarkID(), _name, _point, _coalition, true)
 
-    return _spawnedCrate
+    return _spawnedLogiCentre
 end
 
 function ctld.spawnCrate(_arguments)
@@ -1485,7 +1487,7 @@ function ctld.loadUnloadFOBCrate(_args)
 
     local _side = _heli:getCoalition()
 
-    local _inZone = ctld.inLogisticsZone(_heli)
+    local _inZone = ctld.inLogisticsZone(_heli)  --mr: edit to allow planes to load logistics centre crate from ramp i.e. outside of logistics centre zone
     local _crateOnboard = ctld.inTransitFOBCrates[_heli:getName()] ~= nil
 
     if _inZone == false and _crateOnboard == true then
@@ -1513,22 +1515,22 @@ function ctld.loadUnloadFOBCrate(_args)
             ctld.droppedFOBCratesBLUE[_name] = _name
         end
 
-        trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " delivered a FOB Crate", 10)
+        trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " delivered a Logistics Centre Crate", 10)
 
-        ctld.displayMessageToGroup(_heli, "Delivered FOB Crate 60m at 6'oclock to you", 10)
+        ctld.displayMessageToGroup(_heli, "Delivered Logistics Centre 60m at 6'oclock to you", 10)
 
     elseif _inZone == true and _crateOnboard == true then
 
-        ctld.displayMessageToGroup(_heli, "FOB Crate dropped back to base", 10)
+        ctld.displayMessageToGroup(_heli, "Logistics Centre dropped back to base", 10)
 
         ctld.inTransitFOBCrates[_heli:getName()] = nil
 
     elseif _inZone == true and _crateOnboard == false then
-        ctld.displayMessageToGroup(_heli, "FOB Crate Loaded", 10)
+        ctld.displayMessageToGroup(_heli, "Logistics Centre Crate Loaded", 10)
 
         ctld.inTransitFOBCrates[_heli:getName()] = true
 
-        trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " loaded a FOB Crate ready for delivery!", 10)
+        trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " loaded a Logistics Centre Crate ready for delivery!", 10)
 
     else
 
@@ -1541,7 +1543,7 @@ function ctld.loadUnloadFOBCrate(_args)
             ctld.displayMessageToGroup(_heli, "FOB Crate Loaded", 10)
             ctld.inTransitFOBCrates[_heli:getName()] = true
 
-            trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " loaded a FOB Crate ready for delivery!", 10)
+            trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " loaded a Logistics Centre Crate ready for delivery!", 10)
 
             if _side == 1 then
                 ctld.droppedFOBCratesRED[_nearestCrate.crateUnit:getName()] = nil
@@ -1553,7 +1555,7 @@ function ctld.loadUnloadFOBCrate(_args)
             _nearestCrate.crateUnit:destroy()
 
         else
-            ctld.displayMessageToGroup(_heli, "There are no friendly logistic units nearby to load a FOB crate from!", 10)
+            ctld.displayMessageToGroup(_heli, "There are no friendly logistic units nearby to load a Logistics Centre crate from!", 10)
         end
     end
 end
@@ -2531,21 +2533,46 @@ function ctld.unpackFOBCrates(_crates, _heli)
         end
 
         local _centroid = ctld.getCentroid(_points)
-
+		
+		local _baseName = "AA11"
+		local _baseORfarp = "FARP"
+		local _base = ctld.inBaseZone(_heli) --{_inBaseZone,_baseName,_baseType}
+		if _base[1] then
+			_baseName = _base[2]
+			_baseORfarp = _base[3]
+		end
+		
         timer.scheduleFunction(function(_args)
-
+			local _name = ""
+			
             local _unitId = ctld.getNextUnitId()
-			--mr: add side to logistics centre name to allow static object to be neutral but be able to interogate name for coalition
-            local _name = "Deployed FOB #" .. _unitId --.. " " .. _args[3]
+			local _side = utils.getSideName(_args[3]) 
+			if _args[4] ~= "FARP" then
+			
+				--[[
+					Add side to logistics centre name to allow static object to be neutral but be able to interogate name for coalition
+					As side in name of logistics centre utilised in baseOwnershipCheck.lua to recheck true RSR base owner, very important that side set in name
+					
+					unitID required?  If not set, new static object of same name will overwrite (= delete? = advantageous for repair) old object
+					> https://wiki.hoggitworld.com/view/DCS_func_addStaticObject
+					>> Static Objects name cannot be shared with an existing object, if it is the existing object will be destroyed on the spawning of the new object.
+					>> If unitId is not specified or matches an existing object, a new Id will be generated.
+					>> Coalition of the object is defined based on the country the object is spawning to.
+				--]]
+				 
+				_name = _name .. _args[4] .. "Logistics Centre #" .. _unitId .. _side
+			else
+				_name = _name .. _side .. _args[5] .. " #" .. _unitId --mr: feature: use deploying playerName to name FARP?
+			end
 
-            local _fob = ctld.spawnFOB(_args[2], _args[1], _name, _args[3]) --country (determines coaltion), point, name, coalition (only for construction message)
+            local _fob = ctld.spawnFOB(_args[2], _args[1], _name, _args[3]) --country, point, name, coalition (only for construction message)
 
             --make it able to deploy crates
-            table.insert(ctld.logisticUnits, _fob:getName())
+            table.insert(ctld.logisticCentreObjects, _fob:getName())
 
             ctld.beaconCount = ctld.beaconCount + 1
 
-            local _radioBeaconName = "FOB Beacon #" .. ctld.beaconCount
+            local _radioBeaconName = "Logistics Centre Beacon #" .. ctld.beaconCount
 
             local _radioBeaconDetails = ctld.createRadioBeacon(_args[1], _args[3], _args[2], _radioBeaconName, nil, true)
 
@@ -2554,13 +2581,20 @@ function ctld.unpackFOBCrates(_crates, _heli)
             if ctld.troopPickupAtFOB == true then
                 table.insert(ctld.builtFOBS, _fob:getName())
 
-                trigger.action.outTextForCoalition(_args[3], "Finished building FOB! Crates and Troops can now be picked up.", 10)
+                trigger.action.outTextForCoalition(_args[3], "Finished building Logistics Centre! Crates and Troops can now be picked up.", 10)
             else
-                trigger.action.outTextForCoalition(_args[3], "Finished building FOB! Crates can now be picked up.", 10)
+                trigger.action.outTextForCoalition(_args[3], "Finished building Logistics Centre! Crates can now be picked up.", 10)
             end
-        end, { _centroid, _heli:getCountry(), _heli:getCoalition() }, timer.getTime() + ctld.buildTimeFOB) --_args[2], _args[1], _args[3]
+        end, 
+		{ 
+			_centroid, --_args[1] = ignore for base (airbase/FOB) repair
+			_heli:getCountry(), --_args[2] = country of player and FARP, but base (airbase/FOB) logistics centre should always by neutral
+			_heli:getCoalition(), --_args[3] = coalition for construction message locality
+			_baseName, -- _args[4] = name of base (airbase/FOB) if player within RSR radius, otherwise create FARP and base name ignored
+			_baseORfarp, -- _args[5] = type of base(Airbase/FOB) type if player within RSR radius, otherwise create FARP and base name ignored
+		}, timer.getTime() + ctld.buildTimeFOB)
 
-        local _txt = string.format("%s started building FOB using %d FOB crates, it will be finished in %d seconds.", ctld.getPlayerNameOrType(_heli), _totalCrates, ctld.buildTimeFOB)
+        local _txt = string.format("%s started building Logistics Centre using %d Logistics Centre crates, it will be finished in %d seconds.", ctld.getPlayerNameOrType(_heli), _totalCrates, ctld.buildTimeFOB)
 
         ctld.processCallback({ unit = _heli, position = _centroid, action = "fob" })
 
@@ -2569,7 +2603,7 @@ function ctld.unpackFOBCrates(_crates, _heli)
 
         trigger.action.outTextForCoalition(_heli:getCoalition(), _txt, 10)
     else
-        local _txt = string.format("Cannot build FOB!\n\nIt requires %d Large FOB crates ( 3 small FOB crates equal 1 large FOB Crate) and there are the equivalent of %d large FOB crates nearby\n\nOr the crates are not within 750m of each other", ctld.cratesRequiredForFOB, _totalCrates)
+        local _txt = string.format("Cannot build Logistics Centre!\n\nIt requires %d Large Logistics Centre crates ( 3 small Logistics Centre crates equal 1 large Logistics Centre Crate) and there are the equivalent of %d large Logistics Centre crates nearby\n\nOr the crates are not within 750m of each other", ctld.cratesRequiredForFOB, _totalCrates)
         ctld.displayMessageToGroup(_heli, _txt, 20)
     end
 end
@@ -3797,6 +3831,62 @@ function ctld.orderGroupToMoveToPoint(_leader, _destination)
 
 end
 
+--mr: is player within RSRbaseCaptureZone Trigger Zone and thus in range of airbase centre or FARP helipad
+--mr: consider migrating function to utils.lua for use elsewhere
+function ctld.inBaseZone(_aircraft) 
+	local _inBaseZone = false
+    if ctld.inAir(_aircraft) then
+		ctld.displayMessageToGroup(_aircraft,"You must land before commencing logistics operations", 10)
+        return false
+    end
+
+    local _aircraftPoint = _aircraft:getPoint()
+	local _baseName = "AA11"
+	local _baseType = "BASE"
+    for _k, _base in pairs(ctld.RSRbaseCaptureZones) do
+		
+		local _baseFound = false
+		local _triggerZone = trigger.misc.getZone(_base[1])
+		if _triggerZone ~= nil then --is this necessary given that ctld.RSRbaseCaptureZones list is constructed during mission start and never changed?
+			
+			local _isAirBase = false
+			local _isFOB = false
+			local _RSRradius = 10000 --10km
+			
+			-- if _base:GetAirbaseCategory() == Airbase.Category.AIRDROME then
+			local _baseType = string.match(_triggerZone,("%w+$")) --"MM75 RSRbaseCaptureZone FOB" = "FOB"
+			if _baseType == "Airbase" then
+				_isAirBase = true
+				--_baseType = "Airbase"
+				_RSRradius = rsrConfig.baseDefenceActivationRadiusAirbase
+			-- elseif _base:GetAirbaseCategory() == Airbase.Category.HELIPAD then
+			elseif _baseType == "FOB" then
+				_isFOB = true
+				--_baseType = "FOB"
+				_RSRradius = rsrConfig.baseDefenceActivationRadiusFOB
+			end
+			
+			if  _isAirBase or _isFOB then
+				_baseName = string.match(_triggerZone,("^%w+")) --"MM75 RSRbaseCaptureZone FOB" = "MM75"
+			else
+				log:error("RSRbaseCaptureZone Trigger Zone $1 is not associated with an airbase or FOB", _triggerZone)	
+			end
+			
+            local _TZdist = ctld.getDistance(_aircraftPoint, _triggerZone.point)
+            if _TZdist <= _triggerZone.radius then --distance to center of trigger zone
+				_baseFound = true
+				if _TZdist <= _RSRradius then --distance to center of base --mr: assumes RSRbaseCaptureZone Trigger Zone properly placed near centre of airbase or FOB
+					_inBaseZone = true
+				else
+					ctld.displayMessageToGroup(_aircraft,("You are not close enough to $1",_baseName), 10)
+				end
+            end
+        end
+		if _baseFound then break end
+    end
+    return {_inBaseZone,_baseName,_baseType}
+end
+
 -- are we in pickup zone
 function ctld.inPickupZone(_heli)
 
@@ -3931,7 +4021,7 @@ function ctld.inLogisticsZone(_heli)
 
     local _heliPoint = _heli:getPoint()
 
-    for _, _name in pairs(ctld.logisticUnits) do
+    for _, _name in pairs(ctld.logisticCentreObjects) do
 
         local _logistic = StaticObject.getByName(_name)
 
@@ -3961,7 +4051,7 @@ function ctld.farEnoughFromLogisticZone(_heli)
 
     local _farEnough = true
 
-    for _, _name in pairs(ctld.logisticUnits) do
+    for _, _name in pairs(ctld.logisticCentreObjects) do
 
         local _logistic = StaticObject.getByName(_name)
 
@@ -4667,9 +4757,9 @@ function ctld.JTACAutoLase(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
 					_mapGrid = mist.tostringMGRS(coord.LLtoMGRS(coord.LOtoLL(_enemyUnit:getPosition().p)), 1)
 				end
 			--]]
-			ctld.notifyCoalition("ALERT - ENEMY TARGET LOST: " .. _tempUnitInfo.unitType .. ", Grid: " .. _mapGrid .. ", JTAC: " .. _jtacOwner .. ". Rescanning area.", 10, _jtacUnit:getCoalition())
+			ctld.notifyCoalition("JTAC - ENEMY TARGET LOST: " .. _tempUnitInfo.unitType .. ", Grid: " .. _mapGrid .. ", JTAC: " .. _jtacOwner .. ". Rescanning area.", 10, _jtacUnit:getCoalition())
         else
-			ctld.notifyCoalition("ALERT - ENEMY TARGET DESTROYED: " .. _tempUnitInfo.unitType .. ", Grid: " .. _mapGrid .. ", JTAC: " .. _jtacOwner .. ". Rescanning area.", 10, _jtacUnit:getCoalition())
+			ctld.notifyCoalition("JTAC - ENEMY TARGET DESTROYED: " .. _tempUnitInfo.unitType .. ", Grid: " .. _mapGrid .. ", JTAC: " .. _jtacOwner .. ". Rescanning area.", 10, _jtacUnit:getCoalition())
         end
 
         --remove from smoke list
@@ -4702,7 +4792,7 @@ function ctld.JTACAutoLase(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
 				end
 			--]]
 			
-			ctld.notifyCoalition("ALERT - NEW ENEMY TARGET: " .. _targetName .. ", Grid: " .. _mapGrid .. ", JTAC: " .. _jtacOwner .. ", Laser Code: " .. _laserCode, 10, _jtacUnit:getCoalition())
+			ctld.notifyCoalition("JTAC - NEW ENEMY TARGET: " .. _targetName .. ", Grid: " .. _mapGrid .. ", JTAC: " .. _jtacOwner .. ", Laser Code: " .. _laserCode, 10, _jtacUnit:getCoalition())
 
             -- create smoke
             if _smoke == true then

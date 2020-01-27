@@ -2,7 +2,7 @@ require("mist_4_3_74")
 require("CTLD")
 local inspect = require("inspect")
 local JSON = require("JSON")
-local queryDcs = require("queryDcs")
+local baseOwnershipCheck = require("baseOwnershipCheck")
 local utils = require("utils")
 
 local log = mist.Logger:new("State", "info")
@@ -142,8 +142,17 @@ function M.copyFromCtld()
     M.currentState.ctld.nextUnitId = ctld.nextUnitId
 end
 
+--[[
+	RECONFIGURE CAPTURE FLOW SCRIPTS
+	state.lua: initiates baseOwnersip query only for campaign start or persistance
+	baseCapturedHandler.lua: DCS EH = RSR radius checks = initate baseOwnershipCheck.lua
+	baseOwnershipCheck.lua: baseOwnersip campaign setup and side owner in relation to command centre owernship or presence + capture messages
+	feature? consider adding ~10min LOCKDOWN to prevent fast capture-recapture problems = base added to LOCKDOWN global array upon capture
+--]]
+
 function M.updateBaseOwnership()
-    M.currentState.baseOwnership = queryDcs.getAllBaseOwnership(M.firstTimeSetup) --mr: intercept first time campaign setup here to read FOB ownership from Trigger Zone color
+	--mr: intercept first time setup (campaign start) here to read base ownership from Trigger Zone color
+    M.currentState.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(M.firstTimeSetup)
 end
 
 function M.getOwner(baseName)
@@ -159,7 +168,7 @@ function M.getOwner(baseName)
     return nil
 end
 
-local function setOwner(baseOwnership, baseName, sideName)
+local function setOwner(baseOwnership, baseName, sideName)  --mr: called by baseCapturedHandler.lua  redirect baseCapturedHandler.lua to baseOwnershipCheck.lua and make this obsolete
     local found = false
     local changed = false
     for _sideName, baseList in pairs(baseOwnership) do
@@ -182,21 +191,21 @@ local function setOwner(baseOwnership, baseName, sideName)
     end
 end
 
-function M.setBaseOwner(baseName, sideName)
+function M.setBaseOwner(baseName, sideName) --mr: called by baseCapturedHandler.lua  redirect baseCapturedHandler.lua to baseOwnershipCheck.lua and make this obsolete
     local currentOwner = M.getOwner(baseName)
     if currentOwner == sideName then
         return false
     end
-    setOwner(M.currentState.baseOwnership.airbases, baseName, sideName)
+    setOwner(M.currentState.baseOwnership.Airbases, baseName, sideName)
     setOwner(M.currentState.baseOwnership.FOBs, baseName, sideName)
     log:info("Changed ownership of $1 from $2 to $3", baseName, currentOwner, sideName)
     return true
 end
 
 function M.getWinner()
-    local redCount = #M.currentState.baseOwnership.airbases.red
-    local blueCount = #M.currentState.baseOwnership.airbases.blue
-    local neutralCount = #M.currentState.baseOwnership.airbases.neutral
+    local redCount = #M.currentState.baseOwnership.Airbases.red
+    local blueCount = #M.currentState.baseOwnership.Airbases.blue
+    local neutralCount = #M.currentState.baseOwnership.Airbases.neutral
     if neutralCount > 0 or (redCount + blueCount + neutralCount == 0) then
         return nil
     end
@@ -226,10 +235,10 @@ function M.setCurrentStateFromFile(stateFileName)
     end
 
     if not canUseStateFromFile then
-        log:info("Setting up from defaults in code, base ownership from mission and FOB ownership from FOBinit Trigger Zone color")
+        log:info("Setting up from defaults in code, and base(airbase/FOB) ownership from 'RSRbaseCaptureZone Trigger' Zone color")
         M.firstTimeSetup = true
         M.currentState = mist.utils.deepCopy(M.defaultState)
-		M.updateBaseOwnership() --mr: intercept first time campaign setup here to read FOB ownership from Trigger Zone Name
+		M.updateBaseOwnership()
     end
     log:info("currentState = $1", inspect(M.currentState, { newline = " ", indent = "" }))
     return true

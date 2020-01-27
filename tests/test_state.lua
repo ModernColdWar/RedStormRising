@@ -1,6 +1,6 @@
 local lu = require("tests.luaunit")
 require("tests.dcs_stub")
-local queryDcs = require("queryDcs")
+local baseOwnershipCheck = require("baseOwnershipCheck")
 local state = require("state")
 
 TestState = {}
@@ -176,7 +176,7 @@ end
 function TestState:testSetCurrentStateFromFileWithNoFileLoadsBaseOwnershipFromDcs()
     state.setCurrentStateFromFile([[filedoesnotexist.json]])
     local expectedState = mist.utils.deepCopy(state.defaultState)
-    expectedState.baseOwnership = queryDcs.getAllBaseOwnership()
+    expectedState.baseOwnership = baseOwnershipCheck.getAllBaseOwnership()
     lu.assertEquals(state.currentState, expectedState)
     lu.assertEquals(#state.currentState.persistentGroupData, 0)
 end
@@ -193,7 +193,7 @@ function TestState:testSetCurrentStateFromFile()
 end
 
 function TestState:testWinnerNoOwnership()
-    state.currentState.baseOwnership = queryDcs.getAllBaseOwnership()
+    state.currentState.baseOwnership = baseOwnershipCheck.getAllBaseOwnership()
     lu.assertIsNil(state.getWinner())
 end
 

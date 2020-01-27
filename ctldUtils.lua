@@ -6,10 +6,21 @@ local M = {}
 
 local log = mist.Logger:new("CTLDUtils", "info")
 
-function M.getLogisticUnits(mission)
-    local zones = missionUtils.getZoneNames(mission, " logistics$")
-    log:info("Logistics zones in mission are $1", inspect(zones))
+function M.getLogisticCentreObjects(mission)
+	--mr: edit to take into account incremantel names for logistics centre location randomization
+    local zones = missionUtils.getZoneNames(mission, " RSRlogisticsZone$")
+    log:info("RSRlogisticsZone zones in mission are $1", inspect(zones))
     return zones
+end
+
+function M.getRSRbaseCaptureZones (mission)
+    local _bCzones = missionUtils.getZoneNames(mission, " RSRbaseCaptureZone")
+    log:info("RSRbaseCaptureZone zones in mission are $1", inspect(zones))
+    local RSRbaseCaptureZones = {}
+    for _k, _z in ipairs(_bCzones) do
+        table.insert(RSRbaseCaptureZones, _z)
+    end
+    return RSRbaseCaptureZones
 end
 
 function M.getPickupZones(mission)
