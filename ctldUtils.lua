@@ -7,7 +7,7 @@ local M = {}
 local log = mist.Logger:new("CTLDUtils", "info")
 
 function M.getLogisticCentreObjects(mission)
-	--mr: edit to take into account incremantel names for logistics centre location randomization
+	--mr: edit to take into account incrementel zone names for logistics centre location randomization
     local zones = missionUtils.getZoneNames(mission, " RSRlogisticsZone$")
     log:info("RSRlogisticsZone zones in mission are $1", inspect(zones))
     return zones

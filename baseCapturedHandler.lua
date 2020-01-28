@@ -29,7 +29,7 @@ function M.register()
             log:info("Ignoring capture event for $1: no change of side ($2)", baseName, sideName)
             return
         end
-        local message = baseName .. " has been captured by a " .. sideName .. " " .. event.IniTypeName
+        local message = baseName .. " has been captured by a " .. sideName .. " " .. event.IniTypeName --RSR.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(false,_heli)
         self:I(message)
         trigger.action.outText(message, 10)
         bases.configureForSide(baseName, sideName)

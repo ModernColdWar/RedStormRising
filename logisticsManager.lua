@@ -16,8 +16,8 @@ function M.spawnLogisticsBuildingForBase(baseName, sideName)
             local country = sideName == "red" and country.id.RUSSIA or country.id.USA --should this be country.id.AGGRESSORS (USAF Aggressors)?
             local point = ZONE:New(logisticsZoneName):GetPointVec2()
 			--mr: add side to logistics centre name to allow static object to be neutral but be able to interogate name for coalition
-            ctld.spawnFOB(country, point, (logisticsZoneName .. " " .. string.upper(sideName)), utils.getSide(sideName)) --(_country, _point, _name, _coalition)
-			-- ctld.spawnFOB(country, point, logisticsZoneName, utils.getSide(sideName))
+            ctld.spawnLogisticsCentre(country, point, (baseName .. " Logistics Centre " .. string.upper(sideName)), utils.getSide(sideName)) --(_country, _point, _name, _coalition)
+			-- ctld.spawnLogisticsCentre(country, point, logisticsZoneName, utils.getSide(sideName))
             log:info("Spawned $1 $2 Logistics Centre", sideName, logisticsZoneName)
             return
         end

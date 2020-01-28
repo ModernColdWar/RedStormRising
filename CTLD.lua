@@ -947,7 +947,7 @@ function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight, _side,
     return _spawnedCrate
 end
 
-function ctld.spawnFOBCrateStatic(_country, _point, _name)
+function ctld.spawnLogisticsCentreCrateStatic(_country, _point, _name)
 
     local _crate = {
         ["category"] = "Fortifications",
@@ -971,7 +971,7 @@ function ctld.spawnFOBCrateStatic(_country, _point, _name)
     return _spawnedCrate
 end
 
-function ctld.spawnFOB(_country, _point, _name, _coalition)
+function ctld.spawnLogisticsCentre(_country, _point, _name, _coalition)
 	
     local _logiCentre = {
         ["category"] = "Fortifications",
@@ -984,9 +984,11 @@ function ctld.spawnFOB(_country, _point, _name, _coalition)
         ["canCargo"] = false,
         ["heading"] = 0
 		
+		--["RSRteam"] = utils.getSideName(_coalition) 
 		--mr: use team so as not to be confused with other DCS settings. is it possible to assign are own tables within an DCS object's table?
 		--mr: even if this is possible, would need to reassign this after server restart as custom entry for respawned static objects?
-		--["RSRteam"] = utils.getSideName(_coalition) 
+		--mr: >>> All logistics centred spawned using ctld.spawnLogisticsCentre, even at mission/campaign init!  Therefore this method would be great if works.
+		
     }
     _logiCentre["country"] = ctld.neutralCountry --mr: need to ensure country is part of neutral coalition e.g. Greece = neutral static object
 	--_logiCentre["country"] = _country
@@ -995,8 +997,11 @@ function ctld.spawnFOB(_country, _point, _name, _coalition)
 	
 	--[[
 		mist.dynAddStatic => addStaticObject
-		https://wiki.hoggitworld.com/view/DCS_func_addStaticObject
-		Static Objects name cannot be shared with an existing object, if it is the existing object will be destroyed on the spawning of the new object. - If unitId is not specified or matches an existing object, a new Id will be generated. - Coalition of the object is defined based on the country the object is spawning to.
+					unitID required?  If not set, new static object of same name will overwrite (= delete? = advantageous for repair) old object
+					> https://wiki.hoggitworld.com/view/DCS_func_addStaticObject
+					>> Static Objects name cannot be shared with an existing object, if it is the existing object will be destroyed on the spawning of the new object.
+					>> If unitId is not specified or matches an existing object, a new Id will be generated.
+					>> Coalition of the object is defined based on the country the object is spawning to.
 		
 		["rate"] = number value for the "score" of the object when it is killed --mr: use to allow assigning points for logistic centre kills
 	--]]
@@ -1507,7 +1512,7 @@ function ctld.loadUnloadFOBCrate(_args)
 
         local _name = string.format("FOB Crate #%i", _unitId)
 
-        ctld.spawnFOBCrateStatic(_heli:getCountry(), { x = _point.x + _xOffset, z = _point.z + _yOffset }, _name)
+        ctld.spawnLogisticsCentreCrateStatic(_heli:getCountry(), { x = _point.x + _xOffset, z = _point.z + _yOffset }, _name)
 
         if _side == 1 then
             ctld.droppedFOBCratesRED[_name] = _name
@@ -2382,7 +2387,7 @@ function ctld.unpackCrates(_arguments)
             if _crate ~= nil and _crate.dist < 750
                     and (_crate.details.unit == "FOB" or _crate.details.unit == "FOB-SMALL") then
 
-                ctld.unpackFOBCrates(_crates, _heli)
+                ctld.unpackLogisticsCentreCrates(_crates, _heli)
 
                 return
 
@@ -2467,15 +2472,25 @@ function ctld.unpackCrates(_arguments)
 end
 
 
--- builds a fob!
-function ctld.unpackFOBCrates(_crates, _heli)
+-- builds a logistics centre!
+function ctld.unpackLogisticsCentreCrates(_crates, _heli)
 
+	--mr: what is the point of this check?  Logistics centres should spawn in logistics centre zones as part of "repair function".  
     if ctld.inLogisticsZone(_heli) == true then
 
         ctld.displayMessageToGroup(_heli, "You can't unpack that here! Take it to where it's needed!", 20)
 
         return
     end
+	
+	local _baseName = ctld.getPlayerNameOrType(_heli) --baseName = playerName for FARPs
+	local _baseORfarp = "FARP"
+	local _base = ctld.inBaseZone(_heli) --{_inBaseZone,_baseName,_baseType}
+	
+	if _base[1] then
+		_baseName = _base[2]
+		_baseORfarp = _base[3] --use to provide distinction between base repair and FARP building.  will need to augment with player 'inBaseZone' status check to help
+	end
 
     -- unpack multi crate
     local _nearbyMultiCrates = {}
@@ -2534,21 +2549,14 @@ function ctld.unpackFOBCrates(_crates, _heli)
 
         local _centroid = ctld.getCentroid(_points)
 		
-		local _baseName = "AA11"
-		local _baseORfarp = "FARP"
-		local _base = ctld.inBaseZone(_heli) --{_inBaseZone,_baseName,_baseType}
-		if _base[1] then
-			_baseName = _base[2]
-			_baseORfarp = _base[3]
-		end
-		
         timer.scheduleFunction(function(_args)
 			local _name = ""
 			
             local _unitId = ctld.getNextUnitId()
 			local _side = utils.getSideName(_args[3]) 
-			if _args[4] ~= "FARP" then
-			
+			if _baseORfarp == "FARP" then
+				_name = _name .. _side .. _args[5] .. " #" .. _unitId --mr: feature: use deploying playerName to name FARP?
+			else
 				--[[
 					Add side to logistics centre name to allow static object to be neutral but be able to interogate name for coalition
 					As side in name of logistics centre utilised in baseOwnershipCheck.lua to recheck true RSR base owner, very important that side set in name
@@ -2558,18 +2566,44 @@ function ctld.unpackFOBCrates(_crates, _heli)
 					>> Static Objects name cannot be shared with an existing object, if it is the existing object will be destroyed on the spawning of the new object.
 					>> If unitId is not specified or matches an existing object, a new Id will be generated.
 					>> Coalition of the object is defined based on the country the object is spawning to.
+					
+					>>>>> logistic centre name will inlcude team name (red/blue) therefore 'replacement = destroy' with same name only useful for airbase "repair"
 				--]]
 				 
-				_name = _name .. _args[4] .. "Logistics Centre #" .. _unitId .. _side
-			else
-				_name = _name .. _side .. _args[5] .. " #" .. _unitId --mr: feature: use deploying playerName to name FARP?
+				_name = _name .. _baseName .. " Logistics Centre " .. "#" .. _unitId .. _side -- "MM75 Logistics Centre #001 red"
 			end
 
-            local _fob = ctld.spawnFOB(_args[2], _args[1], _name, _args[3]) --country, point, name, coalition (only for construction message)
+            local _newLogisticCentre = ctld.spawnLogisticsCentre(_args[2], _args[1], _name, _args[3]) --country, point, name, coalition (only for construction message)
 
-            --make it able to deploy crates
-            table.insert(ctld.logisticCentreObjects, _fob:getName())
-
+            -- use baseName as index for logistic centres, as should only be 1 x logistics centre per airbase/FOB at one time
+			-- use playerName as index for FARPs?  Limit 1 x FARP per player?
+			-- local _player = ctld.getPlayerNameOrType(_heli)
+            table.insert(ctld.logisticCentreObjects.(_baseORfarp .. "s")._baseName[1], _newLogisticCentre:getName())
+			
+			-- initate checking all bases for differences i.e. new addition of logistics centre to claim FOB
+			-- false = not firstTimeSetup which is only set true by state.lua for persistance
+			RSR.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(false,_heli)
+			
+			--[[
+				ctld.logisticCentreObjects =
+				{
+					["Airbases"] =
+					{
+						"Sukhumi-Babushara", "Vaziani", "Batumi", "Gudauta", "Soganlug", "Tbilisi-Lochini", "Senaki-Kolkhi", "Kobuleti",  "Kutaisi",
+						"Novorossiysk", "Krasnodar-Pashkovsky", "Maykop-Khanskaya", "Sochi-Adler", "Anapa-Vityazevo", "Mozdok", "Gelendzhik", "Mineralnye Vody", "Nalchik", "Krasnodar-Center", "Krymsk", "Beslan"
+					},
+					["FOBs"] = 
+					{
+						"BlueStagingPoint", "LN16", "MN61", "LM56", "LN90", "MM75", "KN70", "MM69", "LN21", "KN76", "GG19", "GH03", "LM95", "GH17", "KN53", "MM25", "RedBeachhead",
+						"LP17", "EJ08", "FJ53", "GJ38", "BlueBeachhead", "FJ03", "EK51", "EK20", "FJ69", "MP24", "EK14", "DK65", "FJ95", "EJ98", "GJ22", "RedStagingPoint", "LP31", "DK61", "EJ34", "LP65", "MN12", "MN19", "KP74", "MN34"
+					}
+					["FARPs"] =
+					{
+						"playerName"
+					}
+				}
+			--]]
+		
             ctld.beaconCount = ctld.beaconCount + 1
 
             local _radioBeaconName = "Logistics Centre Beacon #" .. ctld.beaconCount
@@ -2579,7 +2613,7 @@ function ctld.unpackFOBCrates(_crates, _heli)
             ctld.fobBeacons[_name] = { vhf = _radioBeaconDetails.vhf, uhf = _radioBeaconDetails.uhf, fm = _radioBeaconDetails.fm }
 
             if ctld.troopPickupAtFOB == true then
-                table.insert(ctld.builtFOBS, _fob:getName())
+                table.insert(ctld.builtFOBS, _newLogisticCentre:getName())
 
                 trigger.action.outTextForCoalition(_args[3], "Finished building Logistics Centre! Crates and Troops can now be picked up.", 10)
             else

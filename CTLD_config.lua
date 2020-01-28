@@ -314,6 +314,14 @@ ctld.logisticCentreL3 = ".Command Center"
 --mr: need to ensure country is part of neutral coalition e.g. Greece, as neutral static objects will not block DCS controlled rearm/refuel
 ctld.neutralCountry = "Greece"
 
+--mr: list populated upon spawning logistics centre static object with base name as index for Airbases/FOBs, and player name as index for FARPs
+ctld.logisticCentreObjects = 	
+{ 	
+	Airbases = {},
+	FOBs = {},
+	FARPs = {}				
+}	
+
 -- ************** SPAWNABLE CRATES ******************
 -- Weights must be unique as we use the weight to change the cargo to the correct unit
 -- when we unpack
