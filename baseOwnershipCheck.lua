@@ -162,6 +162,7 @@ function M.getAllBaseOwnership(_firstTimeSetup,_playerORunit)
 					For FOBs:
 					(A) Need to destroy current CC + clear radius around FOB of enemy units and have friendly units present, 
 						to convert FOB to neutral to subsequently allow capture by building a CC.
+					>>>>> CURRENT + VOTED BY RSR TEAM 28/01/20	
 					OR
 					(B) Need to destroy current CC + contest radius around FOB with friendly ground units, to convert FOB to neutral to subsequently allow capture by building a CC
 					OR
@@ -185,6 +186,7 @@ function M.getAllBaseOwnership(_firstTimeSetup,_playerORunit)
 							
 							-- if logistics centre built on neutral FOB, set ownership to side associated with logistics centre and notify side
 							table.insert(baseOwnership.FOBs[_FOBlogisticsCentreSide], baseName)
+							--mr: RSR TEAM = (A) must clear FOB area.  Therefore allow attacking team to know when they capture the FOB, but not opposition to allow sneaky tactics
 							trigger.action.outTextForCoalition(DCScoalition, baseName .. " FOB claimed by " .. _FOBlogisticsCentreSide 
 								.. " team following construction of Logistics Centre by ." .. _conqueringUnit, 10) --_conqueringUnit = playerName
 						end

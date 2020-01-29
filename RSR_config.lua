@@ -18,7 +18,7 @@ rsrConfig.writeInterval = rsrConfig.devMode and 10 or 300 -- how often to update
 rsrConfig.writeDelay = rsrConfig.devMode and 0 or 180  -- initial delay for persistence, to move last one closer to restart
 
 -- base defences
---mr: ensure that assoc. baseCapture zone, which is used as a pre-filter, is larger than these values
+--mr: ensure that associated RSRbaseCaptureZone zone, which is used as a pre-filter, is larger than these values
 rsrConfig.baseDefenceActivationRadiusAirbase = 5000
 rsrConfig.baseDefenceActivationRadiusFOB = 2500
 

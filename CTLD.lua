@@ -2475,23 +2475,52 @@ end
 -- builds a logistics centre!
 function ctld.unpackLogisticsCentreCrates(_crates, _heli)
 
-	--mr: what is the point of this check?  Logistics centres should spawn in logistics centre zones as part of "repair function".  
+	--mr: this ensures logistics centre crate not being unpacked within existing logistics zone
+	--mr: however now obsolete as checking for inBaseZone then = "repair"
+	--mr: need to check repair crate being brought from different base!!!
+	--[[
     if ctld.inLogisticsZone(_heli) == true then
 
         ctld.displayMessageToGroup(_heli, "You can't unpack that here! Take it to where it's needed!", 20)
 
         return
     end
+	--]]
 	
-	local _baseName = ctld.getPlayerNameOrType(_heli) --baseName = playerName for FARPs
+	local _baseORplayerName = ctld.getPlayerNameOrType(_heli) --baseName = playerName for FARPs
 	local _baseORfarp = "FARP"
-	local _base = ctld.inBaseZone(_heli) --{_inBaseZone,_baseName,_baseType}
+	local _baseZone = ctld.inBaseZone(_heli) --{_inBaseZone,_baseORplayerName,_baseType,_triggerZone}
 	
-	if _base[1] then
-		_baseName = _base[2]
-		_baseORfarp = _base[3] --use to provide distinction between base repair and FARP building.  will need to augment with player 'inBaseZone' status check to help
+	local _heliPoint = _heli:getPoint()
+	local _maxRepairDist = 10000
+	local _distFromBase = 10000
+	local _triggerZoneCentroid = {0,0,0} --note: TriggerZone may not be exact centre of airbase or FOB (FARP helipad) but adquete c.f. cycling through FARP helipad objects?
+	if _baseZone[1] then
+		_baseORplayerName = _baseZone[2]
+		_baseORfarp = _baseZone[3] --use to provide distinction between base repair and FARP building.  will need to augment with player 'inBaseZone' status check to help
+		if _baseORfarp == "Airbase" then
+			_maxRepairDist = ctld.maximumDistFromFOBToRepair -- 5km
+		elseif _baseORfarp == "FOB" then
+			_maxRepairDist = ctld.maximumDistFromFOBToRepair -- 3km
+		end
+		_triggerZoneCentroid = _baseZone[4].point -- TriggerZone = {point = Vec3,radius = Distance}
+		_distFromBase = ctld.getDistance(_heliPoint,_triggerZoneCentroid)
+	else
+		--need exclusion zone checks for FARPs: 20km from any base zone
+		--check will be performance intensive! As need to check distance from centroid of all airbases and FOBs
+	
+	
 	end
+	
+	--check close enough to centre of airbase/FOB
+	--mr: should we be more lenient for planes Vs. helis? e.g. +2km
+	if _baseZone[1] and _distFromBase > _maxRepairDist then
 
+        ctld.displayMessageToGroup(_heli, "You are too far from " .. _baseORplayerName .. "for a repair and too close to deploy a FARP", 20)
+
+        return
+    end
+	
     -- unpack multi crate
     local _nearbyMultiCrates = {}
 
@@ -2555,7 +2584,7 @@ function ctld.unpackLogisticsCentreCrates(_crates, _heli)
             local _unitId = ctld.getNextUnitId()
 			local _side = utils.getSideName(_args[3]) 
 			if _baseORfarp == "FARP" then
-				_name = _name .. _side .. _args[5] .. " #" .. _unitId --mr: feature: use deploying playerName to name FARP?
+				_name = _name .. _side .. "FARP" .. " #" .. _unitId .. " (" .. _baseORplayerName .. ")" --mr: feature: use deploying player name in FARP name
 			else
 				--[[
 					Add side to logistics centre name to allow static object to be neutral but be able to interogate name for coalition
@@ -2570,7 +2599,7 @@ function ctld.unpackLogisticsCentreCrates(_crates, _heli)
 					>>>>> logistic centre name will inlcude team name (red/blue) therefore 'replacement = destroy' with same name only useful for airbase "repair"
 				--]]
 				 
-				_name = _name .. _baseName .. " Logistics Centre " .. "#" .. _unitId .. _side -- "MM75 Logistics Centre #001 red"
+				_name = _name .. _baseORplayerName .. " Logistics Centre " .. "#" .. _unitId .. _side -- "MM75 Logistics Centre #001 red"
 			end
 
             local _newLogisticCentre = ctld.spawnLogisticsCentre(_args[2], _args[1], _name, _args[3]) --country, point, name, coalition (only for construction message)
@@ -2578,7 +2607,7 @@ function ctld.unpackLogisticsCentreCrates(_crates, _heli)
             -- use baseName as index for logistic centres, as should only be 1 x logistics centre per airbase/FOB at one time
 			-- use playerName as index for FARPs?  Limit 1 x FARP per player?
 			-- local _player = ctld.getPlayerNameOrType(_heli)
-            table.insert(ctld.logisticCentreObjects.(_baseORfarp .. "s")._baseName[1], _newLogisticCentre:getName())
+            table.insert(ctld.logisticCentreObjects.(_baseORfarp .. "s")._baseORplayerName[1], _newLogisticCentre:getName())
 			
 			-- initate checking all bases for differences i.e. new addition of logistics centre to claim FOB
 			-- false = not firstTimeSetup which is only set true by state.lua for persistance
@@ -2624,7 +2653,7 @@ function ctld.unpackLogisticsCentreCrates(_crates, _heli)
 			_centroid, --_args[1] = ignore for base (airbase/FOB) repair
 			_heli:getCountry(), --_args[2] = country of player and FARP, but base (airbase/FOB) logistics centre should always by neutral
 			_heli:getCoalition(), --_args[3] = coalition for construction message locality
-			_baseName, -- _args[4] = name of base (airbase/FOB) if player within RSR radius, otherwise create FARP and base name ignored
+			_baseORplayerName, -- _args[4] = name of base (airbase/FOB) if player within RSR radius, otherwise create FARP and use player name
 			_baseORfarp, -- _args[5] = type of base(Airbase/FOB) type if player within RSR radius, otherwise create FARP and base name ignored
 		}, timer.getTime() + ctld.buildTimeFOB)
 
@@ -3877,29 +3906,40 @@ function ctld.inBaseZone(_aircraft)
     local _aircraftPoint = _aircraft:getPoint()
 	local _baseName = "AA11"
 	local _baseType = "BASE"
+	local _triggerZone = "none"
     for _k, _base in pairs(ctld.RSRbaseCaptureZones) do
 		
 		local _baseFound = false
-		local _triggerZone = trigger.misc.getZone(_base[1])
+		_triggerZone = trigger.misc.getZone(_base[1])
 		if _triggerZone ~= nil then --is this necessary given that ctld.RSRbaseCaptureZones list is constructed during mission start and never changed?
 			
 			local _isAirBase = false
 			local _isFOB = false
 			local _RSRradius = 10000 --10km
 			
-			-- if _base:GetAirbaseCategory() == Airbase.Category.AIRDROME then
+			--[[ CONVERT TO MOOSE
 			local _baseType = string.match(_triggerZone,("%w+$")) --"MM75 RSRbaseCaptureZone FOB" = "FOB"
 			if _baseType == "Airbase" then
 				_isAirBase = true
-				--_baseType = "Airbase"
 				_RSRradius = rsrConfig.baseDefenceActivationRadiusAirbase
-			-- elseif _base:GetAirbaseCategory() == Airbase.Category.HELIPAD then
 			elseif _baseType == "FOB" then
 				_isFOB = true
-				--_baseType = "FOB"
 				_RSRradius = rsrConfig.baseDefenceActivationRadiusFOB
 			end
+			--]]
 			
+			for _k, _base in ipairs(AIRBASE.GetAllAirbases()) do
+				if _base:GetAirbaseCategory() == Airbase.Category.AIRDROME then
+					_isAirBase = true
+					_RSRradius = rsrConfig.baseDefenceActivationRadiusAirbase
+					_baseType == "Airbase"
+				elseif _base:GetAirbaseCategory() == Airbase.Category.HELIPAD then
+					_isFOB = true
+					_RSRradius = rsrConfig.baseDefenceActivationRadiusFOB
+					_baseType == "FOB"
+				end
+			end
+
 			if  _isAirBase or _isFOB then
 				_baseName = string.match(_triggerZone,("^%w+")) --"MM75 RSRbaseCaptureZone FOB" = "MM75"
 			else
@@ -3918,7 +3958,7 @@ function ctld.inBaseZone(_aircraft)
         end
 		if _baseFound then break end
     end
-    return {_inBaseZone,_baseName,_baseType}
+    return {_inBaseZone,_baseName,_baseType,_triggerZone}
 end
 
 -- are we in pickup zone
@@ -3971,11 +4011,11 @@ function ctld.inPickupZone(_heli)
         local _dist = ctld.getDistance(_heliPoint, _fob:getPoint())
 
         if _dist <= 150 then
-            return { inZone = true, limit = 10000, index = -1 };
+            return { inZone = true, limit = 10000, index = -1 }
         end
     end
 
-    return { inZone = false, limit = -1, index = -1 };
+    return { inZone = false, limit = -1, index = -1 }
 end
 
 function ctld.getSpawnedFobs(_heli)
@@ -4046,7 +4086,7 @@ function ctld.inWaypointZone(_point, _coalition)
     return { inZone = false }
 end
 
--- are we near friendly logistics zone --mr: this does not check whether player is in base zone, only crate deploy zone
+-- are we near friendly logistics zone --mr: this does not check whether player is in base zone, only crate deploy zone, but how are deployable FARPs handled?!
 function ctld.inLogisticsZone(_heli) 
 
     if ctld.inAir(_heli) then
@@ -4058,13 +4098,13 @@ function ctld.inLogisticsZone(_heli)
     for _, _name in pairs(ctld.logisticCentreObjects) do
 
         local _logistic = StaticObject.getByName(_name)
-
+		
         if _logistic ~= nil and _logistic:getCoalition() == _heli:getCoalition() then --mr: need to remove dependency on static object side to allow neutral CCs
 
             --get distance
             local _dist = ctld.getDistance(_heliPoint, _logistic:getPoint())
 
-            if _dist <= ctld.maximumDistanceLogistic then
+            if _dist <= ctld.maximumDistanceLogistic then -- CTLD_config.lau: ctld.maximumDistanceLogistic = 200
                 return true
             end
         end

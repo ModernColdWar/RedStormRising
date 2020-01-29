@@ -311,6 +311,10 @@ ctld.logisticCentreL1 = "FARP Tent"
 ctld.logisticCentreL2 = "outpost"
 ctld.logisticCentreL3 = ".Command Center"
 
+ctld.maximumDistFromFOBToRepair = 3000
+ctld.maximumDistFromAirbaseToRepair = 5000
+ctld.exclusionZoneFromBasesForFARPs = 20000 --20km
+
 --mr: need to ensure country is part of neutral coalition e.g. Greece, as neutral static objects will not block DCS controlled rearm/refuel
 ctld.neutralCountry = "Greece"
 
