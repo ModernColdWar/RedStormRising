@@ -2,8 +2,8 @@ require("mist_4_3_74")
 require("CTLD")
 local inspect = require("inspect")
 local JSON = require("JSON")
-local baseOwnershipCheck = require("baseOwnershipCheck")
 local utils = require("utils")
+local baseOwnershipCheck = require("baseOwnershipCheck")
 
 local log = mist.Logger:new("State", "info")
 
@@ -168,7 +168,9 @@ function M.getOwner(baseName)
     return nil
 end
 
-local function setOwner(baseOwnership, baseName, sideName)  --mr: called by baseCapturedHandler.lua  redirect baseCapturedHandler.lua to baseOwnershipCheck.lua and make this obsolete
+--mr: only called by below local function M.checkBaseOwner but now commented-out
+--mr: setOwner function should now be obsolete as baseOwner check and set conducted by baseOwnershipCheck.lua
+local function setOwner(baseOwnership, baseName, sideName)
     local found = false
     local changed = false
     for _sideName, baseList in pairs(baseOwnership) do
@@ -191,13 +193,14 @@ local function setOwner(baseOwnership, baseName, sideName)  --mr: called by base
     end
 end
 
-function M.setBaseOwner(baseName, sideName) --mr: called by baseCapturedHandler.lua  redirect baseCapturedHandler.lua to baseOwnershipCheck.lua and make this obsolete
+function M.checkBaseOwner(baseName, sideName) 
     local currentOwner = M.getOwner(baseName)
     if currentOwner == sideName then
         return false
     end
-    setOwner(M.currentState.baseOwnership.Airbases, baseName, sideName)
-    setOwner(M.currentState.baseOwnership.FOBs, baseName, sideName)
+	--mr: setOwner function should now be obsolete as baseOwner check and set conducted by baseOwnershipCheck.lua
+    -- setOwner(M.currentState.baseOwnership.Airbases, baseName, sideName)
+    -- setOwner(M.currentState.baseOwnership.FOBs, baseName, sideName)
     log:info("Changed ownership of $1 from $2 to $3", baseName, currentOwner, sideName)
     return true
 end

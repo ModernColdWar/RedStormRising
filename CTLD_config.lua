@@ -66,7 +66,7 @@ ctld.cratesRequiredForFOB = 1 -- The amount of crates required to build a FOB. O
 
 ctld.troopPickupAtFOB = true -- if true, troops can also be picked up at a created FOB
 
-ctld.buildTimeFOB = 60 --time in seconds for the FOB to be built
+ctld.buildTimeFARP = 60 --time in seconds for the FARP to be built
 
 ctld.crateWaitTime = 10 -- time in seconds to wait before you can spawn another crate
 
@@ -223,7 +223,7 @@ ctld.extractableGroups = {
 -- Use any of the predefined names or set your own ones
 -- When a logistic unit is destroyed, you will no longer be able to spawn crates
 
-ctld.logisticCentreObjects = ctldUtils.getLogisticCentreObjects(env.mission)
+ctld.logisticCentreZones = ctldUtils.getLogisticCentreZones(env.mission)
 
 -- ************** UNITS ABLE TO TRANSPORT VEHICLES ******************
 -- Add the model name of the unit that you want to be able to transport and deploy vehicles

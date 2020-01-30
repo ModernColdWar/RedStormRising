@@ -101,7 +101,10 @@ function M.getBaseAndSideNamesFromGroupName(groupName)
     end
 end
 
+--extract base name from first character of zone name to first character of suffix - 1 (idx - 1, most likely white space)
 function M.getBaseNameFromZoneName(zoneName, suffix)
+	--mr: will LUA wildcard * work with when passed with suffix?
+	-- e.g. logisticsManager.lua: utils.getBaseNameFromZoneName(logisticsZoneName, "RSRlogisticsZone*") = "MM75 RSRlogisticsZone 01" ?
     local idx = zoneName:lower():find(" " .. suffix:lower())
     if idx == nil then
         return nil
@@ -185,6 +188,8 @@ function M.setGroupControllerOptions(group)
     end, group, timer.getTime() + 2)
 end
 
+
+
 --searches for FOB name in baseOwnership nested table to determine currently assigned side
 --mr: find more efficient way to transvere nested table
 
@@ -221,5 +226,37 @@ function M.getCurrFOBside (_FOBname)
 	end
 	return _bOFOBside
 end	
+function M.getCurrABside (_ABname)
+	local _bOABside = "ERROR"
+	for _k, _b in pairs(baseOwnership.Airbases.red) do
+	  if _b == _ABname then
+		_bOABside = "red"
+		break
+	  end
+	end
 
+	if _bOABside == "ERROR" then
+		for _k, _b in pairs(baseOwnership.Airbases.blue) do
+		  if _b == _ABname then
+			_bOABside = "blue"
+			break
+		  end
+		end
+	end
+	
+	if _bOABside == "ERROR" then
+		for _k, _b in pairs(baseOwnership.Airbases.neutral) do
+		  if _b == _ABname then
+			_bOABside = "neutral"
+			break
+		  end
+		end
+	end
+	
+	if _bOABside == "ERROR" then 
+		log=error("$1 Airbase not found in 'baseOwnership.Airbases' sides. Reporting as neutral to allow contested check.",_ABname)
+		_bOABside = "neutral"
+	end
+	return _bOABside
+end	
 return M

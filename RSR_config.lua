@@ -4,13 +4,12 @@ local utils = require("utils")
 local rsrConfig = {}
 
  -- enables "developer mode"; removes crate spawning/unpacking restrictions, more frequent saves
-rsrConfig.devMode = true
+rsrConfig.devMode = false
 
 -- Event reporting for the n0xy bot
 rsrConfig.udpEventReporting = true
 rsrConfig.udpEventHost = "walsh.systems"
 rsrConfig.udpEventPort = 9696
-
 
 -- state saving
 rsrConfig.stateFileName = utils.getFilePath("rsrState.json") -- default name for state file
@@ -19,6 +18,7 @@ rsrConfig.writeDelay = rsrConfig.devMode and 0 or 180  -- initial delay for pers
 
 -- base defences
 --mr: ensure that associated RSRbaseCaptureZone zone, which is used as a pre-filter, is larger than these values
+-- CTLD_config.lua: ctld.RSRbaseCaptureZones = ctldUtils.getRSRbaseCaptureZones(env.mission)
 rsrConfig.baseDefenceActivationRadiusAirbase = 5000
 rsrConfig.baseDefenceActivationRadiusFOB = 2500
 

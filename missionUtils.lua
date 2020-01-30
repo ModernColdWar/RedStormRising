@@ -139,6 +139,19 @@ function M.getZoneNames(mission, pattern)
     return zones
 end
 
+-- DCS getZone function only returns zone position and radius based on name, therefore store complete zone details i.e. color
+function M.getZones(mission, pattern)
+    local zones = {}
+    M.iterZones(mission, function(zone)
+        local zoneName = zone.name
+        if string.match(zoneName:lower(), pattern) then
+            table.insert(zones, zone)
+        end
+    end)
+    --table.sort(zones)
+    return zones
+end
+
 function M.iterBases(mission, theatre, baseCallback)
     -- luacheck: read_globals warehouses
     for baseId, baseName in pairs(M.airbases[theatre]) do

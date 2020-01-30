@@ -24,7 +24,7 @@ local rsrConfig = require("RSR_config")
 if rsrConfig.devMode then
     log:warn("Running in developer mode - should not be used for 'real' servers")
     ctld.debug = true
-    ctld.buildTimeFOB = 5
+    ctld.buildTimeFARP = 5
     ctld.crateWaitTime = 1
 end
 

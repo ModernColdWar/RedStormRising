@@ -7,13 +7,14 @@ local log = mist.Logger:new("LogisticsManager", "info")
 
 function M.spawnLogisticsBuildingForBase(baseName, sideName)
     log:info("Spawning Logistics Centre Static Object for $1 as owned by $2", baseName, sideName)
-    for _, logisticsZoneName in ipairs(ctld.logisticCentreObjects) do
-	
+	log:info("ctld.logisticCentreZones: $1",ctld.logisticCentreZones)
+    for _, logisticsZoneName in ipairs(ctld.logisticCentreZones) do
 		--mr: edit to take into account incremantel names for logistics centre location randomization
-        local zoneBaseName = utils.getBaseNameFromZoneName(logisticsZoneName, "RSRlogisticsZone") 
+		-- e.g. "MM75 RSRlogisticsZone 01", * = LUA string pattern match wildcard
+        local zoneBaseName = utils.getBaseNameFromZoneName(logisticsZoneName, "rsrlogisticszone") --getBaseNameFromZoneName requires lowercase 
 		
         if utils.matchesBaseName(baseName, zoneBaseName) then
-            local country = sideName == "red" and country.id.RUSSIA or country.id.USA --should this be country.id.AGGRESSORS (USAF Aggressors)?
+            local country = sideName == "red" and country.id.RUSSIA or country.id.USA --should RUSSIA be country.id.AGGRESSORS (USAF Aggressors)?
             local point = ZONE:New(logisticsZoneName):GetPointVec2()
 			--mr: add side to logistics centre name to allow static object to be neutral but be able to interogate name for coalition
             ctld.spawnLogisticsCentre(country, point, (baseName .. " Logistics Centre " .. string.upper(sideName)), utils.getSide(sideName)) --(_country, _point, _name, _coalition)
