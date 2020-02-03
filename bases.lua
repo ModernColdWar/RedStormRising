@@ -2,7 +2,8 @@ require("mist_4_3_74")
 local logisticsManager = require("logisticsManager")
 local pickupZoneManager = require("pickupZoneManager")
 local slotBlocker = require("slotBlocker")
-local state = require("state")
+--local state = require("state")
+local updateSpawnQueue = require("updateSpawnQueue")
 local utils = require("utils")
 local rsrConfig = require("RSR_config")
 
@@ -40,7 +41,7 @@ local function activateBaseDefences(baseName, sideName, rsrConfig)
         if group:GetCoalition() == side and activationZone:IsVec3InZone(group:GetVec3()) and not isReplacementGroup(group) then
             log:info("Activating $1 $2 base defence group $3", baseName, sideName, group:GetName())
             group:Activate()
-            state.pushSpawnQueue(group:GetName())
+            updateSpawnQueue.pushSpawnQueue(group:GetName())
             utils.setGroupControllerOptions(group)
         end
     end)
@@ -74,13 +75,15 @@ function M.configureForSide(baseName, sideName)
     pickupZoneManager.configurePickupZonesForBase(baseName, sideName)
 end
 
-function M.resupply(baseName, sideName, rsrConfig)
+function M.resupply(baseName, sideName, rsrConfig, spawnLC)
     log:info("Configuring $1 resupplied by $2", baseName, sideName)
     if checkNeutral(baseName, sideName) then
         return
     end
     activateBaseDefences(baseName, sideName, rsrConfig)
-    logisticsManager.spawnLogisticsBuildingForBase(baseName, sideName)
+	if spawnLC then 
+		logisticsManager.spawnLogisticsBuildingForBase(baseName, sideName)
+	end
 end
 
 function M.onMissionStart(baseName, sideName, rsrConfig, firstTimeSetup)

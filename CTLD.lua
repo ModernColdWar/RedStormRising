@@ -2591,7 +2591,7 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
             local _unitId = ctld.getNextUnitId()
 			local _side = utils.getSideName(_args[3]) 
 			if _baseORfarp == "FARP" then
-				_name = _name .. _side .. "FARP" .. " #" .. _unitId .. " (" .. _baseORplayerName .. ")" --mr: feature: use deploying player name in FARP name
+				_name = _name .. _side .. "FARP" .. " #" .. _unitId .. " (" .. _baseNameORplayerName .. ")" --mr: feature: use deploying player name in FARP name
 			else
 				--[[
 					Add side to logistics centre name to allow static object to be neutral but be able to interogate name for coalition
@@ -2606,14 +2606,14 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
 					>>>>> logistic centre name will inlcude team name (red/blue) therefore 'replacement = destroy' with same name only useful for airbase "repair"
 				--]]
 				 
-				_name = _name .. _baseORplayerName .. " Logistics Centre " .. "#" .. _unitId .. _side -- "MM75 Logistics Centre #001 red"
+				_name = _name .. _baseNameORplayerName .. " Logistics Centre " .. "#" .. _unitId .. _side -- "MM75 Logistics Centre #001 red"
 			end
 
             local _newLogisticCentre = ctld.spawnLogisticsCentre(_args[2], _args[1], _name, _args[3]) --country, point, name, coalition (only for construction message)
 			local _newLogisticCentreObject = _newLogisticCentre:getName()
             -- use baseName as index for logistic centres, as should only be 1 x logistics centre per airbase/FOB at one time
 			-- use playerName as index for FARPs?  Limit 1 x FARP per player?
-			table.insert(ctld.logisticCentreObjects[_baseORfarp .. "s"][_baseORplayerName],_newLogisticCentreObject)
+			table.insert(ctld.logisticCentreObjects[_baseORfarp .. "s"][_baseNameORplayerName],_newLogisticCentreObject)
 
 			--[[
 				ctld.logisticCentreObjects =
@@ -2635,10 +2635,20 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
 				}
 			--]]
 			
-			-- initate checking all bases for differences i.e. new addition of logistics centre to claim FOB
-			-- will also return baseOwnership table even though not needed
-			-- false = not firstTimeSetup which is only set true by state.lua for persistance
-			baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(false,_aircraft) 
+			--[[
+				initate checking all bases for differences = 
+				baseOwnershipCheck.lua & Airbases: logistics centre building should produce any 
+				baseOwnershipCheck.lua & FOBs: logistics centre building should initiate claim and assoc. messages
+				false = not firstTimeSetup which is only set true by state.lua for persistance
+				_aircraft = for teeam notification of which friendly player captured FOB = encourage logisitics
+				will also return baseOwnership table even though not needed
+				by-passed during campaign and mission init i.e. logisticsManager.lua -> spawnLogisticsCentre
+			--]]
+			if _baseORfarp ~= "FARP" then
+				baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(false,"none",_aircraft)
+				-- inefficient to check ALL bases given base known?  Should just pass base and update baseOwnershipCheck.lua for specific change
+				--baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(false,_baseNameORplayerName,_aircraft)
+			end
 		
             ctld.beaconCount = ctld.beaconCount + 1
 
@@ -2660,7 +2670,7 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
 			_centroid, --_args[1] = ignore for base (airbase/FOB) repair
 			_aircraft:getCountry(), --_args[2] = country of player and FARP, but base (airbase/FOB) logistics centre should always by neutral
 			_aircraft:getCoalition(), --_args[3] = coalition for construction message locality
-			_baseORplayerName, -- _args[4] = name of base (airbase/FOB) if player within RSR radius, otherwise create FARP and use player name
+			_baseNameORplayerName, -- _args[4] = name of base (airbase/FOB) if player within RSR radius, otherwise create FARP and use player name
 			_baseORfarp, -- _args[5] = type of base(Airbase/FOB) type if player within RSR radius, otherwise create FARP and base name ignored
 		}, timer.getTime() + _buildTime)
 

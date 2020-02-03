@@ -1,7 +1,7 @@
 require ("Moose")
 local inspect = require("inspect")
 local utils = require("utils")
---local bases = require("bases") -- LOOP!!!!!!!
+local bases = require("bases")
 local rsrConfig = require("RSR_config")
 -- require("CTLD_config")
 
@@ -10,10 +10,11 @@ local M = {}
 local log = mist.Logger:new("baseOwnershipCheck", "info")
 
 local _firstTimeSetup = false
+local _passedBase = "none"
 local _playerORunit = "none"
 local _conqueringUnit = "none"
 			
-function M.getAllBaseOwnership(_firstTimeSetup,_playerORunit)
+function M.getAllBaseOwnership(_firstTimeSetup,_passedBase,_playerORunit)
     local baseOwnership = 	
 	{ 	
 		Airbases = { red = {}, blue = {}, neutral = {} },
@@ -65,21 +66,18 @@ function M.getAllBaseOwnership(_firstTimeSetup,_playerORunit)
 				table.insert(baseOwnership[_baseTypes][_baseSide],_RSRbaseCaptureZoneName)
 			--end
 		end
-	else
-		--[[
-			RECONFIGURE CAPTURE FLOW SCRIPTS
-			state.lua: initiates baseOwnersip query only for campaign start or persistance
-			baseOwnershipCheck.lua: baseOwnersip campaign setup and side owner in relation to command centre owernship or presence + capture messages
-			baseCapturedHandler.lua: DCS EH = RSR radius checks = initate baseOwnershipCheck.lua
-			
-			feature? consider adding ~10min LOCKDOWN to prevent fast capture-recapture problems = base added to LOCKDOWN global array upon capture
-		--]]
+	--[[
+		------------------------------------------------------------------------------------------------------------------------------------------------
+	--]]
+	elseif _passedBase ~= "none" then
 		
+	
+	else -- primarily for campaign and mission init when no baseName passed e.g. logisticsManager.lua -> spawnLogisticsCentre function in CTLD.lua
 		if _playerORunit ~= "none" then 
 			local _conqueringUnit = ctld.getPlayerNameOrType(_playerORunit)
 		end	
 		
-		for _, base in ipairs(AIRBASE.GetAllAirbases()) do
+		for _k, base in ipairs(AIRBASE.GetAllAirbases()) do
 			local baseName = base:GetName()
 			local DCScoalition = base:GetCoalition()
 			local DCSsideName = utils.getDCSsideName(DCScoalition)
@@ -90,6 +88,7 @@ function M.getAllBaseOwnership(_firstTimeSetup,_playerORunit)
 			
 			--mr: intercept to respect previous logistics centre ownership for all bases (airbase/FOB) = allow spawning (no slot blocking) even when base contested
 			--mr: check DCSsideName as determined by DCS, against current baseOwnership setting determined by RSR.  If mismatch, then detect current CC owner to determine true owner.
+			-- feature? consider adding ~10min LOCKDOWN to prevent fast capture-recapture problems = base added to LOCKDOWN global array upon capture
 			if base:GetAirbaseCategory() == Airbase.Category.AIRDROME then
 				
 				local _currABowner = utils.getCurrABside(baseName)
@@ -112,21 +111,22 @@ function M.getAllBaseOwnership(_firstTimeSetup,_playerORunit)
 						if _ABlogisticsCentre ~= nil then  --mr: IMPORTANT does an object == nil if destroyed?
 							
 							--interograte logistics centre static object to determine true RSR side
-							_ABlogisticsCentreName = _FOBlogisticsCentre:GetName()
+							_ABlogisticsCentreName = _ABlogisticsCentre:GetName()
 							_ABlogisticsCentreSide = string.match(_ABlogisticsCentreName,("%w+$")) --"Sochi Logistics Centre #001 red" = "red"
 							
 							-- if logistics centre built on neutral AB, set ownership to side associated with logistics centre and notify side
-							table.insert(baseOwnership.FOBs[_ABlogisticsCentreSide], baseName)
+							table.insert(baseOwnership.Airbases.neutral, baseName)
+							table.insert(baseOwnership.Airbases[_ABlogisticsCentreSide], baseName)
 							bases.configureForSide(baseName, _ABlogisticsCentreSide)  --slotBlocker.lua & pickupZoneManager.lua
-							bases.resupply(baseName, _ABlogisticsCentreSide, rsrConfig) --activate base defences & spawn logistics
+							bases.resupply(baseName, _ABlogisticsCentreSide, rsrConfig, false) --activate base defences but DO NOT spawn logistics
 							trigger.action.outTextForCoalition(DCScoalition, baseName .. " claimed by " .. _ABlogisticsCentreSide .. " team following construction of Logistics Centre.", 10)
 						end
 					else
 						if _ABlogisticsCentre ~= nil then  --mr: IMPORTANT does an object == nil if destroyed?
 						
 							--interograte logistics centre static object to determine true RSR side
-							_ABlogisticsCentreName = _FOBlogisticsCentre:GetName()
-							_ABlogisticsCentreSide = string.match(_FOBlogisticsCentreName,("%w+$")) --"Sochi Logistics Centre #001 red" = "red"
+							_ABlogisticsCentreName = _ABlogisticsCentre:GetName()
+							_ABlogisticsCentreSide = string.match(_ABlogisticsCentreName,("%w+$")) --"Sochi Logistics Centre #001 red" = "red"
 							local _ABlogisticsCentreCoalition = utils.getSide(_ABlogisticsCentreSide)
 							
 							if _ABlogisticsCentreSide ~= DCSsideName then
@@ -141,24 +141,26 @@ function M.getAllBaseOwnership(_firstTimeSetup,_playerORunit)
 						
 							--No logistices centre and base contested. IS BASE CAPTURED? 
 							--Check for contested status c.f. uncontested
-							--mr: Introduce RSR radiuses for additional checks HERE!
+							--mr: Introduce RSR radiuses for additional checks here or baseCapturedHandler.lua?
 							if DCSsideName == "red" and _currABowner == "blue" then
+								table.remove(baseOwnership.Airbases.blue, baseName)
 								table.insert(baseOwnership.Airbases.red, baseName)
 								bases.configureForSide(baseName, "red") --slotBlocker.lua & pickupZoneManager.lua
-								bases.resupply(baseName, "red", rsrConfig) --activate base defences & spawn logistics
+								bases.resupply(baseName, "red", rsrConfig, false) --activate base defences but DO NOT spawn logistics
 								trigger.action.outText(baseName .. " has been captured by a red " .. _conqueringUnit, 10)
 							elseif DCSsideName == "blue" and _currABowner == "red" then
-								table.insert(baseOwnership.Airbases.blur, baseName)
+								table.remove(baseOwnership.Airbases.red, baseName)
+								table.insert(baseOwnership.Airbases.blue, baseName)
 								bases.configureForSide(baseName, "blue") --slotBlocker.lua & pickupZoneManager.lua
-								bases.resupply(baseName, "blue", rsrConfig) --activate base defences & spawn logistics
+								bases.resupply(baseName, "blue", rsrConfig, false) --activate base defences but DO NOT spawn logistics
 								trigger.action.outText(baseName .. " has been captured by a blue " .. _conqueringUnit, 10)
 							end
 						end
 					end
 				end
---[[
-	--------------------------------------------------------------------------------------------------------------------------------------
---]]
+			--[[
+				--------------------------------------------------------------------------------------------------------------------------------------
+			--]]
 			elseif base:GetAirbaseCategory() == Airbase.Category.HELIPAD then
 				
 				local _currFOBowner = utils.getCurrFOBside(baseName)
@@ -196,12 +198,13 @@ function M.getAllBaseOwnership(_firstTimeSetup,_playerORunit)
 							_FOBlogisticsCentreSide = string.match(_FOBlogisticsCentreName,("%w+$")) --"MM75 Logistics Centre #001 red" = "red"
 							
 							-- if logistics centre built on neutral FOB, set ownership to side associated with logistics centre and notify side
+							table.remove(baseOwnership.FOBs.neutral, baseName)
 							table.insert(baseOwnership.FOBs[_FOBlogisticsCentreSide], baseName)
 							--mr: RSR TEAM = (A) must clear FOB area.  Therefore allow attacking team to know when they capture the FOB, but not opposition to allow sneaky tactics
 							trigger.action.outTextForCoalition(DCScoalition, baseName .. " FOB claimed by " .. _FOBlogisticsCentreSide
 							.. " team following construction of Logistics Centre by " .. _conqueringUnit, 10) --_conqueringUnit = playerName
 							bases.configureForSide(baseName, _FOBlogisticsCentreSide) --slotBlocker.lua & pickupZoneManager.lua
-							bases.resupply(baseName, _FOBlogisticsCentreSide, rsrConfig) --activate base defences & spawn logistics
+							bases.resupply(baseName, _FOBlogisticsCentreSide, rsrConfig, false) --activate base defences (FARP trucks) but DO NOT spawn logistics
 								
 						end
 					else
@@ -212,15 +215,16 @@ function M.getAllBaseOwnership(_firstTimeSetup,_playerORunit)
 							_FOBlogisticsCentreSide = string.match(_FOBlogisticsCentreName,("%w+$")) --"MM75 Logistics Centre #001 red" = "red"
 							
 							if _FOBlogisticsCentreSide ~= DCSsideName then
-								log:info("$1 FOB contested but $2 Logistics Centre still present.", baseName,_FOBlogisticsCentreSide)
+								log:info("$1 FOB contested but $2 Logistics Centre still present.", baseName,_FOBlogisticsCentreSide) -- stil allow spawn
 							elseif _FOBlogisticsCentreSide == DCSsideName then
 								log:error("$1: Current FOB Owner: $2. Logistics Centre Owner: $3.  DCSside: $4. Current FOB owner doesn not match Logistics Centre owner!", baseName,_currFOBowner,_logiCentreSide,DCSsideName)
 							end
 						else
-							--no logistics centre but FOB contested, therefore set to neutral and notify neutralizing side
+							--no logistics centre but FOB contested, therefore set to neutral
+							table.remove(baseOwnership.FOBs[_currFOBowner], baseName)
 							table.insert(baseOwnership.FOBs.neutral, baseName)
 							bases.configureForSide(baseName, "neutral") --slotBlocker.lua & pickupZoneManager.lua
-							bases.resupply(baseName, "neutral", rsrConfig) --activate base defences & spawn logistics
+							-- bases.resupply(baseName, "neutral", rsrConfig, false) -- DO NOT spawn logistics and no neutral FARP trucks
 							--trigger.action.outText(baseName .. " neutralized.", 10) --Should either or both teams receive a notification that FOB has been neutralized?
 						end
 					end
