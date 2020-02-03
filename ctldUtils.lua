@@ -9,12 +9,12 @@ local log = mist.Logger:new("CTLDUtils", "info")
 function M.getLogisticCentreZones(mission)
 	--mr: edit to take into account incrementel zone names for logistics centre location randomization e.g. "MM75 RSRlogisticsZone 02"
 	-- * = LUA string pattern match wildcard should work with missionUtils.getZoneNames() as function uses string.match
-    local zones = missionUtils.getZoneNames(mission, string.lower("RSRlogisticsZone 01")) --getZoneNames fucntion requires lowercase
+    local zones = missionUtils.getZoneNames(mission, string.lower("RSRlogisticsZone")) --getZoneNames fucntion requires lowercase
     log:info("RSRlogisticsZone zones in mission are $1", inspect(zones))
     return zones
 end
-
 function M.getRSRbaseCaptureZones (mission)
+
 	--mr: take into account zone name suffix to define airbase/FOB e.g. "MM75 RSRlogisticsZone FOB"
 	-- * = LUA string pattern match wildcard should work with missionUtils.getZoneNames() as function uses string.match --NOPE IT DOES NOT
 	-- DCS getZone function only returns zone position and radius based on name, therefore store complete zone details i.e. color
