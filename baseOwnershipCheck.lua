@@ -69,10 +69,12 @@ function M.getAllBaseOwnership(_firstTimeSetup,_passedBase,_playerORunit)
 	--[[
 		------------------------------------------------------------------------------------------------------------------------------------------------
 	--]]
-	elseif _passedBase ~= "none" then
-		
+	elseif _passedBase ~= "none" then -- if we pass the specific base to investigate will this improve performance?
+		-- not yet developed or in-use
+		-- baseCapturedHandler.lua: _passedBase = "none"
+		-- CTLD.lua: ctld.unpackLogisticsCentreCrates function: _passedBase = "none"
 	
-	else -- primarily for campaign and mission init when no baseName passed e.g. logisticsManager.lua -> spawnLogisticsCentre function in CTLD.lua
+	else -- primarily for campaign and mission init when no baseName passed i.e. logisticsManager.lua -> spawnLogisticsCentre function in CTLD.lua
 		if _playerORunit ~= "none" then 
 			local _conqueringUnit = ctld.getPlayerNameOrType(_playerORunit)
 		end	
@@ -92,7 +94,7 @@ function M.getAllBaseOwnership(_firstTimeSetup,_passedBase,_playerORunit)
 			if base:GetAirbaseCategory() == Airbase.Category.AIRDROME then
 				
 				local _currABowner = utils.getCurrABside(baseName)
-				local _ABlogisticsCentre = ctld.logisticCentreObjects.Airbases.baseName[1]
+				local _ABlogisticsCentre = ctld.logisticCentreObjects.baseName[1]
 				local _ABlogisticsCentreName = "noNAME"
 				local _ABlogisticsCentreSide = "noSIDE"
 				--[[
@@ -164,7 +166,7 @@ function M.getAllBaseOwnership(_firstTimeSetup,_passedBase,_playerORunit)
 			elseif base:GetAirbaseCategory() == Airbase.Category.HELIPAD then
 				
 				local _currFOBowner = utils.getCurrFOBside(baseName)
-				local _FOBlogisticsCentre = ctld.logisticCentreObjects.FOBs.baseName[1]
+				local _FOBlogisticsCentre = ctld.logisticCentreObjects.baseName[1]
 				local _FOBlogisticsCentreName = "noNAME"
 				local _FOBlogisticsCentreSide = "noSIDE"
 				--[[

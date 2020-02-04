@@ -234,6 +234,12 @@ ctld.vehicleTransportEnabled = {
     "C-130",
 }
 
+-- add to this list only if aircraft cannot transport vehicles, otherwise menu options duplicated
+ctld.interalCargoEnabled = {
+	"C-101CC",
+	"L-39ZA",
+	--"TF-51",
+}
 
 -- ************** Maximum Units SETUP for UNITS ******************
 
@@ -255,6 +261,7 @@ ctld.unitLoadLimits = {
     ["SA342L"] = 2,
     ["C-101CC"] = 1,
     ["L-39ZA"] = 1,
+	-- ["TF-51"] = 1,
 }
 
 
@@ -281,9 +288,10 @@ ctld.unitActions = {
     ["Ka-50"] = { crates = true, troops = false, internal = false },
     ["UH-1H"] = { crates = true, troops = true, internal = true },
     ["Mi-8MT"] = { crates = true, troops = true, internal = true },
-    ["C-101CC"] = { crates = true, troops = true, internal = true },
-    ["L-39ZA"] = { crates = true, troops = true, internal = true },
-	-- ["TF-51"] = { crates = true, troops = true, internal = true }, --mr: get proper name for TF-51.  Ask DEV team for other cargo planes they'd like added.
+	--allowing 'troops' necessary to allow cargo plane actions for internal cargo load/unload in absence of 'crates' allowance
+    ["C-101CC"] = { crates = false, troops = true, internal = true },
+    ["L-39ZA"] = { crates = false, troops = true, internal = true },
+	-- ["TF-51"] = { crates = false, troops = true, internal = true },
 }
 
 -- ************** INFANTRY GROUPS FOR PICKUP ******************
@@ -315,16 +323,13 @@ ctld.maximumDistFromFOBToRepair = 3000
 ctld.maximumDistFromAirbaseToRepair = 5000
 ctld.exclusionZoneFromBasesForFARPs = 20000 --20km
 
---mr: need to ensure country is part of neutral coalition e.g. Greece, as neutral static objects will not block DCS controlled rearm/refuel
+--need to ensure country is part of neutral coalition e.g. Greece, as neutral static objects will not block DCS controlled rearm/refuel
 ctld.neutralCountry = "Greece"
 
---mr: list populated upon spawning logistics centre static object with base name as index for Airbases/FOBs, and player name as index for FARPs
-ctld.logisticCentreObjects = 	
-{ 	
-	Airbases = {},
-	FOBs = {},
-	FARPs = {}				
-}	
+--list populated upon spawning logistics centre static object with base name as index for bases (Airbases/FOBs), and player name as index for FARPs
+--only 1 logisitics centre per base due to baseOwnershipCheck.lua reference i.e. ctld.logisticCentreObjects.baseName[1]
+--currently no restrictions on FARPs per player
+ctld.logisticCentreObjects = { }	
 
 -- ************** SPAWNABLE CRATES ******************
 -- Weights must be unique as we use the weight to change the cargo to the correct unit
@@ -461,6 +466,9 @@ ctld.spawnableCrates = {
         { weight = 503, desc = "FOB", unit = "FOB", internal = 1 },
     },
 }
+
+
+ctld.internalCratesOnly = ctld.spawnableCrates["Internal Cargo"]
 
 -- if the unit is on this list, it will be made into a JTAC when deployed
 ctld.jtacUnitTypes = {

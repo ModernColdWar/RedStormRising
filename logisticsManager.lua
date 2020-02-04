@@ -5,7 +5,7 @@ local M = {}
 
 local log = mist.Logger:new("LogisticsManager", "info")
 
-function M.spawnLogisticsBuildingForBase(baseName, sideName)
+function M.spawnLogisticsBuildingForBase(baseName, sideName, logisticsCentreName)
     log:info("Spawning Logistics Centre Static Object for $1 as owned by $2", baseName, sideName)
 	log:info("ctld.logisticCentreZones: $1",ctld.logisticCentreZones)
 	local _availLogiZones = {}
@@ -16,16 +16,25 @@ function M.spawnLogisticsBuildingForBase(baseName, sideName)
 			table.insert(_availLogiZones,logisticsZoneName)
         end
     end
+	
+	-- logistics centre built at mission start are not numbered e.g. "MM34 Logistics Centre red"
+	-- logistics centre built during mission are numbered e.g. "MM75 Logistics Centre #001 red".  Number set by ctld.getNextUnitId() in CTLD.lua.
+	local _staticObjectName = baseName .. " Logistics Centre " .. string.upper(sideName)
+	if logisticsCentreName ~= nil then
+		_staticObjectName = logisticsCentreName
+	end
+	
 	_availLogiZonesCount = #_availLogiZones
 	if _availLogiZonesCount > 0 then
 		-- math.randomseed(os.clock()) --not avail or needed: https://forums.eagle.ru/showthread.php?t=101098
-		local _randomLogiZoneNumber = math.random (1, _availLogiZonesCount)
+		local _randomLogiZoneNumber = 1
+		if _availLogiZonesCount > 1 then 
+			 = math.random (1, _availLogiZonesCount)
+		end
 		local _selectedLogiZone = _availLogiZones[_randomLogiZoneNumber]
-		local country = sideName == "red" and country.id.RUSSIA or country.id.USA --should RUSSIA be country.id.AGGRESSORS (USAF Aggressors)?
 		local point = ZONE:New(_selectedLogiZone):GetPointVec2()
-		--mr: add side to logistics centre name to allow static object to be neutral but be able to interogate name for coalition
-		--(_country, _point, _name, _coalition)
-		ctld.spawnLogisticsCentre(country, point, (baseName .. " Logistics Centre " .. string.upper(sideName)), utils.getSide(sideName)) 
+		--(_point, _name, _coalition, _baseORfarp, _baseORfarpName)
+		ctld.spawnLogisticsCentre(point, _staticObjectName, utils.getSide(sideName), "BASE", baseName) 
 		log:info("$1 Logistics Centre spawned at $2", sideName, _selectedLogiZone)
 		return
 	end
