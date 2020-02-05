@@ -8,21 +8,25 @@ local rsrConfig = require("RSR_config")
 local M = {}
 
 local log = mist.Logger:new("baseOwnershipCheck", "info")
-
+--[[
 local _firstTimeSetup = false
 local _passedBase = "none"
 local _playerORunit = "none"
 local _conqueringUnit = "none"
-			
+--]]			
 function M.getAllBaseOwnership(_firstTimeSetup,_passedBase,_playerORunit)
-    local baseOwnership = 	
-	{ 	
-		Airbases = { red = {}, blue = {}, neutral = {} },
-		FOBs = { red = {}, blue = {}, neutral = {} } 
-							
-	}			
+
+	if baseOwnership == nil then 
+		baseOwnership = 	
+		{ 	
+			Airbases = { red = {}, blue = {}, neutral = {} },
+			FOBs = { red = {}, blue = {}, neutral = {} } 
+								
+		}
+	end
 	--mr: intercept first time campaign setup here to read FOB ownership from Trigger Zone Name or Color
 	log:info("firstTimeSetup: $1",_firstTimeSetup)
+	log:info("_passedBase: $1",_passedBase)
 	if _firstTimeSetup then
 
 		--mr: assign by Trigger Zone color, i.e.  RGB values 0 to 1: [1,0,0] = red, [0,1,0] = green (netural), [0,0,1] = blue
@@ -31,7 +35,7 @@ function M.getAllBaseOwnership(_firstTimeSetup,_passedBase,_playerORunit)
 		for _k, _zone in ipairs(ctld.RSRbaseCaptureZones) do
 				local _zoneName  = _zone.name
 				local _RSRbaseCaptureZoneName = string.match(_zoneName,("^(.+)%sRSR")) --"MM75 RSRbaseCaptureZone FOB" = "MM75" i.e. from whitepace and RSR up
-				log:info("_RSRbaseCaptureZoneName: $1",_RSRbaseCaptureZoneName)
+				--log:info("_RSRbaseCaptureZoneName: $1",_RSRbaseCaptureZoneName)
 				local _baseType = string.match(_zoneName,("%w+$")) --"MM75 RSRbaseCaptureZone FOB" = "FOB"
 				local _baseTypes = ""
 				if _baseType == nil then
@@ -69,19 +73,18 @@ function M.getAllBaseOwnership(_firstTimeSetup,_passedBase,_playerORunit)
 	--[[
 		------------------------------------------------------------------------------------------------------------------------------------------------
 	--]]
-	elseif _passedBase ~= "none" then -- if we pass the specific base to investigate will this improve performance?
-		-- not yet developed or in-use
-		-- baseCapturedHandler.lua: _passedBase = "none"
-		-- CTLD.lua: ctld.unpackLogisticsCentreCrates function: _passedBase = "none"
-	
-	else -- primarily for campaign and mission init when no baseName passed i.e. logisticsManager.lua -> spawnLogisticsCentre function in CTLD.lua
+	elseif _passedBase == "none" then  --no base passsed, therefore search through all bases and check status
 		if _playerORunit ~= "none" then 
 			local _conqueringUnit = ctld.getPlayerNameOrType(_playerORunit)
 		end	
 		
-		for _k, base in ipairs(AIRBASE.GetAllAirbases()) do
+		for _k, base in ipairs(AIRBASE.GetAllAirbases()) do --MOOSE: AIRBASE.GetAllAirbases(coalition, category): Get all airbases of the current map. This includes ships and FARPS.
+			env.info("AIRBASE.GetAllAirbases: $1",AIRBASE.GetAllAirbases())
+			env.info("base: $1",base)	
 			local baseName = base:GetName()
+			env.info("baseName: $1",baseName)	
 			local DCScoalition = base:GetCoalition()
+			env.info("DCScoalition: $1",DCScoalition)		
 			local DCSsideName = utils.getDCSsideName(DCScoalition)
 			if DCSsideName == nil then
 				log:info("No side returned for $1; setting to neutral", baseName)
@@ -120,7 +123,7 @@ function M.getAllBaseOwnership(_firstTimeSetup,_passedBase,_playerORunit)
 							table.insert(baseOwnership.Airbases.neutral, baseName)
 							table.insert(baseOwnership.Airbases[_ABlogisticsCentreSide], baseName)
 							bases.configureForSide(baseName, _ABlogisticsCentreSide)  --slotBlocker.lua & pickupZoneManager.lua
-							bases.resupply(baseName, _ABlogisticsCentreSide, rsrConfig, false) --activate base defences but DO NOT spawn logistics
+							bases.resupply(baseName, _ABlogisticsCentreSide, rsrConfig, false, false) --activate base defences but DO NOT spawn logistics and NOT missionInit
 							trigger.action.outTextForCoalition(DCScoalition, baseName .. " claimed by " .. _ABlogisticsCentreSide .. " team following construction of Logistics Centre.", 10)
 						end
 					else
@@ -148,13 +151,13 @@ function M.getAllBaseOwnership(_firstTimeSetup,_passedBase,_playerORunit)
 								table.remove(baseOwnership.Airbases.blue, baseName)
 								table.insert(baseOwnership.Airbases.red, baseName)
 								bases.configureForSide(baseName, "red") --slotBlocker.lua & pickupZoneManager.lua
-								bases.resupply(baseName, "red", rsrConfig, false) --activate base defences but DO NOT spawn logistics
+								bases.resupply(baseName, "red", rsrConfig, false, false) --activate base defences but DO NOT spawn logistics and NOT missionInit
 								trigger.action.outText(baseName .. " has been captured by a red " .. _conqueringUnit, 10)
 							elseif DCSsideName == "blue" and _currABowner == "red" then
 								table.remove(baseOwnership.Airbases.red, baseName)
 								table.insert(baseOwnership.Airbases.blue, baseName)
 								bases.configureForSide(baseName, "blue") --slotBlocker.lua & pickupZoneManager.lua
-								bases.resupply(baseName, "blue", rsrConfig, false) --activate base defences but DO NOT spawn logistics
+								bases.resupply(baseName, "blue", rsrConfig, false, false) --activate base defences but DO NOT spawn logistics and NOT missionInit
 								trigger.action.outText(baseName .. " has been captured by a blue " .. _conqueringUnit, 10)
 							end
 						end
@@ -206,7 +209,7 @@ function M.getAllBaseOwnership(_firstTimeSetup,_passedBase,_playerORunit)
 							trigger.action.outTextForCoalition(DCScoalition, baseName .. " FOB claimed by " .. _FOBlogisticsCentreSide
 							.. " team following construction of Logistics Centre by " .. _conqueringUnit, 10) --_conqueringUnit = playerName
 							bases.configureForSide(baseName, _FOBlogisticsCentreSide) --slotBlocker.lua & pickupZoneManager.lua
-							bases.resupply(baseName, _FOBlogisticsCentreSide, rsrConfig, false) --activate base defences (FARP trucks) but DO NOT spawn logistics
+							bases.resupply(baseName, _FOBlogisticsCentreSide, rsrConfig, false, false) --activate base defences (FARP trucks) but DO NOT spawn logistics and NOT missionInit
 								
 						end
 					else
@@ -226,13 +229,21 @@ function M.getAllBaseOwnership(_firstTimeSetup,_passedBase,_playerORunit)
 							table.remove(baseOwnership.FOBs[_currFOBowner], baseName)
 							table.insert(baseOwnership.FOBs.neutral, baseName)
 							bases.configureForSide(baseName, "neutral") --slotBlocker.lua & pickupZoneManager.lua
-							-- bases.resupply(baseName, "neutral", rsrConfig, false) -- DO NOT spawn logistics and no neutral FARP trucks
+							-- bases.resupply(baseName, "neutral", rsrConfig, false, false) -- COMMENTED OUT = DO NOT spawn logistics and no neutral FARP trucks
 							--trigger.action.outText(baseName .. " neutralized.", 10) --Should either or both teams receive a notification that FOB has been neutralized?
 						end
 					end
 				end
 			end
 		end
+		
+	else -- baseName passed
+		-- no need to check anything for campaign and mission init 
+		-- do we need to check ownership when building a new CC?  Yes for FOB claim!
+		-- if we pass the baseName i.e. logisticsManager.lua -> spawnLogisticsCentre function in CTLD.lua, can we improve performance?
+		-- baseCapturedHandler.lua: _passedBase = "none" => check all bases due to DCS baseCaptured EH detecting base ownership change 
+		-- CTLD.lua: ctld.spawnLogisticsCentre function: _passedBase = "none" =>
+
 	end
     log:info("baseOwnership = $1", inspect(baseOwnership, { newline = " ", indent = "" }))
     return baseOwnership

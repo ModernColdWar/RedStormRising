@@ -5,6 +5,7 @@ require ("Moose")
 local bases = require("bases")
 local state = require("state")
 local utils = require("utils")
+local updateSpawnQueue = require("updateSpawnQueue")
 
 local log = mist.Logger:new("Persistence", "info")
 
@@ -100,7 +101,7 @@ function M.spawnGroup(groupData)
 
     utils.setGroupControllerOptions(spawnedGroup)
 
-    state.pushSpawnQueue(groupName)
+    updateSpawnQueue.pushSpawnQueue(groupName)
     local playerName = utils.getPlayerNameFromGroupName(groupName)
     if playerName ~= nil then
         -- we have "old" groups without player names present
@@ -193,7 +194,7 @@ function M.onMissionStart(rsrConfig)
             local playerName = ctld.getPlayerNameOrType(_args.unit)
             local groupName = _args.spawnedGroup:getName()
             log:info('Player $1 on $2 unpacked $3', playerName, sideName, groupName)
-            state.pushSpawnQueue(groupName)
+            updateSpawnQueue.pushSpawnQueue(groupName)
             M.addGroupOwnership(M.groupOwnership, sideName, playerName, groupName)
         end
     end)

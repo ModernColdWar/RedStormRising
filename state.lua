@@ -147,7 +147,10 @@ function M.copyFromCtld()
 end
 
 function M.updateBaseOwnership()
-    M.currentState.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(M.firstTimeSetup)
+	--(_firstTimeSetup,_passedBase,_playerORunit)
+	--firstTimeSetup will take priority over next two args
+	--_passedBase = "none" to initiate full check of all bases for persistance
+    M.currentState.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(M.firstTimeSetup,"none","none")
 end
 
 function M.getOwner(passedBase)

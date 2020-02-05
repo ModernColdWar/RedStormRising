@@ -10,7 +10,7 @@ local rsrConfig = require("RSR_config")
 local M = {}
 M.mapMarkers = {}
 
-local log = mist.Logger:new("Utils", "info")
+local log = mist.Logger:new("bases", "info")
 
 local allLateActivatedGroundGroups = SET_GROUP:New()
                                               :FilterCategories("ground")
@@ -75,14 +75,15 @@ function M.configureForSide(baseName, sideName)
     pickupZoneManager.configurePickupZonesForBase(baseName, sideName)
 end
 
-function M.resupply(baseName, sideName, rsrConfig, spawnLC)
+function M.resupply(baseName, sideName, rsrConfig, spawnLC, missionInit)
     log:info("Configuring $1 resupplied by $2", baseName, sideName)
     if checkNeutral(baseName, sideName) then
         return
     end
     activateBaseDefences(baseName, sideName, rsrConfig)
 	if spawnLC then 
-		logisticsManager.spawnLogisticsBuildingForBase(baseName, sideName)
+		log:info("PRE-logisticsManager: baseName $1 sideName $2 missionInit $3", baseName, sideName, missionInit)
+		logisticsManager.spawnLogisticsBuildingForBase(baseName, sideName,"none", missionInit)
 	end
 end
 
@@ -94,10 +95,10 @@ function M.onMissionStart(baseName, sideName, rsrConfig, firstTimeSetup)
     end
     if firstTimeSetup then
         log:info("First time setup - resupplying")
-        M.resupply(baseName, sideName, rsrConfig)
+        M.resupply(baseName, sideName, rsrConfig, true, true)
     else
         log:info("Not first time setup - not doing any base resupply; only logistics")
-        logisticsManager.spawnLogisticsBuildingForBase(baseName, sideName)
+        logisticsManager.spawnLogisticsBuildingForBase(baseName, sideName,"none",true)
     end
 end
 

@@ -974,7 +974,7 @@ function ctld.spawnLogisticsCentreCrateStatic(_country, _point, _name)
     return _spawnedCrate
 end
 
-function ctld.spawnLogisticsCentre(_point, _name, _coalition, _baseORfarp, _baseORfarpName)
+function ctld.spawnLogisticsCentre(_point, _name, _coalition, _baseORfarp, _baseORfarpName, _isMissionInit)
 	
 	local _logiCentreType = ctld.logisticCentreL3
 	
@@ -1005,8 +1005,13 @@ function ctld.spawnLogisticsCentre(_point, _name, _coalition, _baseORfarp, _base
 				
 	-- use baseName as index for logistic centres, as should only be 1 x logistics centre per airbase/FOB at one time?
 	-- use playerName as index for FARPs?  Limit 1 x FARP per player?
-	table.insert(ctld.logisticCentreObjects[_baseORfarpName],_spawnedLogiCentreObject)
+	log:info("ctld.logisticCentreObjects $1", ctld.logisticCentreObjects)
 	
+	if ctld.logisticCentreObjects[_baseORfarpName] == nil then
+		table.insert(ctld.logisticCentreObjects,{[_baseORfarpName] = _spawnedLogiCentreObject}) --on mission init, key for base won't exist yet in ctld.logisticCentreObjects
+	else
+		table.insert(ctld.logisticCentreObjects[_baseORfarpName], _spawnedLogiCentreObject) -- during normal gameplay, updating pre-existing key for each base
+	end
 	-- Tank1:HandleEvent( EVENTS.Dead ) -- MOOSE DEAD eventHandler for logisitics centre -> baseOwnershipCheck -> no slot at neutral FOBs
 	--[[
 		mist.dynAddStatic => addStaticObject
@@ -1023,19 +1028,23 @@ function ctld.spawnLogisticsCentre(_point, _name, _coalition, _baseORfarp, _base
 	
 	--[[
 		initate checking all bases for differences = 
-		baseOwnershipCheck.lua & Airbases: logistics centre building should produce any 
-		baseOwnershipCheck.lua & FOBs: logistics centre building should initiate claim and assoc. messages
+			> baseOwnershipCheck.lua & Airbases: contruction of logistics centre should not produce any updates to ownership, only its absence when uncontested by enemy
+			> baseOwnershipCheck.lua & FOBs: contructions of logistics centre claims uncontested FOB
 		false = not firstTimeSetup which is only set true by state.lua for persistance
-		_aircraft = for teeam notification of which friendly player captured FOB = encourage logisitics
-		will also return baseOwnership table even though not needed
+		_aircraft = for team notification of which friendly player captured FOB = encourage logisitics
 		by-passed during campaign and mission init i.e. logisticsManager.lua -> spawnLogisticsCentre
+		will also return baseOwnership table even though not needed
 	--]]
-	if _baseORfarp ~= "FARP" then
-		baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(false,"none",_aircraft)
-		-- inefficient to check ALL bases given base known?  Should just pass base and update baseOwnershipCheck.lua for specific change
-		--baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(false,_baseNameORplayerName,_aircraft)
+	
+	-- Passing baseName prevents checking all bases in baseOwnershipCheck.lua
+	-- check through all bases for now during mission as logistics centres at FOBs claims FOB
+	local _skipBaseCheck = "none"
+	if _isMissionInit then
+		_skipBaseCheck = _baseORfarpName
 	end
-
+	log:info("_isMissionInit: $1, _skipBaseCheck: $2",_isMissionInit,_skipBaseCheck)
+	baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(false,_skipBaseCheck,"none")
+		
     return _spawnedLogiCentreObject
 end
 
@@ -1559,19 +1568,21 @@ function ctld.loadUnloadFOBCrate(_args)
 	if (_nearestLogisticsCentreName ~= "NoFriendlyLC") then 
 		_nearestLogisticsCentreSideName = _aircraftSideName
 	end
-
+	
+	local _logisticsCentreName = ""
+	
     local _crateOnboard = ctld.inTransitFOBCrates[_aircraft:getName()] ~= nil
 	
 	--Q: what about deployable FARPs? A: Should not be able to get logistics centre crates from deployable FARPs
 	--mr: need to add checks for existance of logistics centre AND if it's friendly!
 	if _crateOnboard == false then
 		if -- load crate without requiring deployment if no current crate onboard, regardless of aircraft type
-			(_nearestLogisticsCentreDist <= ctld.maximumDistanceLogistic) and 
+			(_nearestLogisticsCentreDist <= ctld.maximumDistanceLogistic) and -- ctld.maximumDistanceLogistic = 200
 			(_aircraftSideName == _nearestLogisticsCentreSideName) then
 			
-			ctld.displayMessageToGroup(_aircraft, "Logistics Centre crate Loaded", 10)
+			ctld.displayMessageToGroup(_aircraft, "Logistics Centre crate loaded", 10)
 			ctld.inTransitFOBCrates[_aircraft:getName()] = true
-			trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " loaded a Logistics Centre crate ready for delivery!", 10)
+			trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " loaded a Logistics Centre crate for transport!", 10)
 		
 		elseif  -- planes only needs to be in a base with an alive logisitics centre
 			_isPlane == true and 
@@ -1579,9 +1590,9 @@ function ctld.loadUnloadFOBCrate(_args)
 			(_nearestLogisticsCentreName == _closestBaseName) and 
 			(_aircraftSideName == _nearestLogisticsCentreSide) then
 		
-			ctld.displayMessageToGroup(_aircraft, "Logistics Centre crate Loaded", 10)
+			ctld.displayMessageToGroup(_aircraft, "Logistics Centre crate loaded", 10)
 			ctld.inTransitFOBCrates[_aircraft:getName()] = true
-			trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " loaded a Logistics Centre crate ready for delivery!", 10)
+			trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " loaded a Logistics Centre crate for transport!", 10)
 		
 		else
 		-- search area for logistics centre crate and load, regardless of aircraft type
@@ -1595,7 +1606,7 @@ function ctld.loadUnloadFOBCrate(_args)
 				ctld.displayMessageToGroup(_aircraft, "Logistics Centre crate loaded", 10)
 				ctld.inTransitFOBCrates[_aircraft:getName()] = true
 
-				trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " loaded a Logistics Centre crate ready for delivery!", 10)
+				trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " loaded a Logistics Centre crate for transport!", 10)
 
 				if _aircraftSide == 1 then
 					ctld.droppedFOBCratesRED[_nearestCrate.crateUnit:getName()] = nil
@@ -1607,7 +1618,7 @@ function ctld.loadUnloadFOBCrate(_args)
 				_nearestCrate.crateUnit:destroy()
 
 			else
-				ctld.displayMessageToGroup(_aircraft, "There are no friendly Logistic Centres nearby to load a Logistics Centre crate from!", 10)
+				ctld.displayMessageToGroup(_aircraft, "There are no friendly Logistic Centres nearby from which to load a Logistics Centre crate!", 10)
 			end
 		end	
     end
@@ -1621,7 +1632,7 @@ function ctld.loadUnloadFOBCrate(_args)
 		if _inFARPexclusionZone == true and _inBaseZoneAndRSRrepairRadius == false then
 			local _aircraftDistRSR = _RSRradius - _closestBaseDist
 			ctld.displayMessageToGroup(_aircraft, "WARNING: You are too far from " .. _closestBaseName .. mist.utils.round((_aircraftDistRSR/1000),1) 
-			.. "for a repair and too close (<" .. (ctld.exclusionZoneFromBasesForFARPs/1000) .. ") to deploy a FARP!", 20)
+			.. "for a repair and too close (<" .. mist.utils.round((ctld.exclusionZoneFromBasesForFARPs/1000),1) .. ") to deploy a FARP!", 20)
 		end
 		
 		-- if player not in FARP exclusion zone then proximity to base irrelevant as too far to matter
@@ -1655,7 +1666,7 @@ function ctld.loadUnloadFOBCrate(_args)
 				ctld.droppedFOBCratesBLUE[_name] = _name
 			end
 
-			trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " delivered a Logistics Centre Crate", 10)
+			trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " delivered a Logistics Centre crate", 10)
 
 			ctld.displayMessageToGroup(_aircraft, "Delivered Logistics Centre crate 60m at 6'oclock to you", 10)
 			
@@ -1665,7 +1676,9 @@ function ctld.loadUnloadFOBCrate(_args)
 			(_closestBaseSide == _aircraftSideName) and
 			(_nearestLogisticsCentreName ~= _closestBaseName) then -- no logisitics centre at current base
 			
-			logisticsManager.spawnLogisticsBuildingForBase(_closestBaseName,_aircraftSideName)
+			_logisticsCentreName = _logisticsCentreName .. _closestBaseName .. " Logistics Centre #" .. _unitId .. _closestBaseSide -- "MM75 Logistics Centre #001 red"
+			
+			logisticsManager.spawnLogisticsBuildingForBase(_closestBaseName,_aircraftSideName,_logisticsCentreName,false)
 			trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " has repaired the Logistics Centre at " .. _closestBaseName, 10)
 			
 		elseif 
@@ -1937,7 +1950,7 @@ function ctld.checkCargoStatus(_args)
     if _onboard == nil then
 
         if ctld.inTransitFOBCrates[_heli:getName()] == true then
-            ctld.displayMessageToGroup(_heli, "1 x Logistics Centre crate loaded", 10)
+            ctld.displayMessageToGroup(_heli, "Logistics Centre crate loaded", 10)
         else
             ctld.displayMessageToGroup(_heli, "No troops onboard", 10)
         end
@@ -1965,7 +1978,7 @@ function ctld.checkCargoStatus(_args)
             ctld.displayMessageToGroup(_heli, _txt, 10)
         else
             if ctld.inTransitFOBCrates[_heli:getName()] == true then
-                ctld.displayMessageToGroup(_heli, "1 x Logistics Centre crate loaded", 10)
+                ctld.displayMessageToGroup(_heli, "Logistics Centre crate loaded", 10)
             else
                 ctld.displayMessageToGroup(_heli, "No troops loaded", 10)
             end
@@ -2492,7 +2505,7 @@ function ctld.unpackCrates(_arguments)
 
             local _crates = ctld.getCratesAndDistance(_heli)
             local _crate = ctld.getClosestCrate(_heli, _crates)
-			
+
 			local _friendlyLogisticsCentreProximity = ctld.friendlyLogisticsCentreProximity(_heli)
 			local _nearestLogisticsCentreName = _friendlyLogisticsCentreProximity[1]
 			local _nearestLogisticsCentreDist = _friendlyLogisticsCentreProximity[2]
@@ -2510,9 +2523,14 @@ function ctld.unpackCrates(_arguments)
 
             if _crate ~= nil and _crate.dist < 750
                     and (_crate.details.unit == "FOB" or _crate.details.unit == "FOB-SMALL") then
-
-                ctld.unpackLogisticsCentreCrates(_crates, _heli)
-
+					
+					if _nearestLogisticsCentreDist > ctld.friendlyLogisiticsCentreSpacing then
+						ctld.unpackLogisticsCentreCrates(_crates, _heli) --will conduct FARP exclusion zone checks
+					else
+						ctld.displayMessageToGroup(_heli, "An existing friendly logisitics centre (" 
+						.. mist.utils.round(((ctld.friendlyLogisiticsCentreSpacing - _nearestLogisticsCentreDist)/1000),1) .. "km)"
+						.. " is too close to allow deploying this FARP!", 20)
+					end
                 return
 
             elseif _crate ~= nil and _crate.dist < 200 then
@@ -2659,7 +2677,7 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
 		local _aircraftDistRSR = _RSRradius - _closestBaseDist
 			-- log:info("$1 too close to $2 for FARP but not close enough for repair",_baseNameORplayerName, _closestBase)
 			ctld.displayMessageToGroup(_aircraft, "You are too far from " .. _baseName .. mist.utils.round((_aircraftDistRSR/1000),1) 
-			.. "for a repair and too close (<" .. (ctld.exclusionZoneFromBasesForFARPs/1000) .. ") to deploy a FARP", 20)
+			.. "for a repair and too close (<" .. mist.utils.round((ctld.exclusionZoneFromBasesForFARPs/1000),1) .. ") to deploy a FARP", 20)
 		return --abort logistics crate unpack
 	end
 
@@ -2772,7 +2790,7 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
 				>>>>> logistic centre name will inlcude team name (red/blue) therefore 'replacement = destroy' with same name only useful for airbase "repair"
 			--]]
 			_logisticsCentreName = _logisticsCentreName .. _baseNameORplayerName .. " Logistics Centre #" .. _unitId .. _side -- "MM75 Logistics Centre #001 red"
-			logisticsManager.spawnLogisticsBuildingForBase(_closestBaseName,_aircraftSideName,_logisticsCentreName)
+			logisticsManager.spawnLogisticsBuildingForBase(_closestBaseName,_aircraftSideName,_logisticsCentreName,false)
 			trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " has repaired the Logistics Centre at " .. _closestBaseName, 10)
 		end
 
@@ -2789,7 +2807,7 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
 end
 
 --copy of ctld.dropSlingCrate but without fake sling loading references
-function ctld.unloadInternalCrate
+function ctld.unloadInternalCrate (_args)
 	local _heli = ctld.getTransportUnit(_args[1])
 
     if _heli == nil or (ctld.internalCargo == true) then
@@ -2817,6 +2835,7 @@ function ctld.unloadInternalCrate
         local _side = _heli:getCoalition()
         local _name = string.format("%s #%i", _currentCrate.desc, _unitId)
 		local _isLogisticsCentreCrate = (_crate.details.unit == "FOB" or _crate.details.unit == "FOB-SMALL") 
+		local _logisticsCentreName = ""
 		
 		--JTAC or any other internal crate
 		if not _isLogisticsCentreCrate then
@@ -2865,7 +2884,8 @@ function ctld.unloadInternalCrate
 				(_closestBaseSide == _aircraftSideName) and
 				(_nearestLogisticsCentreName ~= _closestBaseName) then -- no logisitics centre at current base
 				
-				logisticsManager.spawnLogisticsBuildingForBase(_closestBaseName,_aircraftSideName)
+				_logisticsCentreName = _logisticsCentreName .. _baseNameORplayerName .. " Logistics Centre #" .. _unitId .. _side -- "MM75 Logistics Centre #001 red"
+				logisticsManager.spawnLogisticsBuildingForBase(_closestBaseName,_aircraftSideName,_logisticsCentreName,false)
 				trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " has repaired the Logistics Centre at " .. _closestBaseName, 10)
 			--]]
 			

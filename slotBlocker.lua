@@ -10,12 +10,12 @@ M.clientSet = SET_CLIENT:New()
                         :FilterOnce()
 
 local function disableSlot(groupName)
-    log:info("Disabling $1", groupName)
+    --log:info("Disabling $1", groupName)
     trigger.action.setUserFlag(groupName, 1)
 end
 
 local function enableSlot(groupName)
-    log:info("Enabling $1", groupName)
+    --log:info("Enabling $1", groupName)
     trigger.action.setUserFlag(groupName, 0)
 end
 

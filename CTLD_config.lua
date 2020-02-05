@@ -235,11 +235,20 @@ ctld.vehicleTransportEnabled = {
 }
 
 -- add to this list only if aircraft cannot transport vehicles, otherwise menu options duplicated
-ctld.interalCargoEnabled = {
+ctld.internalCargoEnabled = {
 	"C-101CC",
 	"L-39ZA",
 	--"TF-51",
 }
+--[[
+	TO ADD
+	both Spitfires
+	FW-190A8
+	FW-190D9
+	both P-51's
+	I-16
+	Bf-109k4
+--]]
 
 -- ************** Maximum Units SETUP for UNITS ******************
 
@@ -322,6 +331,7 @@ ctld.logisticCentreL3 = ".Command Center"
 ctld.maximumDistFromFOBToRepair = 3000
 ctld.maximumDistFromAirbaseToRepair = 5000
 ctld.exclusionZoneFromBasesForFARPs = 20000 --20km
+ctld.friendlyLogisiticsCentreSpacing = 20000 --20km
 
 --need to ensure country is part of neutral coalition e.g. Greece, as neutral static objects will not block DCS controlled rearm/refuel
 ctld.neutralCountry = "Greece"
