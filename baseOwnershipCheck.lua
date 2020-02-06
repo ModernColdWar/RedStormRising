@@ -77,23 +77,20 @@ function M.getAllBaseOwnership(_firstTimeSetup,_passedBase,_playerORunit)
 		if _playerORunit ~= "none" then 
 			local _conqueringUnit = ctld.getPlayerNameOrType(_playerORunit)
 		end	
-		
-		for _k, base in ipairs(AIRBASE.GetAllAirbases()) do --MOOSE: AIRBASE.GetAllAirbases(coalition, category): Get all airbases of the current map. This includes ships and FARPS.
-			env.info("AIRBASE.GetAllAirbases: $1",AIRBASE.GetAllAirbases())
-			env.info("base: $1",base)	
+		--MOOSE not working!
+		--MOOSE: AIRBASE.GetAllAirbases(coalition, category): Get all airbases of the current map. This includes ships and FARPS.
+		for _k, base in ipairs(AIRBASE.GetAllAirbases()) do
+			env.info("baseOwnershipCheck: AIRBASE.GetAllAirbases: $1",AIRBASE.GetAllAirbases())
+			env.info("baseOwnershipCheck: base: $1",base)	
 			local baseName = base:GetName()
-			env.info("baseName: $1",baseName)	
 			local DCScoalition = base:GetCoalition()
-			env.info("DCScoalition: $1",DCScoalition)		
 			local DCSsideName = utils.getDCSsideName(DCScoalition)
 			if DCSsideName == nil then
 				log:info("No side returned for $1; setting to neutral", baseName)
 				DCSsideName = "neutral"
 			end
-			
-			--mr: intercept to respect previous logistics centre ownership for all bases (airbase/FOB) = allow spawning (no slot blocking) even when base contested
-			--mr: check DCSsideName as determined by DCS, against current baseOwnership setting determined by RSR.  If mismatch, then detect current CC owner to determine true owner.
 			-- feature? consider adding ~10min LOCKDOWN to prevent fast capture-recapture problems = base added to LOCKDOWN global array upon capture
+			--if base:GetDesc().category == Airbase.Category.AIRDROME then
 			if base:GetAirbaseCategory() == Airbase.Category.AIRDROME then
 				
 				local _currABowner = utils.getCurrABside(baseName)
@@ -109,6 +106,7 @@ function M.getAllBaseOwnership(_firstTimeSetup,_passedBase,_playerORunit)
 						to convert Airbase to teams side and subsequently allow capture.
 					> Friendly CC presence doesn't matter to claim Airbases, only that previous enemy CC is dead.
 				--]]
+				--check DCSsideName as determined by DCS, against current baseOwnership setting determined by RSR.  If mismatch, then detect current CC owner to determine true owner.
 				if _currABowner ~= DCSsideName then
 					-- allows for neutral airbases!  but need to ensure they revert to neutral on CC destroy. 
 					-- Check against RSRbaseCaptureZone color at campaign init
@@ -246,6 +244,7 @@ function M.getAllBaseOwnership(_firstTimeSetup,_passedBase,_playerORunit)
 
 	end
     log:info("baseOwnership = $1", inspect(baseOwnership, { newline = " ", indent = "" }))
+	env.info("baseOwnershipCheck: AIRBASE.GetAllAirbases: $1",AIRBASE.GetAllAirbases())
     return baseOwnership
 end
 

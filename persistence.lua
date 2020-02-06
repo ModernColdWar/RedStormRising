@@ -62,6 +62,7 @@ local function persistState(rsrConfig)
         state.handleSpawnQueue()
         state.copyFromCtld()
         state.updateBaseOwnership()
+		env.info("Persistance: AIRBASE.GetAllAirbases: $1",AIRBASE.GetAllAirbases()) --mrDEBUG
     end)
     if status then
         log:info("Number of persistent groups at save is $1", #state.currentState.persistentGroupData)

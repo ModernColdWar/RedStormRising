@@ -2299,7 +2299,7 @@ end
 --mr: Improve this list to be more informative i.e. logistics centres @ airbases Vs FOBs Vs FARPs + simple map grid or base name
 function ctld.listFOBS(_args)
 
-    local _msg = "FOB Positions:"
+    local _msg = "FARP Positions:"
 
     local _heli = ctld.getTransportUnit(_args[1])
 
@@ -2314,11 +2314,11 @@ function ctld.listFOBS(_args)
 
     -- now check spawned fobs
     for _, _fob in ipairs(_fobs) do
-        _msg = string.format("%s\nFOB @ %s", _msg, ctld.getFOBPositionString(_fob))
+        _msg = string.format("%s\nFARP @ %s", _msg, ctld.getFOBPositionString(_fob))
     end
 
-    if _msg == "FOB Positions:" then
-        ctld.displayMessageToGroup(_heli, "Sorry, there are no active FOBs!", 20)
+    if _msg == "FARP Positions:" then
+        ctld.displayMessageToGroup(_heli, "Sorry, there are no active FARPs!", 20)
     else
         ctld.displayMessageToGroup(_heli, _msg, 20)
     end
@@ -2754,8 +2754,9 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
 				--(_point, _name, _coalition (only for construction message), _baseORfarp, _baseORfarpName)
 				local _newLogisticCentre = ctld.spawnLogisticsCentre(_args[1], _args[2], _args[3], "FARP", _args[4])
 
+				--only deployed FARPs get radio beacon
 				ctld.beaconCount = ctld.beaconCount + 1
-				local _radioBeaconName = "Logistics Centre Beacon #" .. ctld.beaconCount
+				local _radioBeaconName = "FARP Beacon #" .. ctld.beaconCount
 				local _radioBeaconDetails = ctld.createRadioBeacon(_args[1], _args[3], _args[5], _radioBeaconName, nil, true)
 				ctld.fobBeacons[_name] = { vhf = _radioBeaconDetails.vhf, uhf = _radioBeaconDetails.uhf, fm = _radioBeaconDetails.fm }
 
@@ -4786,7 +4787,7 @@ function ctld.addF10MenuOptions(_unitName)
 
 						if ctld.enabledFOBBuilding and ctld.staticBugWorkaround == false then
 							missionCommands.addCommandForGroup(_groupId, "Load / Unload Logistics Centre crate", _vehicleCommandsPath, ctld.loadUnloadFOBCrate, { _unitName })
-							missionCommands.addCommandForGroup(_groupId, "List Logistic Centres", _vehicleCommandsPath, ctld.listFOBS, { _unitName })
+							missionCommands.addCommandForGroup(_groupId, "List FARPs", _vehicleCommandsPath, ctld.listFARPs, { _unitName })
 						end
 						--missionCommands.addCommandForGroup(_groupId, "Load / Unload JTAC crate", _vehicleCommandsPath, ctld.loadUnloadJTACCrate, { _unitName })
 						missionCommands.addCommandForGroup(_groupId, "List Nearby Crates", _vehicleCommandsPath, ctld.listNearbyCrates, { _unitName })
@@ -4799,7 +4800,7 @@ function ctld.addF10MenuOptions(_unitName)
 						local _internalCargoCommandsPath = missionCommands.addSubMenuForGroup(_groupId, "Internal Cargo", _rootPath)
 						if ctld.enabledFOBBuilding and ctld.staticBugWorkaround == false then
 							missionCommands.addCommandForGroup(_groupId, "Load / Unload Logistics Centre crate", _internalCargoCommandsPath, ctld.loadUnloadFOBCrate, { _unitName })
-							missionCommands.addCommandForGroup(_groupId, "List Logistic Centres", _internalCargoCommandsPath, ctld.listFOBS, { _unitName })
+							missionCommands.addCommandForGroup(_groupId, "List FARPs", _internalCargoCommandsPath, ctld.listFARPs, { _unitName })
 						end
 						--missionCommands.addCommandForGroup(_groupId, "Load / Unload JTAC crate", _internalCargoCommandsPath, ctld.loadUnloadJTACCrate, { _unitName })
 						missionCommands.addCommandForGroup(_groupId, "List Nearby Crates", _internalCargoCommandsPath, ctld.listNearbyCrates, { _unitName })
@@ -4836,7 +4837,7 @@ function ctld.addF10MenuOptions(_unitName)
 							missionCommands.addCommandForGroup(_groupId, "List Nearby Crates", _crateCommands, ctld.listNearbyCrates, { _unitName })
 
 							if ctld.enabledFOBBuilding then
-								missionCommands.addCommandForGroup(_groupId, "List Logistic Centres", _crateCommands, ctld.listFOBS, { _unitName })
+								missionCommands.addCommandForGroup(_groupId, "List FARPs", _crateCommands, ctld.listFARPs, { _unitName })
 							end
 						end
                     end

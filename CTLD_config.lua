@@ -238,7 +238,19 @@ ctld.vehicleTransportEnabled = {
 ctld.internalCargoEnabled = {
 	"C-101CC",
 	"L-39ZA",
-	--"TF-51",
+	"MiG-15bis",
+	"F-86F Sabre",
+	"TF-51D",
+	"Bf-109K-4",
+	"FW-190D9",
+	"FW-190A8",
+	"I-16",
+	"SpitfireLFMkIX",
+	"SpitfireLFMkIXCW",
+	"P-51D",
+	"P-51D-30-NA",
+	"Christen Eagle II",
+	"Yak-52"
 }
 --[[
 	TO ADD
@@ -266,11 +278,22 @@ ctld.unitLoadLimits = {
     ["Mi-8MT"] = 20,
     ["SA342M"] = 2,
     ["CH-47D"] = 33,
-    ["SA342Mistral"] = 1,
     ["SA342L"] = 2,
     ["C-101CC"] = 1,
     ["L-39ZA"] = 1,
-	-- ["TF-51"] = 1,
+	["MiG-15bis"] = 1,
+	["F-86F Sabre"] = 1,
+	["TF-51D"] = 1,
+	["Bf-109K-4"] = 1,
+	["FW-190D9"] = 1,
+	["FW-190A8"] = 1,
+	["I-16"] = 1,
+	["SpitfireLFMkIX"] = 1,
+	["SpitfireLFMkIXCW"] = 1,
+	["P-51D"] = 1,
+	["P-51D-30-NA"] = 1,
+	["Christen Eagle II"] = 1,
+	["Yak-52"] = 1
 }
 
 
@@ -300,7 +323,19 @@ ctld.unitActions = {
 	--allowing 'troops' necessary to allow cargo plane actions for internal cargo load/unload in absence of 'crates' allowance
     ["C-101CC"] = { crates = false, troops = true, internal = true },
     ["L-39ZA"] = { crates = false, troops = true, internal = true },
-	-- ["TF-51"] = { crates = false, troops = true, internal = true },
+	["MiG-15bis"] = { crates = false, troops = true, internal = true },
+	["F-86F Sabre"] = { crates = false, troops = true, internal = true },
+	["TF-51D"] = { crates = false, troops = true, internal = true },
+	["Bf-109K-4"] = { crates = false, troops = true, internal = true },
+	["FW-190D9"] = { crates = false, troops = true, internal = true },
+	["FW-190A8"] = { crates = false, troops = true, internal = true },
+	["I-16"] = { crates = false, troops = true, internal = true },
+	["SpitfireLFMkIX"] = { crates = false, troops = true, internal = true },
+	["SpitfireLFMkIXCW"] = { crates = false, troops = true, internal = true },
+	["P-51D"] = { crates = false, troops = true, internal = true },
+	["P-51D-30-NA"] = { crates = false, troops = true, internal = true },
+	["Christen Eagle II"] = { crates = false, troops = true, internal = true },
+	["Yak-52"] = { crates = false, troops = true, internal = true }
 }
 
 -- ************** INFANTRY GROUPS FOR PICKUP ******************

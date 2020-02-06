@@ -4,7 +4,7 @@ local utils = require("utils")
 local rsrConfig = {}
 
  -- enables "developer mode"; removes crate spawning/unpacking restrictions, more frequent saves
-rsrConfig.devMode = true
+rsrConfig.devMode = false
 
 -- Event reporting for the n0xy bot
 rsrConfig.udpEventReporting = true
