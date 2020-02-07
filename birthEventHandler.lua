@@ -53,6 +53,7 @@ function M.BIRTH_EVENTHANDLER:_AddMissionInfoMenu(playerGroup)
     missionInfoMenu.addMenu(playerGroup, self.restartHours)
 end
 
+--luacheck: push no unused
 function M.BIRTH_EVENTHANDLER:_AddJTACStatusMenu(groupId, unitName)
     if ctld.JTAC_jtacStatusF10 then
         missionCommands.addCommandForGroup(groupId, "JTAC Status", nil, ctld.getJTACStatus, { unitName })
@@ -98,6 +99,7 @@ function M.BIRTH_EVENTHANDLER:_AddRadioListMenu(groupId, unitName)
         missionCommands.addCommandForGroup(groupId, "List Radio Beacons", nil, ctld.listRadioBeacons, { unitName })
     end
 end
+-- luacheck: pop
 
 function M.onMissionStart(restartHours)
     M.eventHandler = M.BIRTH_EVENTHANDLER:New(restartHours)

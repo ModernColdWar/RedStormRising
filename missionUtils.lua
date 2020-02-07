@@ -48,6 +48,7 @@ local function serialize(filename, name, object)
     print(name .. " serialized")
 end
 
+-- luacheck: globals warehouses
 function M.serializeMission(mission, missionDir)
     local dcsPath = os.getenv("DCS_PATH")
     if dcsPath == nil then

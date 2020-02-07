@@ -3485,6 +3485,7 @@ end
 
 
 -- spawn normal group
+-- luacheck: push no unused
 function ctld.spawnDroppedGroup(_point, _details, _spawnBehind, _maxSearch, _formation)
 
     local _groupName = _details.groupName
@@ -3562,6 +3563,7 @@ function ctld.spawnDroppedGroup(_point, _details, _spawnBehind, _maxSearch, _for
 
     return _spawnedGroup
 end
+-- luacheck: pop
 
 function ctld.findNearestEnemy(_side, _point, _searchDistance)
 
