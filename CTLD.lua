@@ -2360,7 +2360,7 @@ function ctld.unpackCrates(_arguments)
             local _crate = ctld.getClosestCrate(_heli, _crates)
 
             if (ctld.debug == false) then
-                if ctld.farEnoughFromLogisticZone(_heli) == false then
+                if ctld.canUnpackCrateGivenLogisticsUnits(_heli) == false then
                     return
                 end
             end
@@ -3939,8 +3939,8 @@ function ctld.inLogisticsZone(_heli)
 end
 
 
--- are far enough from a friendly logistics zone
-function ctld.farEnoughFromLogisticZone(_heli)
+-- are far enough from a friendly logistics zone, but not too far!
+function ctld.canUnpackCrateGivenLogisticsUnits(_heli)
 
     if ctld.inAir(_heli) then
         return false
@@ -3953,15 +3953,18 @@ function ctld.farEnoughFromLogisticZone(_heli)
         if _logistic ~= nil and _logistic:getCoalition() == _heli:getCoalition() then
             --get distance
             local _dist = ctld.getDistance(_heliPoint, _logistic:getPoint())
-            -- env.info("DIST ".._dist)
-            if _dist >= ctld.minimumDeployDistance then
-                return true
+            if _dist < ctld.minimumDeployDistance then
+                ctld.displayMessageToGroup(_heli, string.format("Cannot unpack crate: you are too close to a logistics building (%.fm vs minimum of %.fm)", _dist, ctld.minimumDeployDistance), 20)
+                return false
+            end
+            if _dist > ctld.maximumDeployDistance then
+                ctld.displayMessageToGroup(_heli, string.format("Cannot unpack crate: you are too far to a logistics building (%.fm vs maximum of %.fm)", _dist, ctld.maximumDeployDistance), 20)
+                return false
             end
         end
     end
 
-    ctld.displayMessageToGroup(_heli, "You can't unpack that here! Take it to where it's needed!", 20)
-    return false
+    return true
 end
 
 function ctld.refreshSmoke()
