@@ -2361,7 +2361,10 @@ function ctld.unpackCrates(_arguments)
 
             if (ctld.debug == false) then
                 if ctld.canUnpackCrateGivenLogisticsUnits(_heli) == false then
-                    return
+                    -- allow FOB unpacking regardless of location
+                    if _crate == nil or _crate.details.unit ~= "FOB" then
+                        return
+                    end
                 end
             end
 
