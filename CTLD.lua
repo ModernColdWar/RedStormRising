@@ -2361,7 +2361,6 @@ function ctld.unpackCrates(_arguments)
 
             if (ctld.debug == false) then
                 if ctld.farEnoughFromLogisticZone(_heli) == false then
-                    ctld.displayMessageToGroup(_heli, "You can't unpack that here! Take it to where it's needed!", 20)
                     return
                 end
             end
@@ -3949,25 +3948,20 @@ function ctld.farEnoughFromLogisticZone(_heli)
 
     local _heliPoint = _heli:getPoint()
 
-    local _farEnough = true
-
     for _, _name in pairs(ctld.logisticUnits) do
-
         local _logistic = StaticObject.getByName(_name)
-
         if _logistic ~= nil and _logistic:getCoalition() == _heli:getCoalition() then
-
             --get distance
             local _dist = ctld.getDistance(_heliPoint, _logistic:getPoint())
             -- env.info("DIST ".._dist)
-            if _dist <= ctld.minimumDeployDistance then
-                -- env.info("TOO CLOSE ".._dist)
-                _farEnough = false
+            if _dist >= ctld.minimumDeployDistance then
+                return true
             end
         end
     end
 
-    return _farEnough
+    ctld.displayMessageToGroup(_heli, "You can't unpack that here! Take it to where it's needed!", 20)
+    return false
 end
 
 function ctld.refreshSmoke()
