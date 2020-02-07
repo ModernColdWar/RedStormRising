@@ -1041,8 +1041,7 @@ function ctld.spawnCrate(_arguments)
 
             -- check crate spam
             if _heli:getPlayerName() ~= nil and ctld.crateWait[_heli:getPlayerName()] and ctld.crateWait[_heli:getPlayerName()] > timer.getTime() then
-
-                ctld.displayMessageToGroup(_heli, "Sorry you must wait " .. (ctld.crateWait[_heli:getPlayerName()] - timer.getTime()) .. " seconds before you can get another crate", 20)
+                ctld.displayMessageToGroup(_heli, string.format("Sorry you must wait %.f seconds before you can get another crate", ctld.crateWait[_heli:getPlayerName()] - timer.getTime()), 20)
                 return
             end
 
@@ -3961,7 +3960,7 @@ function ctld.canUnpackCrateGivenLogisticsUnits(_heli)
                 return false
             end
             if _dist > ctld.maximumDeployDistance then
-                ctld.displayMessageToGroup(_heli, string.format("Cannot unpack crate: you are too far to a logistics building (%.fm vs maximum of %.fm)", _dist, ctld.maximumDeployDistance), 20)
+                ctld.displayMessageToGroup(_heli, string.format("Cannot unpack crate: you are too far from a logistics building (%.fm vs maximum of %.fm)", _dist, ctld.maximumDeployDistance), 20)
                 return false
             end
         end
