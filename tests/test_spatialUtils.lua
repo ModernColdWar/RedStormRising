@@ -18,6 +18,27 @@ function TestSpatialUtils:testIsPointInZone()
     lu.assertIsFalse(spatialUtils.isPointInZone({ x = 70.8, z = 70.8 }, { x = 0, z = 0 }, 100))
 end
 
+function TestSpatialUtils:testFindNearest()
+    local points = { { x = 0, z = 0 }, { x = 1, z = 1 }, { x = 2, z = 2 } }
+
+    local idx, minDist = spatialUtils.findNearest({ x = -1, z = -1 }, points)
+    lu.assertEquals(idx, 1)
+    lu.assertAlmostEquals(minDist, 2)
+
+    local idx, minDist = spatialUtils.findNearest({ x = 0.4, z = 0.4 }, points)
+    lu.assertEquals(idx, 1)
+    lu.assertAlmostEquals(minDist, 0.32)
+
+    -- matches first found
+    local idx, minDist = spatialUtils.findNearest({ x = 0.5, z = 0.5 }, points)
+    lu.assertEquals(idx, 1)
+    lu.assertAlmostEquals(minDist, 0.5)
+
+    local idx, minDist = spatialUtils.findNearest({ x = 0.9, z = 0.9 }, points)
+    lu.assertEquals(idx, 2)
+    lu.assertAlmostEquals(minDist, 0.02)
+end
+
 local runner = lu.LuaUnit.new()
 os.exit(runner:runSuite())
 
