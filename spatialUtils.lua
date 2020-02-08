@@ -7,15 +7,15 @@ local function getDistSq(x1, y1, x2, y2)
 end
 
 function M.isPointInZone(point, zonePoint, zoneRadius)
-    return getDistSq(point.x, point.z, zonePoint.x, zonePoint.z) < zoneRadius * zoneRadius
+    return getDistSq(point.x, point.y, zonePoint.x, zonePoint.y) < zoneRadius * zoneRadius
 end
 
 function M.findNearest(point, points)
     local pX = point.x
-    local pY = point.z
+    local pY = point.y
     local minIdx, minDist
     for idx, p in pairs(points) do
-        local dist = getDistSq(pX, pY, p.x, p.z)
+        local dist = getDistSq(pX, pY, p.x, p.y)
         if minDist == nil or dist < minDist then
             minIdx = idx
             minDist = dist
