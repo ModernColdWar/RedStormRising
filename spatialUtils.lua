@@ -21,7 +21,7 @@ function M.findNearest(point, points)
             minDist = dist
         end
     end
-    return minIdx, minDist
+    return minIdx, minDist and math.sqrt(minDist) or nil
 end
 
 return M

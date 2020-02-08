@@ -23,20 +23,20 @@ function TestSpatialUtils:testFindNearest()
 
     local idx, minDist = spatialUtils.findNearest({ x = -1, y = -1 }, points)
     lu.assertEquals(idx, 1)
-    lu.assertAlmostEquals(minDist, 2)
+    lu.assertAlmostEquals(minDist, 1.414, 0.001)
 
     local idx, minDist = spatialUtils.findNearest({ x = 0.4, y = 0.4 }, points)
     lu.assertEquals(idx, 1)
-    lu.assertAlmostEquals(minDist, 0.32)
+    lu.assertAlmostEquals(minDist, 0.566, 0.001)
 
     -- matches first found
     local idx, minDist = spatialUtils.findNearest({ x = 0.5, y = 0.5 }, points)
     lu.assertEquals(idx, 1)
-    lu.assertAlmostEquals(minDist, 0.5)
+    lu.assertAlmostEquals(minDist, 0.707, 0.001)
 
     local idx, minDist = spatialUtils.findNearest({ x = 0.9, y = 0.9 }, points)
     lu.assertEquals(idx, 2)
-    lu.assertAlmostEquals(minDist, 0.02)
+    lu.assertAlmostEquals(minDist, 0.1414, 0.001)
 
     local idx, minDist = spatialUtils.findNearest({x=0, y=0}, {})
     lu.assertIsNil(idx)
