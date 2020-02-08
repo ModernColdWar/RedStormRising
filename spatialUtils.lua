@@ -24,4 +24,12 @@ function M.findNearest(point, points)
     return minIdx, minDist and math.sqrt(minDist) or nil
 end
 
+function M.findNearestBase(point)
+    local baseLocations = {}
+    for _, base in pairs(AIRBASE.GetAllAirbases()) do
+        baseLocations[base:GetName()] = base:GetVec2()
+    end
+    return M.findNearest(point, baseLocations)
+end
+
 return M
