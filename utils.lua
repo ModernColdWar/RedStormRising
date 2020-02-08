@@ -190,40 +190,40 @@ end
 
 
 
---searches for FOB name in baseOwnership nested table to determine currently assigned side
+--searches for FARP name in baseOwnership nested table to determine currently assigned side
 --mr: find more efficient way to transvere nested table
-function M.getCurrFOBside (_FOBname)
-	local _bOFOBside = "ERROR"
-	for _k, _b in pairs(baseOwnership.FOBs.red) do
-	  if _b == _FOBname then
-		_bOFOBside = "red"
+function M.getCurrFARPside (_FARPname)
+	local _bOFARPside = "ERROR"
+	for _k, _b in pairs(baseOwnership.FARPs.red) do
+	  if _b == _FARPname then
+		_bOFARPside = "red"
 		break
 	  end
 	end
 
-	if _bOFOBside == "ERROR" then
-		for _k, _b in pairs(baseOwnership.FOBs.blue) do
-		  if _b == _FOBname then
-			_bOFOBside = "blue"
+	if _bOFARPside == "ERROR" then
+		for _k, _b in pairs(baseOwnership.FARPs.blue) do
+		  if _b == _FARPname then
+			_bOFARPside = "blue"
 			break
 		  end
 		end
 	end
 	
-	if _bOFOBside == "ERROR" then
-		for _k, _b in pairs(baseOwnership.FOBs.neutral) do
-		  if _b == _FOBname then
-			_bOFOBside = "neutral"
+	if _bOFARPside == "ERROR" then
+		for _k, _b in pairs(baseOwnership.FARPs.neutral) do
+		  if _b == _FARPname then
+			_bOFARPside = "neutral"
 			break
 		  end
 		end
 	end
 	
-	if _bOFOBside == "ERROR" then 
-		log:error("$1 FOB not found in 'baseOwnership.FOBs' sides. Reporting as neutral to allow contested check.",_FOBname)
-		_bOFOBside = "neutral"
+	if _bOFARPside == "ERROR" then 
+		log:error("$1 FARP not found in 'baseOwnership.FARPs' sides. Reporting as neutral to allow contested check.",_FARPname)
+		_bOFARPside = "neutral"
 	end
-	return _bOFOBside
+	return _bOFARPside
 end	
 function M.getCurrABside (_ABname)
 	local _bOABside = "ERROR"
@@ -257,5 +257,73 @@ function M.getCurrABside (_ABname)
 		_bOABside = "neutral"
 	end
 	return _bOABside
+end
+function M.removeFARPownership (_FARPname)
+	local _FARPremoved = false
+	for _k, _b in pairs(baseOwnership.FARPs.red) do
+	  if _b == _FARPname then
+		table.remove(baseOwnership.FARPs.red,_k)
+		_FARPremoved = true
+		break
+	  end
+	end
+
+	if not _FARPremoved then
+		for _k, _b in pairs(baseOwnership.FARPs.blue) do
+		  if _b == _FARPname then
+			table.remove(baseOwnership.FARPs.blue,_k)
+			_FARPremoved = true
+			break
+		  end
+		end
+	end
+	
+	if not _FARPremoved then
+		for _k, _b in pairs(baseOwnership.FARPs.neutral) do
+		  if _b == _FARPname then
+			table.remove(baseOwnership.FARPs.neutral,_k)
+			_FARPremoved = true
+			break
+		  end
+		end
+	end
+	
+	if not _FARPremoved then 
+		log:error("$1 FARP not found in 'baseOwnership.FARPs' sides. No ownership record to remove.",_FARPname)
+	end
+end	
+function M.removeABownership (_ABname)
+	local _ABremoved = false
+	for _k, _b in pairs(baseOwnership.Airbases.red) do
+	  if _b == _ABname then
+		table.remove(baseOwnership.Airbases.red,_k)
+		_ABremoved = true
+		break
+	  end
+	end
+
+	if not _ABremoved then
+		for _k, _b in pairs(baseOwnership.Airbases.blue) do
+		  if _b == _ABname then
+			table.remove(baseOwnership.Airbases.blue,_k)
+			_ABremoved = true
+			break
+		  end
+		end
+	end
+	
+	if not _ABremoved then
+		for _k, _b in pairs(baseOwnership.Airbases.neutral) do
+		  if _b == _ABname then
+			table.remove(baseOwnership.Airbases.neutral,_k)
+			_ABremoved = true
+			break
+		  end
+		end
+	end
+	
+	if not _ABremoved then 
+		log:error("$1 Airbase not found in 'baseOwnership.Airbases' sides. No ownership record to remove.",_ABname)
+	end
 end	
 return M

@@ -22,7 +22,7 @@ local function getRadius(rsrConfig, base)
     if base:GetAirbaseCategory() == Airbase.Category.AIRDROME then
         return rsrConfig.baseDefenceActivationRadiusAirbase
     elseif base:GetAirbaseCategory() == Airbase.Category.HELIPAD then
-        return rsrConfig.baseDefenceActivationRadiusFOB
+        return rsrConfig.baseDefenceActivationRadiusFARP
     end
     return 0
 end

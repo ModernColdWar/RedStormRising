@@ -55,18 +55,18 @@ ctld.vehiclesForTransportBLUE = { "M1045 HMMWV TOW", "M1043 HMMWV Armament" } --
 ctld.spawnRPGWithCoalition = true --spawns a friendly RPG unit with Coalition forces
 ctld.spawnStinger = true -- spawns a stinger / igla soldier with a group of 6 or more soldiers!
 
-ctld.enabledFOBBuilding = true -- if true, you can load a crate INTO a C-130 than when unpacked creates a Forward Operating Base (FOB) which is a new place to spawn (crates) and carry crates from
+ctld.enabledFOBBuilding = true -- if true, you can load a crate INTO a C-130 than when unpacked creates a Logistics Centre which is a new place to spawn (crates) and carry crates from
 -- In future i'd like it to be a FARP but so far that seems impossible...
--- You can also enable troop Pickup at FOBS
+-- You can also enable troop Pickup at S
 
-ctld.cratesRequiredForFOB = 1 -- The amount of crates required to build a FOB. Once built, helis can spawn crates at this outpost to be carried and deployed in another area.
+ctld.cratesRequiredForLogisticsCentre = 1 -- The amount of crates required to build a Logistics Centre. Once built, helis can spawn crates at this outpost to be carried and deployed in another area.
 -- The large crates can only be loaded and dropped by large aircraft, like the C-130 and listed in ctld.vehicleTransportEnabled
--- Small FOB crates can be moved by helicopter. The FOB will require ctld.cratesRequiredForFOB larges crates and small crates are 1/3 of a large fob crate
--- To build the FOB entirely out of small crates you will need ctld.cratesRequiredForFOB * 3
+-- Small Logistics Centre crates can be moved by helicopter. The Logistics Centre will require ctld.cratesRequiredForLogisticsCentre larges crates and small crates are 1/3 of a large Logistics Centre crate
+-- To build the Logistics Centre entirely out of small crates you will need ctld.cratesRequiredForLogisticsCentre * 3
 
-ctld.troopPickupAtFOB = true -- if true, troops can also be picked up at a created FOB
+ctld.troopPickupAtFOB = true -- if true, troops can also be picked up at a created 
 
-ctld.buildTimeFARP = 60 --time in seconds for the FARP to be built
+ctld.buildTimeFOB = 60 --time in seconds for the FOB to be built
 
 ctld.crateWaitTime = 10 -- time in seconds to wait before you can spawn another crate
 
@@ -363,17 +363,17 @@ ctld.logisticCentreL1 = "FARP Tent"
 ctld.logisticCentreL2 = "outpost"
 ctld.logisticCentreL3 = ".Command Center"
 
-ctld.maximumDistFromFOBToRepair = 3000
+ctld.maximumDistFromFARPToRepair = 3000
 ctld.maximumDistFromAirbaseToRepair = 5000
-ctld.exclusionZoneFromBasesForFARPs = 20000 --20km
+ctld.exclusionZoneFromBasesForFOBs = 20000 --20km
 ctld.friendlyLogisiticsCentreSpacing = 20000 --20km
 
 --need to ensure country is part of neutral coalition e.g. Greece, as neutral static objects will not block DCS controlled rearm/refuel
 ctld.neutralCountry = "Greece"
 
---list populated upon spawning logistics centre static object with base name as index for bases (Airbases/FOBs), and player name as index for FARPs
+--list populated upon spawning logistics centre static object with base name as index for bases (Airbases/FARPs), and player name as index for s
 --only 1 logisitics centre per base due to baseOwnershipCheck.lua reference i.e. ctld.logisticCentreObjects.baseName[1]
---currently no restrictions on FARPs per player
+--currently no restrictions on FOBs per player
 ctld.logisticCentreObjects = { }	
 
 -- ************** SPAWNABLE CRATES ******************
@@ -508,7 +508,7 @@ ctld.spawnableCrates = {
     ["Internal Cargo"] = {
         { weight = 501, desc = "HMMWV - JTAC", unit = "Hummer", side = 2, cratesRequired = 1, internal = 1 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
         { weight = 502, desc = "UAZ - JTAC", unit = "UAZ-469", side = 1, cratesRequired = 1, internal = 1 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
-        { weight = 503, desc = "FOB", unit = "FOB", internal = 1 },
+        { weight = 503, desc = "Logistics Centre crate", unit = "LogisticsCentre", internal = 1 },
     },
 }
 

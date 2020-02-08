@@ -36,6 +36,8 @@ M.missionInitSetup = false
 -- mission init with no rsrState.json = campaign init = use zone name and color to determining starting base ownership
 M.campaignStartSetup = false
 
+M.canUseStateFromFile = false
+
 
 function M.getGroupData(groupName)
     local group = Group.getByName(groupName)
@@ -148,6 +150,9 @@ function M.updateBaseOwnership()
 		M.currentState.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(M.campaignStartSetup,"ALL","none")
 		M.campaignStartSetup = false -- only use map markers to setup bases ONCE, iterate through bases every other time
 	else
+		if M.missionInitSetup and M.canUseStateFromFile then
+			baseOwnership = M.currentState.baseOwnership -- broadcast global baseOwnership from file to then recheck
+		end
 		M.currentState.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(M.campaignStartSetup,"ALL","none")
 	end
 	log:info("M.currentState.baseOwnership $1", M.currentState.baseOwnership)
@@ -194,7 +199,6 @@ function M.getWinner()
 end
 
 function M.setCurrentStateFromFile(stateFileName)
-    local canUseStateFromFile = false
     if UTILS.FileExists(stateFileName) then
         local stateFromDisk = M.readStateFromDisk(stateFileName)
         if stateFromDisk == nil then
@@ -202,7 +206,7 @@ function M.setCurrentStateFromFile(stateFileName)
         end
         M.currentState = stateFromDisk
         if M.getWinner() == nil then
-            canUseStateFromFile = true
+            M.canUseStateFromFile = true
         else
             log:info("State file is from a victory - will not use")
         end
@@ -210,8 +214,8 @@ function M.setCurrentStateFromFile(stateFileName)
         log:info("No state file found")
     end
 
-    if not canUseStateFromFile then
-        log:info("Setting up from defaults in code, and base(airbase/FOB) ownership from 'RSRbaseCaptureZone Trigger' Zone color")
+    if not M.canUseStateFromFile then
+        log:info("Setting up from defaults in code, and base(airbase/FARP) ownership from 'RSRbaseCaptureZone Trigger' Zone color")
         M.missionInitSetup = true
 		M.campaignStartSetup = true
         M.currentState = mist.utils.deepCopy(M.defaultState)
