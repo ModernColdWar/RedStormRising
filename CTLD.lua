@@ -3949,7 +3949,7 @@ function ctld.canUnpackCrateGivenLogisticsUnits(_heli)
     end
 
     local _heliPoint = _heli:getPoint()
-
+    local _minDist
     for _, _name in pairs(ctld.logisticUnits) do
         local _logistic = StaticObject.getByName(_name)
         if _logistic ~= nil and _logistic:getCoalition() == _heli:getCoalition() then
@@ -3959,11 +3959,14 @@ function ctld.canUnpackCrateGivenLogisticsUnits(_heli)
                 ctld.displayMessageToGroup(_heli, string.format("Cannot unpack crate: you are too close to a logistics building (%.fm vs minimum of %.fm)", _dist, ctld.minimumDeployDistance), 20)
                 return false
             end
-            if _dist > ctld.maximumDeployDistance then
-                ctld.displayMessageToGroup(_heli, string.format("Cannot unpack crate: you are too far from a logistics building (%.fm vs maximum of %.fm)", _dist, ctld.maximumDeployDistance), 20)
-                return false
+            if _minDist == nil or _minDist > _dist then
+                _minDist = _dist
             end
         end
+    end
+    if _minDist == nil or _minDist > ctld.maximumDeployDistance then
+        ctld.displayMessageToGroup(_heli, string.format("Cannot unpack crate: you are too far from a logistics building (%.fm vs maximum of %.fm)", _minDist, ctld.maximumDeployDistance), 20)
+        return false
     end
 
     return true
