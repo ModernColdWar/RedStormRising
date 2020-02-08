@@ -318,7 +318,7 @@ ctld.spawnableCrates = {
     -- internal is cargo can be carried in internal bays, set 0 for external.
     -- dont use that option with the HAWK Crates
 
-   ["IFVs & Light Vehicles"] = {
+    ["IFVs & Light Vehicles"] = {
         { weight = 800, desc = "BTR-80", unit = "BTR-80", side = 1, cratesRequired = 1, unitQuantity = 2, internal = 0 },
         { weight = 801, desc = "IFV BMP-1", unit = "BMP-1", side = 1, cratesRequired = 1, unitQuantity = 2, internal = 0 },
         { weight = 802, desc = "IFV BMP-2", unit = "BMP-2", side = 1, cratesRequired = 1, unitQuantity = 2, internal = 0 },
@@ -397,7 +397,7 @@ ctld.spawnableCrates = {
         { weight = 878, desc = "Crotale", unit = "HQ-7_LN_SP", side = 2, cratesRequired = 3, unitQuantity = 2, internal = 0 },
         --{ weight = 879, desc = "HQ-7 Search Radar", unit = "HQ-7_STR_SP", side = 1, internal = 0 },
 
-        -- Tor on both sides
+        -- Tor on Red
         { weight = 880, desc = "SA-15 Tor", unit = "Tor 9A331", side = 1, cratesRequired = 2, unitQuantity = 2, internal = 0 },
 
 
