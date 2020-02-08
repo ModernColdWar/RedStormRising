@@ -2363,13 +2363,9 @@ function ctld.unpackCrates(_arguments)
                 return
             end
 
-            if (ctld.debug == false) then
-                if ctld.canUnpackCrateGivenLogisticsUnits(_heli) == false then
-                    -- allow FOB unpacking regardless of location
-                    if _crate.details.unit ~= "FOB" then
-                        return
-                    end
-                end
+            -- allow internal crates to be unpacked anywhere
+            if ctld.debug == false and _crate.details.internal == 0 and ctld.canUnpackCrateGivenLogisticsUnits(_heli) == false then
+                return
             end
 
             if _crate.dist < 750 and (_crate.details.unit == "FOB" or _crate.details.unit == "FOB-SMALL") then
