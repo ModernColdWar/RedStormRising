@@ -10,6 +10,9 @@
 -- luacheck: no max line length
 local ctldUtils = require("ctldUtils")
 local missionUtils = require("missionUtils")
+local spatialUtils = require("spatialUtils")
+local state = require("state")
+local utils = require("utils")
 
 csar = {}
 
@@ -71,6 +74,8 @@ csar.loadDistance = 60 -- configure distance for pilot to get in helicopter in m
 csar.radioSound = "beacon.ogg" -- the name of the sound file to use for the Pilot radio beacons. If this isnt added to the mission BEACONS WONT WORK!
 
 csar.allowFARPRescue = true --allows pilot to be rescued by landing at a FARP or Airbase
+
+csar.enemyBaseCaptureDistance = 20000 -- minimum distance in m from enemy base to allow CSAR mission spawn (otherwise pilot captured!)
 
 -- SETTINGS FOR MISSION DESIGNER ^^^^^^^^^^^^^^^^^^^*
 
@@ -165,6 +170,25 @@ function csar.pilotsOnboard(_heliName)
         end
     end
     return count
+end
+
+function csar.tooCloseToEnemyBase(_unit)
+    local position = _unit:getPoint()
+    local nearestBase, distance = spatialUtils.findNearestBase({x = position.x, y = position.z})
+    if distance > csar.enemyBaseCaptureDistance then
+        -- far from any base
+        return false
+    end
+
+    local nearestBaseOwner = state.getOwner(nearestBase)
+    if nearestBaseOwner == nil or nearestBaseOwner == "neutral" or nearestBaseOwner == utils.getSideName(_unit:getCoalition()) then
+        -- nearest base is neutral/friendly
+        return false
+    end
+    local message = string.format("Mayday, mayday, mayday!  %s was shot down; captured by enemy %s forces at %s",
+            _unit:getTypeName(), nearestBaseOwner, nearestBase)
+    trigger.action.outTextForCoalition(_unit:getCoalition(), message, 10)
+    return true
 end
 
 -- Handles all world events
@@ -289,6 +313,11 @@ function csar.eventHandler:onEvent(event)
             if csar.doubleEjection(_unit) then
                 env.info("Double ejection")
                 return
+            end
+
+            if csar.tooCloseToEnemyBase(_unit) then
+                csar.handleEjectOrCrash(_unit, true)
+                return true
             end
 
             env.info("Spawning CSAR group")
