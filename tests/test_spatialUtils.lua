@@ -37,6 +37,10 @@ function TestSpatialUtils:testFindNearest()
     local idx, minDist = spatialUtils.findNearest({ x = 0.9, y = 0.9 }, points)
     lu.assertEquals(idx, 2)
     lu.assertAlmostEquals(minDist, 0.02)
+
+    local idx, minDist = spatialUtils.findNearest({x=0, y=0}, {})
+    lu.assertIsNil(idx)
+    lu.assertIsNil(minDist)
 end
 
 local runner = lu.LuaUnit.new()
