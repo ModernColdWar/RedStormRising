@@ -2358,23 +2358,27 @@ function ctld.unpackCrates(_arguments)
             local _crates = ctld.getCratesAndDistance(_heli)
             local _crate = ctld.getClosestCrate(_heli, _crates)
 
+            if _crate == nil then
+                ctld.displayMessageToGroup(_heli, "No friendly crates close enough to unpack", 20)
+                return
+            end
+
             if (ctld.debug == false) then
                 if ctld.canUnpackCrateGivenLogisticsUnits(_heli) == false then
                     -- allow FOB unpacking regardless of location
-                    if _crate == nil or _crate.details.unit ~= "FOB" then
+                    if _crate.details.unit ~= "FOB" then
                         return
                     end
                 end
             end
 
-            if _crate ~= nil and _crate.dist < 750
-                    and (_crate.details.unit == "FOB" or _crate.details.unit == "FOB-SMALL") then
+            if _crate.dist < 750 and (_crate.details.unit == "FOB" or _crate.details.unit == "FOB-SMALL") then
 
                 ctld.unpackFOBCrates(_crates, _heli)
 
                 return
 
-            elseif _crate ~= nil and _crate.dist < 200 then
+            elseif _crate.dist < 200 then
 
                 if ctld.forceCrateToBeMoved and ctld.crateMove[_crate.crateUnit:getName()] then
                     ctld.displayMessageToGroup(_heli, "Sorry you must move this crate before you unpack it!", 20)
@@ -2441,10 +2445,6 @@ function ctld.unpackCrates(_arguments)
                         ctld.JTACAutoLase(_spawnedGroups:getName(), _code)
                     end
                 end
-
-            else
-
-                ctld.displayMessageToGroup(_heli, "No friendly crates close enough to unpack", 20)
             end
         end
     end, _arguments)
