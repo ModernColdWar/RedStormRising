@@ -1,3 +1,4 @@
+env.info("RSR STARTUP: state.LUA INIT")
 require("mist_4_3_74")
 require("CTLD")
 local inspect = require("inspect")
@@ -30,18 +31,11 @@ M.defaultState = {
 M.currentState = nil
 
 -- used to mark whether base defences need to be spawned in at start (ie round reset)
-M.firstTimeSetup = false
+M.missionInitSetup = false
 
--- recently spawned units (from player unpacking via CTLD or via code)
--- M.spawnQueue = {} --mr: migrated to updateSpawnQueue.lua
+-- mission init with no rsrState.json = campaign init = use zone name and color to determining starting base ownership
+M.campaignStartSetup = false
 
---mr: migrated to updateSpawnQueue.lua
---[[
-function M.pushSpawnQueue(groupName)
-    log:info("Adding $1 to spawn queue", groupName)
-    table.insert(M.spawnQueue, groupName)
-end
--]]
 
 function M.getGroupData(groupName)
     local group = Group.getByName(groupName)
@@ -85,15 +79,15 @@ end
 
 function M.handleSpawnQueue()
     -- get MIST group data for newly unpacked units (if it's available)
-    log:info("Handling spawn queue (length $1)", #updateSpawnQueue.spawnQueue)
+    --log:info("Handling spawn queue (length $1)", #updateSpawnQueue.spawnQueue)
     for i = #updateSpawnQueue.spawnQueue, 1, -1 do
         local groupName = updateSpawnQueue.spawnQueue[i]
-        log:info("Getting group data for spawned group $1", groupName)
+        --log:info("Getting group data for spawned group $1", groupName)
         local groupData = M.getGroupData(groupName)
         if groupData ~= nil then
-            log:info("Successfully got group data for $1", groupName)
+            --log:info("Successfully got group data for $1", groupName)
             table.insert(M.currentState.persistentGroupData, groupData)
-            log:info("Removing $1 from spawn queue", groupName)
+            --log:info("Removing $1 from spawn queue", groupName)
             table.remove(updateSpawnQueue.spawnQueue, i)
         else
             log:warn("Unable to get group data for $1; leaving in spawn queue", groupName)
@@ -147,10 +141,16 @@ function M.copyFromCtld()
 end
 
 function M.updateBaseOwnership()
-	--(_firstTimeSetup,_passedBase,_playerORunit)
-	--firstTimeSetup will take priority over next two args
-	--_passedBase = "none" to initiate full check of all bases for persistance
-    M.currentState.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(M.firstTimeSetup,"none","none")
+	--(_campaignStartSetup,_passedBase,_playerORunit)
+	--_campaignStartSetup will take priority over next two args
+	--_passedBase = "ALL" to initiate full check of all bases for persistance
+	if M.campaignStartSetup then
+		M.currentState.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(M.campaignStartSetup,"ALL","none")
+		M.campaignStartSetup = false -- only use map markers to setup bases ONCE, iterate through bases every other time
+	else
+		M.currentState.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(M.campaignStartSetup,"ALL","none")
+	end
+	log:info("M.currentState.baseOwnership $1", M.currentState.baseOwnership)
 end
 
 function M.getOwner(passedBase)
@@ -165,41 +165,17 @@ function M.getOwner(passedBase)
     end
     return nil
 end
---[[
---mr: only called by below local function M.checkBaseOwner but now commented-out
-local function setOwner(baseOwnership, baseName, sideName)
-    local found = false
-    local changed = false
-    for _sideName, baseList in pairs(baseOwnership) do
-        for i = #baseList, 1, -1 do
-            local _baseName = baseList[i]
-            if _baseName == baseName then
-                found = true
-                if _sideName ~= sideName then
-                    table.remove(baseList, i)
-                    changed = true
-                end
-            end
-        end
-    end
-    if found == false then
-        return
-    end
-    if changed then
-        table.insert(baseOwnership[sideName], baseName)
-    end
-end
---]]
+
+--mr: just because DCS EH = base owner changed doesn't mean base change accoriding to RSR!
+-- checkBaseOwner only utilsed by baseCapturedHandler.lua i.e. DCS baseCaptured eventHandler
 function M.checkBaseOwner(baseName, sideName) 
     local currentOwner = M.getOwner(passedBase)
     if currentOwner == sideName then
-        return false  --no change in ownership
+        return false  --no change in DCS ownership
     end
-	--mr: just because DCS EH = base owner changed doesn't mean base change accoriding to RSR!
-    -- setOwner(M.currentState.baseOwnership.Airbases, baseName, sideName)
-    -- setOwner(M.currentState.baseOwnership.FOBs, baseName, sideName)
+
     log:info("DCS EH ownership of $1 from $2 to $3", baseName, currentOwner, sideName)
-    return true --change in ownership
+    return true --change in DCS ownership
 end
 
 function M.getWinner()
@@ -236,12 +212,13 @@ function M.setCurrentStateFromFile(stateFileName)
 
     if not canUseStateFromFile then
         log:info("Setting up from defaults in code, and base(airbase/FOB) ownership from 'RSRbaseCaptureZone Trigger' Zone color")
-        M.firstTimeSetup = true
+        M.missionInitSetup = true
+		M.campaignStartSetup = true
         M.currentState = mist.utils.deepCopy(M.defaultState)
 		M.updateBaseOwnership()
     end
     log:info("currentState = $1", inspect(M.currentState, { newline = " ", indent = "" }))
     return true
 end
-
+env.info("RSR STARTUP: state.LUA LOADED")
 return M

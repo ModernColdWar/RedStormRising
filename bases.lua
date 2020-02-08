@@ -1,3 +1,4 @@
+env.info("RSR STARTUP: bases.LUA INIT")
 require("mist_4_3_74")
 local logisticsManager = require("logisticsManager")
 local pickupZoneManager = require("pickupZoneManager")
@@ -83,23 +84,23 @@ function M.resupply(baseName, sideName, rsrConfig, spawnLC, missionInit)
     activateBaseDefences(baseName, sideName, rsrConfig)
 	if spawnLC then 
 		log:info("PRE-logisticsManager: baseName $1 sideName $2 missionInit $3", baseName, sideName, missionInit)
-		logisticsManager.spawnLogisticsBuildingForBase(baseName, sideName,"none", missionInit)
+		logisticsManager.spawnLogisticsBuildingForBase(baseName, sideName,"none", missionInit,"none")
 	end
 end
 
-function M.onMissionStart(baseName, sideName, rsrConfig, firstTimeSetup)
+function M.onMissionStart(baseName, sideName, rsrConfig, missionInitSetup)
     log:info("Configuring $1 as $2 at mission start", baseName, sideName)
     M.configureForSide(baseName, sideName)
     if checkNeutral(baseName, sideName) then
         return
     end
-    if firstTimeSetup then
+    if missionInitSetup then
         log:info("First time setup - resupplying")
         M.resupply(baseName, sideName, rsrConfig, true, true)
     else
         log:info("Not first time setup - not doing any base resupply; only logistics")
-        logisticsManager.spawnLogisticsBuildingForBase(baseName, sideName,"none",true)
+        logisticsManager.spawnLogisticsBuildingForBase(baseName, sideName,"none",true,"none")
     end
 end
-
+env.info("RSR STARTUP: bases.LUA LOADED")
 return M

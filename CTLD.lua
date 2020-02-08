@@ -20,6 +20,7 @@
       - Allow minimum distance from friendly logistics to be set
  ]]
 -- luacheck: no max line length
+env.info("RSR STARTUP: CTLD.LUA INIT")
 require("mist_4_3_74")
 require("CTLD_config")
 require ("Moose")
@@ -974,12 +975,17 @@ function ctld.spawnLogisticsCentreCrateStatic(_country, _point, _name)
     return _spawnedCrate
 end
 
-function ctld.spawnLogisticsCentre(_point, _name, _coalition, _baseORfarp, _baseORfarpName, _isMissionInit)
+function ctld.spawnLogisticsCentre(_point, _name, _coalition, _baseORfarp, _baseORfarpName, _isMissionInit,_constructingPlayerName)
 	
 	local _logiCentreType = ctld.logisticCentreL3
 	
 	if _baseORfarp == "FARP" then
 		_logiCentreType = ctld.logisticCentreL1 --tent
+	end
+	
+	local _playerName = "none"
+	if _constructingPlayerName ~= "none" then
+		_playerName = _constructingPlayerName
 	end
 	
 	local _logiCentre = 
@@ -1007,11 +1013,21 @@ function ctld.spawnLogisticsCentre(_point, _name, _coalition, _baseORfarp, _base
 	-- use playerName as index for FARPs?  Limit 1 x FARP per player?
 	log:info("ctld.logisticCentreObjects $1", ctld.logisticCentreObjects)
 	
-	if ctld.logisticCentreObjects[_baseORfarpName] == nil then
-		table.insert(ctld.logisticCentreObjects,{[_baseORfarpName] = _spawnedLogiCentreObject}) --on mission init, key for base won't exist yet in ctld.logisticCentreObjects
-	else
-		table.insert(ctld.logisticCentreObjects[_baseORfarpName], _spawnedLogiCentreObject) -- during normal gameplay, updating pre-existing key for each base
+	--on mission init, key for base won't exist yet in ctld.logisticCentreObjects
+	_baseKeyExists = false
+	for _k, _base in pairs (ctld.logisticCentreObjects) do
+		if _base == _baseORfarpName then
+			_baseKeyExists = true
+		end
 	end
+	
+	if not _baseKeyExists then
+		table.insert(ctld.logisticCentreObjects,_baseORfarpName)
+	end
+	
+	-- during normal gameplay, update pre-existing key for each base with new logistics centre
+	ctld.logisticCentreObjects[_baseORfarpName] = _spawnedLogiCentreObject
+
 	-- Tank1:HandleEvent( EVENTS.Dead ) -- MOOSE DEAD eventHandler for logisitics centre -> baseOwnershipCheck -> no slot at neutral FOBs
 	--[[
 		mist.dynAddStatic => addStaticObject
@@ -1030,7 +1046,7 @@ function ctld.spawnLogisticsCentre(_point, _name, _coalition, _baseORfarp, _base
 		initate checking all bases for differences = 
 			> baseOwnershipCheck.lua & Airbases: contruction of logistics centre should not produce any updates to ownership, only its absence when uncontested by enemy
 			> baseOwnershipCheck.lua & FOBs: contructions of logistics centre claims uncontested FOB
-		false = not firstTimeSetup which is only set true by state.lua for persistance
+		false = not campaignStartSetup which is only utilsed to setup base ownership from zone name and color
 		_aircraft = for team notification of which friendly player captured FOB = encourage logisitics
 		by-passed during campaign and mission init i.e. logisticsManager.lua -> spawnLogisticsCentre
 		will also return baseOwnership table even though not needed
@@ -1038,12 +1054,12 @@ function ctld.spawnLogisticsCentre(_point, _name, _coalition, _baseORfarp, _base
 	
 	-- Passing baseName prevents checking all bases in baseOwnershipCheck.lua
 	-- check through all bases for now during mission as logistics centres at FOBs claims FOB
-	local _skipBaseCheck = "none"
+	local _checkALLbases = "ALL"
 	if _isMissionInit then
-		_skipBaseCheck = _baseORfarpName
+		_checkALLbases = _baseORfarpName
 	end
-	log:info("_isMissionInit: $1, _skipBaseCheck: $2",_isMissionInit,_skipBaseCheck)
-	baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(false,_skipBaseCheck,"none")
+	log:info("_isMissionInit: $1, _checkALLbases: $2",_isMissionInit,_checkALLbases)
+	baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(false,_checkALLbases,_playerName)
 		
     return _spawnedLogiCentreObject
 end
@@ -1522,6 +1538,8 @@ function ctld.loadUnloadFOBCrate(_args)
     if _aircraft == nil then
         return
     end
+	
+	local _playerName = ctld.getPlayerNameOrType(_aircraft)
 
     if ctld.inAir(_aircraft) == true then
 		ctld.displayMessageToGroup(_aircraft,"You must land before commencing logistics operations", 10)
@@ -1678,8 +1696,8 @@ function ctld.loadUnloadFOBCrate(_args)
 			
 			_logisticsCentreName = _logisticsCentreName .. _closestBaseName .. " Logistics Centre #" .. _unitId .. _closestBaseSide -- "MM75 Logistics Centre #001 red"
 			
-			logisticsManager.spawnLogisticsBuildingForBase(_closestBaseName,_aircraftSideName,_logisticsCentreName,false)
-			trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " has repaired the Logistics Centre at " .. _closestBaseName, 10)
+			logisticsManager.spawnLogisticsBuildingForBase(_closestBaseName,_aircraftSideName,_logisticsCentreName,false,_playerName)
+			trigger.action.outTextForCoalition(_aircraft:getCoalition(), _playerName .. " has repaired the Logistics Centre at " .. _closestBaseName, 10)
 			
 		elseif 
 		-- return logistics crate to pool to prevent exploit of "backup repair crates"
@@ -2641,7 +2659,7 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
     end
 	--]]
 
-	local _baseNameORplayerName = ctld.getPlayerNameOrType(_aircraft) --baseName = playerName for FARPs
+	local _playerName = ctld.getPlayerNameOrType(_aircraft) --baseName = playerName for FARPs
 	local _baseORfarp = "FARP"
 	local _buildTime = ctld.buildTimeFARP
 
@@ -2654,8 +2672,9 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
 	local _closestBaseDist = _baseProximity[3][3]
 	local _baseType = _baseProximity[4]
 	
+	local _baseName = _playerName
 	if _inBaseZoneAndRSRradius then
-		_baseNameORplayerName = _closestBaseName -- exchange playerName for baseName
+		_baseName = _closestBaseName -- exchange playerName for baseName
 		_baseORfarp = _baseType --provides distinction between deploying FARP or repairing airbase/FOB in below messages
 		_buildTime = 1 --reduce build time for airbase/FOB as it's a repair + avoids problems with potentially multiple logistics centres! --uncessary
 	end
@@ -2745,7 +2764,7 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
 		
 		if _baseORfarp == "FARP" then
 			--mr: feature: use deploying player name in FARP name
-			_logisticsCentreName = _logisticsCentreName .. _baseNameORplayerName .. " FARP Logistics Centre #" .. _unitId .. _side 
+			_logisticsCentreName = _logisticsCentreName .. _playerName .. " FARP Logistics Centre #" .. _unitId .. _side 
 			
 			timer.scheduleFunction(function(_args)
 				
@@ -2771,7 +2790,7 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
 				_centroid, --_args[1] = ignore for base (airbase/FOB) repair
 				_logisticsCentreName, --_args[2] = name of logistics centre static object
 				_coalition, --_args[3] = coalition for construction message locality
-				_baseNameORplayerName, -- _args[4] = name of base (airbase/FOB) if player within RSR radius, otherwise create FARP and use player name
+				_playerName, -- _args[4] = name FARP after player
 				_country -- _args[5] = country of player, required for radioBeacon but NOT required for logisitics centre which is always neutral
 			}, timer.getTime() + _buildTime)
 		
@@ -2790,8 +2809,8 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
 				
 				>>>>> logistic centre name will inlcude team name (red/blue) therefore 'replacement = destroy' with same name only useful for airbase "repair"
 			--]]
-			_logisticsCentreName = _logisticsCentreName .. _baseNameORplayerName .. " Logistics Centre #" .. _unitId .. _side -- "MM75 Logistics Centre #001 red"
-			logisticsManager.spawnLogisticsBuildingForBase(_closestBaseName,_aircraftSideName,_logisticsCentreName,false)
+			_logisticsCentreName = _logisticsCentreName .. _baseName .. " Logistics Centre #" .. _unitId .. _side -- "MM75 Logistics Centre #001 red"
+			logisticsManager.spawnLogisticsBuildingForBase(_baseName,_aircraftSideName,_logisticsCentreName,false,_playerName)
 			trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " has repaired the Logistics Centre at " .. _closestBaseName, 10)
 		end
 
@@ -2886,8 +2905,8 @@ function ctld.unloadInternalCrate (_args)
 				(_nearestLogisticsCentreName ~= _closestBaseName) then -- no logisitics centre at current base
 				
 				_logisticsCentreName = _logisticsCentreName .. _baseNameORplayerName .. " Logistics Centre #" .. _unitId .. _side -- "MM75 Logistics Centre #001 red"
-				logisticsManager.spawnLogisticsBuildingForBase(_closestBaseName,_aircraftSideName,_logisticsCentreName,false)
-				trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " has repaired the Logistics Centre at " .. _closestBaseName, 10)
+				logisticsManager.spawnLogisticsBuildingForBase(_closestBaseName,_aircraftSideName,_logisticsCentreName,false, _playerName)
+				trigger.action.outTextForCoalition(_heli:getCoalition(), _playerName .. " has repaired the Logistics Centre at " .. _closestBaseName, 10)
 			--]]
 			
 			end	
@@ -6317,8 +6336,8 @@ for _coalitionName, _coalitionData in pairs(env.mission.coalition) do
 end
 env.info("END search for crates")
 
-env.info("CTLD LUA File Loaded ... OK")
-trigger.action.outText("CTLD LUA file loaded...", 10)
+env.info("RSR STARTUP: CTLD.LUA LOADED")
+trigger.action.outText("CTLD.LUA LOADED", 10)
 
 
 --DEBUG FUNCTION

@@ -1,5 +1,6 @@
 --- Red Storm Rising DCS mission LUA code
--- stub DCS if we're running outside
+-- stub DCS if we're running outside3
+-- dofile(lfs.writedir() .. [[Scripts\RSR\RSR.lua]])
 if env == nil then
     require("tests.dcs_stub")
 else
@@ -7,16 +8,17 @@ else
     package.path = module_folder .. "?.lua;" .. package.path
 end
 
-env.info("RSR starting")
+env.info("RSR STARTUP: RSR.LUA INIT")
 
 -- used for calling the RSR Discord bot's backend
 package.path = package.path .. ";.\\LuaSocket\\?.lua;"
 package.cpath = package.cpath .. ";.\\LuaSocket\\?.dll;"
 
 require("mist_4_3_74")
+require("Moose")
 require("CTLD")
 require("CSAR")
-require("Moose")
+
 
 local log = mist.Logger:new("RSR", "info")
 
@@ -49,5 +51,5 @@ birthEventHandler.onMissionStart(rsrConfig.restartHours)
 restartInfo.onMissionStart(rsrConfig.restartHours, rsrConfig.restartWarningMinutes)
 
 -- _SETTINGS:SetPlayerMenuOff()
-trigger.action.outText("RSR ready", 10)
-log:info("RSR ready")
+trigger.action.outText("RSR.LUA LOADED", 10)
+env.info("RSR STARTUP: RSR.LUA LOADED")

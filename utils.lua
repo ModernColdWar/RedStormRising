@@ -184,7 +184,7 @@ function M.setGroupControllerOptions(group)
             },
         }
         controller:setTask(mission)
-        env.info("Set controller options for " .. _group:getName())
+        --env.info("Set controller options for " .. _group:getName())
     end, group, timer.getTime() + 2)
 end
 
@@ -192,7 +192,6 @@ end
 
 --searches for FOB name in baseOwnership nested table to determine currently assigned side
 --mr: find more efficient way to transvere nested table
-
 function M.getCurrFOBside (_FOBname)
 	local _bOFOBside = "ERROR"
 	for _k, _b in pairs(baseOwnership.FOBs.red) do
@@ -221,7 +220,7 @@ function M.getCurrFOBside (_FOBname)
 	end
 	
 	if _bOFOBside == "ERROR" then 
-		log=error("$1 FOB not found in 'baseOwnership.FOBs' sides. Reporting as neutral to allow contested check.",_FOBname)
+		log:error("$1 FOB not found in 'baseOwnership.FOBs' sides. Reporting as neutral to allow contested check.",_FOBname)
 		_bOFOBside = "neutral"
 	end
 	return _bOFOBside
@@ -254,7 +253,7 @@ function M.getCurrABside (_ABname)
 	end
 	
 	if _bOABside == "ERROR" then 
-		log=error("$1 Airbase not found in 'baseOwnership.Airbases' sides. Reporting as neutral to allow contested check.",_ABname)
+		log:error("$1 Airbase not found in 'baseOwnership.Airbases' sides. Reporting as neutral to allow contested check.",_ABname)
 		_bOABside = "neutral"
 	end
 	return _bOABside

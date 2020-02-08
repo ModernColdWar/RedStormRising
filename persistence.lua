@@ -1,10 +1,11 @@
 --- Saving/loading/updating code for managing "live" units and persisting them across server restarts
-require("mist_4_3_74")
+env.info("RSR STARTUP: persistence.LUA INIT")
+require("mist_4_3_74") --required if loaded in utils?
 require("CTLD")
 require ("Moose")
+local utils = require("utils")
 local bases = require("bases")
 local state = require("state")
-local utils = require("utils")
 local updateSpawnQueue = require("updateSpawnQueue")
 
 local log = mist.Logger:new("Persistence", "info")
@@ -23,20 +24,20 @@ local function getSideNameFromGroupData(groupData)
 end
 
 function M.updateGroupData(persistentGroupData)
-    --log:info("Updating persistent group data") --mr: commented out to cleanup log during development
+	log:info("Updating persistent group data")
     for i = #persistentGroupData, 1, -1 do
         local groupData = persistentGroupData[i]
         local groupName = groupData.name
-        --log:info("Processing units in group $1", groupName) --mr: commented out to cleanup log during development
+		--log:info("Processing units in group $1", groupName)
         for j = #groupData.units, 1, -1 do
             local unitData = groupData.units[j]
             local unitName = unitData.name
             local unit = Unit.getByName(unitName)
             if unit == nil then
-                --log:info("Removing persistent data for dead unit $1", unitName) --mr: commented out to cleanup log during development
+				--log:info("Removing persistent data for dead unit $1", unitName)
                 table.remove(groupData.units, j)
             else
-                log:info("Updating position information for unit $1", unitName)
+                --log:info("Updating position information for unit $1", unitName)
                 local position = unit:getPosition().p
                 unitData.x = position.x
                 unitData.y = position.z
@@ -44,7 +45,7 @@ function M.updateGroupData(persistentGroupData)
             end
         end
         if #groupData.units == 0 then
-            --log:info("Removing persistent data for dead group $1", groupName) --mr: commented out to cleanup log during development
+            --log:info("Removing persistent data for dead group $1", groupName)
             table.remove(persistentGroupData, i)
             local sideName = getSideNameFromGroupData(groupData)
             local playerName = utils.getPlayerNameFromGroupName(groupName)
@@ -53,7 +54,7 @@ function M.updateGroupData(persistentGroupData)
             end
         end
     end
-    --log:info("Persistent group data update complete") --mr: commented out to cleanup log during development
+    log:info("Persistent group data update complete")
 end
 
 local function persistState(rsrConfig)
@@ -62,7 +63,6 @@ local function persistState(rsrConfig)
         state.handleSpawnQueue()
         state.copyFromCtld()
         state.updateBaseOwnership()
-		env.info("Persistance: AIRBASE.GetAllAirbases: $1",AIRBASE.GetAllAirbases()) --mrDEBUG
     end)
     if status then
         log:info("Number of persistent groups at save is $1", #state.currentState.persistentGroupData)
@@ -82,7 +82,7 @@ function M.spawnGroup(groupData)
     -- Currently this code replicates the actions from ctld.unpackCrates
     local sideName = getSideNameFromGroupData(groupData)
     local groupName = groupData.name
-    log:info("Spawning $1 $2 from groupData", sideName, groupName)
+    --log:info("Spawning $1 $2 from groupData", sideName, groupName)
     -- Fix issue where mist group data doesn't contain playerCanDrive flag (it's always true for our persisted units)
     for _, unitData in pairs(groupData.units) do
         unitData.playerCanDrive = true
@@ -149,14 +149,14 @@ function M.getOwnedJtacCount(groupOwnership, sideName, playerName)
 end
 
 -- Base defences are defined as late-activated group groups in proximity to an airbase or helipad
-local function configureBasesAtStartup(rsrConfig, baseOwnership, firstTimeSetup)
+local function configureBasesAtStartup(rsrConfig, baseOwnership, missionInitSetup)
     for _, ownershipData in pairs(baseOwnership) do
         for sideName, baseNames in pairs(ownershipData) do
             for _, baseName in pairs(baseNames) do
                 if AIRBASE:FindByName(baseName) == nil then
                     log:error("Unable to find base $1 on map but was in state file; skipping setup", baseName)
                 else
-                    bases.onMissionStart(baseName, sideName, rsrConfig, firstTimeSetup)
+                    bases.onMissionStart(baseName, sideName, rsrConfig, missionInitSetup)
                 end
             end
         end
@@ -167,7 +167,7 @@ function M.restoreFromState(rsrConfig)
     log:info("Restoring mission state")
     state.copyToCtld()
 
-    configureBasesAtStartup(rsrConfig, state.currentState.baseOwnership, state.firstTimeSetup)
+    configureBasesAtStartup(rsrConfig, state.currentState.baseOwnership, state.missionInitSetup)
 
     -- We clear state.current.persistentGroupData here, as this is updated in handleSpawnQueue later
     -- This ensures the data we get from MIST is always consistent between a CTLD spawn and a reload from disk
@@ -203,5 +203,5 @@ function M.onMissionStart(rsrConfig)
     SCHEDULER:New(nil, persistState, { rsrConfig },
             rsrConfig.writeDelay, rsrConfig.writeInterval)
 end
-
+env.info("RSR STARTUP: persistence.LUA LOADED")
 return M

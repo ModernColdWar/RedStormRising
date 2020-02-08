@@ -5,7 +5,13 @@ local M = {}
 
 local log = mist.Logger:new("LogisticsManager", "info")
 
-function M.spawnLogisticsBuildingForBase(baseName, sideName, logisticsCentreName, isMissionInit)
+function M.spawnLogisticsBuildingForBase(baseName, sideName, logisticsCentreName, isMissionInit, constructingPlayerName)
+
+	local _playerName = "none"
+	if constructingPlayerName ~= "none" then
+		_playerName = constructingPlayerName
+	end
+
     log:info("Spawning Logistics Centre Static Object for $1 as owned by $2", baseName, sideName)
 	--log:info("ctld.logisticCentreZones: $1",ctld.logisticCentreZones)
 	local _availLogiZones = {}
@@ -36,8 +42,9 @@ function M.spawnLogisticsBuildingForBase(baseName, sideName, logisticsCentreName
 		local point = ZONE:New(_selectedLogiZone):GetPointVec2()
 		log:info("isMissionInit: $1", isMissionInit)
 		--(_point, _name, _coalition, _baseORfarp, _baseORfarpName)
-		ctld.spawnLogisticsCentre(point, _staticObjectName, utils.getSide(sideName), "BASE", baseName, isMissionInit) 
+		ctld.spawnLogisticsCentre(point, _staticObjectName, utils.getSide(sideName), "BASE", baseName, isMissionInit, _playerName) 
 		log:info("$1 Logistics Centre spawned at $2", sideName, _selectedLogiZone)
+		--log:info("ctld.logisticCentreObjects $1", ctld.logisticCentreObjects)
 		return
 	end
 	
