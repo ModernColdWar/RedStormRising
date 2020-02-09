@@ -654,6 +654,7 @@ function ewrs.addGroupSettings(groupID)
     ewrs.groupSettings[groupID].reference = ewrs.defaultReference
     ewrs.groupSettings[groupID].measurements = ewrs.defaultMeasurements
     ewrs.groupSettings[groupID].messages = true
+    ewrs.groupSettings[groupID].pictureUpdates = false
 end
 
 function ewrs.setGroupReference(args)
@@ -680,6 +681,18 @@ function ewrs.setGroupMessages(args)
     trigger.action.outTextForGroup(groupID, "Picture reports for group turned " .. onOff, ewrs.messageDisplayTime)
 end
 
+function ewrs.setGroupUpdates(args)
+    local groupID = args[1]
+    local onOff
+    if args[2] then
+        onOff = "on"
+    else
+        onOff = "off"
+    end
+    ewrs.groupSettings[tostring(groupID)].pictureUpdates = args[2]
+    trigger.action.outTextForGroup(groupID, "Picture updates for group turned " .. onOff, ewrs.messageDisplayTime)
+end
+
 function ewrs.buildF10Menu()
     local status, result = pcall(function()
         for i = 1, #ewrs.activePlayers do
@@ -694,6 +707,8 @@ function ewrs.buildF10Menu()
 
                 if ewrs.onDemand then
                     missionCommands.addCommandForGroup(groupID, "Request Picture", rootPath, ewrs.onDemandMessage, { groupID })
+                    missionCommands.addCommandForGroup(groupID, "Start updates", rootPath, ewrs.setGroupUpdates, { groupID, true })
+                    missionCommands.addCommandForGroup(groupID, "Stop updates", rootPath, ewrs.setGroupUpdates, { groupID, false })
                 end
 
                 if ewrs.allowFriendlyPicture then
