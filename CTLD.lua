@@ -5676,7 +5676,6 @@ end
 env.info("END search for crates")
 
 env.info("CTLD LUA File Loaded ... OK")
-trigger.action.outText("CTLD LUA file loaded...", 10)
 
 
 --DEBUG FUNCTION

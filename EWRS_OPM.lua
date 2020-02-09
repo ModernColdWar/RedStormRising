@@ -957,7 +957,6 @@ if not ewrs.onDemand then
     timer.scheduleFunction(ewrs.displayMessageToAll, nil, timer.getTime() + ewrs.messageUpdateInterval)
 end
 env.info("EWRS LUA File Loaded ... OK")
-trigger.action.outText("EWRS LUA file loaded...", 10)
 
 --[[
 TODO: 
