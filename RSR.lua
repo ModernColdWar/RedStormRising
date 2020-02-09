@@ -39,6 +39,7 @@ local hitEventHandler = require("hitEventHandler")
 local birthEventHandler = require("birthEventHandler")
 local restartInfo = require("restartInfo")
 require("weaponManager")
+require("EWRS_OPM")
 
 slotBlocker.onMissionStart()
 baseCapturedHandler.register()
