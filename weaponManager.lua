@@ -53,12 +53,12 @@ limitations[7] = {
     DISPLAY_NAME = "AIM 54C-Mk47"
 }
 limitations[8] = {
-    WP_NAME = "PN_24",
+    WP_NAME = "weapons.bombs.RN-24",
     QTY = 0,
     DISPLAY_NAME = "RN-24"
 }
 limitations[9] = {
-    WP_NAME = "PN_28",
+    WP_NAME = "weapons.bombs.RN-28",
     QTY = 0,
     DISPLAY_NAME = "RN-28"
 }
