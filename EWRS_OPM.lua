@@ -48,7 +48,8 @@ ewrs.FIGHTER = 3
 
 ewrs.messageUpdateInterval = 8 --How often EWRS will update automated BRA messages (seconds)
 ewrs.messageDisplayTime = 3 --How long EWRS BRA messages will show for (seconds)
-ewrs.restrictToOneReference = false -- Disables the ability to change the BRA calls from pilot's own aircraft or bullseye. If this is true, set ewrs.defaultReference to the option you want to restrict to.
+ewrs.restrictToOneReference = true -- Disables the ability to change the BRA calls from pilot's own aircraft or bullseye. If this is true, set ewrs.defaultReference to the option you want to restrict to.
+ewrs.restrictToOneMeasurement = true -- Disables the ability to change the BRA calls' units of measurement.  If this is true, set ewrs.defaultMeasurements to the option to want to restrict to.
 ewrs.defaultReference = "self" --The default reference for BRA calls - can be changed via f10 radio menu if ewrs.restrictToOneReference is false (self or bulls)
 ewrs.defaultMeasurements = "metric" --Default measurement units - can be changed via f10 radio menu (imperial or metric)
 ewrs.disableFightersBRA = true -- disables BRA messages to fighters when true
@@ -56,7 +57,7 @@ ewrs.enableRedTeam = true -- enables / disables EWRS for the red team
 ewrs.enableBlueTeam = false -- enables / disables EWRS for the blue team
 ewrs.disableMessageWhenNoThreats = true -- disables message when no threats are detected - Thanks Rivvern - NOTE: If using ewrs.onDemand = true, this has no effect
 ewrs.useImprovedDetectionLogic = true --this makes the messages more realistic. If the radar doesn't know the type or distance to the detected threat, it will be reflected in the picture report / BRA message
-ewrs.onDemand = false --Setting to true will disable the automated messages to everyone and will add an F10 menu to get picture / BRA message.
+ewrs.onDemand = true --Setting to true will disable the automated messages to everyone and will add an F10 menu to get picture / BRA message.
 ewrs.maxThreatDisplay = 1 -- Max amounts of threats to display on picture report (0 will display all)
 ewrs.allowBogeyDope = false -- Allows pilots to request a bogey dope even with the automated messages running. It will display only the cloest threat, and will always reference the players own aircraft.
 ewrs.allowFriendlyPicture = false -- Allows pilots to request picture of friendly aircraft
@@ -704,9 +705,11 @@ function ewrs.buildF10Menu()
                     missionCommands.addCommandForGroup(groupID, "Set to Self", referenceSetPath, ewrs.setGroupReference, { groupID, "self" })
                 end
 
-                local measurementsSetPath = missionCommands.addSubMenuForGroup(groupID, "Set GROUP's measurement units", rootPath)
-                missionCommands.addCommandForGroup(groupID, "Set to Imperial (feet, knts)", measurementsSetPath, ewrs.setGroupMeasurements, { groupID, "imperial" })
-                missionCommands.addCommandForGroup(groupID, "Set to Metric (meters, km/h)", measurementsSetPath, ewrs.setGroupMeasurements, { groupID, "metric" })
+                if not ewrs.restrictToOneMeasurement then
+                    local measurementsSetPath = missionCommands.addSubMenuForGroup(groupID, "Set GROUP's measurement units", rootPath)
+                    missionCommands.addCommandForGroup(groupID, "Set to Imperial (feet, knts)", measurementsSetPath, ewrs.setGroupMeasurements, { groupID, "imperial" })
+                    missionCommands.addCommandForGroup(groupID, "Set to Metric (meters, km/h)", measurementsSetPath, ewrs.setGroupMeasurements, { groupID, "metric" })
+                end
 
                 if not ewrs.onDemand then
                     missionCommands.addCommandForGroup(groupID, "Request Picture", rootPath, ewrs.onDemandMessage, { groupID })
