@@ -371,6 +371,9 @@ function ewrs.onDemandMessage(args)
         for i = 1, #ewrs.activePlayers do
             if ewrs.activePlayers[i].groupID == args[1] then
                 ewrs.outText(ewrs.activePlayers[i], ewrs.buildThreatTable(ewrs.activePlayers[i], args[2]), args[2])
+                if ewrs.groupSettings[tostring(ewrs.activePlayers[i].groupID)].pictureUpdates then
+                    timer.scheduleFunction(ewrs.onDemandMessage, { ewrs.activePlayers[i].groupID }, timer.getTime() + ewrs.messageUpdateInterval)
+                end
             end
         end
     end)
