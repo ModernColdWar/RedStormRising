@@ -62,6 +62,7 @@ ewrs.maxThreatDisplay = 1 -- Max amounts of threats to display on picture report
 ewrs.allowBogeyDope = false -- Allows pilots to request a bogey dope even with the automated messages running. It will display only the cloest threat, and will always reference the players own aircraft.
 ewrs.allowFriendlyPicture = false -- Allows pilots to request picture of friendly aircraft
 ewrs.maxFriendlyDisplay = 1-- Limits the amount of friendly aircraft shown on friendly picture
+ewrs.shortReport = true
 
 --[[
 Units with radar to use as part of the EWRS radar network
@@ -216,7 +217,7 @@ function ewrs.buildThreatTable(activePlayer, bogeyDope)
             if v["type"] then
                 bogeyType = v["object"]:getTypeName()
             else
-                bogeyType = "  ???  "
+                bogeyType = "unknown"
             end
         else
             bogeyType = v["object"]:getTypeName()
@@ -259,8 +260,50 @@ function ewrs.buildThreatTable(activePlayer, bogeyDope)
     return threatTable
 end
 
+function ewrs.outTextShort(activePlayer, threatTable)
+    local altUnits
+    local speedUnits
+    local rangeUnits
+    if ewrs.groupSettings[tostring(activePlayer.groupID)].measurements == "metric" then
+        altUnits = "m"
+        speedUnits = "km/h"
+        rangeUnits = "km"
+    else
+        altUnits = "ft"
+        speedUnits = "kts"
+        rangeUnits = "nm"
+    end
+
+    if #threatTable >= 1 then
+        local threat = threatTable[1]
+        local message
+        if threat.range == ewrs.notAvailable then
+            message = "EWRS: Nearest target position unknown"
+        else
+            message = string.format("EWRS: Nearest target %03d for %.f%s at %d%s, type %s, heading %03d at %d%s",
+                    threat.bearing,
+                    threat.range, rangeUnits,
+                    threat.altitude, altUnits,
+                    threat.unitType,
+                    threat.heading,
+                    threat.speed, speedUnits
+            )
+        end
+        trigger.action.outTextForGroup(activePlayer.groupID, message, ewrs.messageDisplayTime)
+    else
+        if not ewrs.disableMessageWhenNoThreats then
+            trigger.action.outTextForGroup(activePlayer.groupID, "EWRS: No targets detected", ewrs.messageDisplayTime)
+        end
+    end
+end
+
 function ewrs.outText(activePlayer, threatTable, bogeyDope, greeting)
     local status, result = pcall(function()
+
+        if ewrs.shortReport then
+            ewrs.outTextShort(activePlayer, threatTable)
+            return
+        end
 
         local message = {}
         local altUnits
