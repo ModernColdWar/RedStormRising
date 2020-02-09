@@ -82,7 +82,21 @@ limitations[13] = {
     QTY = 1 * perLife,
     DISPLAY_NAME = "GBU-38"
 }
-
+limitations[14] = {
+    WP_NAME = "weapons.missiles.GB-6",
+    QTY = 1 * perLife,
+    DISPLAY_NAME = "GB-6"
+}
+limitations[15] = {
+    WP_NAME = "weapons.missiles.GB-6-HE",
+    QTY = 1 * perLife,
+    DISPLAY_NAME = "GB-6-HE"
+}
+limitations[16] = {
+    WP_NAME = "weapons.missiles.GB-6-SFW",
+    QTY = 1 * perLife,
+    DISPLAY_NAME = "GB-6-SFW"
+}
 --  WP_NAME = "P_27TE",
 --  DISPLAY_NAME = "R-27ET"
 
@@ -103,15 +117,6 @@ limitations[13] = {
 
 -- WP_NAME = "CM-802AKG"
 -- DISPLAY_NAME = "CM-802AKG"
-
--- WP_NAME = "weapons.missiles.GB-6"
--- DISPLAY_NAME = "GB-6"
-
--- WP_NAME = "weapons.missiles.GB-6-HE"
--- DISPLAY_NAME = "GB-6-HE"
-
--- WP_NAME = "weapons.missiles.GB-6-SFW"
--- DISPLAY_NAME = "GB-6-SFW"
 
 -- WP_NAME = "weapons.missiles.LD-10"
 -- DISPLAY_NAME = "LD-10"
