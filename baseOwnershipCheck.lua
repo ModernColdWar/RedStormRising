@@ -10,11 +10,14 @@ local M = {}
 
 local log = mist.Logger:new("baseOwnershipCheck", "info")
 
-baseOwnership = 	
-{ 	
-	Airbases = { red = {}, blue = {}, neutral = {} },
-	FARPs = { red = {}, blue = {}, neutral = {} } 					
-}
+if baseOwnership == nil then
+	log:info("baseOwnershipCheck.LUA START: baseOwnership is NIL") --most likely always will be as baseOwnershipCheck.LUA starts before state.lua
+	baseOwnership = 	
+	{ 	
+		Airbases = { red = {}, blue = {}, neutral = {} },
+		FARPs = { red = {}, blue = {}, neutral = {} } 					
+	}
+end
 
 function M.getAllBaseOwnership(_campaignStartSetup,_passedBase,_playerORunit)
 
@@ -175,10 +178,16 @@ function M.getAllBaseOwnership(_campaignStartSetup,_passedBase,_playerORunit)
 				local baseName = base:GetName() --getName = DCS function, GetName = MOOSE function
 				log:info("FARPs: baseOwnership = $1",inspect(baseOwnership, { newline = " ", indent = "" }))
 				local _currFARPowner = utils.getCurrFARPside(baseName)
-				log:info("baseName: $1 _currFARPowner $2",baseName, _currFARPowner)
 				local _FARPlogisticsCentre = ctld.logisticCentreObjects[baseName]
+				
+				--local _debugFARPlogisticsCentreName = _FARPlogisticsCentre:getName()
+				--log:info("baseName: $1 _currFARPowner: $2, _FARPlogisticsCentreName: $3",baseName, _currFARPowner,_debugFARPlogisticsCentreName)
+				
 				local _FARPlogisticsCentreName = "noNAME"
 				local _FARPlogisticsCentreSide = "noSIDE"
+				
+				
+
 				--[[
 					will need friendly unit to set off DCS baseCapture to convert FARP to neutral (below),
 					then new logistics centre spawning from CTLD.lua will reinitate check to claim, and convert from neutral to assoc. side.

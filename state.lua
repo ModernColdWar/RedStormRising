@@ -30,14 +30,10 @@ M.defaultState = {
 -- set in M.setCurrentState(stateFileName)
 M.currentState = nil
 
--- used to mark whether base defences need to be spawned in at start (ie round reset)
-M.missionInitSetup = false
-
 -- mission init with no rsrState.json = campaign init = use zone name and color to determining starting base ownership
 M.campaignStartSetup = false
 
 M.canUseStateFromFile = false
-
 
 function M.getGroupData(groupName)
     local group = Group.getByName(groupName)
@@ -150,9 +146,6 @@ function M.updateBaseOwnership()
 		M.currentState.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(M.campaignStartSetup,"ALL","none")
 		M.campaignStartSetup = false -- only use map markers to setup bases ONCE, iterate through bases every other time
 	else
-		if M.missionInitSetup and M.canUseStateFromFile then
-			baseOwnership = M.currentState.baseOwnership -- broadcast global baseOwnership from file to then recheck
-		end
 		M.currentState.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(M.campaignStartSetup,"ALL","none")
 	end
 	log:info("M.currentState.baseOwnership $1", M.currentState.baseOwnership)
@@ -206,7 +199,13 @@ function M.setCurrentStateFromFile(stateFileName)
         end
         M.currentState = stateFromDisk
         if M.getWinner() == nil then
+		
+			-- broadcast global baseOwnership from file to then recheck
+			env.info("state: MISSION INIT: baseOwnership = $1",baseOwnership)
+			baseOwnership = mist.utils.deepCopy(M.currentState.baseOwnership) --deepCopy as variable assingment is a direct reference not a copy
+			
             M.canUseStateFromFile = true
+			log:info("State file detected")
         else
             log:info("State file is from a victory - will not use")
         end
@@ -216,7 +215,6 @@ function M.setCurrentStateFromFile(stateFileName)
 
     if not M.canUseStateFromFile then
         log:info("Setting up from defaults in code, and base(airbase/FARP) ownership from 'RSRbaseCaptureZone Trigger' Zone color")
-        M.missionInitSetup = true
 		M.campaignStartSetup = true
         M.currentState = mist.utils.deepCopy(M.defaultState)
 		M.updateBaseOwnership()
