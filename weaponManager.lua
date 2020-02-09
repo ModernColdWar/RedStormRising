@@ -67,6 +67,22 @@ limitations[10] = {
     QTY = 0,
     DISPLAY_NAME = "AGM-154C"
 }
+limitations[11] = {
+    WP_NAME = "weapons.bombs.GBU_31",
+    QTY = 1 * perLife,
+    DISPLAY_NAME = "GBU-31"
+}
+limitations[12] = {
+    WP_NAME = "weapons.bombs.GBU_31_V_3B",
+    QTY = 1 * perLife,
+    DISPLAY_NAME = "GBU-31(V)3/B"
+}
+limitations[13] = {
+    WP_NAME = "weapons.bombs.GBU_38",
+    QTY = 1 * perLife,
+    DISPLAY_NAME = "GBU-38"
+}
+
 --  WP_NAME = "P_27TE",
 --  DISPLAY_NAME = "R-27ET"
 
