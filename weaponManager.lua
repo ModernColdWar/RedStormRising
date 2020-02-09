@@ -67,16 +67,45 @@ limitations[10] = {
     QTY = 0,
     DISPLAY_NAME = "AGM-154C"
 }
---limitations[11] = {
 --  WP_NAME = "P_27TE",
---  QTY = 1 * perLife,
 --  DISPLAY_NAME = "R-27ET"
---}
---limitations[12] = {
+
 --  WP_NAME = "P_27EP",
---  QTY = 1 * perLife,
 --  DISPLAY_NAME = "R-27ER"
---}
+
+-- WP_NAME = "weapons.missiles.AGM_154A"
+-- DISPLAY_NAME = "AGM-154A"
+
+-- WP_NAME = "weapons.missiles.AGM_88"
+-- DISPLAY_NAME = "AGM-88C"
+
+-- WP_NAME = "weapons.bombs.CBU_97"
+-- DISPLAY_NAME = "CBU-97"
+
+-- WP_NAME = "weapons.missiles.CM-802AK"
+-- DISPLAY_NAME = "CM-802AK"
+
+-- WP_NAME = "CM-802AKG"
+-- DISPLAY_NAME = "CM-802AKG"
+
+-- WP_NAME = "weapons.missiles.GB-6"
+-- DISPLAY_NAME = "GB-6"
+
+-- WP_NAME = "weapons.missiles.GB-6-HE"
+-- DISPLAY_NAME = "GB-6-HE"
+
+-- WP_NAME = "weapons.missiles.GB-6-SFW"
+-- DISPLAY_NAME = "GB-6-SFW"
+
+-- WP_NAME = "weapons.missiles.LD-10"
+-- DISPLAY_NAME = "LD-10"
+
+-- WP_NAME = "weapons.missiles.LS-6-500"
+-- DISPLAY_NAME = "LS-6-500"
+
+-- WP_NAME = "weapons.missiles.X_58"
+-- DISPLAY_NAME = "Kh-58U"
+
 -- ----------------------- DO NOT TOUCH UNDER HERE-------------------------------
 local playersSettedUp = {}
 local data = {}
