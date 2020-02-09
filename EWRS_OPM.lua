@@ -46,8 +46,8 @@ ewrs.FIGHTER = 3
 
 ----SCRIPT OPTIONS----
 
-ewrs.messageUpdateInterval = 8 --How often EWRS will update automated BRA messages (seconds)
-ewrs.messageDisplayTime = 3 --How long EWRS BRA messages will show for (seconds)
+ewrs.messageUpdateInterval = 5 --How often EWRS will update automated BRA messages (seconds)
+ewrs.messageDisplayTime = 2 --How long EWRS BRA messages will show for (seconds)
 ewrs.restrictToOneReference = true -- Disables the ability to change the BRA calls from pilot's own aircraft or bullseye. If this is true, set ewrs.defaultReference to the option you want to restrict to.
 ewrs.restrictToOneMeasurement = true -- Disables the ability to change the BRA calls' units of measurement.  If this is true, set ewrs.defaultMeasurements to the option to want to restrict to.
 ewrs.defaultReference = "self" --The default reference for BRA calls - can be changed via f10 radio menu if ewrs.restrictToOneReference is false (self or bulls)
