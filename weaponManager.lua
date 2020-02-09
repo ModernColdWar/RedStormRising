@@ -63,9 +63,9 @@ limitations[9] = {
     DISPLAY_NAME = "RN-28"
 }
 limitations[10] = {
-    WP_NAME = "AGM-154C",
+    WP_NAME = "weapons.missiles.AGM_154",
     QTY = 0,
-    DISPLAY_NAME = "AGM 154 JSOW-C"
+    DISPLAY_NAME = "AGM-154C"
 }
 --limitations[11] = {
 --  WP_NAME = "P_27TE",
