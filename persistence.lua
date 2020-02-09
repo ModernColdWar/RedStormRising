@@ -85,6 +85,13 @@ function M.spawnGroup(groupData)
     for _, unitData in pairs(groupData.units) do
         unitData.playerCanDrive = true
     end
+
+    -- make base defence units uncontrollable
+    if not utils.startswith(groupName, "CTLD_") then
+        log:info("Setting $1 as uncontrollable", groupName)
+        groupData["uncontrollable"] = true
+    end
+
     local spawnedGroup = Group.getByName(mist.dynAdd(groupData).name)
 
     if ctld.isJTACUnitType(groupName) then
