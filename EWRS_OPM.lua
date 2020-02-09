@@ -38,6 +38,7 @@
 			- Added Mistral Gazelle
 			- Added C-101CC
 ]]
+local utils = require("utils")
 
 ewrs = {} --DO NOT REMOVE
 ewrs.HELO = 1
@@ -280,13 +281,13 @@ function ewrs.outTextShort(activePlayer, threatTable)
         if threat.range == ewrs.notAvailable then
             message = "EWRS: Nearest target position unknown"
         else
-            message = string.format("EWRS: Nearest target %03d for %.f%s at %d%s, type %s, heading %03d at %d%s",
+            message = string.format("EWRS: Nearest target %03d for %d%s at %d%s, type %s, heading %03d at %d%s",
                     threat.bearing,
-                    threat.range, rangeUnits,
-                    threat.altitude, altUnits,
+                    utils.round(threat.range, 1), rangeUnits,
+                    utils.round(threat.altitude, 100), altUnits,
                     threat.unitType,
                     threat.heading,
-                    threat.speed, speedUnits
+                    utils.round(threat.speed, 10), speedUnits
             )
         end
         trigger.action.outTextForGroup(activePlayer.groupID, message, ewrs.messageDisplayTime)
