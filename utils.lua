@@ -168,4 +168,8 @@ function M.setGroupControllerOptions(group)
     end, group, timer.getTime() + 2)
 end
 
+function M.round(number, roundTo)
+    return math.floor((number + 0.5 * roundTo) / roundTo) * roundTo
+end
+
 return M
