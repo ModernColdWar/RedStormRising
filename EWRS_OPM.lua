@@ -612,16 +612,17 @@ function ewrs.findDetectedTargets(side)
     return ewrs.filterUnits(units)
 end
 
+ewrs.ewrUnitSet = SET_UNIT:New()
+                          :FilterActive()
+                          :FilterCategories({ "plane", "ground", "ship" })
+                          :FilterStart()
+
 function ewrs.findRadarUnits()
-    local filter = {}
-    if ewrs.enableBlueTeam and ewrs.enableRedTeam then
-        filter = { "[all][plane]", "[all][vehicle]", "[all][ship]" }
-    elseif ewrs.enableBlueTeam then
-        filter = { "[blue][plane]", "[blue][vehicle]", "[blue][ship]" }
-    elseif ewrs.enableRedTeam then
-        filter = { "[red][plane]", "[red][vehicle]", "[red][ship]" }
-    end
-    local all_vecs = mist.makeUnitTable(filter)
+    local all_vecs = {}
+    ewrs.ewrUnitSet:ForEachUnit(function(u)
+        table.insert(all_vecs, u:GetName())
+    end)
+
     local redUnits = {}
     local blueUnits = {}
 
