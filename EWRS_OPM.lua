@@ -74,33 +74,24 @@ NOTE that track radars require a search radar to detect targets (but the search 
 I haven't tested detection with ships (that have radar), but should work.
 ]]
 ewrs.validSearchRadars = {
-    "p-10 s125 sr", --SA-3 Search Radar
-    "Kub 1S91 str", --SA-6 Search and Track Radar
-    "S-300PS 64H6E sr", --SA-10 Search Radar
-    "S-300 PS 40B6MD sr", --SA-10 Search Radar
-    "SA-11 Buk SR 9518M1", --SA-11 Search Radar
-    "55G6 EWR", --Early Warning Radar
+    -- slingable radars
+    "p-19 s-125 sr", --SA-2 Search Radar
+    "Kub 1S91 str", -- Kub Search and Track Radar
+    "SA-11 Buk SR 9S18M1", -- Buk search radar
+    "Hawk sr", --Hawk SAM Search Radar
+    "Roland Radar", --Roland Search Radar
     "1L13 EWR", --Early Warning Radar
-    "A-50", --AWACS
-    --"E-2D",							--AWACS
-    --"E-3A",							--AWACS
-    -- "Roland Radar",				    --Roland Search Radar
-    -- "Hawk sr",						--Hawk SAM Search Radar
-    -- "Patriot str",					--Patriot SAM Search and Track Radar
 
-    --Ships - I've left these commented out because I don't know which ones have radar
-    --and which ones don't. Just remove the comment to activate them (the '--' at the start of the line)
+    -- AWACS
+    "A-50",
+    "E-2C",
+    "E-3A",
 
-    "MOSCOW", -- CG 1164 Moskva
-    --"TICONDEROG",			-- CG-60 Normandy
-    --"PIOTR",				-- CGN 1144.2 Pyotr Velikiy
-    "KUZNECOW", -- CV 1143.5 Admiral Kuzentsov
-    --"VINSON",				-- CVN-70 Carl Vinson
-    --"REZKY",				-- FF 1135M Rezky
-    --"NEUSTRASH",			-- FFG 11540 Neustrashimy
-    --"PERRY",				-- FFG-7CL Oliver Hazzard Perry
-    --"ALBATROS",			-- FFL 1124.4 Grisha
-    --"MOLNIYA",			-- FSG 1241.1MP Molniya
+    -- Other items we could add (IDs to be verified)
+    -- Big EWR ("55G6 EWR")
+    -- SA-10 ("S-300PS 64H6E sr" and "S-300 PS 40B6MD sr")
+    -- Patriot ("Patriot str")
+    -- The ships
 }
 
 --[[
