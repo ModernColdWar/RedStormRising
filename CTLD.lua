@@ -23,6 +23,7 @@
 require("mist_4_3_74")
 require("CTLD_config")
 require("MOOSE")
+local spatialUtils = require("spatialUtils")
 local utils = require("utils")
 
 ctld.nextUnitId = 1;
@@ -2368,6 +2369,13 @@ function ctld.unpackCrates(_arguments)
                 return
             end
 
+            local heliSideName = utils.getSideName(_heli:getCoalition())
+            local _cratePoint = _crate.crateUnit:getPoint()
+            if spatialUtils.closestBaseIsEnemyAndWithinRange({ x = _cratePoint.x, y = _cratePoint.z }, heliSideName, ctld.minimumDeployDistanceFromEnemyBase) then
+                ctld.displayMessageToGroup(_heli, "You can't unpack that here! You are too close to an enemy base!", 20)
+                return
+            end
+
             if _crate.dist < 750 and (_crate.details.unit == "FOB" or _crate.details.unit == "FOB-SMALL") then
 
                 ctld.unpackFOBCrates(_crates, _heli)
@@ -2402,7 +2410,6 @@ function ctld.unpackCrates(_arguments)
 
                 else
                     -- single crate
-                    local _cratePoint = _crate.crateUnit:getPoint()
                     local _crateName = _crate.crateUnit:getName()
 
                     -- ctld.spawnCrateStatic( _heli:getCoalition(),ctld.getNextUnitId(),{x=100,z=100},_crateName,100)

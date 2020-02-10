@@ -44,6 +44,7 @@ ctld.maximumMoveDistance = 0 -- max distance for troops to move from drop point 
 
 ctld.minimumDeployDistance = 600 -- minimum distance from a friendly pickup zone where you can deploy a crate
 ctld.maximumDeployDistance = 10000 -- maximum distance from a friendly pickup zone where you can deploy a crate
+ctld.minimumDeployDistanceFromEnemyBase = 20000 -- minimum distance to unpack/unload from an enemy base if it's the closest
 
 ctld.numberOfTroops = 10 -- default number of troops to load on a transport heli or C-130
 -- also works as maximum size of group that'll fit into a helicopter unless overridden
