@@ -33,6 +33,9 @@ M.currentState = nil
 -- mission init with no rsrState.json = campaign init = use zone name and color to determining starting base ownership
 M.campaignStartSetup = false
 
+-- mission init regardless of rsrState.json
+M.missionInitSetup = false
+
 M.canUseStateFromFile = false
 
 function M.getGroupData(groupName)
@@ -77,15 +80,15 @@ end
 
 function M.handleSpawnQueue()
     -- get MIST group data for newly unpacked units (if it's available)
-    --log:info("Handling spawn queue (length $1)", #updateSpawnQueue.spawnQueue)
+    log:info("Handling spawn queue (length $1)", #updateSpawnQueue.spawnQueue)
     for i = #updateSpawnQueue.spawnQueue, 1, -1 do
         local groupName = updateSpawnQueue.spawnQueue[i]
-        --log:info("Getting group data for spawned group $1", groupName)
+        log:info("Getting group data for spawned group $1", groupName)
         local groupData = M.getGroupData(groupName)
         if groupData ~= nil then
-            --log:info("Successfully got group data for $1", groupName)
+            log:info("Successfully got group data for $1", groupName)
             table.insert(M.currentState.persistentGroupData, groupData)
-            --log:info("Removing $1 from spawn queue", groupName)
+            log:info("Removing $1 from spawn queue", groupName)
             table.remove(updateSpawnQueue.spawnQueue, i)
         else
             log:warn("Unable to get group data for $1; leaving in spawn queue", groupName)
@@ -144,8 +147,11 @@ function M.updateBaseOwnership()
 	--_passedBase = "ALL" to initiate full check of all bases for persistance
 	if M.campaignStartSetup then
 		M.currentState.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(M.campaignStartSetup,"ALL","none")
-		M.campaignStartSetup = false -- only use map markers to setup bases ONCE, iterate through bases every other time
-	else
+		M.campaignStartSetup = false -- only use MIZ zone names and colors to setup bases ONCE, iterate through bases every other time
+	else	
+		if M.missionInitSetup and M.canUseStateFromFile then
+			baseOwnership = M.currentState.baseOwnership -- broadcast global baseOwnership from file to then recheck
+		end
 		M.currentState.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(M.campaignStartSetup,"ALL","none")
 	end
 	log:info("M.currentState.baseOwnership $1", M.currentState.baseOwnership)
@@ -192,6 +198,9 @@ function M.getWinner()
 end
 
 function M.setCurrentStateFromFile(stateFileName)
+
+	M.missionInitSetup = true -- persistance.lua: configureBasesAtStartup: state.missionInitSetup = false
+	
     if UTILS.FileExists(stateFileName) then
         local stateFromDisk = M.readStateFromDisk(stateFileName)
         if stateFromDisk == nil then

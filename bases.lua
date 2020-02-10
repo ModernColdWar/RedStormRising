@@ -3,7 +3,6 @@ require("mist_4_3_74")
 local logisticsManager = require("logisticsManager")
 local pickupZoneManager = require("pickupZoneManager")
 local slotBlocker = require("slotBlocker")
---local state = require("state")
 local updateSpawnQueue = require("updateSpawnQueue")
 local utils = require("utils")
 local rsrConfig = require("RSR_config")
@@ -84,6 +83,7 @@ function M.resupply(baseName, sideName, rsrConfig, spawnLC, missionInit)
     activateBaseDefences(baseName, sideName, rsrConfig)
 	if spawnLC then 
 		log:info("PRE-logisticsManager: baseName $1 sideName $2 missionInit $3", baseName, sideName, missionInit)
+		--(baseName, sideName, logisticsCentreName, isMissionInit, constructingPlayerName)
 		logisticsManager.spawnLogisticsBuildingForBase(baseName, sideName,"none", missionInit,"none")
 	end
 end

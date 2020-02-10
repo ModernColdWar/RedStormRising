@@ -161,12 +161,13 @@ local function configureBasesAtStartup(rsrConfig, baseOwnership, missionInitSetu
             end
         end
     end
+	state.missionInitSetup = false
 end
 
 function M.restoreFromState(rsrConfig)
     log:info("Restoring mission state")
     state.copyToCtld()
-
+	--log:info("state.missionInitSetup: $1",mist.utils.basicSerialize(state.missionInitSetup))
     configureBasesAtStartup(rsrConfig, state.currentState.baseOwnership, state.missionInitSetup)
 
     -- We clear state.current.persistentGroupData here, as this is updated in handleSpawnQueue later

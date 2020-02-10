@@ -13,8 +13,8 @@ rsrConfig.udpEventPort = 9696
 
 -- state saving
 rsrConfig.stateFileName = utils.getFilePath("rsrState.json") -- default name for state file
-rsrConfig.writeInterval = rsrConfig.devMode and 60 or 300 -- how often to update and write the state to disk in seconds
-rsrConfig.writeDelay = rsrConfig.devMode and 20 or 180  -- initial delay for persistence, to move last one closer to restart
+rsrConfig.writeInterval = rsrConfig.devMode and 30 or 300 -- how often to update and write the state to disk in seconds
+rsrConfig.writeDelay = rsrConfig.devMode and 10 or 180  -- initial delay for persistence, to move last one closer to restart
 
 -- base defences
 --mr: ensure that associated RSRbaseCaptureZone zone, which is used as a pre-filter, is larger than these values

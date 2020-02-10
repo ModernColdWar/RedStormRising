@@ -43,13 +43,11 @@ function M.spawnLogisticsBuildingForBase(baseName, sideName, logisticsCentreName
 		log:info("isMissionInit: $1", isMissionInit)
 		--(_point, _name, _coalition, _baseORfarp, _baseORfarpName)
 		ctld.spawnLogisticsCentre(point, _staticObjectName, utils.getSide(sideName), "BASE", baseName, isMissionInit, _playerName) 
-		log:info("$1 Logistics Centre spawned at $2", sideName, _selectedLogiZone)
-		--log:info("ctld.logisticCentreObjects $1", ctld.logisticCentreObjects)
+		log:info("$1 Logistics Centre spawned at $2", sideName,  mist.utils.basicSerialize(_selectedLogiZone))
 		return
 	end
+	log:warn("No logistics zone called for $1 found; no logistics building will spawn", baseName)
 	
-    log:warn("No logistics zone called for $1 found; no logistics building will spawn", baseName)
-	log:info("ctld.logisticCentreObjects $1", ctld.logisticCentreObjects)
 end
-
+log:info("ctld.logisticCentreObjects $1",  mist.utils.basicSerialize(ctld.logisticCentreObjects))
 return M

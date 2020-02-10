@@ -1008,12 +1008,10 @@ function ctld.spawnLogisticsCentre(_point, _name, _coalition, _baseORfob, _baseO
 	
     mist.dynAddStatic(_logiCentre)
     local _spawnedLogiCentreObject = StaticObject.getByName(_logiCentre["name"])
-				
+
 	-- use baseName as index for logistic centres, as should only be 1 x logistics centre per airbase/FARP at one time?
 	-- use playerName as index for FOBs?  Limit 1 x FOB per player?
-	log:info("ctld.logisticCentreObjects $1", ctld.logisticCentreObjects)
-	
-	--on mission init, key for base won't exist yet in ctld.logisticCentreObjects
+	-- on mission init, key for base won't exist yet in ctld.logisticCentreObjects
 	_baseKeyExists = false
 	for _k, _base in pairs (ctld.logisticCentreObjects) do
 		if _base == _baseORfobName then
@@ -1040,7 +1038,7 @@ function ctld.spawnLogisticsCentre(_point, _name, _coalition, _baseORfob, _baseO
 		["rate"] = number value for the "score" of the object when it is killed --mr: use to allow assigning points for logistic centre kills
 	--]]
 
-    trigger.action.markToCoalition(UTILS.GetMarkID(), _name, _point, _coalition, true)
+    trigger.action.markToCoalition(UTILS.GetMarkID(),_name,_point,_coalition,true)
 	
 	--[[
 		initate checking all bases for differences = 
@@ -1058,7 +1056,7 @@ function ctld.spawnLogisticsCentre(_point, _name, _coalition, _baseORfob, _baseO
 	if _isMissionInit then
 		_checkALLbases = _baseORfobName
 	end
-	log:info("_isMissionInit: $1, _checkALLbases: $2",_isMissionInit,_checkALLbases)
+	log:info("_isMissionInit: $1, _checkALLbases: $2, _spawnedLogiCentreObject: $3",_isMissionInit,_checkALLbases,mist.utils.basicSerialize(_spawnedLogiCentreObject))
 	baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(false,_checkALLbases,_playerName)
 		
     return _spawnedLogiCentreObject
@@ -1645,17 +1643,21 @@ function ctld.loadUnloadLogisticsCrate(_args)
 		
 		--[[ 
 			provide warnings but do not stop crate deploying as may be needed for unique circumstances 
-			e.g. delivery by plane but later pickup by helo, pre-dleivery to enemy base prior to capture
+			e.g. delivery by plane but later pickup by helo, pre-delivery to enemy base prior to capture
 		--]]
 		if _inFOBexclusionZone == true and _inBaseZoneAndRSRrepairRadius == false then
 			local _aircraftDistRSR = _RSRradius - _closestBaseDist
 			ctld.displayMessageToGroup(_aircraft, "WARNING: You are too far from " .. _closestBaseName .. mist.utils.round((_aircraftDistRSR/1000),1) 
 			.. "for a repair and too close (<" .. mist.utils.round((ctld.exclusionZoneFromBasesForFOBs/1000),1) .. ") to deploy a !", 20)
+			return
 		end
 		
-		-- if player not in  exclusion zone then proximity to base irrelevant as too far to matter
 		if _inBaseZoneAndRSRrepairRadius == true and (_closestBaseSide ~= _aircraftSideName) then
-			ctld.displayMessageToGroup(_aircraft, "WARNING: " .. _closestBaseName .. " is not a friendly base!", 20)
+		
+			if _closestBaseSide ~= "neutral" then
+				ctld.displayMessageToGroup(_aircraft, "WARNING: " .. _closestBaseName .. " is not a friendly or neutral base!", 20)
+				return
+			end
 		end
 		------------------------------------------------------------------------------------
 		if _inFOBexclusionZone == false then
@@ -1691,13 +1693,13 @@ function ctld.loadUnloadLogisticsCrate(_args)
 		elseif 
 		-- initiate immediate base repair, no need for crate spawn
 			_inBaseZoneAndRSRrepairRadius == true and
-			(_closestBaseSide == _aircraftSideName) and
+			((_closestBaseSide == _aircraftSideName) or (_closestBaseSide == "neutral")) and
 			(_nearestLogisticsCentreName ~= _closestBaseName) then -- no logisitics centre at current base
 			
 			_logisticsCentreName = _logisticsCentreName .. _closestBaseName .. " Logistics Centre #" .. _unitId .. _closestBaseSide -- "MM75 Logistics Centre #001 red"
 			
 			logisticsManager.spawnLogisticsBuildingForBase(_closestBaseName,_aircraftSideName,_logisticsCentreName,false,_playerName)
-			trigger.action.outTextForCoalition(_aircraft:getCoalition(), _playerName .. " has repaired the Logistics Centre at " .. _closestBaseName, 10)
+			--trigger.action.outTextForCoalition(_aircraft:getCoalition(), _playerName .. " has repaired the Logistics Centre at " .. _closestBaseName, 10) --moved to baseOwnershipCheck.lua
 			
 		elseif 
 		-- return logistics crate to pool to prevent exploit of "backup repair crates"
@@ -1709,7 +1711,6 @@ function ctld.loadUnloadLogisticsCrate(_args)
 			ctld.inTransitLogisticsCentreCrates[_aircraft:getName()] = nil
 		end		
 	end
-	
 end
 
 function ctld.loadTroopsFromZone(_args)
@@ -2669,13 +2670,14 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
 	local _inBaseZoneAndRSRradius = _baseProximity[1]
 	local _inFOBexclusionZone = _baseProximity[2]
 	local _closestBaseName = _baseProximity[3][1]
+	local _closestBaseSide = _baseProximity[3][2]
 	local _closestBaseDist = _baseProximity[3][3]
 	local _baseType = _baseProximity[4]
 	
 	local _baseName = _playerName
 	if _inBaseZoneAndRSRradius then
 		_baseName = _closestBaseName -- exchange playerName for baseName
-		_baseORfob = _baseType --provides distinction between deploying  or repairing airbase/FARP in below messages
+		_baseORfob = _baseType --provides distinction between deploying or repairing airbase/FARP in below messages
 		_buildTime = 1 --reduce build time for airbase/FARP as it's a repair + avoids problems with potentially multiple logistics centres! --uncessary
 	end
 	
@@ -2692,14 +2694,27 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
 		(c) if _inBaseZoneAndRSRradius = false, and _inFOBexclusionZone = then, then too far for base for repair AND too close for deployable 
 		> ctld.baseProximity will also provide message to player for (c)
 	--]]
-	if _inFOBexclusionZone and not _inBaseZoneAndRSRradius then
-		local _aircraftDistRSR = _RSRradius - _closestBaseDist
-			-- log:info("$1 too close to $2 for FOB  but not close enough for repair",_baseNameORplayerName, _closestBase)
-			ctld.displayMessageToGroup(_aircraft, "You are too far from " .. _baseName .. mist.utils.round((_aircraftDistRSR/1000),1) 
-			.. "for a repair and too close (<" .. mist.utils.round((ctld.exclusionZoneFromBasesFors/1000),1) .. ") to deploy a FOB", 20)
+	
+	local _abortUnpack = false
+	if _inFOBexclusionZone then
+		
+		if not _inBaseZoneAndRSRradius then
+			local _aircraftDistRSR = _RSRradius - _closestBaseDist
+				-- log:info("$1 too close to $2 for FOB  but not close enough for repair",_baseNameORplayerName, _closestBase)
+				ctld.displayMessageToGroup(_aircraft, "You are too far from " .. _baseName .. mist.utils.round((_aircraftDistRSR/1000),1) 
+				.. "for a repair and too close (<" .. mist.utils.round((ctld.exclusionZoneFromBasesFors/1000),1) .. ") to deploy a FOB", 20)
+				_abortUnpack = true
+		end
+		if _inBaseZoneAndRSRradius and((_closestBaseSide ~= _aircraftSideName) or (_closestBaseSide ~= "neutral")) then
+			ctld.displayMessageToGroup(_aircraft, _baseName .. " is not a friendly or neutral base, and you cannot repair it", 20)
+			_abortUnpack = true
+		end
+	end
+	
+	if _abortUnpack then
 		return --abort logistics crate unpack
 	end
-
+	
     -- unpack multi crate
     local _nearbyMultiCrates = {}
 
@@ -2811,7 +2826,7 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
 			--]]
 			_logisticsCentreName = _logisticsCentreName .. _baseName .. " Logistics Centre #" .. _unitId .. _side -- "MM75 Logistics Centre #001 red"
 			logisticsManager.spawnLogisticsBuildingForBase(_baseName,_aircraftSideName,_logisticsCentreName,false,_playerName)
-			trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " has repaired the Logistics Centre at " .. _closestBaseName, 10)
+			--trigger.action.outTextForCoalition(_aircraft:getCoalition(), _playerName .. " has repaired the Logistics Centre at " .. _closestBaseName, 10) --moved to baseOwnershipCheck.lua
 		end
 
         ctld.processCallback({ unit = _aircraft, position = _centroid, action = "fob" }) --mr: what does this do?!
@@ -2880,8 +2895,8 @@ function ctld.unloadInternalCrate (_args)
 			end
 			
 			-- if player not in  exclusion zone then proximity to base irrelevant as too far to matter
-			if _inBaseZoneAndRSRrepairRadius == true and (_closestBaseSide ~= _aircraftSideName) then
-				ctld.displayMessageToGroup(_heli, "WARNING: " .. _closestBaseName .. " is not a friendly base!", 20)
+			if _inBaseZoneAndRSRrepairRadius == true and ((_closestBaseSide ~= _aircraftSideName) or (_closestBaseSide == "neutral")) then
+				ctld.displayMessageToGroup(_heli, "WARNING: " .. _closestBaseName .. " is not a friendly or neutral base!", 20)
 			end
 			------------------------------------------------------------------------------------
 			if 
@@ -4144,24 +4159,6 @@ end
 --returns closest base to player and also if in repair radius or  exclusion zone
 function ctld.baseProximity(_aircraft) --{_inBaseZoneAndRSRrepairRadius,_inFOBexclusionZone,_closestBaseSideDist,_baseType}
 
-	--[[ CONVERT TO MOOSE ?
-	ZONE_BASE:New(_triggerZone) --MOOSE: Adds zone to MOOSE system?
-	ZONE_BASE.IsPointVec2InZone(_aircraft) -- MOOSE: Returns if a 2D point vector is within the zone
-	--mr: is utilisation of MOOSE and ZONE_BASE.IsPointVec2InZone faster or essentially the same calculation?
-	
-	for _k, _base in ipairs(AIRBASE.GetAllAirbases()) do
-		if _base:GetAirbaseCategory() == Airbase.Category.AIRDROME then
-			_isAirBase = true
-			_RSRradius = rsrConfig.baseDefenceActivationRadiusAirbase
-			_baseType == "Airbase"
-		elseif _base:GetAirbaseCategory() == Airbase.Category.HELIPAD then
-			_isFARP = true
-			_RSRradius = rsrConfig.baseDefenceActivationRadiusFARP
-			_baseType == "FARP"
-		end
-	end
-	--]]
-	
 	local _inFOBexclusionZone = false
 	local _inBaseZoneAndRSRrepairRadius = false
 	
