@@ -1600,9 +1600,9 @@ function ctld.loadTroopsFromZone(_args)
     if _extract ~= nil then
         -- search for nearest troops to pickup
         return ctld.extractTroops({ _heli:getName(), _troops })
-    elseif _zone.inZone == true then
+    elseif _zone.inZone == true or ctld.debug == true then
 
-        if _zone.limit - 1 >= 0 then
+        if _zone.limit - 1 >= 0 or ctld.debug == true then
             -- decrease zone counter by 1
             ctld.updateZoneCounter(_zone.index, -1)
 
