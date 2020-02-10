@@ -1,5 +1,3 @@
-local state = require("state")
-
 local M = {}
 
 local function getDistSq(x1, y1, x2, y2)
@@ -35,6 +33,7 @@ function M.findNearestBase(point)
 end
 
 function M.closestBaseIsEnemyAndWithinRange(position, friendlySideName, range)
+    local state = require("state")
     local nearestBase, distance = M.findNearestBase(position)
     if distance > range then
         -- far from any base
