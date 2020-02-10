@@ -18,54 +18,49 @@ local socket = require("socket")
 -- ---------------------------LIMITATIONS-----------------------------------
 local limitations = {
     {
-        WP_NAME = "AIM_120C",
-        QTY = 4 * perLife,
-        DISPLAY_NAME = "AIM 120C"
-    },
-    {
-        WP_NAME = "AIM_120",
-        QTY = 1 * perLife,
-        DISPLAY_NAME = "AIM 120B"
-    },
-    {
-        WP_NAME = "SD-10",
-        QTY = 4 * perLife,
-        DISPLAY_NAME = "SD-10"
-    },
-    {
-        WP_NAME = "P_77",
-        QTY = 8 * perLife,
-        DISPLAY_NAME = "R-77"
-    },
-    {
         WP_NAME = "AIM_54A_Mk47",
         QTY = 1 * perLife,
-        DISPLAY_NAME = "AIM 54A-Mk47"
+        DISPLAY_NAME = "AIM-54A Mk47"
     },
     {
         WP_NAME = "AIM_54A_Mk60",
         QTY = 4 * perLife,
-        DISPLAY_NAME = "AIM 54A-Mk60"
+        DISPLAY_NAME = "AIM-54A Mk60"
     },
     {
         WP_NAME = "AIM_54C_Mk47",
         QTY = 1 * perLife,
-        DISPLAY_NAME = "AIM 54C-Mk47"
+        DISPLAY_NAME = "AIM-54C Mk47"
     },
     {
-        WP_NAME = "weapons.bombs.RN-24",
-        QTY = 0,
-        DISPLAY_NAME = "RN-24"
+        WP_NAME = "AIM_120",
+        QTY = 1 * perLife,
+        DISPLAY_NAME = "AIM-120B"
     },
     {
-        WP_NAME = "weapons.bombs.RN-28",
-        QTY = 0,
-        DISPLAY_NAME = "RN-28"
+        WP_NAME = "AIM_120C",
+        QTY = 4 * perLife,
+        DISPLAY_NAME = "AIM-120C"
     },
     {
         WP_NAME = "weapons.missiles.AGM_154",
         QTY = 0,
         DISPLAY_NAME = "AGM-154C"
+    },
+    {
+        WP_NAME = "weapons.missiles.GB-6",
+        QTY = 1 * perLife,
+        DISPLAY_NAME = "GB-6"
+    },
+    {
+        WP_NAME = "weapons.missiles.GB-6-HE",
+        QTY = 1 * perLife,
+        DISPLAY_NAME = "GB-6-HE"
+    },
+    {
+        WP_NAME = "weapons.missiles.GB-6-SFW",
+        QTY = 1 * perLife,
+        DISPLAY_NAME = "GB-6-SFW"
     },
     {
         WP_NAME = "weapons.bombs.GBU_31",
@@ -83,20 +78,25 @@ local limitations = {
         DISPLAY_NAME = "GBU-38"
     },
     {
-        WP_NAME = "weapons.missiles.GB-6",
-        QTY = 1 * perLife,
-        DISPLAY_NAME = "GB-6"
+        WP_NAME = "P_77",
+        QTY = 8 * perLife,
+        DISPLAY_NAME = "R-77"
     },
     {
-        WP_NAME = "weapons.missiles.GB-6-HE",
-        QTY = 1 * perLife,
-        DISPLAY_NAME = "GB-6-HE"
+        WP_NAME = "weapons.bombs.RN-24",
+        QTY = 0,
+        DISPLAY_NAME = "RN-24"
     },
     {
-        WP_NAME = "weapons.missiles.GB-6-SFW",
-        QTY = 1 * perLife,
-        DISPLAY_NAME = "GB-6-SFW"
-    }
+        WP_NAME = "weapons.bombs.RN-28",
+        QTY = 0,
+        DISPLAY_NAME = "RN-28"
+    },
+    {
+        WP_NAME = "SD-10",
+        QTY = 4 * perLife,
+        DISPLAY_NAME = "SD-10"
+    },
 }
 --  WP_NAME = "P_27TE",
 --  DISPLAY_NAME = "R-27ET"
