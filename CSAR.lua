@@ -704,6 +704,17 @@ function csar.checkDisabledAircraftStatus(_args)
     end
 end
 
+function csar.getLivesLeft(playerName)
+    if csar.csarMode ~= 3 then
+        return nil
+    end
+    local _lives = csar.pilotLives[playerName]
+    if _lives == nil then
+        _lives = csar.maxLives + 1
+    end
+    return _lives - 1
+end
+
 function csar.destroyUnit(_unit)
 
     --destroy if the SAME player is still in the aircraft

@@ -44,6 +44,7 @@ function M.BIRTH_EVENTHANDLER:_AddMenus(event)
                 self:_AddTransportMenus(groupId, unitName)
             else
                 self:_AddRadioListMenu(groupId, unitName)
+                self:_AddLivesLeftMenu(playerGroup, unitName)
             end
         end
     end
@@ -98,6 +99,22 @@ function M.BIRTH_EVENTHANDLER:_AddRadioListMenu(groupId, unitName)
     if ctld.enabledRadioBeaconDrop then
         missionCommands.addCommandForGroup(groupId, "List Radio Beacons", nil, ctld.listRadioBeacons, { unitName })
     end
+end
+
+function M.BIRTH_EVENTHANDLER:_AddLivesLeftMenu(playerGroup, unitName)
+    MENU_GROUP_COMMAND:New(playerGroup, "Show remaining lives", nil, function()
+        local unit = Unit.getByName(unitName)
+        if unit ~= nil then
+            local playerName = unit:getPlayerName()
+            if playerName ~= nil then
+                local lives = csar.getLivesLeft(playerName)
+                if lives ~= nil then
+                    local message = string.format("You have %d lives remaining", lives)
+                    MESSAGE:New(message, 5):ToGroup(playerGroup)
+                end
+            end
+        end
+    end)
 end
 -- luacheck: pop
 
