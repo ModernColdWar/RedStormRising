@@ -109,7 +109,7 @@ function M.BIRTH_EVENTHANDLER:_AddLivesLeftMenu(playerGroup, unitName)
             if playerName ~= nil then
                 local lives = csar.getLivesLeft(playerName)
                 if lives ~= nil then
-                    local message = string.format("You have %d lives remaining", lives)
+                    local message = string.format("You have %d %s remaining", lives, lives == 1 and "life" or "lives")
                     MESSAGE:New(message, 5):ToGroup(playerGroup)
                 end
             end
