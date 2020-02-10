@@ -8,7 +8,6 @@
 local M = {}
 
 local msgTimer = 15
-local limitations = {} -- Do not touch
 
 local rsrConfig = require("RSR_config")
 local perLife = rsrConfig.maxLives
@@ -17,85 +16,87 @@ local JSON = require("json")
 local socket = require("socket")
 
 -- ---------------------------LIMITATIONS-----------------------------------
-limitations[1] = {
-    WP_NAME = "AIM_120C",
-    QTY = 4 * perLife,
-    DISPLAY_NAME = "AIM 120C"
-}
-limitations[2] = {
-    WP_NAME = "AIM_120",
-    QTY = 1 * perLife,
-    DISPLAY_NAME = "AIM 120B"
-}
-limitations[3] = {
-    WP_NAME = "SD-10",
-    QTY = 4 * perLife,
-    DISPLAY_NAME = "SD-10"
-}
-limitations[4] = {
-    WP_NAME = "P_77",
-    QTY = 8 * perLife,
-    DISPLAY_NAME = "R-77"
-}
-limitations[5] = {
-    WP_NAME = "AIM_54A_Mk47",
-    QTY = 1 * perLife,
-    DISPLAY_NAME = "AIM 54A-Mk47"
-}
-limitations[6] = {
-    WP_NAME = "AIM_54A_Mk60",
-    QTY = 4 * perLife,
-    DISPLAY_NAME = "AIM 54A-Mk60"
-}
-limitations[7] = {
-    WP_NAME = "AIM_54C_Mk47",
-    QTY = 1 * perLife,
-    DISPLAY_NAME = "AIM 54C-Mk47"
-}
-limitations[8] = {
-    WP_NAME = "weapons.bombs.RN-24",
-    QTY = 0,
-    DISPLAY_NAME = "RN-24"
-}
-limitations[9] = {
-    WP_NAME = "weapons.bombs.RN-28",
-    QTY = 0,
-    DISPLAY_NAME = "RN-28"
-}
-limitations[10] = {
-    WP_NAME = "weapons.missiles.AGM_154",
-    QTY = 0,
-    DISPLAY_NAME = "AGM-154C"
-}
-limitations[11] = {
-    WP_NAME = "weapons.bombs.GBU_31",
-    QTY = 1 * perLife,
-    DISPLAY_NAME = "GBU-31"
-}
-limitations[12] = {
-    WP_NAME = "weapons.bombs.GBU_31_V_3B",
-    QTY = 1 * perLife,
-    DISPLAY_NAME = "GBU-31(V)3/B"
-}
-limitations[13] = {
-    WP_NAME = "weapons.bombs.GBU_38",
-    QTY = 1 * perLife,
-    DISPLAY_NAME = "GBU-38"
-}
-limitations[14] = {
-    WP_NAME = "weapons.missiles.GB-6",
-    QTY = 1 * perLife,
-    DISPLAY_NAME = "GB-6"
-}
-limitations[15] = {
-    WP_NAME = "weapons.missiles.GB-6-HE",
-    QTY = 1 * perLife,
-    DISPLAY_NAME = "GB-6-HE"
-}
-limitations[16] = {
-    WP_NAME = "weapons.missiles.GB-6-SFW",
-    QTY = 1 * perLife,
-    DISPLAY_NAME = "GB-6-SFW"
+local limitations = {
+    {
+        WP_NAME = "AIM_120C",
+        QTY = 4 * perLife,
+        DISPLAY_NAME = "AIM 120C"
+    },
+    {
+        WP_NAME = "AIM_120",
+        QTY = 1 * perLife,
+        DISPLAY_NAME = "AIM 120B"
+    },
+    {
+        WP_NAME = "SD-10",
+        QTY = 4 * perLife,
+        DISPLAY_NAME = "SD-10"
+    },
+    {
+        WP_NAME = "P_77",
+        QTY = 8 * perLife,
+        DISPLAY_NAME = "R-77"
+    },
+    {
+        WP_NAME = "AIM_54A_Mk47",
+        QTY = 1 * perLife,
+        DISPLAY_NAME = "AIM 54A-Mk47"
+    },
+    {
+        WP_NAME = "AIM_54A_Mk60",
+        QTY = 4 * perLife,
+        DISPLAY_NAME = "AIM 54A-Mk60"
+    },
+    {
+        WP_NAME = "AIM_54C_Mk47",
+        QTY = 1 * perLife,
+        DISPLAY_NAME = "AIM 54C-Mk47"
+    },
+    {
+        WP_NAME = "weapons.bombs.RN-24",
+        QTY = 0,
+        DISPLAY_NAME = "RN-24"
+    },
+    {
+        WP_NAME = "weapons.bombs.RN-28",
+        QTY = 0,
+        DISPLAY_NAME = "RN-28"
+    },
+    {
+        WP_NAME = "weapons.missiles.AGM_154",
+        QTY = 0,
+        DISPLAY_NAME = "AGM-154C"
+    },
+    {
+        WP_NAME = "weapons.bombs.GBU_31",
+        QTY = 1 * perLife,
+        DISPLAY_NAME = "GBU-31"
+    },
+    {
+        WP_NAME = "weapons.bombs.GBU_31_V_3B",
+        QTY = 1 * perLife,
+        DISPLAY_NAME = "GBU-31(V)3/B"
+    },
+    {
+        WP_NAME = "weapons.bombs.GBU_38",
+        QTY = 1 * perLife,
+        DISPLAY_NAME = "GBU-38"
+    },
+    {
+        WP_NAME = "weapons.missiles.GB-6",
+        QTY = 1 * perLife,
+        DISPLAY_NAME = "GB-6"
+    },
+    {
+        WP_NAME = "weapons.missiles.GB-6-HE",
+        QTY = 1 * perLife,
+        DISPLAY_NAME = "GB-6-HE"
+    },
+    {
+        WP_NAME = "weapons.missiles.GB-6-SFW",
+        QTY = 1 * perLife,
+        DISPLAY_NAME = "GB-6-SFW"
+    }
 }
 --  WP_NAME = "P_27TE",
 --  DISPLAY_NAME = "R-27ET"
