@@ -11,7 +11,6 @@
 local ctldUtils = require("ctldUtils")
 local missionUtils = require("missionUtils")
 local spatialUtils = require("spatialUtils")
-local state = require("state")
 local utils = require("utils")
 
 csar = {}
@@ -173,22 +172,18 @@ function csar.pilotsOnboard(_heliName)
 end
 
 function csar.tooCloseToEnemyBase(_unit)
-    local position = _unit:getPoint()
-    local nearestBase, distance = spatialUtils.findNearestBase({x = position.x, y = position.z})
-    if distance > csar.enemyBaseCaptureDistance then
-        -- far from any base
+    local point = _unit:getPoint()
+    local position = { x = point.x, y = point.z }
+    local unitSideName = utils.getSideName(_unit:getCoalition())
+    if spatialUtils.closestBaseIsEnemyAndWithinRange(position, unitSideName, csar.enemyBaseCaptureDistance) then
+        local nearestBase, _ = spatialUtils.findNearestBase(position)
+        local message = string.format("Mayday, mayday, mayday!  %s was shot down; captured by enemy forces at %s",
+                _unit:getTypeName(), nearestBase)
+        trigger.action.outTextForCoalition(_unit:getCoalition(), message, 10)
+        return true
+    else
         return false
     end
-
-    local nearestBaseOwner = state.getOwner(nearestBase)
-    if nearestBaseOwner == nil or nearestBaseOwner == "neutral" or nearestBaseOwner == utils.getSideName(_unit:getCoalition()) then
-        -- nearest base is neutral/friendly
-        return false
-    end
-    local message = string.format("Mayday, mayday, mayday!  %s was shot down; captured by enemy %s forces at %s",
-            _unit:getTypeName(), nearestBaseOwner, nearestBase)
-    trigger.action.outTextForCoalition(_unit:getCoalition(), message, 10)
-    return true
 end
 
 -- Handles all world events

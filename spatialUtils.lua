@@ -1,3 +1,5 @@
+local state = require("state")
+
 local M = {}
 
 local function getDistSq(x1, y1, x2, y2)
@@ -30,6 +32,21 @@ function M.findNearestBase(point)
         baseLocations[base:GetName()] = base:GetVec2()
     end
     return M.findNearest(point, baseLocations)
+end
+
+function M.closestBaseIsEnemyAndWithinRange(position, friendlySideName, range)
+    local nearestBase, distance = M.findNearestBase(position)
+    if distance > range then
+        -- far from any base
+        return false
+    end
+
+    local nearestBaseOwner = state.getOwner(nearestBase)
+    if nearestBaseOwner == nil or nearestBaseOwner == "neutral" or nearestBaseOwner == friendlySideName then
+        -- nearest base is neutral/friendly
+        return false
+    end
+    return true
 end
 
 return M
