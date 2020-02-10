@@ -13,7 +13,12 @@ function M.register()
     function M.eventHandler:OnEventBaseCaptured(event)
         self:I({ event = event })
         local baseName = event.PlaceName
-        local sideName = utils.getSideName(event.IniCoalition)
+        local capturingCoalition = event.IniCoalition
+        if capturingCoalition == nil then
+            capturingCoalition = AIRBASE.FindByName(baseName):GetCoalition()
+            log:info("No IniCoalition on event, queried DCS for owner and got $1", capturingCoalition)
+        end
+        local sideName = utils.getSideName(capturingCoalition)
         log:info("Base captured event for $1 captured by $2", baseName, sideName)
         local changedSide = state.setBaseOwner(baseName, sideName)
         if changedSide == false then
