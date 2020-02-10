@@ -42,11 +42,36 @@ local limitations = {
         QTY = 4 * perLife,
         DISPLAY_NAME = "AIM-120C"
     },
+    --{
+    --    WP_NAME = "weapons.missiles.AGM_88",
+    --    QTY = 0,
+    --    DISPLAY_NAME = "AGM-88C"
+    --},
+    --{
+    --    WP_NAME = "weapons.missiles.AGM_154A",
+    --    QTY = 0,
+    --    DISPLAY_NAME = "AGM-154A"
+    --},
     {
         WP_NAME = "weapons.missiles.AGM_154",
         QTY = 0,
         DISPLAY_NAME = "AGM-154C"
     },
+    --{
+    --    WP_NAME = "weapons.bombs.CBU_97",
+    --    QTY = 0,
+    --    DISPLAY_NAME = "CBU-97"
+    --},
+    --{
+    --    WP_NAME = "weapons.missiles.CM-802AK",
+    --    QTY = 0,
+    --    DISPLAY_NAME = "CM-802AK"
+    --},
+    --{
+    --    WP_NAME = "CM-802AKG",
+    --    QTY = 0,
+    --    DISPLAY_NAME = "CM-802AKG"
+    --},
     {
         WP_NAME = "weapons.missiles.GB-6",
         QTY = 1 * perLife,
@@ -77,6 +102,31 @@ local limitations = {
         QTY = 1 * perLife,
         DISPLAY_NAME = "GBU-38"
     },
+    --{
+    --    WP_NAME = "weapons.missiles.X_58",
+    --    QTY = 0,
+    --    DISPLAY_NAME = "Kh-58U"
+    --},
+    --{
+    --    WP_NAME = "weapons.missiles.LD-10",
+    --    QTY = 0,
+    --    DISPLAY_NAME = "LD-10"
+    --},
+    --{
+    --    WP_NAME = "weapons.missiles.LS-6-500",
+    --    QTY = 0,
+    --    DISPLAY_NAME = "LS-6-500"
+    --},
+    --{
+    --    WP_NAME = "P_27TE",
+    --    QTY = 0,
+    --    DISPLAY_NAME = "R-27ET"
+    --},
+    --{
+    --    WP_NAME = "P_27EP",
+    --    QTY = 0,
+    --    DISPLAY_NAME = "R-27ER"
+    --},
     {
         WP_NAME = "P_77",
         QTY = 8 * perLife,
@@ -98,35 +148,6 @@ local limitations = {
         DISPLAY_NAME = "SD-10"
     },
 }
---  WP_NAME = "P_27TE",
---  DISPLAY_NAME = "R-27ET"
-
---  WP_NAME = "P_27EP",
---  DISPLAY_NAME = "R-27ER"
-
--- WP_NAME = "weapons.missiles.AGM_154A"
--- DISPLAY_NAME = "AGM-154A"
-
--- WP_NAME = "weapons.missiles.AGM_88"
--- DISPLAY_NAME = "AGM-88C"
-
--- WP_NAME = "weapons.bombs.CBU_97"
--- DISPLAY_NAME = "CBU-97"
-
--- WP_NAME = "weapons.missiles.CM-802AK"
--- DISPLAY_NAME = "CM-802AK"
-
--- WP_NAME = "CM-802AKG"
--- DISPLAY_NAME = "CM-802AKG"
-
--- WP_NAME = "weapons.missiles.LD-10"
--- DISPLAY_NAME = "LD-10"
-
--- WP_NAME = "weapons.missiles.LS-6-500"
--- DISPLAY_NAME = "LS-6-500"
-
--- WP_NAME = "weapons.missiles.X_58"
--- DISPLAY_NAME = "Kh-58U"
 
 -- ----------------------- DO NOT TOUCH UNDER HERE-------------------------------
 local playersSettedUp = {}
