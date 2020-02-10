@@ -1,8 +1,9 @@
+-- luacheck: no max line length
 --[[
 	Early Warning Radar Script - 1.5.3 - 07/11/2016
-	
+
 	Allows use of units with radars to provide Bearing Range and Altitude information via text display to player aircraft
-	
+
 	Features:
 		- Uses in-game radar information to detect targets so terrain masking, beaming, low altitude flying, etc is effective for avoiding detection
 		- Dynamic. If valid units with radar are created during a mission (eg. via chopper with CTLD), they will be added to the EWRS radar network
@@ -16,7 +17,7 @@
 	Built and Tested in DCS 1.5 - See https://github.com/Bob7heBuilder/EWRS for the latest version
 
 	This script uses MIST 4.0.57 or later - https://github.com/mrSkortch/MissionScriptingTools
-		
+
 	At the moment, because of limitations within DCS to not show messages to individual units, the reference, measurements, and messages
 	are done per group. So a group of 4 fighters will each receive 4 BRA messages. Each message however, will have the player's name
 	in it, that its refering to. Its unfortunate, but nothing I can do about it.
@@ -38,6 +39,7 @@
 			- Added Mistral Gazelle
 			- Added C-101CC
 ]]
+
 local utils = require("utils")
 
 ewrs = {} --DO NOT REMOVE
@@ -187,14 +189,14 @@ function ewrs.buildThreatTable(activePlayer, bogeyDope)
         return v1.range < v2.range
     end
 
-    local targets = {}
+    local targets
     if activePlayer.side == 2 then
         targets = ewrs.currentlyDetectedRedUnits
     else
         targets = ewrs.currentlyDetectedBlueUnits
     end
 
-    local bogeyDope = bogeyDope or false
+    bogeyDope = bogeyDope or false
     local referenceX
     local referenceZ
     if ewrs.groupSettings[tostring(activePlayer.groupID)].reference == "self" or bogeyDope then
@@ -210,10 +212,10 @@ function ewrs.buildThreatTable(activePlayer, bogeyDope)
 
     local threatTable = {}
 
-    for k, v in pairs(targets) do
+    for _, v in pairs(targets) do
         local velocity = v["object"]:getVelocity()
         local bogeypos = v["object"]:getPosition()
-        local bogeyType = nil
+        local bogeyType
         if ewrs.useImprovedDetectionLogic then
             if v["type"] then
                 bogeyType = v["object"]:getTypeName()
@@ -310,7 +312,7 @@ function ewrs.outText(activePlayer, threatTable, bogeyDope, greeting)
         local altUnits
         local speedUnits
         local rangeUnits
-        local bogeyDope = bogeyDope or false
+        bogeyDope = bogeyDope or false
         if ewrs.groupSettings[tostring(activePlayer.groupID)].measurements == "metric" then
             altUnits = "m"
             speedUnits = "Km/h"
@@ -322,8 +324,8 @@ function ewrs.outText(activePlayer, threatTable, bogeyDope, greeting)
         end
 
         if #threatTable >= 1 then
-            local maxThreats = nil
-            local messageGreeting = nil
+            local maxThreats
+            local messageGreeting
             if greeting == nil then
                 if bogeyDope then
                     maxThreats = 1
@@ -435,10 +437,7 @@ function ewrs.buildFriendlyTable(friendlyNames, activePlayer)
     for i = 1, #friendlyNames do
         local unit = Unit.getByName(friendlyNames[i])
         if unit ~= nil and unit:isActive() then
-
             table.insert(units, unit)
-        else
-            --env.error("Friendly Picture - Unit not found: "..friendlyNames[i]) -- Client Planes that are not active will fall into here.
         end
     end
 
@@ -449,7 +448,7 @@ function ewrs.buildFriendlyTable(friendlyNames, activePlayer)
 
     local friendlyTable = {}
 
-    for k, v in pairs(units) do
+    for _, v in pairs(units) do
         local velocity = v:getVelocity()
         local pos = v:getPosition()
         local bogeyType = v:getTypeName()
@@ -480,8 +479,6 @@ function ewrs.buildFriendlyTable(friendlyNames, activePlayer)
             friendlyTable[j].altitude = altitude
             friendlyTable[j].speed = speed
             friendlyTable[j].heading = heading
-        else
-            --env.info("Friendly Picture - Found Self")
         end
     end
 
@@ -494,7 +491,7 @@ function ewrs.friendlyPicture(args)
     local status, result = pcall(function()
         for i = 1, #ewrs.activePlayers do
             if ewrs.activePlayers[i].groupID == args[1] then
-                local sideString = nil
+                local sideString
                 if ewrs.activePlayers[i].side == 1 then
                     sideString = "[red]"
                 else
@@ -521,14 +518,14 @@ function ewrs.buildActivePlayers()
         for i = 1, #all_vecs do
             local vec = Unit.getByName(all_vecs[i])
             if vec ~= nil and Unit.isActive(vec) then
-                playerName = Unit.getPlayerName(vec)
+                local playerName = Unit.getPlayerName(vec)
                 local groupID = ewrs.getGroupId(vec)
                 if playerName ~= nil then
-                    unitCategory = ewrs.acCategories[Unit.getTypeName(vec)]
+                    local unitCategory = ewrs.acCategories[Unit.getTypeName(vec)]
                     if ewrs.disableFightersBRA and unitCategory == ewrs.FIGHTER then
                         --DONT DO ANYTHING
+                        return
                     else
-                        local group = Unit.getGroup(vec)
                         if ewrs.enableBlueTeam and Unit.getCoalition(vec) == 2 then
                             ewrs.addPlayer(playerName, groupID, vec)
                         elseif ewrs.enableRedTeam and Unit.getCoalition(vec) == 1 then
@@ -590,7 +587,7 @@ end
 -- Filters out anything that isn't a plane or helicopter
 function ewrs.filterUnits(units)
     local newUnits = {}
-    for k, v in pairs(units) do
+    for _, v in pairs(units) do
         local valid = true
         if v["object"]:getCategory() ~= Object.Category.UNIT then
             --rare but i've had it detect missiles
@@ -605,7 +602,7 @@ function ewrs.filterUnits(units)
         end
 
         if valid then
-            for nk, nv in pairs(newUnits) do
+            for _, nv in pairs(newUnits) do
                 --recursive loop, can't see a way around this
                 if v["object"]:getName() == nv["object"]:getName() then
                     valid = false
@@ -651,7 +648,7 @@ function ewrs.findDetectedTargets(side)
         if ewrUnit ~= nil then
             local ewrControl = ewrUnit:getGroup():getController()
             local detectedTargets = ewrControl:getDetectedTargets(Controller.Detection.RADAR)
-            for k, v in pairs(detectedTargets) do
+            for _, v in pairs(detectedTargets) do
                 table.insert(units, v)
             end
         end
@@ -1022,7 +1019,7 @@ end
 env.info("EWRS LUA File Loaded ... OK")
 
 --[[
-TODO: 
+TODO:
 	- Add check on friendly picture to not give one if no AWACS / EWR units are active. Doesn't use radar info anyway. Maybe just leave it to help out people with SA? Feedback Please!!
 	- Clean up functions and arguments from bogeyDope and friendly picture additions
 	- Threat based filtering if theres interest.
