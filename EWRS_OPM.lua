@@ -43,9 +43,6 @@
 local utils = require("utils")
 
 ewrs = {} --DO NOT REMOVE
-ewrs.HELO = 1
-ewrs.ATTACK = 2
-ewrs.FIGHTER = 3
 
 ----SCRIPT OPTIONS----
 
@@ -95,43 +92,19 @@ ewrs.validSearchRadars = {
 }
 
 --[[
-Aircraft Type ENUMs
-This is used to restrict BRA messages to fighters
-Change the ewrs.TYPE for each aircraft (in ewrs.acCategories) to suit your needs
-For now, BRA will be displayed to everyone unless ewrs.disableFightersBRA is true.
-When this is true, anything in the list below that == ewrs.FIGHTER will NOT receive BRA messages
+Aircraft type list
+This is used to restrict availability to just these types
 ]]
-ewrs.acCategories = { --Have I left anything out? Please let me know if I have
-    ["A-10A"] = ewrs.FIGHTER,
-    ["A-10C"] = ewrs.FIGHTER,
-    ["Bf-109K-4"] = ewrs.FIGHTER,
-    ["C-101EB"] = ewrs.FIGHTER,
-    ["C-101CC"] = ewrs.ATTACK,
-    ["F-15C"] = ewrs.FIGHTER,
-    ["F-5E-3"] = ewrs.ATTACK,
-    ["FW-190D9"] = ewrs.FIGHTER,
-    ["F-86F Sabre"] = ewrs.ATTACK,
-    ["Hawk"] = ewrs.FIGHTER,
-    ["Ka-50"] = ewrs.FIGHTER,
-    ["L-39C"] = ewrs.FIGHTER,
-    ["L-39ZA"] = ewrs.ATTACK,
-    ["Mi-8MT"] = ewrs.FIGHTER,
-    ["MiG-15bis"] = ewrs.ATTACK,
-    ["MiG-21Bis"] = ewrs.ATTACK,
-    ["MiG-29A"] = ewrs.ATTACK,
-    ["MiG-29S"] = ewrs.ATTACK,
-    ["MiG-29G"] = ewrs.ATTACK,
-    ["M-2000C"] = ewrs.FIGHTER,
-    ["P-51D"] = ewrs.FIGHTER,
-    ["SA342M"] = ewrs.FIGHTER,
-    ["SA342L"] = ewrs.FIGHTER,
-    ["SA342Mistral"] = ewrs.FIGHTER,
-    ["Su-25"] = ewrs.FIGHTER,
-    ["Su-25T"] = ewrs.FIGHTER,
-    ["Su-27"] = ewrs.FIGHTER,
-    ["Su-33"] = ewrs.FIGHTER,
-    ["TF-51D"] = ewrs.FIGHTER,
-    ["UH-1H"] = ewrs.FIGHTER,
+ewrs.enabledAircraftTypes = {
+    ["C-101CC"] = true,
+    ["F-5E-3"] = true,
+    ["F-86F Sabre"] = true,
+    ["L-39ZA"] = true,
+    ["MiG-15bis"] = true,
+    ["MiG-21Bis"] = true,
+    ["MiG-29A"] = true,
+    ["MiG-29G"] = true,
+    ["MiG-29S"] = true,
 }
 
 ----END OF SCRIPT OPTIONS----
@@ -512,11 +485,8 @@ function ewrs.buildActivePlayers()
                 local playerName = Unit.getPlayerName(vec)
                 local groupID = ewrs.getGroupId(vec)
                 if playerName ~= nil then
-                    local unitCategory = ewrs.acCategories[Unit.getTypeName(vec)]
-                    if ewrs.disableFightersBRA and unitCategory == ewrs.FIGHTER then
-                        --DONT DO ANYTHING
-                        return
-                    else
+                    local enabledForType = ewrs.enabledAircraftTypes[Unit.getTypeName(vec)]
+                    if enabledForType then
                         if ewrs.enableBlueTeam and Unit.getCoalition(vec) == 2 then
                             ewrs.addPlayer(playerName, groupID, vec)
                         elseif ewrs.enableRedTeam and Unit.getCoalition(vec) == 1 then
