@@ -714,7 +714,7 @@ function ewrs.buildF10Menu()
                 end
 
                 if ewrs.onDemand then
-                    missionCommands.addCommandForGroup(groupID, "Request Picture", rootPath, ewrs.onDemandMessage, { groupID })
+                    missionCommands.addCommandForGroup(groupID, "Request picture", rootPath, ewrs.onDemandMessage, { groupID })
                     missionCommands.addCommandForGroup(groupID, "Start updates", rootPath, ewrs.setGroupUpdates, { groupID, true })
                     missionCommands.addCommandForGroup(groupID, "Stop updates", rootPath, ewrs.setGroupUpdates, { groupID, false })
                 end
