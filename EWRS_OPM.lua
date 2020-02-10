@@ -53,7 +53,7 @@ ewrs.restrictToOneMeasurement = false -- Disables the ability to change the BRA 
 ewrs.defaultReference = "self" --The default reference for BRA calls - can be changed via f10 radio menu if ewrs.restrictToOneReference is false (self or bulls)
 ewrs.disableFightersBRA = true -- disables BRA messages to fighters when true
 ewrs.enableRedTeam = true -- enables / disables EWRS for the red team
-ewrs.enableBlueTeam = false -- enables / disables EWRS for the blue team
+ewrs.enableBlueTeam = true -- enables / disables EWRS for the blue team
 ewrs.disableMessageWhenNoThreats = true -- disables message when no threats are detected - Thanks Rivvern - NOTE: If using ewrs.onDemand = true, this has no effect
 ewrs.useImprovedDetectionLogic = true --this makes the messages more realistic. If the radar doesn't know the type or distance to the detected threat, it will be reflected in the picture report / BRA message
 ewrs.onDemand = true --Setting to true will disable the automated messages to everyone and will add an F10 menu to get picture / BRA message.
