@@ -707,7 +707,7 @@ function ewrs.buildF10Menu()
             local groupID = ewrs.activePlayers[i].groupID
             local stringGroupID = tostring(groupID)
             if ewrs.builtF10Menus[stringGroupID] == nil then
-                local rootPath = missionCommands.addSubMenuForGroup(groupID, "AWACS Reports (EWRS)")
+                local rootPath = missionCommands.addSubMenuForGroup(groupID, "Automated GCI")
 
                 if ewrs.allowBogeyDope then
                     missionCommands.addCommandForGroup(groupID, "Request Bogey Dope", rootPath, ewrs.onDemandMessage, { groupID, true })
