@@ -535,7 +535,7 @@ function ewrs.addPlayer(playerName, groupID, unit)
 
         -- add default settings to settings table if it hasn't been done yet
         if ewrs.groupSettings[tostring(groupID)] == nil then
-            ewrs.addGroupSettings(tostring(groupID))
+            ewrs.addGroupSettings(tostring(groupID), unit:getCoalition())
         end
     end)
     if not status then
@@ -653,14 +653,14 @@ function ewrs.findRadarUnits()
     ewrs.redEwrUnits = redUnits
 end
 
-function ewrs.getDefaultMeasurements(groupID)
-    return "metric"
+function ewrs.getDefaultMeasurements(side)
+    return side == coalition.side.RED and "metric" or "imperial"
 end
 
-function ewrs.addGroupSettings(groupID)
+function ewrs.addGroupSettings(groupID, side)
     ewrs.groupSettings[groupID] = {}
     ewrs.groupSettings[groupID].reference = ewrs.defaultReference
-    ewrs.groupSettings[groupID].measurements = ewrs.getDefaultMeasurements(groupID)
+    ewrs.groupSettings[groupID].measurements = ewrs.getDefaultMeasurements(side)
     ewrs.groupSettings[groupID].messages = true
     ewrs.groupSettings[groupID].pictureUpdates = false
 end
