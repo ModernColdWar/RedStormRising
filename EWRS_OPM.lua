@@ -50,6 +50,9 @@ ewrs.messageUpdateInterval = 5 --How often EWRS will update automated BRA messag
 ewrs.messageDisplayTime = 2 --How long EWRS BRA messages will show for (seconds)
 ewrs.useImprovedDetectionLogic = true --this makes the messages more realistic. If the radar doesn't know the type or distance to the detected threat, it will be reflected in the picture report / BRA message
 ewrs.maxThreatDisplay = 1 -- Max amounts of threats to display on picture report (0 will display all)
+ewrs.radarUnitsUpdateInterval = 60 -- minimum time between radar units update
+ewrs.detectedTargetsUpdateInterval = ewrs.messageUpdateInterval -- minimum time between threat table updates
+
 
 --[[
 Units with radar to use as part of the EWRS radar network
@@ -322,12 +325,19 @@ function ewrs.filterUnits(units)
 end
 
 function ewrs.getDetectedTargets()
+    if ewrs.lastDetectedTargetsUpdateTime ~= nil and timer.getTime() - ewrs.lastDetectedTargetsUpdateTime < ewrs.detectedTargetsUpdateInterval then
+        env.info("EWRS: Not updating detected targets")
+        return
+    end
+
     if #ewrs.blueEwrUnits > 0 then
         ewrs.currentlyDetectedRedUnits = ewrs.findDetectedTargets("red")
     end
     if #ewrs.redEwrUnits > 0 then
         ewrs.currentlyDetectedBlueUnits = ewrs.findDetectedTargets("blue")
     end
+    env.info("EWRS: Updated detected targets")
+    ewrs.lastDetectedTargetsUpdateTime = timer.getTime()
 end
 
 function ewrs.findDetectedTargets(side)
@@ -359,6 +369,11 @@ ewrs.ewrUnitSet = SET_UNIT:New()
                           :FilterStart()
 
 function ewrs.findRadarUnits()
+    if ewrs.lastRadarUnitsUpdateTime ~= nil and timer.getTime() - ewrs.lastRadarUnitsUpdateTime < ewrs.radarUnitsUpdateInterval then
+        env.info("EWRS: Not updating radar units")
+        return
+    end
+
     local all_vecs = {}
     ewrs.ewrUnitSet:ForEachUnit(function(u)
         table.insert(all_vecs, u:GetName())
@@ -388,6 +403,8 @@ function ewrs.findRadarUnits()
     end --for i = 1, #all_vecs do
     ewrs.blueEwrUnits = blueUnits
     ewrs.redEwrUnits = redUnits
+    env.info("EWRS: Updated radar units")
+    ewrs.lastRadarUnitsUpdateTime = timer.getTime()
 end
 
 function ewrs.getDefaultMeasurements(side)
@@ -438,6 +455,8 @@ ewrs.blueEwrUnits = {}
 ewrs.activePlayers = {}
 ewrs.groupSettings = {}
 ewrs.notAvailable = 999999
+ewrs.lastRadarUnitsUpdateTime = nil
+ewrs.lastDetectedTargetsUpdateTime = nil
 
 env.info("EWRS LUA File Loaded ... OK")
 
