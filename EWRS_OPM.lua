@@ -151,18 +151,10 @@ function ewrs.buildThreatTable(activePlayer)
         targets = ewrs.currentlyDetectedBlueUnits
     end
 
-    local referenceX
-    local referenceZ
-    if ewrs.groupSettings[tostring(activePlayer.groupID)].reference == "self" then
-        local _self = Unit.getByName(activePlayer.unitname)
-        local selfpos = _self:getPosition()
-        referenceX = selfpos.p.x
-        referenceZ = selfpos.p.z
-    else
-        local bullseye = coalition.getMainRefPoint(activePlayer.side)
-        referenceX = bullseye.x
-        referenceZ = bullseye.z
-    end
+    local _self = Unit.getByName(activePlayer.unitname)
+    local selfpos = _self:getPosition()
+    local referenceX = selfpos.p.x
+    local referenceZ = selfpos.p.z
 
     local threatTable = {}
 
@@ -461,15 +453,8 @@ end
 
 function ewrs.addGroupSettings(groupID, side)
     ewrs.groupSettings[groupID] = {}
-    ewrs.groupSettings[groupID].reference = "self"
     ewrs.groupSettings[groupID].measurements = ewrs.getDefaultMeasurements(side)
     ewrs.groupSettings[groupID].pictureUpdates = false
-end
-
-function ewrs.setGroupReference(args)
-    local groupID = args[1]
-    ewrs.groupSettings[tostring(groupID)].reference = args[2]
-    trigger.action.outTextForGroup(groupID, "Reference changed to " .. args[2], ewrs.messageDisplayTime)
 end
 
 function ewrs.setGroupMeasurements(args)
