@@ -48,7 +48,6 @@ ewrs = {} --DO NOT REMOVE
 
 ewrs.messageUpdateInterval = 5 --How often EWRS will update automated BRA messages (seconds)
 ewrs.messageDisplayTime = 2 --How long EWRS BRA messages will show for (seconds)
-ewrs.disableMessageWhenNoThreats = true -- disables message when no threats are detected - Thanks Rivvern - NOTE: If using ewrs.onDemand = true, this has no effect
 ewrs.useImprovedDetectionLogic = true --this makes the messages more realistic. If the radar doesn't know the type or distance to the detected threat, it will be reflected in the picture report / BRA message
 ewrs.maxThreatDisplay = 1 -- Max amounts of threats to display on picture report (0 will display all)
 
@@ -140,7 +139,7 @@ function ewrs.update()
     ewrs.buildActivePlayers()
 end
 
-function ewrs.buildThreatTable(activePlayer, bogeyDope)
+function ewrs.buildThreatTable(activePlayer)
     local function sortRanges(v1, v2)
         return v1.range < v2.range
     end
@@ -152,10 +151,9 @@ function ewrs.buildThreatTable(activePlayer, bogeyDope)
         targets = ewrs.currentlyDetectedBlueUnits
     end
 
-    bogeyDope = bogeyDope or false
     local referenceX
     local referenceZ
-    if ewrs.groupSettings[tostring(activePlayer.groupID)].reference == "self" or bogeyDope then
+    if ewrs.groupSettings[tostring(activePlayer.groupID)].reference == "self" then
         local _self = Unit.getByName(activePlayer.unitname)
         local selfpos = _self:getPosition()
         referenceX = selfpos.p.x
@@ -219,46 +217,40 @@ function ewrs.buildThreatTable(activePlayer, bogeyDope)
     return threatTable
 end
 
-function ewrs.outTextShort(activePlayer, threatTable)
-    local altUnits
-    local speedUnits
-    local rangeUnits
-    if ewrs.groupSettings[tostring(activePlayer.groupID)].measurements == "metric" then
-        altUnits = "m"
-        speedUnits = "km/h"
-        rangeUnits = "km"
-    else
-        altUnits = "ft"
-        speedUnits = "kts"
-        rangeUnits = "nm"
-    end
-
-    if #threatTable >= 1 then
-        local threat = threatTable[1]
-        local message
-        if threat.range == ewrs.notAvailable then
-            message = "EWRS: Nearest target position unknown"
+function ewrs.outText(activePlayer, threatTable)
+    local status, result = pcall(function()
+        local altUnits
+        local speedUnits
+        local rangeUnits
+        if ewrs.groupSettings[tostring(activePlayer.groupID)].measurements == "metric" then
+            altUnits = "m"
+            speedUnits = "km/h"
+            rangeUnits = "km"
         else
-            message = string.format("EWRS: Nearest target %03d for %d%s at %d%s, type %s, heading %03d at %d%s",
-                    threat.bearing,
-                    utils.round(threat.range, 1), rangeUnits,
-                    utils.round(threat.altitude, 100), altUnits,
-                    threat.unitType,
-                    threat.heading,
-                    utils.round(threat.speed, 10), speedUnits
-            )
+            altUnits = "ft"
+            speedUnits = "kts"
+            rangeUnits = "nm"
         end
-        trigger.action.outTextForGroup(activePlayer.groupID, message, ewrs.messageDisplayTime)
-    else
-        if not ewrs.disableMessageWhenNoThreats then
+
+        if #threatTable >= 1 then
+            local threat = threatTable[1]
+            local message
+            if threat.range == ewrs.notAvailable then
+                message = "EWRS: Nearest target position unknown"
+            else
+                message = string.format("EWRS: Nearest target %03d for %d%s at %d%s, type %s, heading %03d at %d%s",
+                        threat.bearing,
+                        utils.round(threat.range, 1), rangeUnits,
+                        utils.round(threat.altitude, 100), altUnits,
+                        threat.unitType,
+                        threat.heading,
+                        utils.round(threat.speed, 10), speedUnits
+                )
+            end
+            trigger.action.outTextForGroup(activePlayer.groupID, message, ewrs.messageDisplayTime)
+        else
             trigger.action.outTextForGroup(activePlayer.groupID, "EWRS: No targets detected", ewrs.messageDisplayTime)
         end
-    end
-end
-
-function ewrs.outText(activePlayer, threatTable, bogeyDope, greeting)
-    local status, result = pcall(function()
-        ewrs.outTextShort(activePlayer, threatTable)
     end)
     if not status then
         env.error(string.format("EWRS outText Error: %s", result))
@@ -271,7 +263,7 @@ function ewrs.onDemandMessage(args)
         ewrs.getDetectedTargets()
         for i = 1, #ewrs.activePlayers do
             if ewrs.activePlayers[i].groupID == args[1] then
-                ewrs.outText(ewrs.activePlayers[i], ewrs.buildThreatTable(ewrs.activePlayers[i], args[2]), args[2])
+                ewrs.outText(ewrs.activePlayers[i], ewrs.buildThreatTable(ewrs.activePlayers[i]))
                 if ewrs.groupSettings[tostring(ewrs.activePlayers[i].groupID)].pictureUpdates then
                     timer.scheduleFunction(ewrs.onDemandMessage, { ewrs.activePlayers[i].groupID }, timer.getTime() + ewrs.messageUpdateInterval)
                 end
