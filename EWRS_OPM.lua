@@ -258,28 +258,6 @@ function ewrs.onDemandMessage(groupID)
     end
 end
 
---THANK YOU ciribob http://forums.eagle.ru/showpost.php?p=2499638&postcount=5
---And Stonehouse for pointing me there
-function ewrs.getGroupId(_unit)
-    --Temp fix for client groups not being accessable
-
-    local _unitDB = mist.DBs.unitsById[tonumber(_unit:getID())]
-    if _unitDB ~= nil and _unitDB.groupId then
-        return _unitDB.groupId
-    end
-
-    return nil
-end
-
-function ewrs.getGroupCategory(unit)
-    local unitDB = mist.DBs.unitsById[tonumber(unit:getID())]
-    if unitDB ~= nil and unitDB.category then
-        return unitDB.category
-    end
-
-    return nil
-end
-
 function ewrs.addPlayer(playerName, groupID, unit)
     local status, result = pcall(function()
         local key = tostring(groupID)
