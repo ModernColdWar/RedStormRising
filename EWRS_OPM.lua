@@ -59,8 +59,6 @@ ewrs.useImprovedDetectionLogic = true --this makes the messages more realistic. 
 ewrs.onDemand = true --Setting to true will disable the automated messages to everyone and will add an F10 menu to get picture / BRA message.
 ewrs.maxThreatDisplay = 1 -- Max amounts of threats to display on picture report (0 will display all)
 ewrs.allowBogeyDope = false -- Allows pilots to request a bogey dope even with the automated messages running. It will display only the cloest threat, and will always reference the players own aircraft.
-ewrs.allowFriendlyPicture = false -- Allows pilots to request picture of friendly aircraft
-ewrs.maxFriendlyDisplay = 1-- Limits the amount of friendly aircraft shown on friendly picture
 
 --[[
 Units with radar to use as part of the EWRS radar network
@@ -312,88 +310,6 @@ function ewrs.onDemandMessage(args)
     end
 end
 
-function ewrs.buildFriendlyTable(friendlyNames, activePlayer)
-    local function sortRanges(v1, v2)
-        return v1.range < v2.range
-    end
-
-    local units = {}
-    for i = 1, #friendlyNames do
-        local unit = Unit.getByName(friendlyNames[i])
-        if unit ~= nil and unit:isActive() then
-            table.insert(units, unit)
-        end
-    end
-
-    local _self = Unit.getByName(activePlayer.unitname)
-    local selfpos = _self:getPosition()
-    local referenceX = selfpos.p.x
-    local referenceZ = selfpos.p.z
-
-    local friendlyTable = {}
-
-    for _, v in pairs(units) do
-        local velocity = v:getVelocity()
-        local pos = v:getPosition()
-        local bogeyType = v:getTypeName()
-        if pos.p.x ~= selfpos.p.x and pos.p.z ~= selfpos.p.z then
-            --same position as self, means its you!
-
-            local bearing = ewrs.getBearing(referenceX, referenceZ, pos.p.x, pos.p.z)
-            local heading = ewrs.getHeading(velocity)
-            local range = ewrs.getDistance(referenceX, referenceZ, pos.p.x, pos.p.z) -- meters
-            local altitude = pos.p.y --meters
-            local speed = ewrs.getSpeed(velocity) --m/s
-
-            if ewrs.groupSettings[tostring(activePlayer.groupID)].measurements == "metric" then
-                range = range / 1000 --change to KM
-                speed = mist.utils.mpsToKmph(speed)
-                --altitude already in meters
-            else
-                range = mist.utils.metersToNM(range)
-                speed = mist.utils.mpsToKnots(speed)
-                altitude = mist.utils.metersToFeet(altitude)
-            end
-
-            local j = #friendlyTable + 1
-            friendlyTable[j] = {}
-            friendlyTable[j].unitType = bogeyType
-            friendlyTable[j].bearing = bearing
-            friendlyTable[j].range = range
-            friendlyTable[j].altitude = altitude
-            friendlyTable[j].speed = speed
-            friendlyTable[j].heading = heading
-        end
-    end
-
-    table.sort(friendlyTable, sortRanges)
-
-    return friendlyTable
-end
-
-function ewrs.friendlyPicture(args)
-    local status, result = pcall(function()
-        for i = 1, #ewrs.activePlayers do
-            if ewrs.activePlayers[i].groupID == args[1] then
-                local sideString
-                if ewrs.activePlayers[i].side == 1 then
-                    sideString = "[red]"
-                else
-                    sideString = "[blue]"
-                end
-                local filter = { sideString .. "[helicopter]", sideString .. "[plane]" }
-                local friendlies = mist.makeUnitTable(filter) --find a way to do this only once if there is more then 1 person in a group
-                local friendlyTable = ewrs.buildFriendlyTable(friendlies, ewrs.activePlayers[i])
-                local greeting = "EWRS Friendly Picture for: " .. ewrs.activePlayers[i].player
-                ewrs.outText(ewrs.activePlayers[i], friendlyTable, false, greeting)
-            end
-        end
-    end)
-    if not status then
-        env.error(string.format("EWRS friendlyPicture Error: %s", result))
-    end
-end
-
 function ewrs.buildActivePlayers()
     local status, result = pcall(function()
         local filter = { "[all][plane]", "[all][helicopter]" }
@@ -638,10 +554,6 @@ function ewrs.buildF10Menu()
                     missionCommands.addCommandForGroup(groupID, "Request picture", rootPath, ewrs.onDemandMessage, { groupID })
                     missionCommands.addCommandForGroup(groupID, "Start updates", rootPath, ewrs.setGroupUpdates, { groupID, true })
                     missionCommands.addCommandForGroup(groupID, "Stop updates", rootPath, ewrs.setGroupUpdates, { groupID, false })
-                end
-
-                if ewrs.allowFriendlyPicture then
-                    missionCommands.addCommandForGroup(groupID, "Request Friendly Picture", rootPath, ewrs.friendlyPicture, { groupID })
                 end
 
                 if not ewrs.restrictToOneReference then
