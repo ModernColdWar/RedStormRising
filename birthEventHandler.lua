@@ -46,6 +46,7 @@ function M.BIRTH_EVENTHANDLER:_AddMenus(event)
                 self:_AddRadioListMenu(groupId, unitName)
                 self:_AddLivesLeftMenu(playerGroup, unitName)
             end
+            ewrs.buildF10Menu(groupId)
         end
     end
 end

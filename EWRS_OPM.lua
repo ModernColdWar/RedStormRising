@@ -138,7 +138,6 @@ end
 function ewrs.update()
     timer.scheduleFunction(ewrs.update, nil, timer.getTime() + 5)
     ewrs.buildActivePlayers()
-    ewrs.buildF10Menu()
 end
 
 function ewrs.buildThreatTable(activePlayer, bogeyDope)
@@ -515,30 +514,16 @@ function ewrs.setGroupUpdates(args)
     trigger.action.outTextForGroup(groupID, "Picture updates for group turned " .. onOff, ewrs.messageDisplayTime)
 end
 
-function ewrs.buildF10Menu()
-    local status, result = pcall(function()
-        for i = 1, #ewrs.activePlayers do
-            local groupID = ewrs.activePlayers[i].groupID
-            local stringGroupID = tostring(groupID)
-            if ewrs.builtF10Menus[stringGroupID] == nil then
-                local rootPath = missionCommands.addSubMenuForGroup(groupID, "Automated GCI")
+function ewrs.buildF10Menu(groupID)
+    local rootPath = missionCommands.addSubMenuForGroup(groupID, "Automated GCI")
 
-                missionCommands.addCommandForGroup(groupID, "Request picture", rootPath, ewrs.onDemandMessage, { groupID })
-                missionCommands.addCommandForGroup(groupID, "Start updates", rootPath, ewrs.setGroupUpdates, { groupID, true })
-                missionCommands.addCommandForGroup(groupID, "Stop updates", rootPath, ewrs.setGroupUpdates, { groupID, false })
+    missionCommands.addCommandForGroup(groupID, "Request picture", rootPath, ewrs.onDemandMessage, { groupID })
+    missionCommands.addCommandForGroup(groupID, "Start updates", rootPath, ewrs.setGroupUpdates, { groupID, true })
+    missionCommands.addCommandForGroup(groupID, "Stop updates", rootPath, ewrs.setGroupUpdates, { groupID, false })
 
-                local measurementsSetPath = missionCommands.addSubMenuForGroup(groupID, "Set measurement units", rootPath)
-                missionCommands.addCommandForGroup(groupID, "Set to imperial (feet, kts)", measurementsSetPath, ewrs.setGroupMeasurements, { groupID, "imperial" })
-                missionCommands.addCommandForGroup(groupID, "Set to metric (meters, km/h)", measurementsSetPath, ewrs.setGroupMeasurements, { groupID, "metric" })
-
-                ewrs.builtF10Menus[stringGroupID] = true
-            end
-        end
-    end)
-
-    if not status then
-        env.error(string.format("EWRS buildF10Menu Error: %s", result))
-    end
+    local measurementsSetPath = missionCommands.addSubMenuForGroup(groupID, "Set measurement units", rootPath)
+    missionCommands.addCommandForGroup(groupID, "Set to imperial (feet, kts)", measurementsSetPath, ewrs.setGroupMeasurements, { groupID, "imperial" })
+    missionCommands.addCommandForGroup(groupID, "Set to metric (meters, km/h)", measurementsSetPath, ewrs.setGroupMeasurements, { groupID, "metric" })
 end
 
 --SCRIPT INIT
@@ -548,7 +533,6 @@ ewrs.redEwrUnits = {}
 ewrs.blueEwrUnits = {}
 ewrs.activePlayers = {}
 ewrs.groupSettings = {}
-ewrs.builtF10Menus = {}
 ewrs.notAvailable = 999999
 
 ewrs.update()
