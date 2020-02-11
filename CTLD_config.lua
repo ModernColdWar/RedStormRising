@@ -400,7 +400,7 @@ ctld.spawnableCrates = {
         { weight = 879, desc = "HQ-7", unit = "HQ-7_LN_SP", side = 1, cratesRequired = 3, unitQuantity = 2, internal = 0 },
 
         -- Tor on Red
-        { weight = 880, desc = "SA-15 Tor", unit = "Tor 9A331", side = 1, cratesRequired = 2, unitQuantity = 2, internal = 0 },
+        { weight = 880, desc = "SA-15 Tor", unit = "Tor 9A331", side = 1, internal = 0 },
 
 
     },
