@@ -61,7 +61,6 @@ ewrs.maxThreatDisplay = 1 -- Max amounts of threats to display on picture report
 ewrs.allowBogeyDope = false -- Allows pilots to request a bogey dope even with the automated messages running. It will display only the cloest threat, and will always reference the players own aircraft.
 ewrs.allowFriendlyPicture = false -- Allows pilots to request picture of friendly aircraft
 ewrs.maxFriendlyDisplay = 1-- Limits the amount of friendly aircraft shown on friendly picture
-ewrs.shortReport = true
 
 --[[
 Units with radar to use as part of the EWRS radar network
@@ -270,90 +269,7 @@ end
 
 function ewrs.outText(activePlayer, threatTable, bogeyDope, greeting)
     local status, result = pcall(function()
-
-        if ewrs.shortReport then
-            ewrs.outTextShort(activePlayer, threatTable)
-            return
-        end
-
-        local message = {}
-        local altUnits
-        local speedUnits
-        local rangeUnits
-        bogeyDope = bogeyDope or false
-        if ewrs.groupSettings[tostring(activePlayer.groupID)].measurements == "metric" then
-            altUnits = "m"
-            speedUnits = "Km/h"
-            rangeUnits = "Km"
-        else
-            altUnits = "ft"
-            speedUnits = "Knts"
-            rangeUnits = "NM"
-        end
-
-        if #threatTable >= 1 then
-            local maxThreats
-            local messageGreeting
-            if greeting == nil then
-                if bogeyDope then
-                    maxThreats = 1
-                    messageGreeting = "EWRS Bogey Dope for: " .. activePlayer.player
-                else
-                    if ewrs.maxThreatDisplay == 0 then
-                        maxThreats = 999
-                    else
-                        maxThreats = ewrs.maxThreatDisplay
-                    end
-                    messageGreeting = "EWRS Picture Report for: " .. activePlayer.player .. " -- Reference: " .. ewrs.groupSettings[tostring(activePlayer.groupID)].reference
-                end
-            else
-                messageGreeting = greeting
-                maxThreats = ewrs.maxFriendlyDisplay
-            end
-
-            --Display table
-            table.insert(message, "\n")
-            table.insert(message, messageGreeting)
-            table.insert(message, "\n(EWRS Auto-reports can be turned off in F10-Other > EWRS Menus)")
-            table.insert(message, "\n\n")
-            table.insert(message, string.format("%-16s", "TYPE"))
-            table.insert(message, string.format("%-12s", "BRG"))
-            table.insert(message, string.format("%-12s", "RNG"))
-            table.insert(message, string.format("%-21s", "ALT"))
-            table.insert(message, string.format("%-15s", "SPD"))
-            table.insert(message, string.format("%-3s", "HDG"))
-            table.insert(message, "\n")
-
-            for k = 1, maxThreats do
-                if threatTable[k] == nil then
-                    break
-                end
-                table.insert(message, "\n")
-                table.insert(message, string.format("%-16s", threatTable[k].unitType))
-                if threatTable[k].range == ewrs.notAvailable then
-                    table.insert(message, string.format("%-12s", " "))
-                    table.insert(message, string.format("%-12s", "POSITION"))
-                    table.insert(message, string.format("%-21s", " "))
-                    table.insert(message, string.format("%-15s", "UNKNOWN"))
-                    table.insert(message, string.format("%-3s", " "))
-                else
-                    table.insert(message, string.format("%03d", threatTable[k].bearing))
-                    table.insert(message, string.format("%8.1f %s", threatTable[k].range, rangeUnits))
-                    table.insert(message, string.format("%9d %s", threatTable[k].altitude, altUnits))
-                    table.insert(message, string.format("%9d %s", threatTable[k].speed, speedUnits))
-                    table.insert(message, string.format("         %03d", threatTable[k].heading))
-                end
-                table.insert(message, "\n")
-            end
-            trigger.action.outTextForGroup(activePlayer.groupID, table.concat(message), ewrs.messageDisplayTime)
-        else
-            if (not ewrs.disableMessageWhenNoThreats) or (ewrs.onDemand) and greeting == nil then
-                trigger.action.outTextForGroup(activePlayer.groupID, "\nEWRS Picture Report for: " .. activePlayer.player .. "\n\nNo targets detected", ewrs.messageDisplayTime)
-            end
-            if greeting ~= nil then
-                trigger.action.outTextForGroup(activePlayer.groupID, "\nEWRS Friendly Picture for: " .. activePlayer.player .. "\n\nNo friendlies detected", ewrs.messageDisplayTime)
-            end
-        end
+        ewrs.outTextShort(activePlayer, threatTable)
     end)
     if not status then
         env.error(string.format("EWRS outText Error: %s", result))
