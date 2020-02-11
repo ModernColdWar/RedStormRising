@@ -50,7 +50,6 @@ ewrs.messageUpdateInterval = 5 --How often EWRS will update automated BRA messag
 ewrs.messageDisplayTime = 2 --How long EWRS BRA messages will show for (seconds)
 ewrs.disableMessageWhenNoThreats = true -- disables message when no threats are detected - Thanks Rivvern - NOTE: If using ewrs.onDemand = true, this has no effect
 ewrs.useImprovedDetectionLogic = true --this makes the messages more realistic. If the radar doesn't know the type or distance to the detected threat, it will be reflected in the picture report / BRA message
-ewrs.onDemand = true --Setting to true will disable the automated messages to everyone and will add an F10 menu to get picture / BRA message.
 ewrs.maxThreatDisplay = 1 -- Max amounts of threats to display on picture report (0 will display all)
 
 --[[
@@ -524,11 +523,9 @@ function ewrs.buildF10Menu()
             if ewrs.builtF10Menus[stringGroupID] == nil then
                 local rootPath = missionCommands.addSubMenuForGroup(groupID, "Automated GCI")
 
-                if ewrs.onDemand then
-                    missionCommands.addCommandForGroup(groupID, "Request picture", rootPath, ewrs.onDemandMessage, { groupID })
-                    missionCommands.addCommandForGroup(groupID, "Start updates", rootPath, ewrs.setGroupUpdates, { groupID, true })
-                    missionCommands.addCommandForGroup(groupID, "Stop updates", rootPath, ewrs.setGroupUpdates, { groupID, false })
-                end
+                missionCommands.addCommandForGroup(groupID, "Request picture", rootPath, ewrs.onDemandMessage, { groupID })
+                missionCommands.addCommandForGroup(groupID, "Start updates", rootPath, ewrs.setGroupUpdates, { groupID, true })
+                missionCommands.addCommandForGroup(groupID, "Stop updates", rootPath, ewrs.setGroupUpdates, { groupID, false })
 
                 local measurementsSetPath = missionCommands.addSubMenuForGroup(groupID, "Set measurement units", rootPath)
                 missionCommands.addCommandForGroup(groupID, "Set to imperial (feet, kts)", measurementsSetPath, ewrs.setGroupMeasurements, { groupID, "imperial" })
@@ -552,13 +549,9 @@ ewrs.blueEwrUnits = {}
 ewrs.activePlayers = {}
 ewrs.groupSettings = {}
 ewrs.builtF10Menus = {}
-ewrs.builtTaskingMenus = {}
 ewrs.notAvailable = 999999
 
 ewrs.update()
-if not ewrs.onDemand then
-    timer.scheduleFunction(ewrs.displayMessageToAll, nil, timer.getTime() + ewrs.messageUpdateInterval)
-end
 env.info("EWRS LUA File Loaded ... OK")
 
 --[[
