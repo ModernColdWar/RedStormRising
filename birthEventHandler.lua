@@ -75,8 +75,11 @@ function M.BIRTH_EVENTHANDLER:_AddTransportMenus(groupId, unitName)
 
     if ctld.enableCrates and _unitActions.crates then
         if ctld.unitCanCarryVehicles(_unit) == false then
-            ctld.addCrateMenu(nil, "Light crates", _unit, groupId, ctld.spawnableCrates, 1)
-            ctld.addCrateMenu(nil, "Heavy crates", _unit, groupId, ctld.spawnableCrates, ctld.heavyCrateWeightMultiplier)
+            if _unit:getTypeName() == "Mi-8MT" then
+                ctld.addCrateMenu(nil, "Heavy crates", _unit, groupId, ctld.spawnableCrates, ctld.heavyCrateWeightMultiplier)
+            else
+                ctld.addCrateMenu(nil, "Light crates", _unit, groupId, ctld.spawnableCrates, 1)
+            end
         end
     end
     if (ctld.enabledFOBBuilding or ctld.enableCrates) and _unitActions.crates then
