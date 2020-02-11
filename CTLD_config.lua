@@ -328,7 +328,7 @@ ctld.spawnableCrates = {
 
         { weight = 810, desc = "HMMWV TOW", unit = "M1045 HMMWV TOW", side = 2, cratesRequired = 1, unitQuantity = 2, internal = 0 },
         { weight = 811, desc = "HMMWV MG", unit = "M1043 HMMWV Armament", side = 2, cratesRequired = 1, unitQuantity = 2, internal = 0 },
-        { weight = 812, desc = "Stryker ATGM", unit = "M1134 Stryker ATGM", side = 2, unitQuantity = 2, internal = 0 },
+        { weight = 812, desc = "Stryker ATGM", unit = "M1134 Stryker ATGM", side = 2, internal = 0 },
         { weight = 813, desc = "Stryker MGS", unit = "M1128 Stryker MGS", side = 2, unitQuantity = 2, internal = 0 },
         { weight = 814, desc = "IFV BRADLEY", unit = "M-2 Bradley", side = 2, cratesRequired = 1, internal = 0 },
 
