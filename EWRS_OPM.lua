@@ -39,7 +39,7 @@
 			- Added Mistral Gazelle
 			- Added C-101CC
 ]]
-
+local inspect = require("inspect")
 local utils = require("utils")
 
 ewrs = {} --DO NOT REMOVE
@@ -270,6 +270,7 @@ function ewrs.addPlayer(playerName, groupID, unit)
         local key = tostring(groupID)
         ewrs.activePlayers[key] = {}
         ewrs.activePlayers[key].player = playerName
+        ewrs.activePlayers[key].groupID = groupID
         ewrs.activePlayers[key].unitname = unit:getName()
         ewrs.activePlayers[key].side = unit:getCoalition()
 
@@ -295,8 +296,8 @@ function ewrs.filterUnits(units)
         end
         if valid then
             --another check cause it seems AI radar can detected some ground units
-            local category = ewrs.getGroupCategory(v["object"])
-            if category ~= "plane" and category ~= "helicopter" then
+            local category = v["object"]:getDesc().category
+            if category ~= Unit.Category.AIRPLANE  and category ~= Unit.Category.HELICOPTER then
                 valid = false
             end
         end
@@ -433,6 +434,9 @@ function ewrs.setGroupUpdates(args)
     end
     ewrs.groupSettings[tostring(groupID)].pictureUpdates = args[2]
     trigger.action.outTextForGroup(groupID, "Picture updates for group turned " .. onOff, ewrs.messageDisplayTime)
+    if args[2] then
+        ewrs.onDemandMessage(groupID)
+    end
 end
 
 function ewrs.buildF10Menu(groupID)

@@ -123,7 +123,7 @@ end
 
 function M.BIRTH_EVENTHANDLER:_AddEWRS(groupId, unit)
     local playerName = unit:getPlayerName()
-    if playerName ~= nil and ewrs.enabledAircraftTypes[unit.getTypeName()] then
+    if playerName ~= nil and ewrs.enabledAircraftTypes[unit:getTypeName()] then
         ewrs.buildF10Menu(groupId)
         ewrs.addPlayer(playerName, groupId, unit)
     end
