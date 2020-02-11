@@ -248,13 +248,9 @@ function ewrs.onDemandMessage(groupID)
     local status, result = pcall(function()
         ewrs.findRadarUnits()
         ewrs.getDetectedTargets()
-        for i = 1, #ewrs.activePlayers do
-            if ewrs.activePlayers[i].groupID == groupID then
-                ewrs.outText(groupID, ewrs.buildThreatTable(ewrs.activePlayers[i]))
-                if ewrs.groupSettings[tostring(ewrs.activePlayers[i].groupID)].pictureUpdates then
-                    timer.scheduleFunction(ewrs.onDemandMessage, { ewrs.activePlayers[i].groupID }, timer.getTime() + ewrs.messageUpdateInterval)
-                end
-            end
+        ewrs.outText(groupID, ewrs.buildThreatTable(ewrs.activePlayers[tostring(groupID)]))
+        if ewrs.groupSettings[tostring(groupID)].pictureUpdates then
+            timer.scheduleFunction(ewrs.onDemandMessage, groupID, timer.getTime() + ewrs.messageUpdateInterval)
         end
     end)
     if not status then
@@ -286,16 +282,15 @@ end
 
 function ewrs.addPlayer(playerName, groupID, unit)
     local status, result = pcall(function()
-        local i = #ewrs.activePlayers + 1
-        ewrs.activePlayers[i] = {}
-        ewrs.activePlayers[i].player = playerName
-        ewrs.activePlayers[i].groupID = groupID
-        ewrs.activePlayers[i].unitname = unit:getName()
-        ewrs.activePlayers[i].side = unit:getCoalition()
+        local key = tostring(groupID)
+        ewrs.activePlayers[key] = {}
+        ewrs.activePlayers[key].player = playerName
+        ewrs.activePlayers[key].unitname = unit:getName()
+        ewrs.activePlayers[key].side = unit:getCoalition()
 
         -- add default settings to settings table if it hasn't been done yet
-        if ewrs.groupSettings[tostring(groupID)] == nil then
-            ewrs.addGroupSettings(tostring(groupID), unit:getCoalition())
+        if ewrs.groupSettings[key] == nil then
+            ewrs.addGroupSettings(key, unit:getCoalition())
         end
     end)
     if not status then
