@@ -357,7 +357,7 @@ ctld.spawnableCrates = {
 
         { weight = 850, desc = "M163 Vulcan", unit = "Vulcan", side = 2, unitQuantity = 2, internal = 0 },
         { weight = 851, desc = "Gepard", unit = "Gepard", side = 2, unitQuantity = 2, internal = 0 },
-        { weight = 852, desc = "M1097 Avenger", unit = "M1097 Avenger", side = 2, cratesRequired = 3, unitQuantity = 2, internal = 0 },
+        { weight = 852, desc = "M1097 Avenger", unit = "M1097 Avenger", side = 2, internal = 0 },
         { weight = 853, desc = "M6 Linebacker", unit = "M6 Linebacker", side = 2, cratesRequired = 3, unitQuantity = 2, internal = 0 },
     },
 
