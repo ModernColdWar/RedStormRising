@@ -265,22 +265,6 @@ function ewrs.outText(activePlayer, threatTable, bogeyDope, greeting)
     end
 end
 
-function ewrs.displayMessageToAll()
-    local status, result = pcall(function()
-        timer.scheduleFunction(ewrs.displayMessageToAll, nil, timer.getTime() + ewrs.messageUpdateInterval)
-        ewrs.findRadarUnits()
-        ewrs.getDetectedTargets()
-        for i = 1, #ewrs.activePlayers do
-            if ewrs.activePlayers[i].side == 1 and #ewrs.redEwrUnits > 0 or ewrs.activePlayers[i].side == 2 and #ewrs.blueEwrUnits > 0 then
-                ewrs.outText(ewrs.activePlayers[i], ewrs.buildThreatTable(ewrs.activePlayers[i]))
-            end
-        end
-    end)
-    if not status then
-        env.error(string.format("EWRS displayMessageToAll Error: %s", result))
-    end
-end
-
 function ewrs.onDemandMessage(args)
     local status, result = pcall(function()
         ewrs.findRadarUnits()
