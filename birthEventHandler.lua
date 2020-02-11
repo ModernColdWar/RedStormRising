@@ -46,7 +46,7 @@ function M.BIRTH_EVENTHANDLER:_AddMenus(event)
                 self:_AddRadioListMenu(groupId, unitName)
                 self:_AddLivesLeftMenu(playerGroup, unitName)
             end
-            ewrs.buildF10Menu(groupId)
+            self:_AddEWRS(groupId, event.IniDCSUnit)
         end
     end
 end
@@ -119,6 +119,14 @@ function M.BIRTH_EVENTHANDLER:_AddLivesLeftMenu(playerGroup, unitName)
             end
         end
     end)
+end
+
+function M.BIRTH_EVENTHANDLER:_AddEWRS(groupId, unit)
+    local playerName = unit:getPlayerName()
+    if playerName ~= nil and ewrs.enabledAircraftTypes[unit.getTypeName()] then
+        ewrs.buildF10Menu(groupId)
+        ewrs.addPlayer(playerName, groupId, unit)
+    end
 end
 -- luacheck: pop
 

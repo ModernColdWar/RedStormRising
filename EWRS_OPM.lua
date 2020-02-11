@@ -134,11 +134,6 @@ function ewrs.getSpeed(velocity)
     return speed -- m/s
 end
 
-function ewrs.update()
-    timer.scheduleFunction(ewrs.update, nil, timer.getTime() + 5)
-    ewrs.buildActivePlayers()
-end
-
 function ewrs.buildThreatTable(activePlayer)
     local function sortRanges(v1, v2)
         return v1.range < v2.range
@@ -264,35 +259,6 @@ function ewrs.onDemandMessage(groupID)
     end)
     if not status then
         env.error(string.format("EWRS onDemandMessage Error: %s", result))
-    end
-end
-
-function ewrs.buildActivePlayers()
-    local status, result = pcall(function()
-        local filter = { "[all][plane]", "[all][helicopter]" }
-        local all_vecs = mist.makeUnitTable(filter)
-        ewrs.activePlayers = {}
-        for i = 1, #all_vecs do
-            local vec = Unit.getByName(all_vecs[i])
-            if vec ~= nil and Unit.isActive(vec) then
-                local playerName = Unit.getPlayerName(vec)
-                local groupID = ewrs.getGroupId(vec)
-                if playerName ~= nil then
-                    local enabledForType = ewrs.enabledAircraftTypes[Unit.getTypeName(vec)]
-                    if enabledForType then
-                        if Unit.getCoalition(vec) == 2 then
-                            ewrs.addPlayer(playerName, groupID, vec)
-                        elseif Unit.getCoalition(vec) == 1 then
-                            ewrs.addPlayer(playerName, groupID, vec)
-                        end
-                    end
-                end
-            end
-        end
-    end) -- pcall
-
-    if not status then
-        env.error(string.format("EWRS buildActivePlayers Error: %s", result))
     end
 end
 
@@ -496,7 +462,6 @@ ewrs.activePlayers = {}
 ewrs.groupSettings = {}
 ewrs.notAvailable = 999999
 
-ewrs.update()
 env.info("EWRS LUA File Loaded ... OK")
 
 --[[
