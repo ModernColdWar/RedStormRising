@@ -48,9 +48,6 @@ ewrs = {} --DO NOT REMOVE
 
 ewrs.messageUpdateInterval = 5 --How often EWRS will update automated BRA messages (seconds)
 ewrs.messageDisplayTime = 2 --How long EWRS BRA messages will show for (seconds)
-ewrs.restrictToOneReference = true -- Disables the ability to change the BRA calls from pilot's own aircraft or bullseye. If this is true, set ewrs.defaultReference to the option you want to restrict to.
-ewrs.restrictToOneMeasurement = false -- Disables the ability to change the BRA calls' units of measurement.
-ewrs.defaultReference = "self" --The default reference for BRA calls - can be changed via f10 radio menu if ewrs.restrictToOneReference is false (self or bulls)
 ewrs.disableFightersBRA = true -- disables BRA messages to fighters when true
 ewrs.enableRedTeam = true -- enables / disables EWRS for the red team
 ewrs.enableBlueTeam = true -- enables / disables EWRS for the blue team
@@ -496,7 +493,7 @@ end
 
 function ewrs.addGroupSettings(groupID, side)
     ewrs.groupSettings[groupID] = {}
-    ewrs.groupSettings[groupID].reference = ewrs.defaultReference
+    ewrs.groupSettings[groupID].reference = "self"
     ewrs.groupSettings[groupID].measurements = ewrs.getDefaultMeasurements(side)
     ewrs.groupSettings[groupID].messages = true
     ewrs.groupSettings[groupID].pictureUpdates = false
@@ -556,17 +553,9 @@ function ewrs.buildF10Menu()
                     missionCommands.addCommandForGroup(groupID, "Stop updates", rootPath, ewrs.setGroupUpdates, { groupID, false })
                 end
 
-                if not ewrs.restrictToOneReference then
-                    local referenceSetPath = missionCommands.addSubMenuForGroup(groupID, "Set GROUP's reference point", rootPath)
-                    missionCommands.addCommandForGroup(groupID, "Set to Bullseye", referenceSetPath, ewrs.setGroupReference, { groupID, "bulls" })
-                    missionCommands.addCommandForGroup(groupID, "Set to Self", referenceSetPath, ewrs.setGroupReference, { groupID, "self" })
-                end
-
-                if not ewrs.restrictToOneMeasurement then
-                    local measurementsSetPath = missionCommands.addSubMenuForGroup(groupID, "Set measurement units", rootPath)
-                    missionCommands.addCommandForGroup(groupID, "Set to imperial (feet, kts)", measurementsSetPath, ewrs.setGroupMeasurements, { groupID, "imperial" })
-                    missionCommands.addCommandForGroup(groupID, "Set to metric (meters, km/h)", measurementsSetPath, ewrs.setGroupMeasurements, { groupID, "metric" })
-                end
+                local measurementsSetPath = missionCommands.addSubMenuForGroup(groupID, "Set measurement units", rootPath)
+                missionCommands.addCommandForGroup(groupID, "Set to imperial (feet, kts)", measurementsSetPath, ewrs.setGroupMeasurements, { groupID, "imperial" })
+                missionCommands.addCommandForGroup(groupID, "Set to metric (meters, km/h)", measurementsSetPath, ewrs.setGroupMeasurements, { groupID, "metric" })
 
                 if not ewrs.onDemand then
                     missionCommands.addCommandForGroup(groupID, "Request Picture", rootPath, ewrs.onDemandMessage, { groupID })
