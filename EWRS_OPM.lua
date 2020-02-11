@@ -98,12 +98,17 @@ ewrs.enabledAircraftTypes = {
     ["C-101CC"] = true,
     ["F-5E-3"] = true,
     ["F-86F Sabre"] = true,
+    ["Ka-50"] = true,
     ["L-39ZA"] = true,
+    ["Mi-8MT"] = true,
     ["MiG-15bis"] = true,
     ["MiG-21Bis"] = true,
     ["MiG-29A"] = true,
     ["MiG-29G"] = true,
     ["MiG-29S"] = true,
+    ["SA342L"] = true,
+    ["SA342M"] = true,
+    ["UH-1H"] = true,
 }
 
 ----END OF SCRIPT OPTIONS----
