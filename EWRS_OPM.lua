@@ -273,12 +273,10 @@ function ewrs.displayMessageToAll()
         ewrs.findRadarUnits()
         ewrs.getDetectedTargets()
         for i = 1, #ewrs.activePlayers do
-            if ewrs.groupSettings[tostring(ewrs.activePlayers[i].groupID)].messages then
-                if ewrs.activePlayers[i].side == 1 and #ewrs.redEwrUnits > 0 or ewrs.activePlayers[i].side == 2 and #ewrs.blueEwrUnits > 0 then
-                    ewrs.outText(ewrs.activePlayers[i], ewrs.buildThreatTable(ewrs.activePlayers[i]))
-                end -- if ewrs.activePlayers[i].side == 1 and #ewrs.redEwrUnits > 0 or ewrs.activePlayers[i].side == 2 and #ewrs.blueEwrUnits > 0 then
-            end -- if ewrs.groupSettings[tostring(ewrs.activePlayers[i].groupID)].messages then
-        end -- for i = 1, #ewrs.activePlayers do
+            if ewrs.activePlayers[i].side == 1 and #ewrs.redEwrUnits > 0 or ewrs.activePlayers[i].side == 2 and #ewrs.blueEwrUnits > 0 then
+                ewrs.outText(ewrs.activePlayers[i], ewrs.buildThreatTable(ewrs.activePlayers[i]))
+            end
+        end
     end)
     if not status then
         env.error(string.format("EWRS displayMessageToAll Error: %s", result))
@@ -491,7 +489,6 @@ function ewrs.addGroupSettings(groupID, side)
     ewrs.groupSettings[groupID] = {}
     ewrs.groupSettings[groupID].reference = "self"
     ewrs.groupSettings[groupID].measurements = ewrs.getDefaultMeasurements(side)
-    ewrs.groupSettings[groupID].messages = true
     ewrs.groupSettings[groupID].pictureUpdates = false
 end
 
@@ -505,18 +502,6 @@ function ewrs.setGroupMeasurements(args)
     local groupID = args[1]
     ewrs.groupSettings[tostring(groupID)].measurements = args[2]
     trigger.action.outTextForGroup(groupID, "Measurement units changed to " .. args[2], ewrs.messageDisplayTime)
-end
-
-function ewrs.setGroupMessages(args)
-    local groupID = args[1]
-    local onOff
-    if args[2] then
-        onOff = "on"
-    else
-        onOff = "off"
-    end
-    ewrs.groupSettings[tostring(groupID)].messages = args[2]
-    trigger.action.outTextForGroup(groupID, "Picture reports for group turned " .. onOff, ewrs.messageDisplayTime)
 end
 
 function ewrs.setGroupUpdates(args)
@@ -548,13 +533,6 @@ function ewrs.buildF10Menu()
                 local measurementsSetPath = missionCommands.addSubMenuForGroup(groupID, "Set measurement units", rootPath)
                 missionCommands.addCommandForGroup(groupID, "Set to imperial (feet, kts)", measurementsSetPath, ewrs.setGroupMeasurements, { groupID, "imperial" })
                 missionCommands.addCommandForGroup(groupID, "Set to metric (meters, km/h)", measurementsSetPath, ewrs.setGroupMeasurements, { groupID, "metric" })
-
-                if not ewrs.onDemand then
-                    missionCommands.addCommandForGroup(groupID, "Request Picture", rootPath, ewrs.onDemandMessage, { groupID })
-                    local messageOnOffPath = missionCommands.addSubMenuForGroup(groupID, "Turn Picture Report On/Off", rootPath)
-                    missionCommands.addCommandForGroup(groupID, "Message ON", messageOnOffPath, ewrs.setGroupMessages, { groupID, true })
-                    missionCommands.addCommandForGroup(groupID, "Message OFF", messageOnOffPath, ewrs.setGroupMessages, { groupID, false })
-                end
 
                 ewrs.builtF10Menus[stringGroupID] = true
             end
