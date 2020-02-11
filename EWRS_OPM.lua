@@ -248,9 +248,13 @@ function ewrs.onDemandMessage(groupID)
     local status, result = pcall(function()
         ewrs.findRadarUnits()
         ewrs.getDetectedTargets()
-        ewrs.outText(groupID, ewrs.buildThreatTable(ewrs.activePlayers[tostring(groupID)]))
+        local activePlayer = ewrs.activePlayers[tostring(groupID)]
+        ewrs.outText(groupID, ewrs.buildThreatTable(activePlayer))
         if ewrs.groupSettings[tostring(groupID)].pictureUpdates then
-            timer.scheduleFunction(ewrs.onDemandMessage, groupID, timer.getTime() + ewrs.messageUpdateInterval)
+            local unit = Unit.getByName(activePlayer.unitname)
+            if unit ~= nil and unit:getPlayerName() ~= nil then
+                timer.scheduleFunction(ewrs.onDemandMessage, groupID, timer.getTime() + ewrs.messageUpdateInterval)
+            end
         end
     end)
     if not status then
