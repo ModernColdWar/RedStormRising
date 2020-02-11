@@ -249,9 +249,8 @@ function ewrs.outText(activePlayer, threatTable)
     end
 end
 
-function ewrs.onDemandMessage(args)
+function ewrs.onDemandMessage(groupID)
     local status, result = pcall(function()
-        local groupID = args[1]
         ewrs.findRadarUnits()
         ewrs.getDetectedTargets()
         for i = 1, #ewrs.activePlayers do
@@ -479,7 +478,7 @@ end
 function ewrs.buildF10Menu(groupID)
     local rootPath = missionCommands.addSubMenuForGroup(groupID, "Automated GCI")
 
-    missionCommands.addCommandForGroup(groupID, "Request picture", rootPath, ewrs.onDemandMessage, { groupID })
+    missionCommands.addCommandForGroup(groupID, "Request picture", rootPath, ewrs.onDemandMessage, groupID)
     missionCommands.addCommandForGroup(groupID, "Start updates", rootPath, ewrs.setGroupUpdates, { groupID, true })
     missionCommands.addCommandForGroup(groupID, "Stop updates", rootPath, ewrs.setGroupUpdates, { groupID, false })
 
