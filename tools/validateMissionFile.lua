@@ -213,6 +213,15 @@ missionUtils.iterGroups(mission, function(group, sideName)
     end
 end)
 
+print("\nSetting ground units to game master only")
+missionUtils.iterVehicleGroups(mission, function(group, sideName)
+    local groupName = missionUtils.getDictionaryValue(group.name)
+    if not group.uncontrollable then
+        print("Setting " .. groupName .. " to game master only")
+        group.uncontrollable = true
+    end
+end)
+
 if write then
     missionUtils.serializeMission(mission, missionDir)
 end

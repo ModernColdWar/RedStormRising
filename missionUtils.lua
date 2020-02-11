@@ -93,6 +93,18 @@ function M.iterGroups(mission, groupCallback)
     end)
 end
 
+function M.iterVehicleGroups(mission, groupCallback)
+    M.iterCountries(mission, function(sideName, country)
+        if country.vehicle ~= nil then
+            for _, groups in pairs(country.vehicle) do
+                for _, group in ipairs(groups) do
+                    groupCallback(group, sideName)
+                end
+            end
+        end
+    end)
+end
+
 function M.iterZones(mission, zoneCallback)
     for _, zone in ipairs(mission.triggers.zones) do
         zoneCallback(zone)
