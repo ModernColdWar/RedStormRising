@@ -209,12 +209,12 @@ function ewrs.buildThreatTable(activePlayer)
     return threatTable
 end
 
-function ewrs.outText(activePlayer, threatTable)
+function ewrs.outText(groupID, threatTable)
     local status, result = pcall(function()
         local altUnits
         local speedUnits
         local rangeUnits
-        if ewrs.groupSettings[tostring(activePlayer.groupID)].measurements == "metric" then
+        if ewrs.groupSettings[tostring(groupID)].measurements == "metric" then
             altUnits = "m"
             speedUnits = "km/h"
             rangeUnits = "km"
@@ -239,9 +239,9 @@ function ewrs.outText(activePlayer, threatTable)
                         utils.round(threat.speed, 10), speedUnits
                 )
             end
-            trigger.action.outTextForGroup(activePlayer.groupID, message, ewrs.messageDisplayTime)
+            trigger.action.outTextForGroup(groupID, message, ewrs.messageDisplayTime)
         else
-            trigger.action.outTextForGroup(activePlayer.groupID, "EWRS: No targets detected", ewrs.messageDisplayTime)
+            trigger.action.outTextForGroup(groupID, "EWRS: No targets detected", ewrs.messageDisplayTime)
         end
     end)
     if not status then
@@ -255,7 +255,7 @@ function ewrs.onDemandMessage(groupID)
         ewrs.getDetectedTargets()
         for i = 1, #ewrs.activePlayers do
             if ewrs.activePlayers[i].groupID == groupID then
-                ewrs.outText(ewrs.activePlayers[i], ewrs.buildThreatTable(ewrs.activePlayers[i]))
+                ewrs.outText(groupID, ewrs.buildThreatTable(ewrs.activePlayers[i]))
                 if ewrs.groupSettings[tostring(ewrs.activePlayers[i].groupID)].pictureUpdates then
                     timer.scheduleFunction(ewrs.onDemandMessage, { ewrs.activePlayers[i].groupID }, timer.getTime() + ewrs.messageUpdateInterval)
                 end
