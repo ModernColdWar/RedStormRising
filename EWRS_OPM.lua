@@ -52,7 +52,6 @@ ewrs.disableMessageWhenNoThreats = true -- disables message when no threats are 
 ewrs.useImprovedDetectionLogic = true --this makes the messages more realistic. If the radar doesn't know the type or distance to the detected threat, it will be reflected in the picture report / BRA message
 ewrs.onDemand = true --Setting to true will disable the automated messages to everyone and will add an F10 menu to get picture / BRA message.
 ewrs.maxThreatDisplay = 1 -- Max amounts of threats to display on picture report (0 will display all)
-ewrs.allowBogeyDope = false -- Allows pilots to request a bogey dope even with the automated messages running. It will display only the cloest threat, and will always reference the players own aircraft.
 
 --[[
 Units with radar to use as part of the EWRS radar network
@@ -539,10 +538,6 @@ function ewrs.buildF10Menu()
             local stringGroupID = tostring(groupID)
             if ewrs.builtF10Menus[stringGroupID] == nil then
                 local rootPath = missionCommands.addSubMenuForGroup(groupID, "Automated GCI")
-
-                if ewrs.allowBogeyDope then
-                    missionCommands.addCommandForGroup(groupID, "Request Bogey Dope", rootPath, ewrs.onDemandMessage, { groupID, true })
-                end
 
                 if ewrs.onDemand then
                     missionCommands.addCommandForGroup(groupID, "Request picture", rootPath, ewrs.onDemandMessage, { groupID })
