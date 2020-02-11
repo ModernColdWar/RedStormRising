@@ -251,10 +251,11 @@ end
 
 function ewrs.onDemandMessage(args)
     local status, result = pcall(function()
+        local groupID = args[1]
         ewrs.findRadarUnits()
         ewrs.getDetectedTargets()
         for i = 1, #ewrs.activePlayers do
-            if ewrs.activePlayers[i].groupID == args[1] then
+            if ewrs.activePlayers[i].groupID == groupID then
                 ewrs.outText(ewrs.activePlayers[i], ewrs.buildThreatTable(ewrs.activePlayers[i]))
                 if ewrs.groupSettings[tostring(ewrs.activePlayers[i].groupID)].pictureUpdates then
                     timer.scheduleFunction(ewrs.onDemandMessage, { ewrs.activePlayers[i].groupID }, timer.getTime() + ewrs.messageUpdateInterval)
