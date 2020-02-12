@@ -11,6 +11,7 @@ Create sqlite3.lib via https://docs.microsoft.com/en-us/cpp/build/walkthrough-cr
 luarocks install luasql-sqlite3 SQLITE_INCDIR=C:\dev\sqlite3 SQLITE_DIR=C:\dev\sqlite3
 ]]
 package.cpath = package.cpath .. ";C:\\dev\\lua\\systree\\lib\\lua\\5.1\\?.dll;"
+local inspect = require("inspect")
 
 local driver = require("luasql.sqlite3")
 local env = assert(driver.sqlite3())
@@ -19,7 +20,7 @@ local con = assert(env:connect(":memory:"))
 
 local numAirbases = 50
 
-local numUnits = 5000
+local numUnits = 1000
 
 local baseRadius = 5000
 local mapSize = 100000
@@ -37,14 +38,6 @@ CREATE VIRTUAL TABLE map USING rtree(
 ]])
 
 for _ = 1, numLoops do
-    local airbases = {}
-    for i = 1, numAirbases do
-        local x = math.random() * (mapSize - baseRadius * 2) + baseRadius
-        local y = math.random() * (mapSize - baseRadius * 2) + baseRadius
-        local baseName = string.format("Airbase_%02d", i)
-        airbases[baseName] = { x = x, y = y }
-    end
-
     local units = {}
     local coalition = 1
     for i = 1, numUnits do
@@ -59,35 +52,55 @@ for _ = 1, numLoops do
         end
     end
 
-    local sqliteT0 = os.clock()
     assert(con:execute("DELETE FROM map"))
-    for unitName, unitData in pairs(units) do
+    local airbases = {}
+    local coalition = 1
+    for i = 1, numAirbases do
+        local x = math.random() * (mapSize - baseRadius * 2) + baseRadius
+        local y = math.random() * (mapSize - baseRadius * 2) + baseRadius
+        local minX, maxX = x - baseRadius, x + baseRadius
+        local minY, maxY = y - baseRadius, y + baseRadius
+        local baseName = string.format("Airbase_%02d", i)
+        airbases[baseName] = { x = x, y = y }
         local stmt = string.format([[
           INSERT INTO map(minX, maxX, minY, maxY, name, coalition)
           VALUES(%f, %f, %f, %f, '%s', %d)
-    ]], unitData.x, unitData.x, unitData.y, unitData.y, unitName, unitData.coalition)
+    ]], minX, maxX, minY, maxY, baseName, coalition)
         assert(con:execute(stmt))
+        if coalition == 1 then
+            coalition = 2
+        else
+            coalition = 1
+        end
+    end
+    local sqliteT0 = os.clock()
+
+    local unitsNearby = {}
+    for airbaseName, _ in pairs(airbases) do
+        unitsNearby[airbaseName] = {}
     end
 
-    for airbaseName, position in pairs(airbases) do
-        local unitsInProximity = {}
-        local baseX, baseY = position.x, position.y
-        local minX, maxX = baseX - baseRadius, baseX + baseRadius
-        local minY, maxY = baseY - baseRadius, baseY + baseRadius
+    for unitName, unitData in pairs(units) do
+        local unitX, unitY = unitData.x, unitData.y
         local query = string.format([[
           select name from map
-          where minX > %f and minX < %f
-          and minY > %f and minY < %f
-        ]], minX, maxX, minY, maxY)
+          where minX < %f and maxX > %f
+          and minY < %f and maxY > %f
+        ]], unitX, unitX, unitY, unitY)
         local cur = assert(con:execute(query))
-        local row = cur:fetch()
-        while row do
-            table.insert(unitsInProximity, row)
-            row = cur:fetch()
+        local airbaseName = cur:fetch()
+        while airbaseName do
+            table.insert(unitsNearby[airbaseName], unitName)
+            --local airbaseData = airbases[airbaseName]
+            --print(string.format("  %s at (%.1f, %.1f)", airbaseName, airbaseData.x, airbaseData.y))
+            airbaseName = cur:fetch()
         end
-        --print(string.format("%s: %s", airbaseName, inspect(unitsInProximity)))
         cur:close()
     end
+    --for airbaseName, unitsInProximity in pairs(unitsNearby) do
+    --    print(string.format("%s: %s", airbaseName, inspect(unitsInProximity)))
+    --end
+    --print("-------------")
     local sqliteT1 = os.clock()
 
     local naiveT0 = os.clock()
