@@ -39,7 +39,6 @@
 			- Added Mistral Gazelle
 			- Added C-101CC
 ]]
-local inspect = require("inspect")
 local utils = require("utils")
 
 ewrs = {} --DO NOT REMOVE
@@ -149,12 +148,15 @@ function ewrs.buildThreatTable(activePlayer)
         targets = ewrs.currentlyDetectedBlueUnits
     end
 
+    local threatTable = {}
+    
     local _self = Unit.getByName(activePlayer.unitname)
+    if _self == nil then
+        return
+    end
     local selfpos = _self:getPosition()
     local referenceX = selfpos.p.x
     local referenceZ = selfpos.p.z
-
-    local threatTable = {}
 
     for _, v in pairs(targets) do
         local velocity = v["object"]:getVelocity()
