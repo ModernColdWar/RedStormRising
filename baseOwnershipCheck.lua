@@ -22,7 +22,7 @@ end
 function M.getAllBaseOwnership(_campaignStartSetup,_passedBase,_playerORunit)
 
 	--mr: intercept first time campaign setup here to read FARP ownership from Trigger Zone Name or Color
-	log:info("campaignSetup: $1",_campaignStartSetup)
+	log:info("_campaignStartSetup: $1",_campaignStartSetup)
 	log:info("_passedBase: $1",_passedBase)
 	if _campaignStartSetup then
 		

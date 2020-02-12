@@ -30,7 +30,8 @@ local function isReplacementGroup(group)
     return string.find(group:GetName():lower(), "replacement")
 end
 
-local function activateBaseDefences(baseName, sideName, rsrConfig)
+local function activateBaseDefences(baseName, sideName, rsrConfig, missionInit, campaignStartSetup)
+	log:info("Activating base defences. missionInit = $1, Add to spawnQueue = $2 (campaignStartSetup)",missionInit,campaignStartSetup)
     local base = AIRBASE:FindByName(baseName)
     local side = utils.getSide(sideName)
     local radius = getRadius(rsrConfig, base)
@@ -39,9 +40,36 @@ local function activateBaseDefences(baseName, sideName, rsrConfig)
     allLateActivatedGroundGroups:ForEachGroup(function(group)
         -- we can't use any of the GROUP:InZone methods as these are late activated units
         if group:GetCoalition() == side and activationZone:IsVec3InZone(group:GetVec3()) and not isReplacementGroup(group) then
-            log:info("Activating $1 $2 base defence group $3", baseName, sideName, group:GetName())
+            local _groupName = group:GetName() --MOOSE
+			
+			log:info("Activating $1 $2 base defence group $3", baseName, sideName, _groupName)
             group:Activate()
-            updateSpawnQueue.pushSpawnQueue(group:GetName())
+			--[[
+				campaignStartSetup == true, missionInit = true:
+					add base defences to spawn queue (persistent unit list) at campaign start as not yet added
+				campaignStartSetup == true, missionInit = false:	
+					add base defences to spawn queue (persistent unit list) as mission progresses after campaign setup
+				campaignStartSetup == false, missionInit = true:
+					do NOT add base defences to spawn queue (persistent unit list) as already present in rsrState.json
+				campaignStartSetup == false, missionInit = false:
+					add base defences to spawn queue (persistent unit list) as mission progresses
+			--]]
+			if campaignStartSetup or not missionInit then
+				updateSpawnQueue.pushSpawnQueue(_groupName)
+			end
+			
+			if ctld.isJTACUnitType(_groupName) then
+				local _code = ctld.getLaserCode(Group.getByName(_groupName):getCoalition())
+				log:info("Configuring group $1 to auto-lase on $2", _groupName, _code)
+				ctld.JTACAutoLase(_groupName, _code)
+			end
+
+			if string.match(_groupName, "1L13 EWR") then
+				log:info("Configuring group $1 as EWR", _groupName)
+				ctld.addEWRTask(group)
+			end
+			
+			
             utils.setGroupControllerOptions(group)
         end
     end)
@@ -75,28 +103,30 @@ function M.configureForSide(baseName, sideName)
     pickupZoneManager.configurePickupZonesForBase(baseName, sideName)
 end
 
-function M.resupply(baseName, sideName, rsrConfig, spawnLC, missionInit)
+function M.resupply(baseName, sideName, rsrConfig, spawnLC, missionInit, campaignStartSetup)
+	log:info("RESUPPLY: baseName: $1, sideName: $2, missionInit: $3, campaignStartSetup: $4", baseName, sideName, mist.utils.basicSerialize(missionInit), mist.utils.basicSerialize(campaignStartSetup))
     log:info("Configuring $1 resupplied by $2", baseName, sideName)
     if checkNeutral(baseName, sideName) then
         return
     end
-    activateBaseDefences(baseName, sideName, rsrConfig)
+    activateBaseDefences(baseName, sideName, rsrConfig, missionInit, campaignStartSetup)
 	if spawnLC then 
-		log:info("PRE-logisticsManager: baseName $1 sideName $2 missionInit $3", baseName, sideName, missionInit)
+		log:info("PRE-logisticsManager: baseName $1 sideName $2", baseName, sideName)
 		--(baseName, sideName, logisticsCentreName, isMissionInit, constructingPlayerName)
 		logisticsManager.spawnLogisticsBuildingForBase(baseName, sideName,"none", missionInit,"none")
 	end
 end
 
-function M.onMissionStart(baseName, sideName, rsrConfig, missionInitSetup)
+function M.onMissionStart(baseName, sideName, rsrConfig, missionInitSetup, campaignStartSetup)
     log:info("Configuring $1 as $2 at mission start", baseName, sideName)
     M.configureForSide(baseName, sideName)
     if checkNeutral(baseName, sideName) then
-        return
+		log:info("Checking if $1 (owner: $2) is neutral at mission start", baseName, sideName)
+        return -- do not setup base if neutral
     end
     if missionInitSetup then
         log:info("First time setup - resupplying")
-        M.resupply(baseName, sideName, rsrConfig, true, true)
+        M.resupply(baseName, sideName, rsrConfig, true, true, campaignStartSetup)
     else
         log:info("Not first time setup - not doing any base resupply; only logistics")
         logisticsManager.spawnLogisticsBuildingForBase(baseName, sideName,"none",true,"none")

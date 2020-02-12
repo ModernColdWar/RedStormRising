@@ -12,6 +12,7 @@ local log = mist.Logger:new("Persistence", "info")
 
 local M = {}
 
+M.campaignStartSetup = false
 
 -- group ownerships by side and user - kept in memory only and updated in handleSpawnQueue
 M.groupOwnership = {
@@ -25,10 +26,11 @@ end
 
 function M.updateGroupData(persistentGroupData)
 	log:info("Updating persistent group data")
+	log:info("persistentGroupData: $1",mist.utils.basicSerialize(persistentGroupData))
     for i = #persistentGroupData, 1, -1 do
         local groupData = persistentGroupData[i]
         local groupName = groupData.name
-		--log:info("Processing units in group $1", groupName)
+		log:info("Processing units in group $1", groupName)
         for j = #groupData.units, 1, -1 do
             local unitData = groupData.units[j]
             local unitName = unitData.name
@@ -156,7 +158,8 @@ local function configureBasesAtStartup(rsrConfig, baseOwnership, missionInitSetu
                 if AIRBASE:FindByName(baseName) == nil then
                     log:error("Unable to find base $1 on map but was in state file; skipping setup", baseName)
                 else
-                    bases.onMissionStart(baseName, sideName, rsrConfig, missionInitSetup)
+					log:info("bases.onMissionStart;  M.campaignStartSetup: $1", mist.utils.basicSerialize( M.campaignStartSetup))
+                    bases.onMissionStart(baseName, sideName, rsrConfig, missionInitSetup, M.campaignStartSetup)
                 end
             end
         end
@@ -167,7 +170,7 @@ end
 function M.restoreFromState(rsrConfig)
     log:info("Restoring mission state")
     state.copyToCtld()
-	--log:info("state.missionInitSetup: $1",mist.utils.basicSerialize(state.missionInitSetup))
+	log:info("state.missionInitSetup: $1",mist.utils.basicSerialize(state.missionInitSetup))
     configureBasesAtStartup(rsrConfig, state.currentState.baseOwnership, state.missionInitSetup)
 
     -- We clear state.current.persistentGroupData here, as this is updated in handleSpawnQueue later
@@ -176,7 +179,7 @@ function M.restoreFromState(rsrConfig)
     log:info("Number of persistent groups at restore is $1", #state.currentState.persistentGroupData)
     state.currentState.persistentGroupData = {}
     for _, groupData in ipairs(persistentGroupData) do
-        M.spawnGroup(groupData)
+        M.spawnGroup(groupData) --updateSpawnQueue.pushSpawnQueue(groupName) 
     end
 
     log:info("Mission state restored")
@@ -184,11 +187,13 @@ end
 
 function M.onMissionStart(rsrConfig)
     if not state.setCurrentStateFromFile(rsrConfig.stateFileName) then
-        log:error("Unable to load state from $1", rsrConfig.stateFileName)
-        return
+        log:error("Unable to load state from $1", mist.utils.basicSerialize(rsrConfig.stateFileName))
+		M.campaignStartSetup = true
     end
-    M.restoreFromState(rsrConfig)
-
+	
+	-- baseOwnership should now be established by state.lua, whether from MIZ + campaignStartSetup, or saved state rsrState.json
+	M.restoreFromState(rsrConfig)
+	
     -- register unpack callback so we can update our state
     ctld.addCallback(function(_args)
         if _args.action and _args.action == "unpack" then

@@ -977,10 +977,10 @@ end
 
 function ctld.spawnLogisticsCentre(_point, _name, _coalition, _baseORfob, _baseORfobName, _isMissionInit,_constructingPlayerName)
 	
-	local _logiCentreType = ctld.logisticCentreL3
+	local _logiCentreType = ctld.logisticCentreL3 --bunker
 	
 	if _baseORfob == "FOB" then
-		_logiCentreType = ctld.logisticCentreL1 --tent
+		_logiCentreType = ctld.logisticCentreL2 --outpost
 	end
 	
 	local _playerName = "none"
@@ -2597,7 +2597,8 @@ function ctld.unpackCrates(_arguments)
                     else
                         ctld.spawnedCratesBLUE[_crateName] = nil
                     end
-
+					
+					--"unpack" callback from persistence.lua: adds new group to side ownership and table for state saving (rsrState.json)
                     ctld.processCallback({ unit = _heli, crate = _crate, spawnedGroup = _spawnedGroups, action = "unpack" })
 
                     if _crate.details.unit == "1L13 EWR" then

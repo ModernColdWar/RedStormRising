@@ -31,6 +31,7 @@ M.defaultState = {
 M.currentState = nil
 
 -- mission init with no rsrState.json = campaign init = use zone name and color to determining starting base ownership
+-- make global as a lot of 
 M.campaignStartSetup = false
 
 -- mission init regardless of rsrState.json
@@ -142,8 +143,8 @@ function M.copyFromCtld()
 end
 
 function M.updateBaseOwnership()
-	--(_campaignStartSetup,_passedBase,_playerORunit)
-	--_campaignStartSetup will take priority over next two args
+	--(campaignStartSetup,_passedBase,_playerORunit)
+	--campaignStartSetup will take priority over next two args
 	--_passedBase = "ALL" to initiate full check of all bases for persistance
 	if M.campaignStartSetup then
 		M.currentState.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(M.campaignStartSetup,"ALL","none")
@@ -203,18 +204,18 @@ function M.setCurrentStateFromFile(stateFileName)
 	
     if UTILS.FileExists(stateFileName) then
         local stateFromDisk = M.readStateFromDisk(stateFileName)
-        if stateFromDisk == nil then
-            return false
-        end
-        M.currentState = stateFromDisk
-        if M.getWinner() == nil then
 		
+         if stateFromDisk ~= nil then
+		    M.canUseStateFromFile = true
+			--M.campaignStartSetup = false --probably unnescessary
+			log:info("State file detected")
+			M.currentState = stateFromDisk
+		end
+		
+        if M.getWinner() == nil then
 			-- broadcast global baseOwnership from file to then recheck
 			env.info("state: MISSION INIT: baseOwnership = $1",baseOwnership)
 			baseOwnership = mist.utils.deepCopy(M.currentState.baseOwnership) --deepCopy as variable assingment is a direct reference not a copy
-			
-            M.canUseStateFromFile = true
-			log:info("State file detected")
         else
             log:info("State file is from a victory - will not use")
         end
@@ -229,7 +230,7 @@ function M.setCurrentStateFromFile(stateFileName)
 		M.updateBaseOwnership()
     end
     log:info("currentState = $1", inspect(M.currentState, { newline = " ", indent = "" }))
-    return true
+    return M.canUseStateFromFile
 end
 env.info("RSR STARTUP: state.LUA LOADED")
 return M
