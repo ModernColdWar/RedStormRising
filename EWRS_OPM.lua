@@ -149,7 +149,7 @@ function ewrs.buildThreatTable(activePlayer)
     end
 
     local threatTable = {}
-    
+
     local _self = Unit.getByName(activePlayer.unitname)
     if _self == nil then
         return
