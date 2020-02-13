@@ -10,11 +10,6 @@ M.mapMarkers = {}
 
 local log = mist.Logger:new("Utils", "info")
 
-local allLateActivatedGroundGroups = SET_GROUP:New()
-                                              :FilterCategories("ground")
-                                              :FilterActive(false)
-                                              :FilterOnce()
-
 local function getRadius(rsrConfig, base)
     if base:GetAirbaseCategory() == Airbase.Category.AIRDROME then
         return rsrConfig.baseDefenceActivationRadiusAirbase
@@ -24,19 +19,19 @@ local function getRadius(rsrConfig, base)
     return 0
 end
 
-local function isReplacementGroup(group)
-    return string.find(group:GetName():lower(), "replacement")
-end
-
 local function activateBaseDefences(baseName, sideName, rsrConfig)
     local base = AIRBASE:FindByName(baseName)
-    local side = utils.getSide(sideName)
     local radius = getRadius(rsrConfig, base)
     log:info("Activating base defences for $1 base $2 within $3m", sideName, baseName, radius)
     local activationZone = ZONE_AIRBASE:New(baseName, radius)
-    allLateActivatedGroundGroups:ForEachGroup(function(group)
+    local allBaseDefencesGroups = SET_GROUP:New()
+                                           :FilterCategories("ground")
+                                           :FilterActive(false)
+                                           :FilterCoalitions(sideName)
+                                           :FilterOnce()
+    allBaseDefencesGroups:ForEachGroup(function(group)
         -- we can't use any of the GROUP:InZone methods as these are late activated units
-        if group:GetCoalition() == side and activationZone:IsVec3InZone(group:GetVec3()) and not isReplacementGroup(group) then
+        if activationZone:IsVec3InZone(group:GetVec3()) then
             log:info("Activating $1 $2 base defence group $3", baseName, sideName, group:GetName())
             group:Activate()
             local groupName = group:GetName()
