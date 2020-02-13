@@ -31,7 +31,7 @@ local function isReplacementGroup(group)
 end
 
 local function activateBaseDefences(baseName, sideName, rsrConfig, missionInit, campaignStartSetup)
-	log:info("Activating base defences. missionInit = $1, Add to spawnQueue = $2 (campaignStartSetup)",missionInit,campaignStartSetup)
+	log:info("Activating base defences. missionInit: $1, Add to spawnQueue (campaignStartSetup): $2 ",mist.utils.basicSerialize(missionInit),mist.utils.basicSerialize(campaignStartSetup))
     local base = AIRBASE:FindByName(baseName)
     local side = utils.getSide(sideName)
     local radius = getRadius(rsrConfig, base)
@@ -46,11 +46,11 @@ local function activateBaseDefences(baseName, sideName, rsrConfig, missionInit, 
             group:Activate()
 			--[[
 				campaignStartSetup == true, missionInit = true:
-					add base defences to spawn queue (persistent unit list) at campaign start as not yet added
+					add base defences to spawn queue (persistent unit list) at campaign start and mission start as not yet added
 				campaignStartSetup == true, missionInit = false:	
 					add base defences to spawn queue (persistent unit list) as mission progresses after campaign setup
 				campaignStartSetup == false, missionInit = true:
-					do NOT add base defences to spawn queue (persistent unit list) as already present in rsrState.json
+					do NOT add base defences to spawn queue (persistent unit list) at mission start as already present in rsrState.json
 				campaignStartSetup == false, missionInit = false:
 					add base defences to spawn queue (persistent unit list) as mission progresses
 			--]]

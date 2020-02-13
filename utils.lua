@@ -325,5 +325,44 @@ function M.removeABownership (_ABname)
 	if not _ABremoved then 
 		log:error("$1 Airbase not found in 'baseOwnership.Airbases' sides. No ownership record to remove.",_ABname)
 	end
-end	
+end
+function M.baseCaptureZoneToNameSideType(_zone)
+	local _zoneName  = _zone.name
+	local _RSRbaseCaptureZoneName = string.match(_zoneName,("^(.+)%sRSR")) --"MM75 RSRbaseCaptureZone FARP" = "MM75" i.e. from whitepace and RSR up
+	--log:info("_RSRbaseCaptureZoneName: $1",_RSRbaseCaptureZoneName)
+	local _baseType = string.match(_zoneName,("%w+$")) --"MM75 RSRbaseCaptureZone FARP" = "FARP"
+	local _baseTypes = ""
+	
+	if _baseType == nil then
+		log:error("RSR MIZ SETUP: $1 RSRbaseCaptureZone Trigger Zone name does not contain 'Airbase' or 'FARP' e.g. 'MM75 RSRbaseCaptureZone FARP'",_RSRbaseCaptureZoneName)
+	else
+		_baseTypes = _baseTypes .. _baseType .. "s"
+	end
+
+	local _zoneColor = _zone.color
+	local _baseSide = "ERROR"
+	
+	local _whiteInitZoneCheck = 0
+	if _zoneColor[1] == 1 then 
+		_baseSide = "red" 
+		_whiteInitZoneCheck = _whiteInitZoneCheck + 1
+	elseif _zoneColor[3] == 1 then 
+		_baseSide = "blue"
+		_whiteInitZoneCheck = _whiteInitZoneCheck + 1
+	elseif _zoneColor[2] == 1 then --green
+		_baseSide = "neutral"
+		_whiteInitZoneCheck = _whiteInitZoneCheck + 1
+	end
+	
+	if _baseSide == "ERROR" then
+		if _whiteInitZoneCheck == 3 then
+			log:error("RSR MIZ SETUP: $1 $2 Trigger Zone color not changed from white. Setting as neutral",_RSRbaseCaptureZoneName, inspect(_zoneColor, { newline = " ", indent = "" }))
+		elseif _whiteInitZoneCheck > 1 then
+			log:error("RSR MIZ SETUP: $1 $2 Trigger Zone color not correctly set to only red, blue or green. Setting as neutral",_RSRbaseCaptureZoneName, inspect(_zoneColor, { newline = " ", indent = "" }))
+		end
+		_baseSide = "neutral"
+	end
+	return {_RSRbaseCaptureZoneName,_baseSide,_baseTypes}
+end
+
 return M
