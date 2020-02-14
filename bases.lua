@@ -30,21 +30,26 @@ local function activateBaseDefences(baseName, sideName, rsrConfig)
                                            :FilterCoalitions(sideName)
                                            :FilterOnce()
     allBaseDefencesGroups:ForEachGroup(function(group)
-        -- we can't use any of the GROUP:InZone methods as these are late activated units
-        if activationZone:IsVec3InZone(group:GetVec3()) then
-            log:info("Activating $1 $2 base defence group $3", baseName, sideName, group:GetName())
-            group:Activate()
-            local groupName = group:GetName()
-            state.pushSpawnQueue(groupName)
-            utils.setGroupControllerOptions(group:GetDCSObject())
-            if ctld.isJTACUnitType(groupName) then
-                timer.scheduleFunction(function(_groupName)
-                    -- do this 2 seconds later so that group has time to be activated
-                    local _code = ctld.getLaserCode(Group.getByName(_groupName):getCoalition())
-                    log:info("Configuring base defences group $1 to auto-lase on $2", _groupName, _code)
-                    ctld.JTACAutoLase(_groupName, _code)
-                end, groupName, timer.getTime() + 2)
+        -- check we have a unit in the group to avoid nil when we call group:GetVec3()
+        if group:GetUnit(1) then
+            -- we can't use any of the GROUP:InZone methods as these are late activated units
+            if activationZone:IsVec3InZone(group:GetVec3()) then
+                log:info("Activating $1 $2 base defence group $3", baseName, sideName, group:GetName())
+                group:Activate()
+                local groupName = group:GetName()
+                state.pushSpawnQueue(groupName)
+                utils.setGroupControllerOptions(group:GetDCSObject())
+                if ctld.isJTACUnitType(groupName) then
+                    timer.scheduleFunction(function(_groupName)
+                        -- do this 2 seconds later so that group has time to be activated
+                        local _code = ctld.getLaserCode(Group.getByName(_groupName):getCoalition())
+                        log:info("Configuring base defences group $1 to auto-lase on $2", _groupName, _code)
+                        ctld.JTACAutoLase(_groupName, _code)
+                    end, groupName, timer.getTime() + 2)
+                end
             end
+        else
+            log:warn("Could not find first unit in group $1", group:GetName())
         end
     end)
 end
