@@ -15,10 +15,8 @@ function M.getLogisticCentreZones(mission)
 end
 function M.getRSRbaseCaptureZones (mission)
 
-	--mr: take into account zone name suffix to define airbase/FOB e.g. "MM75 RSRlogisticsZone FOB"
-	-- * = LUA string pattern match wildcard should work with missionUtils.getZoneNames() as function uses string.match --NOPE IT DOES NOT
 	-- DCS getZone function only returns zone position and radius based on name, therefore store complete zone details i.e. color
-    local _bCzones = missionUtils.getZones(mission, string.lower("RSRbaseCaptureZone")) --getZoneNames fucntion requires lowercase
+    local _bCzones = missionUtils.getZones(mission, string.lower("RSRbaseCaptureZone")) --getZoneNames function requires lowercase
 	local RSRbaseCaptureZoneNames = {}
     for _k, _z in ipairs(_bCzones) do
         table.insert(RSRbaseCaptureZoneNames, _z)

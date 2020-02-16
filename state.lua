@@ -22,6 +22,7 @@ M.defaultState = {
     ctld = {
         nextGroupId = 1,
         nextUnitId = 1,
+		--JTACsPerPlayerPerSide = {}
     },
     persistentGroupData = {}, -- updated by a scheduled task
     baseOwnership = {} -- populated from DCS API if zero-length
@@ -135,11 +136,13 @@ end
 function M.copyToCtld()
     ctld.nextGroupId = M.currentState.ctld.nextGroupId
     ctld.nextUnitId = M.currentState.ctld.nextUnitId
+	ctld.JTACsPerUCIDPerSide = M.currentState.ctld.JTACsPerPlayerPerSide
 end
 
 function M.copyFromCtld()
     M.currentState.ctld.nextGroupId = ctld.nextGroupId
     M.currentState.ctld.nextUnitId = ctld.nextUnitId
+	M.currentState.ctld.JTACsPerUCIDPerSide  = ctld.JTACsPerUCIDPerSide
 end
 
 function M.updateBaseOwnership()

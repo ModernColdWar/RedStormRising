@@ -327,7 +327,7 @@ function M.removeABownership (_ABname)
 	end
 end
 function M.baseCaptureZoneToNameSideType(_zone)
-	local _zoneName  = _zone.name
+	local _zoneName = _zone.name
 	local _RSRbaseCaptureZoneName = string.match(_zoneName,("^(.+)%sRSR")) --"MM75 RSRbaseCaptureZone FARP" = "MM75" i.e. from whitepace and RSR up
 	--log:info("_RSRbaseCaptureZoneName: $1",_RSRbaseCaptureZoneName)
 	local _baseType = string.match(_zoneName,("%w+$")) --"MM75 RSRbaseCaptureZone FARP" = "FARP"

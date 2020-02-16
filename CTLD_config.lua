@@ -119,6 +119,9 @@ ctld.launcherRadius = 50 -- distance from crate for spawned launchers
 ctld.JTAC_LIMIT_RED = 20 -- max number of JTAC Crates for the RED Side
 ctld.JTAC_LIMIT_BLUE = 20 -- max number of JTAC Crates for the BLUE Side
 
+ctld.JTAC_LIMIT_perPLAYER_perSIDE = 2 -- max number of JTACs per player
+ctld.JTACsPerUCIDPerSide = {} -- list of players and their JTACs per side
+
 ctld.JTAC_dropEnabled = true -- allow JTAC Crate spawn from F10 menu
 
 ctld.JTAC_maxDistance = 10000 -- How far a JTAC can "see" in meters (with Line of Sight)

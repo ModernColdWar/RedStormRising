@@ -5,6 +5,7 @@ local rsrConfig = require("RSR_config")
 -- require("CTLD_config")
 require ("Moose")
 local bases = require("bases")
+local missionUtils = require("missionUtils")
 
 local M = {}
 
@@ -131,8 +132,10 @@ function M.getAllBaseOwnership(_campaignStartSetup,_passedBase,_playerORunit)
 				else
 					--No logistics centre and base contested. IS BASE CAPTURED? 
 				
-					local _baseCaptureZoneName = _baseName .. "RSRbaseCaptureZone Airbase"
-					local _revBaseNameSideType = utils.baseCaptureZoneToNameSideType(_zone)
+					local _baseCaptureZoneName = _baseName .. " RSRbaseCaptureZone Airbase"
+					log:info("_baseCaptureZoneName: $1",mist.utils.basicSerialize(_baseCaptureZoneName))
+					local _baseCaptureZone = missionUtils.getSpecificZone(env.mission, string.lower(_baseCaptureZoneName))
+					local _revBaseNameSideType = utils.baseCaptureZoneToNameSideType(_baseCaptureZone)
 					local _zoneSideFromColor = _revBaseNameSideType[2] --zone color translated to side
 					
 					if _zoneSideFromColor == "neutral" then

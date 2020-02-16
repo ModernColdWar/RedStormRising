@@ -1,3 +1,4 @@
+require("mist_4_3_74")
 local M = {}
 
 -- From https://wiki.hoggitworld.com/view/Category:Terrain_Information
@@ -150,6 +151,22 @@ function M.getZones(mission, pattern)
     end)
     --table.sort(zones)
     return zones
+end
+
+function M.getSpecificZone(mission, pattern)
+	local patternNoHyphen = string.gsub(pattern, "-", "" )
+    local foundZone = "NotFound"
+    M.iterZones(mission, function(zone)
+		local zoneName = zone.name
+		local zoneNameNoHyphen = string.gsub(zoneName, "-", "" ) 
+        if string.match(zoneNameNoHyphen:lower(), patternNoHyphen) then
+            foundZone = zone
+        end
+    end)
+	if foundZone == "NotFound" then
+		log:error("$1 zone not found.",pattern)
+	end
+    return foundZone
 end
 
 function M.iterBases(mission, theatre, baseCallback)

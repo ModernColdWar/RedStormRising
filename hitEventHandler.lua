@@ -43,10 +43,23 @@ end
 local function getUnitDesc(coalition, groupName, typeName)
     local ownerName = groupName ~= nil and utils.getPlayerNameFromGroupName(groupName) or nil
     local coalitionName = coalition ~= nil and utils.getSideName(coalition) .. " " or ""
-    if ownerName == nil then
-        return string.format("%s%s", coalitionName, typeName)
+	
+	local typeDesc = typeName
+	local _isBuilding = false
+	if typeName == ".Command Center" or typeName == "outpost" then
+		typeDesc = "Logistics Centre"
+		_isBuilding = true
+	end
+	
+    if ownerName == nil then  --buildings will not have a groupName
+		if _isBuilding then
+			--buildings will always be neutral coaltion associated, so omit coaltion, otherwise need to do location checks for bases...
+			return string.format("%s%s", typeDesc) 
+		else
+			return string.format("%s%s", coalitionName, typeDesc)
+		end
     else
-        return string.format("%s's %s%s", ownerName, coalitionName, typeName)
+        return string.format("%s's %s%s", ownerName, coalitionName, typeDesc)
     end
 end
 
