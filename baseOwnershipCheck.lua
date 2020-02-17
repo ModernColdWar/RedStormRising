@@ -16,7 +16,8 @@ if baseOwnership == nil then
 	baseOwnership = 	
 	{ 	
 		Airbases = { red = {}, blue = {}, neutral = {} },
-		FARPs = { red = {}, blue = {}, neutral = {} } 					
+		FARPs = { red = {}, blue = {}, neutral = {} },
+		Ships = { }		
 	}
 end
 
@@ -33,14 +34,25 @@ function M.getAllBaseOwnership(_campaignStartSetup,_passedBase,_playerORunit)
 		--CTLD.LUA starts before baseOwnershipCheck.lua, therefore ctld.RSRbaseCaptureZones gloabal table should already be established
 		--log:info("ctld.RSRbaseCaptureZones: $1",ctld.RSRbaseCaptureZones)
 		for _k, _zone in ipairs(ctld.RSRbaseCaptureZones) do				
-				local _baseNameSideType = utils.baseCaptureZoneToNameSideType(_zone) -- e.g. "MM75 RSRbaseCaptureZone FARP" zoneName
-				local _RSRbaseCaptureZoneName = _baseNameSideType[1] --e.g. "MM75 RSRbaseCaptureZone FARP" = "MM75"
-				local _baseSide = _baseNameSideType[2] --zone color translated to side
-				local _baseTypes = _baseNameSideType[3] -- Airbase/FARP then adds "s"
-				--log:info("baseTypes: $1, baseSide: $2, RSRbaseCaptureZoneName: $3",_baseTypes,_baseSide,_RSRbaseCaptureZoneName)			
-				table.insert(baseOwnership[_baseTypes][_baseSide],_RSRbaseCaptureZoneName)
-			--end
+			local _baseNameSideType = utils.baseCaptureZoneToNameSideType(_zone) -- e.g. "MM75 RSRbaseCaptureZone FARP" zoneName
+			local _RSRbaseCaptureZoneName = _baseNameSideType[1] --e.g. "MM75 RSRbaseCaptureZone FARP" = "MM75"
+			local _baseSide = _baseNameSideType[2] --zone color translated to side
+			local _baseTypes = _baseNameSideType[3] -- Airbase/FARP then adds "s"
+			--log:info("baseTypes: $1, baseSide: $2, RSRbaseCaptureZoneName: $3",_baseTypes,_baseSide,_RSRbaseCaptureZoneName)			
+			table.insert(baseOwnership[_baseTypes][_baseSide],_RSRbaseCaptureZoneName)
+			
 		end
+		--[[
+		for _k, _zone in ipairs(ctld.RSRcarrierActivateZones) do
+			-- e.g. "Novorossiysk RSRcarrierActivateZone Group1" zoneName
+			local _carrierGroupBaseOwnedBySide = utils.carrierActivateForBaseWhenOwnedBySide(_zone) 
+			local _carrierGroup = _carrierGroupBaseOwnedBySide[1] --e.g. "Novorossiysk RSRcarrierActivateZone Group1" = "Group1"
+			local _carrierActivateForBase = _carrierGroupBaseOwnedBySide[2] --"Novorossiysk RSRcarrierActivateZone Group1" = "Novorossiysk"
+			local _whenBaseOwnedBySide = _carrierGroupBaseOwnedBySide[3] --zone color translated to 'when owned by side'
+			--log:info("baseTypes: $1, baseSide: $2, RSRbaseCaptureZoneName: $3",_baseTypes,_baseSide,_RSRbaseCaptureZoneName)			
+			baseOwnership.Ships[_carrierGroup][_carrierActivateForBase] = _whenBaseOwnedBySide
+		end
+		--]]
 	--[[
 		------------------------------------------------------------------------------------------------------------------------------------------------
 	--]]
@@ -50,8 +62,9 @@ function M.getAllBaseOwnership(_campaignStartSetup,_passedBase,_playerORunit)
 		if _playerORunit ~= "none" and type(_playerORunit) ~= "string" then --playerName passed as string thus would cause error with ctld.getPlayerNameOrType
 			_conqueringUnit = ctld.getPlayerNameOrType(_playerORunit) -- get type of ground vehicle if passed
 		end
-						
-		--for _k, base in ipairs(AIRBASE.GetAllAirbases()) do --MOOSE: AIRBASE.GetAllAirbases(coalition, category): Get all airbases of the current map. This includes ships and FARPS.
+		
+		--MOOSE: AIRBASE.GetAllAirbases(coalition, category): Get all airbases of the current map. This includes ships and FARPS.		
+		--for _k, base in ipairs(AIRBASE.GetAllAirbases()) do 
 		for _k, base in ipairs(world.getAirbases()) do -- WARNING: MOOSE will not return CONTESTED bases where side == nil
 			
 			--getName/getCoalition = DCS function, GetName/GetCoalition = MOOSE function
@@ -193,12 +206,14 @@ function M.getAllBaseOwnership(_campaignStartSetup,_passedBase,_playerORunit)
 				local _currFARPowner = utils.getCurrFARPside(_baseName)
 				local _FARPlogisticsCentre = ctld.logisticCentreObjects[_baseName]
 				
+				--[[
 				--debug
 				local _debugFARPlogisticsCentreName = "NIL"
 				if _FARPlogisticsCentre ~= nil then
 					_debugFARPlogisticsCentreName = _FARPlogisticsCentre:getName()
 				end
-				log:info("_baseName: $1 _currFARPowner: $2, _debugFARPlogisticsCentreName: $3, _baseCategory: $4",_baseName,_currFARPowner,mist.utils.basicSerialize(_debugFARPlogisticsCentreName),mist.utils.basicSerialize(_DCSbaseCategory))
+				log:info("_baseName: $1 _currFARPowner: $2, _debugFARPlogisticsCentreName: $3, _baseCategory: $4, _FARPlogisticsCentre: $5",_baseName,_currFARPowner,mist.utils.basicSerialize(_debugFARPlogisticsCentreName),mist.utils.basicSerialize(_DCSbaseCategory),inspect(_FARPlogisticsCentre, { newline = " ", indent = "" }))
+				--]]
 				
 				local _FARPlogisticsCentreName = "noNAME"
 				local _FARPlogisticsCentreSide = "noSIDE"
@@ -256,6 +271,39 @@ function M.getAllBaseOwnership(_campaignStartSetup,_passedBase,_playerORunit)
 					table.insert(baseOwnership.FARPs.neutral, _baseName)
 					bases.configureForSide(_baseName, "neutral") --slotBlocker.lua & pickupZoneManager.lua
 				end
+				
+			elseif _DCSbaseCategory == Airbase.Category.SHIP then
+			
+				--[[
+				local _shipName = _baseName
+				local _shipGroup = base:getGroup
+				-- e.g. Red Admiral Kuznetsov Carrier Group1 = "Group1"
+				local _shipCarrierGroup = string.match(_shipName,("%w+$"))
+				
+				--get ship dependencies
+				local _carrierGroupBaseOwnedBySide = utils.carrierActivateForBaseWhenOwnedBySide(_zone) 
+				local _carrierGroupActivationBase = baseOwnership.Ships[_carrierGroup]
+				local _whenActivationBaseOwnedBySide = _carrierGroupActivationBase[_carrierActivateForBase]
+
+				--determine activation base owner
+				local _currActivationBaseOwner = utils.getCurrABside(_carrierGroupActivationBase)
+				if _currActivationBaseOwner == "ABnotFound" then 
+					_currActivationBaseOwner = utils.getCurrFARPside(_carrierGroupActivationBase)
+				end
+				if _currActivationBaseOwner == "FARPnotFound" then 
+					log:error("$1 not found in 'baseOwnership.Airbases' or 'baseOwnership.FARPs' sides.",_carrierGroupActivationBase)
+				end
+				
+				if _whenActivationBaseOwnedBySide == _currActivationBaseOwner then
+					-- activate ship and slots if part of carrier group with associated activation base owned by designated side
+					_shipGroup:activate() --mr: activate all ships but block slots instead?
+					bases.configureForSide(_shipName, _DCSsideName) --slotBlocker.lua & pickupZoneManager.lua
+				else
+					-- block slots if part of carrier group with associated activation base owned by designated side
+					-- trigger.action.deactivateGroup -> Group.destroy = Destroys the object, physically removing it from the game world without creating an event
+					bases.configureForSide(_shipName, "neutral") --slotBlocker.lua & pickupZoneManager.lua
+				end
+				--]]
 			end
 		end
 	else -- _baseName passed

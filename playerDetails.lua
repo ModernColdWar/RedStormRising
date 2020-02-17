@@ -14,6 +14,8 @@
 require("mist_4_3_74")
 local log = mist.Logger:new("playeDetails", "info")
 
+-- net.get_my_player_id( ) -- Returns the playerID of the local player. Always returns 1 for server.
+
 local M = {}
 function M.getPlayerDetails(_passedPlayerName)
 	local _matchedPlayerDetails = {}

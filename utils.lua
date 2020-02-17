@@ -193,7 +193,7 @@ end
 --searches for FARP name in baseOwnership nested table to determine currently assigned side
 --mr: find more efficient way to transvere nested table
 function M.getCurrFARPside (_FARPname)
-	local _bOFARPside = "ERROR"
+	local _bOFARPside = "FARPnotFound"
 	for _k, _b in pairs(baseOwnership.FARPs.red) do
 	  if _b == _FARPname then
 		_bOFARPside = "red"
@@ -201,7 +201,7 @@ function M.getCurrFARPside (_FARPname)
 	  end
 	end
 
-	if _bOFARPside == "ERROR" then
+	if _bOFARPside == "FARPnotFound" then
 		for _k, _b in pairs(baseOwnership.FARPs.blue) do
 		  if _b == _FARPname then
 			_bOFARPside = "blue"
@@ -210,7 +210,7 @@ function M.getCurrFARPside (_FARPname)
 		end
 	end
 	
-	if _bOFARPside == "ERROR" then
+	if _bOFARPside == "FARPnotFound" then
 		for _k, _b in pairs(baseOwnership.FARPs.neutral) do
 		  if _b == _FARPname then
 			_bOFARPside = "neutral"
@@ -219,14 +219,13 @@ function M.getCurrFARPside (_FARPname)
 		end
 	end
 	
-	if _bOFARPside == "ERROR" then 
-		log:error("$1 FARP not found in 'baseOwnership.FARPs' sides. Reporting as neutral to allow contested check.",_FARPname)
-		_bOFARPside = "neutral"
+	if _bOFARPside == "FARPnotFound" then 
+		log:error("$1 FARP not found in 'baseOwnership.FARPs' sides. Reporting side neutral.",_FARPname)
 	end
 	return _bOFARPside
 end	
 function M.getCurrABside (_ABname)
-	local _bOABside = "ERROR"
+	local _bOABside = "ABnotFound"
 	for _k, _b in pairs(baseOwnership.Airbases.red) do
 	  if _b == _ABname then
 		_bOABside = "red"
@@ -234,7 +233,7 @@ function M.getCurrABside (_ABname)
 	  end
 	end
 
-	if _bOABside == "ERROR" then
+	if _bOABside == "ABnotFound" then
 		for _k, _b in pairs(baseOwnership.Airbases.blue) do
 		  if _b == _ABname then
 			_bOABside = "blue"
@@ -243,7 +242,7 @@ function M.getCurrABside (_ABname)
 		end
 	end
 	
-	if _bOABside == "ERROR" then
+	if _bOABside == "ABnotFound" then
 		for _k, _b in pairs(baseOwnership.Airbases.neutral) do
 		  if _b == _ABname then
 			_bOABside = "neutral"
@@ -252,9 +251,8 @@ function M.getCurrABside (_ABname)
 		end
 	end
 	
-	if _bOABside == "ERROR" then 
-		log:error("$1 Airbase not found in 'baseOwnership.Airbases' sides. Reporting as neutral to allow contested check.",_ABname)
-		_bOABside = "neutral"
+	if _bOABside == "ABnotFound" then 
+		log:error("$1 Airbase not found in 'baseOwnership.Airbases' sides.",_ABname)
 	end
 	return _bOABside
 end
@@ -328,9 +326,13 @@ function M.removeABownership (_ABname)
 end
 function M.baseCaptureZoneToNameSideType(_zone)
 	local _zoneName = _zone.name
-	local _RSRbaseCaptureZoneName = string.match(_zoneName,("^(.+)%sRSR")) --"MM75 RSRbaseCaptureZone FARP" = "MM75" i.e. from whitepace and RSR up
+	--"MM75 RSRbaseCaptureZone FARP" = "MM75" i.e. from whitepace and RSR up
+	local _RSRbaseCaptureZoneName = string.match(_zoneName,("^(.+)%sRSR")) 
+	
 	--log:info("_RSRbaseCaptureZoneName: $1",_RSRbaseCaptureZoneName)
-	local _baseType = string.match(_zoneName,("%w+$")) --"MM75 RSRbaseCaptureZone FARP" = "FARP"
+	
+	--"MM75 RSRbaseCaptureZone FARP" = "FARP"
+	local _baseType = string.match(_zoneName,("%w+$"))
 	local _baseTypes = ""
 	
 	if _baseType == nil then
@@ -364,5 +366,43 @@ function M.baseCaptureZoneToNameSideType(_zone)
 	end
 	return {_RSRbaseCaptureZoneName,_baseSide,_baseTypes}
 end
+
+function M.carrierActivateForBaseWhenOwnedBySide(_zone)
+	local _zoneName = _zone.name
+	--"Novorossiysk RSRcarrierActivate Group1" = "Novorossiysk" i.e. from whitepace and RSR up
+	local _RSRcarrierActivateForBase = string.match(_zoneName,("^(.+)%sRSR")) 
+	
+	--log:info("_RSRcarrierActivateForBase: $1",_RSRcarrierActivateForBase)
+	
+	--"Novorossiysk RSRcarrierActivate Group1" = "Group1"
+	local _carrierGroup = string.match(_zoneName,("%w+$"))
+
+	local _zoneColor = _zone.color
+	local _whenBaseOwnedBySide = "ERROR"
+	
+	local _whiteInitZoneCheck = 0
+	if _zoneColor[1] == 1 then 
+		_whenBaseOwnedBySide = "red" 
+		_whiteInitZoneCheck = _whiteInitZoneCheck + 1
+	elseif _zoneColor[3] == 1 then 
+		_whenBaseOwnedBySide = "blue"
+		_whiteInitZoneCheck = _whiteInitZoneCheck + 1
+	elseif _zoneColor[2] == 1 then --green
+		_whenBaseOwnedBySide = "neutral"
+		_whiteInitZoneCheck = _whiteInitZoneCheck + 1
+	end
+	
+	if _whenBaseOwnedBySide == "ERROR" then
+		if _whiteInitZoneCheck == 3 then
+			log:error("RSR MIZ SETUP: $1 Trigger Zone color $2 not chnaged from white to only red or blue. Setting 'when owned by requirement' to neutral.  Carriers will NEVER activate.",_zoneName, inspect(_zoneColor, { newline = " ", indent = "" }))
+		elseif _whiteInitZoneCheck > 1 then
+			log:error("RSR MIZ SETUP: $1 Trigger Zone color $2 not correctly set to only red or blue. Setting 'when owned by requirement' to neutral.  Carriers will NEVER activate.",_zoneName, inspect(_zoneColor, { newline = " ", indent = "" }))
+		end
+		_whenBaseOwnedBySide = "neutral"
+	end
+	return {_carrierGroup,_RSRcarrierActivateForBase,_whenBaseOwnedBySide}
+end
+
+
 
 return M

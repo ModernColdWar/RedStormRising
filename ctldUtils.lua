@@ -13,8 +13,8 @@ function M.getLogisticCentreZones(mission)
     --log:info("RSRlogisticsZone zones in mission are $1", inspect(zones))
     return zones
 end
-function M.getRSRbaseCaptureZones (mission)
 
+function M.getRSRbaseCaptureZones (mission)
 	-- DCS getZone function only returns zone position and radius based on name, therefore store complete zone details i.e. color
     local _bCzones = missionUtils.getZones(mission, string.lower("RSRbaseCaptureZone")) --getZoneNames function requires lowercase
 	local RSRbaseCaptureZoneNames = {}
@@ -23,6 +23,17 @@ function M.getRSRbaseCaptureZones (mission)
     end
 	--log:info("RSRbaseCaptureZone names (not reporting other zone details) in mission are $1", inspect(RSRbaseCaptureZoneNames))
     return _bCzones
+end
+
+function M.getRSRcarrierActivateZones (mission)
+	-- DCS getZone function only returns zone position and radius based on name, therefore store complete zone details i.e. color
+    local _cAzones = missionUtils.getZones(mission, string.lower("RSRcarrierActivateZone")) --getZoneNames function requires lowercase
+	local RSRcarrierActivateZoneNames = {}
+    for _k, _z in ipairs(_cAzones) do
+        table.insert(RSRcarrierActivateZoneNames, _z)
+    end
+	--log:info("RSRcarrierActivateZone names (not reporting other zone details) in mission are $1", inspect(RSRcarrierActivateZoneNames))
+    return _cAzones
 end
 
 function M.getPickupZones(mission)

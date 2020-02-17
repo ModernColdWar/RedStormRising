@@ -43,6 +43,7 @@ ctld.maximumSearchDistance = 0 -- max distance for troops to search for enemy
 ctld.maximumMoveDistance = 0 -- max distance for troops to move from drop point if no enemy is nearby
 
 ctld.minimumDeployDistance = 600 -- minimum distance from a friendly pickup zone where you can deploy a crate
+ctld.maximumCrateDistanceForLoading = 150 -- maximum distance from a crate to allow internal loading
 
 ctld.numberOfTroops = 10 -- default number of troops to load on a transport heli or C-130
 -- also works as maximum size of group that'll fit into a helicopter unless overridden
@@ -162,6 +163,7 @@ ctld.JTAC_laserCode_BLUE = 1687
 
 
 ctld.RSRbaseCaptureZones = ctldUtils.getRSRbaseCaptureZones(env.mission)
+ctld.RSRcarrierActivateZones = ctldUtils.getRSRcarrierActivateZones(env.mission)
 
 --pickupZones = { "Zone name or Ship Unit Name", "smoke color", "limit (-1 unlimited)", "ACTIVE (yes/no)", "side (0 = Both sides / 1 = Red / 2 = Blue )", flag number (optional) }
 ctld.pickupZones = ctldUtils.getPickupZones(env.mission)
@@ -237,8 +239,10 @@ ctld.vehicleTransportEnabled = {
     "C-130",
 }
 
+-- cargo planes only where crates = false below in ctld.unitActions
 -- add to this list only if aircraft cannot transport vehicles, otherwise menu options duplicated
-ctld.internalCargoEnabled = {
+--ctld.internalCargoEnabled = {
+ctld.cargoPlanes = {
 	"C-101CC",
 	"L-39ZA",
 	"MiG-15bis",
@@ -255,15 +259,7 @@ ctld.internalCargoEnabled = {
 	"Christen Eagle II",
 	"Yak-52"
 }
---[[
-	TO ADD
-	both Spitfires
-	FW-190A8
-	FW-190D9
-	both P-51's
-	I-16
-	Bf-109k4
---]]
+
 
 -- ************** Maximum Units SETUP for UNITS ******************
 
@@ -276,16 +272,20 @@ ctld.internalCargoEnabled = {
 
 ctld.unitLoadLimits = {
 
-    -- Remove the -- below to turn on options
-    ["UH-1H"] = 10,
+    ["CH-47D"] = 33,
+	---
+	["UH-1H"] = 10,
     ["Mi-8MT"] = 20,
     ["SA342M"] = 2,
-    ["CH-47D"] = 33,
     ["SA342L"] = 2,
+	--["Ka-50"] = 1,
+	---
     ["C-101CC"] = 1,
     ["L-39ZA"] = 1,
+	---
 	["MiG-15bis"] = 1,
 	["F-86F Sabre"] = 1,
+	---
 	["TF-51D"] = 1,
 	["Bf-109K-4"] = 1,
 	["FW-190D9"] = 1,
@@ -317,17 +317,20 @@ ctld.unitLoadLimits = {
 ctld.unitActions = {
 
     -- Remove the -- below to turn on options
-    ["SA342Mistral"] = { crates = false, troops = false, internal = false },
+    --["SA342Mistral"] = { crates = false, troops = false, internal = false },
     ["SA342L"] = { crates = false, troops = true, internal = false },
     ["SA342M"] = { crates = false, troops = true, internal = false },
     ["Ka-50"] = { crates = true, troops = false, internal = false },
     ["UH-1H"] = { crates = true, troops = true, internal = true },
     ["Mi-8MT"] = { crates = true, troops = true, internal = true },
+	
 	--allowing 'troops' necessary to allow cargo plane actions for internal cargo load/unload in absence of 'crates' allowance
     ["C-101CC"] = { crates = false, troops = true, internal = true },
     ["L-39ZA"] = { crates = false, troops = true, internal = true },
+	----
 	["MiG-15bis"] = { crates = false, troops = true, internal = true },
 	["F-86F Sabre"] = { crates = false, troops = true, internal = true },
+	----
 	["TF-51D"] = { crates = false, troops = true, internal = true },
 	["Bf-109K-4"] = { crates = false, troops = true, internal = true },
 	["FW-190D9"] = { crates = false, troops = true, internal = true },
@@ -339,6 +342,36 @@ ctld.unitActions = {
 	["P-51D-30-NA"] = { crates = false, troops = true, internal = true },
 	["Christen Eagle II"] = { crates = false, troops = true, internal = true },
 	["Yak-52"] = { crates = false, troops = true, internal = true }
+}
+
+--transportTypes in missionUtils.lua
+--ctld.transportTypes unused and not able to be included in missionUtils.lua due to loop creation
+ctld.transportTypes = {
+
+    --"SA342Mistral",
+    "SA342L",
+    "SA342M",
+    "Ka-50",
+    "UH-1H",
+    "Mi-8MT",
+	----
+	"C-101CC",
+	"L-39ZA",
+	----
+	"MiG-15bis",
+	"F-86F Sabre",
+	----
+	"TF-51D",
+	"Bf-109K-4",
+	"FW-190D9",
+	"FW-190A8",
+	"I-16",
+	"SpitfireLFMkIX",
+	"SpitfireLFMkIXCW",
+	"P-51D",
+	"P-51D-30-NA",
+	"Christen Eagle II",
+	"Yak-52"
 }
 
 -- ************** INFANTRY GROUPS FOR PICKUP ******************
@@ -377,7 +410,10 @@ ctld.neutralCountry = "Greece"
 --list populated upon spawning logistics centre static object with base name as index for bases (Airbases/FARPs), and player name as index for s
 --only 1 logisitics centre per base due to baseOwnershipCheck.lua reference i.e. ctld.logisticCentreObjects.baseName[1]
 --currently no restrictions on FOBs per player
-ctld.logisticCentreObjects = { }	
+ctld.logisticCentreObjects = { }
+
+-- airbases/FARPs that if within, do not require a logisitics centre to be present e.g. Oil Platforms
+ctld.logisticCentreNotReqInBase = {"RedStagingPoint", "BlueStagingPoint"}
 
 -- ************** SPAWNABLE CRATES ******************
 -- Weights must be unique as we use the weight to change the cargo to the correct unit
@@ -511,7 +547,7 @@ ctld.spawnableCrates = {
     ["Internal Cargo"] = {
         { weight = 501, desc = "HMMWV - JTAC", unit = "Hummer", side = 2, cratesRequired = 1, internal = 1 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
         { weight = 502, desc = "UAZ - JTAC", unit = "UAZ-469", side = 1, cratesRequired = 1, internal = 1 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
-        { weight = 503, desc = "Logistics Centre crate", unit = "LogisticsCentre", internal = 1 },
+        { weight = 503, desc = "Logistics Centre", unit = "LogisticsCentre", internal = 1 },
     },
 }
 

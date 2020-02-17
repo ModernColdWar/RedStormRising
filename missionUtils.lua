@@ -108,15 +108,33 @@ function M.isClientGroup(group)
     return false
 end
 
+--ctld.transportTypes
 local transportTypes = {
-    "C-101CC",
-    "Ka-50",
-    "L-39ZA",
-    "Mi-8MT",
+
+    --"SA342Mistral",
     "SA342L",
     "SA342M",
-    "SA342Mistral",
+    "Ka-50",
     "UH-1H",
+    "Mi-8MT",
+	----
+	"C-101CC",
+	"L-39ZA",
+	----
+	"MiG-15bis",
+	"F-86F Sabre",
+	----
+	"TF-51D",
+	"Bf-109K-4",
+	"FW-190D9",
+	"FW-190A8",
+	"I-16",
+	"SpitfireLFMkIX",
+	"SpitfireLFMkIXCW",
+	"P-51D",
+	"P-51D-30-NA",
+	"Christen Eagle II",
+	"Yak-52"
 }
 
 function M.isTransportType(type)

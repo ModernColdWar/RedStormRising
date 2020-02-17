@@ -69,7 +69,6 @@ local function activateBaseDefences(baseName, sideName, rsrConfig, missionInit, 
 				ctld.addEWRTask(group)
 			end
 			
-			
             utils.setGroupControllerOptions(group)
         end
     end)
