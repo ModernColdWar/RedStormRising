@@ -1053,15 +1053,18 @@ function ctld.spawnLogisticsCentre(_point, _name, _coalition, _baseORfob, _baseO
 		will also return baseOwnership table even though not needed
 	--]]
 	
-	-- Passing baseName prevents checking all bases in baseOwnershipCheck.lua
-	-- check through all bases for now during mission as logistics centres at FARPs claims FARP
-	local _checkALLbases = "ALL"
+	-- passing specific baseName prevents checking all bases in baseOwnershipCheck.lua
+	-- at mission init do NOT check through all bases, just check that new logisitics centre side in name matches base side
+	-- during mission check through all bases for as new logistics centres at FARPs claims FARP
+	--
+	local _checkWhichBases = "ALL"
 	if _isMissionInit then
-		_checkALLbases = _baseORfobName
+		_checkWhichBases = _baseORfobName
 	end
-	log:info("_isMissionInit: $1, _checkALLbases: $2, _spawnedLogiCentreObject: $3",_isMissionInit,_checkALLbases,mist.utils.basicSerialize(_spawnedLogiCentreObject))
-	baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(false,_checkALLbases,_playerName)
-		
+	--(_passedBaseName,_playerORunit,_campaignStartSetup)
+	baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(_checkWhichBases,_playerName,false)
+	log:info("_isMissionInit: $1, _checkWhichBases: $2, _spawnedLogiCentreObject: $3",_isMissionInit,_checkWhichBases,mist.utils.basicSerialize(_spawnedLogiCentreObject))
+	
     return _spawnedLogiCentreObject
 end
 
@@ -1674,6 +1677,11 @@ function ctld.loadUnloadLogisticsCrate(_args)
 
     local _crateOnboard = ctld.inTransitLogisticsCentreCrates[_aircraft:getName()] ~= nil
 	
+	--debug
+	if _crateOnboard then
+		log:info("_crateOnboard: $1",inspect(ctld.inTransitLogisticsCentreCrates[_aircraft:getName()], { newline = " ", indent = "" }))
+	end
+	log:info("_inFOBexclusionZone: $1, _inBaseZoneAndRSRrepairRadius: $2, _closestBaseSide: $3, _closestBaseName: $4, _aircraftSideName: $5, _nearestLogisticsCentreSideName: $6, _nearestLogisticsCentreBaseName: $7 ",_inFOBexclusionZone,_inBaseZoneAndRSRrepairRadius,_closestBaseSide,_closestBaseName,_aircraftSideName,_nearestLogisticsCentreSideName, _nearestLogisticsCentreBaseName)
 	
 	--Q: what about deployable FOBs?
 	--mr: need to add checks for existance of logistics centre AND if it's friendly!
@@ -1742,7 +1750,6 @@ function ctld.loadUnloadLogisticsCrate(_args)
     end
 
 	if _crateOnboard == true then 
-		
 		--[[ 
 			provide warnings but do not stop crate deploying as may be needed for unique circumstances 
 			e.g. delivery by plane but later pickup by helo, pre-delivery to enemy base prior to capture
@@ -1755,7 +1762,6 @@ function ctld.loadUnloadLogisticsCrate(_args)
 		end
 		
 		if _inBaseZoneAndRSRrepairRadius == true and (_closestBaseSide ~= _aircraftSideName) then
-		
 			if _closestBaseSide ~= "neutral" then
 				ctld.displayMessageToGroup(_aircraft, "WARNING: You cannot repair " .. _closestBaseName .. " as it is not a friendly or neutral base!", 20)
 				return
@@ -1795,13 +1801,13 @@ function ctld.loadUnloadLogisticsCrate(_args)
 		-- initiate immediate base repair, no need for crate spawn
 			_inBaseZoneAndRSRrepairRadius == true and
 			((_closestBaseSide == _aircraftSideName) or (_closestBaseSide == "neutral")) and
-			(_nearestLogisticsCentreName ~= _closestBaseName) then -- no logisitics centre at current base
+			(_nearestLogisticsCentreBaseName ~= _closestBaseName) then -- no logisitics centre at current base
 			
 			local _crateInTransitDetails = ctld.inTransitLogisticsCentreCrates[_aircraft:getName()]
 			
 			-- prevent repair if logisitics centre crate base of origin same as base to be repaired
 			if _crateInTransitDetails.baseOfOrigin == _closestBaseName then
-				ctld.displayMessageToGroup(_heli, "WARNING: " .. "logistics centre crate from " .. _crateBaseOfOrigin .. ", cannot be unloaded within base of origin (nearest base: " .. _closestBaseName .. ")", 20)
+				ctld.displayMessageToGroup(_heli, "WARNING: " .. "logistics centre crate from " .. _crateInTransitDetails.baseOfOrigin .. ", cannot be unloaded within base of origin (nearest base: " .. _closestBaseName .. ")", 20)
 				return
 			end
 			
@@ -1814,7 +1820,7 @@ function ctld.loadUnloadLogisticsCrate(_args)
 		-- return logistics crate to pool to prevent exploit of "backup repair crates"
 			_inBaseZoneAndRSRrepairRadius == true and
 			(_closestBaseSide == _aircraftSideName) and
-			(_nearestLogisticsCentreName == _closestBaseName) then
+			(_nearestLogisticsCentreBaseName == _closestBaseName) then
 			
 			ctld.displayMessageToGroup(_aircraft, "Logistics Centre already present.  Logistics Centre crate returned to base.", 10)
 			ctld.inTransitLogisticsCentreCrates[_aircraft:getName()] = nil
@@ -2255,54 +2261,68 @@ end
 
 function ctld.checkCargoStatus(_args)
 
-    --list onboard troops, if c130
-    local _heli = ctld.getTransportUnit(_args[1])
+    --list onboard troops
+    local _aircraft = ctld.getTransportUnit(_args[1])
 
-    if _heli == nil then
+    if _aircraft == nil then
         return
     end
 
-    local _onboard = ctld.inTransitTroops[_heli:getName()]
+    local _troopsORvehicles = ctld.inTransitTroops[_aircraft:getName()]
 
-    if _onboard == nil then
+    if _troopsORvehicles == nil then
 		
-		local _currentCrate = ctld.inTransitSlingLoadCrates[_heli:getName()]
+		local _currentCrate = ctld.inTransitSlingLoadCrates[_aircraft:getName()] -- JTAC crates
+		if _currentCrate ~= nil then
+			_currentCrate = ctld.inTransitLogisticsCentreCrates[_aircraft:getName()] -- logistics centre crates
+		end
+		
+		log:info("_currentCrate: $1",inspect(_currentCrate, { newline = " ", indent = "" })) --debug
 		
         if _currentCrate ~= nil then
-            --ctld.displayMessageToGroup(_heli, "Logistics Centre crate loaded", 10)
-			ctld.displayMessageToGroup(_heli, "Currently Transporting: " .. _currentCrate.desc .. ".", 10)
+			ctld.displayMessageToGroup(_aircraft, "Currently Transporting: " .. _currentCrate.desc .. ".", 10)
         else
-            --ctld.displayMessageToGroup(_heli, "No troops onboard", 10)
-			ctld.displayMessageToGroup(_heli, "You are not currently transporting any crates. \n\nTo Pickup a crate, hover for 10 seconds above the crate", 10)
+			ctld.displayMessageToGroup(_aircraft, "You are not currently transporting any troops or crates.", 10)
         end
 
 
     else
-        local _troops = _onboard.troops
-        local _vehicles = _onboard.vehicles
+        local _troops = _troopsORvehicles.troops
+        local _vehicles = _troopsORvehicles.vehicles
 
-        local _txt = ""
+        local _txt = "Currently Transporting: "
 
         if _troops ~= nil and _troops.units ~= nil and #_troops.units > 0 then
-            _txt = _txt .. " " .. #_troops.units .. " troops loaded\n"
+            _txt = _txt .. " " .. #_troops.units .. " troops\n"
         end
 
         if _vehicles ~= nil and _vehicles.units ~= nil and #_vehicles.units > 0 then
-            _txt = _txt .. " " .. #_vehicles.units .. " vehicles loaded\n"
+            _txt = _txt .. " " .. #_vehicles.units .. " vehicles\n"
+        end
+		
+        if ctld.inTransitSlingLoadCrates[_aircraft:getName()] == true then
+            _txt = _txt .. "1 x " .. _currentCrate.desc .. "\n"
+        end
+		
+        if ctld.inTransitLogisticsCentreCrates[_aircraft:getName()] == true then
+            _txt = _txt .. " 1 x Logistics Centre Crate\n"
         end
 
-        if ctld.inTransitLogisticsCentreCrates[_heli:getName()] == true then
-            _txt = _txt .. " 1 Logistics Centre Crate oboard\n"
-        end
-
-        if _txt ~= "" then
-            ctld.displayMessageToGroup(_heli, _txt, 10)
+        if _txt ~= "Currently Transporting: " then
+            ctld.displayMessageToGroup(_aircraft, _txt, 10)
         else
-            if ctld.inTransitLogisticsCentreCrates[_heli:getName()] == true then
-                ctld.displayMessageToGroup(_heli, "Logistics Centre crate loaded", 10)
-            else
-                ctld.displayMessageToGroup(_heli, "No troops loaded", 10)
-            end
+		
+			local _currentCrate = ctld.inTransitSlingLoadCrates[_aircraft:getName()] -- JTAC crates
+			if _currentCrate ~= nil then
+				_currentCrate = ctld.inTransitLogisticsCentreCrates[_aircraft:getName()] -- logistics centre crates
+			end
+			
+			if _currentCrate ~= nil then
+				ctld.displayMessageToGroup(_aircraft, "1 x " .. _currentCrate.desc .. ".", 10)
+			else
+				ctld.displayMessageToGroup(_aircraft, "You are not currently transporting any troops or crates.", 10)
+			end
+
         end
     end
 end

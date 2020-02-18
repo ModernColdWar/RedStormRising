@@ -40,8 +40,8 @@ function M.register()
 		--MORE INTENSIVE CHECK: as DCS base owner has changed, recheck status of all logistics centres to determine true RSR base owner
 		--baseOwnershipCheck.lua = all base side setting and capture messages
 		
-		baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(false,"ALL","none")
-		--baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(false,baseName,"none")
+		baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership("ALL","none",false)
+		--baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(baseName,"none",false)
 		-- inefficient to check ALL bases given base known?  Should just pass base and update baseOwnershipCheck.lua for specific change
 
 		--migrated to baseOwnershipCheck.lua

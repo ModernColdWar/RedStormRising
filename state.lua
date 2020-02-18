@@ -150,13 +150,15 @@ function M.updateBaseOwnership()
 	--campaignStartSetup will take priority over next two args
 	--_passedBase = "ALL" to initiate full check of all bases for persistance
 	if M.campaignStartSetup then
-		M.currentState.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(M.campaignStartSetup,"ALL","none")
+		--(_passedBaseName,_playerORunit,_campaignStartSetup)
+		M.currentState.baseOwnership = baseOwnershipCheck.getAllBaseOwnership("ALL","none",M.campaignStartSetup)
 		M.campaignStartSetup = false -- only use MIZ zone names and colors to setup bases ONCE, iterate through bases every other time
 	else	
 		if M.missionInitSetup and M.canUseStateFromFile then
 			baseOwnership = M.currentState.baseOwnership -- broadcast global baseOwnership from file to then recheck
 		end
-		M.currentState.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(M.campaignStartSetup,"ALL","none")
+		--(_passedBaseName,_playerORunit,_campaignStartSetup)
+		M.currentState.baseOwnership = baseOwnershipCheck.getAllBaseOwnership("ALL","none",M.campaignStartSetup)
 	end
 	log:info("M.currentState.baseOwnership $1", M.currentState.baseOwnership)
 end
