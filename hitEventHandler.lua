@@ -1,5 +1,7 @@
 local utils = require("utils")
 
+local log = mist.Logger:new("hitEventHandler", "info")
+
 local M = {}
 
 M.eventHandler = nil -- constructed in onMissionStart
@@ -45,16 +47,16 @@ local function getUnitDesc(coalition, groupName, typeName)
     local coalitionName = coalition ~= nil and utils.getSideName(coalition) .. " " or ""
 	
 	local typeDesc = typeName
-	local _isBuilding = false
+	local _isLogisticsCentre = false
 	if typeName == ".Command Center" or typeName == "outpost" then
 		typeDesc = "Logistics Centre"
-		_isBuilding = true
+		_isLogisticsCentre = true
 	end
 	
     if ownerName == nil then  --buildings will not have a groupName
-		if _isBuilding then
+		if _isLogisticsCentre then
 			--buildings will always be neutral coaltion associated, so omit coaltion, otherwise need to do location checks for bases...
-			return string.format("%s%s", typeDesc) 
+			return string.format("%s", typeDesc) 
 		else
 			return string.format("%s%s", coalitionName, typeDesc)
 		end

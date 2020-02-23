@@ -1201,10 +1201,10 @@ function ctld.spawnCrate(_arguments)
 			if not _logisticsCentreReq and _internal == 1 then
 			
 				if _crateType.weight == 501 then
-					ctld.loadUnloadLogisticsCrate(_heli, _bypass)
+					ctld.loadUnloadLogisticsCrate(_heli, _logisticsCentreReq)
 					ctld.displayMessageToGroup(_heli, string.format("A %s crate has been provisioned and loaded", _crateType.desc), 20)
 				elseif _crateType.weight == 502 or _crateType.weight == 503 then
-					ctld.loadUnloadJTACcrate(_heli, _bypass)
+					ctld.loadUnloadJTACcrate(_heli, _logisticsCentreReq)
 					ctld.displayMessageToGroup(_heli, string.format("A %s crate has been provisioned and loaded", _crateType.desc), 20)
 				else
 					env.info("Couldn't find internal crate to provision and load at " .. _closestBaseName)
@@ -1615,9 +1615,13 @@ function ctld.generateVehiclesForTransport(_side, _country)
 end
 
 --CTLD_config.lua: ctld.interalCargoEnabled 
-function ctld.loadUnloadLogisticsCrate(_args) 
+function ctld.loadUnloadLogisticsCrate(_aircraft,_LCreq) 
 
     local _aircraft = ctld.getTransportUnit(_args[1])
+	local _logisticsCentreReq = true
+	if _LCreq ~= nil then
+		_logisticsCentreReq = _LCreq
+	end
 
     if _aircraft == nil then
         return
@@ -2747,8 +2751,6 @@ function ctld.getCratesAndDistance(_heli)
         _logisticsCentreCrates = ctld.droppedLogisticsCentreCratesBLUE
     end
 
-	--mr: Q: why are logisitics centre crates added again to _crates with less details?
-	-- ctld.listNearbyCrates: will specifically mention logistics centre crates but details still retrieved via same method
     for _crateName, _ in pairs(_logisticsCentreCrates) do
 
         --get crate
@@ -2758,7 +2760,6 @@ function ctld.getCratesAndDistance(_heli)
 
             local _dist = ctld.getDistance(_crate:getPoint(), _heli:getPoint())
 
-            --local _crateDetails = { crateUnit = _crate, dist = _dist, details = { unit = "LogisticsCentre" } }
 			-- { desc = "Logistics Centre crate", internal = 1, unit = "LogisticsCentre", weight = 503, baseOfOrigin = "MM75" }
 			local _crateDetails = { crateUnit = _crate, dist = _dist, details = _details } -- full details includes baseOfOrigin
             table.insert(_crates, _crateDetails)
@@ -5640,9 +5641,9 @@ function ctld.JTACAutoLase(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
 					_mapGrid = mist.tostringMGRS(coord.LLtoMGRS(coord.LOtoLL(_enemyUnit:getPosition().p)), 1)
 				end
 			--]]
-			ctld.notifyCoalition("JTAC - ENEMY TARGET LOST: " .. _tempUnitInfo.unitType .. ", Grid: " .. _mapGrid .. ", JTAC: " .. _jtacOwner .. ". Rescanning area.", 10, _jtacUnit:getCoalition())
+			ctld.notifyCoalition("JTAC - enemy target lost: " .. _tempUnitInfo.unitType .. ", Grid: " .. _mapGrid .. ", JTAC: " .. _jtacOwner .. ". Rescanning area.", 10, _jtacUnit:getCoalition())
         else
-			ctld.notifyCoalition("JTAC - ENEMY TARGET DESTROYED: " .. _tempUnitInfo.unitType .. ", Grid: " .. _mapGrid .. ", JTAC: " .. _jtacOwner .. ". Rescanning area.", 10, _jtacUnit:getCoalition())
+			ctld.notifyCoalition("JTAC - enemy target destroyed: " .. _tempUnitInfo.unitType .. ", Grid: " .. _mapGrid .. ", JTAC: " .. _jtacOwner .. ". Rescanning area.", 10, _jtacUnit:getCoalition())
         end
 
         --remove from smoke list
@@ -5675,7 +5676,7 @@ function ctld.JTACAutoLase(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
 				end
 			--]]
 			
-			ctld.notifyCoalition("JTAC - NEW ENEMY TARGET: " .. _targetName .. ", Grid: " .. _mapGrid .. ", JTAC: " .. _jtacOwner .. ", Laser Code: " .. _laserCode, 10, _jtacUnit:getCoalition())
+			ctld.notifyCoalition("JTAC - new enemy target: " .. _targetName .. ", Grid: " .. _mapGrid .. ", JTAC: " .. _jtacOwner .. ", Laser Code: " .. _laserCode, 10, _jtacUnit:getCoalition())
 
             -- create smoke
             if _smoke == true then

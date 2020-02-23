@@ -140,7 +140,7 @@ function M.getAllBaseOwnership(_passedBaseName,_playerORunit,_campaignStartSetup
 							bases.resupply(_baseName, _logisticsCentreSide, rsrConfig, false, false, false) --activate base defences but DO NOT spawn logistics and NOT missionInit
 							trigger.action.outTextForCoalition(_logisticsCentreCoalition, _baseName .. " claimed by " .. _logisticsCentreSide .. " team following construction of Logistics Centre.", 10)
 							
-						else _zoneSideFromColor ~= "neutral" then
+						elseif _zoneSideFromColor ~= "neutral" then
 						-- don NOT provide warning for bases neutral at campaign setup as no base defences associated, capture no based on ground vehicles, and likely message spam
 							if _DCSsideName == nil then -- _DCSsideName == nil if contested
 								-- Q: side specific notification that base being attacked?
@@ -298,6 +298,7 @@ function M.getAllBaseOwnership(_passedBaseName,_playerORunit,_campaignStartSetup
 					if not _isStagingBase then
 					
 						--no logistics centre then set to owernship to neutral to block slot and other functions, as logisitics centre required for claim
+						log:info("$1 FARP - SETTING TO NEUTRAL: _RSRowner: $2, _DCSsideName: $3",_baseName,_RSRowner,_DCSsideName)
 						utils.removeFARPownership(_baseName)
 						table.insert(baseOwnership.FARPs.neutral, _baseName)
 						bases.configureForSide(_baseName, "neutral") --slotBlocker.lua & pickupZoneManager.lua

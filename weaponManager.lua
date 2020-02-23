@@ -271,7 +271,7 @@ local function sendToRsrBot(event)
             ["targetCoalition"] = 0,
             ["weapon"] = "",
         }
-        if event.target then
+        if event.target ~= nil  then
             --some events dont have a target
             if event.target:getPlayerName() then
                 --check for AI or Player
@@ -285,7 +285,7 @@ local function sendToRsrBot(event)
             --check the event has a weapon associated with it (some dont)
             event2send.weapon = event.weapon_name
         end
-        if event.initiator then
+        if event.initiator ~= nil then
             --check the event has an initiator
             if event.initiator:getPlayerName() then
                 --check for AI or Player
