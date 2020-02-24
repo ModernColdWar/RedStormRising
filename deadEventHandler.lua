@@ -1,6 +1,6 @@
 require("mist_4_3_74")
 require("Moose")
-require("CTLD_config")
+
 local utils = require("utils")
 local inspect = require("inspect")
 local baseOwnershipCheck = require("baseOwnershipCheck")
@@ -9,22 +9,25 @@ local log = mist.Logger:new("deadEventHandler", "info")
 
 local M = {}
 
-
-
 function M.register()
 
     M.eventHandler = EVENTHANDLER:New():HandleEvent(EVENTS.Dead) --MOOSE
 	
     function M.eventHandler:OnEventDead(Event)--MOOSE
 		--log:info("eventHander DEAD: event: $1",inspect(Event, { newline = " ", indent = "" }))
-		-- TYPE: .Command Center, DCS NAME: LCtest, UNIT: { ["id_"] = 8000168, }
 		log:info("eventHander DEAD: TYPE: $1, DCS NAME: $2, UNIT: $3",Event.IniTypeName,Event.IniDCSUnitName,Event.IniDCSUnit)
 		
-		if Event.IniObjectCategory == Object.Category.UNIT then
+		local _deadUnit = Event.IniDCSUnit
+		local _deadUnitCategory = Event.IniObjectCategory
+		local _deadUnitType = Event.IniTypeName
+		local _deadUnitName = Event.IniDCSUnitName
+		--log:info("eventHander DEAD: TEST1 DEAD LC = nil: $1",mist.utils.basicSerialize(_deadUnit == nil))
+		
+		
+		if _deadUnitCategory == Object.Category.UNIT then
 
 		end
-		log:info("eventHander DEAD: Event.IniObjectCategory: $1",Event.IniObjectCategory)
-		if Event.IniObjectCategory == Object.Category.STATIC then
+		if _deadUnitCategory == Object.Category.STATIC then
 			--[[
 			-- MOOSE
 			  if Event.IniObjectCategory == Object.Category.STATIC then
@@ -37,36 +40,48 @@ function M.register()
 				Event.IniTypeName = Event.IniDCSUnit:getTypeName()
 			  end
 			--]]
-			log:info("eventHander DEAD: Event.IniTypeName: $1",Event.IniTypeName)
-			if Event.IniTypeName == ctld.logisticCentreL3 or Event.IniTypeName == ctld.logisticCentreL2 then
+
+			if _deadUnitType == ctld.logisticCentreL3 or _deadUnitType == ctld.logisticCentreL2 then
 				
-				local _logisticsCentre = "NoLC"
-				local _logisticsCentreName = "NoLCname"
-				local _logisticsCentreSide = "NoLCside"
-				local _logisticsCentreCoalition = "NoLCcoalition"
+				local _baseName = "NoBase"
+				local _storedLogisticsCentreBase = "NoLCbase"
+				local _storedLogisticsCentre = "NoLC"
+				local _storedLogisticsCentreName = "NoLCname"
+				local _storedLogisticsCentreSideName = "NoLCside"
+				local _storedLogisticsCentreCoalition = "NoLCcoalition"
 				
-				for _k, baseName in ipairs(ctld.logisticCentreObjects) do
+
+				for _baseName, _storedLogisticsCentre in pairs(ctld.logisticCentreObjects) do
 				
-					_logisticsCentre = ctld.logisticCentreObjects[baseName]
-					
-					log:info("eventHander DEAD: baseName: $1, _logisticsCentre: $2",baseName,_logisticsCentre)
-					
-					if _logisticsCentre ~= nil then
-						_logisticsCentreName = _logisticsCentre:getName() --getName = DCS function, GetName = MOOSE function
-						_logisticsCentreSide = string.match(_logisticsCentreName,("%w+$")) --"Sochi Logistics Centre #001 red" = "red"
-						_logisticsCentreCoalition = utils.getSide(_logisticsCentreSide)
+					if _storedLogisticsCentre ~= nil then
+						_storedLogisticsCentreName = _storedLogisticsCentre:getName() --getName = DCS function, GetName = MOOSE function
+						_storedLogisticsCentreBase = string.match(_storedLogisticsCentreName,("^(.+)%sLog")) --"Sochi Logistics Centre #001 red" = "Sochi"
+						_storedLogisticsCentreSideName = string.match(_storedLogisticsCentreName,("%w+$")) --"Sochi Logistics Centre #001 red" = "red"
+						_storedLogisticsCentreCoalition = utils.getSide(_storedLogisticsCentreSideName)
 						
-						log:info("eventHander DEAD: baseName: $1, _logisticsCentreName: $2",baseName,_logisticsCentreName)
+						log:info("eventHander DEAD: _storedLogisticsCentre: $1, _storedLogisticsCentreName: $2, _storedLogisticsCentreBase: $3, _storedLogisticsCentreSideName: $4",_storedLogisticsCentre,_storedLogisticsCentreName,_storedLogisticsCentreBase,_storedLogisticsCentreSideName)
 						
-						if _logisticsCentreName == Event.IniDCSUnitName then
-							table.remove(ctld.logisticCentreObjects[baseName],1) --assumption that logisitics centre for base is always in position 1
-							-- (_checkWhichBases,_playerName,_campaignStartSetup)
-							baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership("ALL","none",false)
-						end
+						--log:info("eventHander DEAD: TEST2 LC = nil: $1",mist.utils.basicSerialize(_storedLogisticsCentre == nil))
+						--log:info("eventHander DEAD: TEST3 LC getLife: $1",mist.utils.basicSerialize(StaticObject.getLife(_storedLogisticsCentre)))
+						--log:info("eventHander DEAD: _storedLogisticsCentreBase: $1, _storedLogisticsCentreSideName: $2",_storedLogisticsCentreBase,_storedLogisticsCentreSideName)
 					end
+					
+					log:info("eventHander DEAD: _logisticsCentreName: $1, _deadUnitName: $2",_storedLogisticsCentreName,_deadUnitName)
+					log:info("eventHander DEAD: _storedLogisticsCentreBase: $1, _baseName: $2",_storedLogisticsCentreBase,_baseName)
+					if _storedLogisticsCentreName == _deadUnitName and _storedLogisticsCentreBase == _baseName then 
+						--log:info("eventHander DEAD: ctld.logisticCentreObjects[_baseName]: $1",inspect(ctld.logisticCentreObjects[_baseName], { newline = " ", indent = "" }))
+						ctld.logisticCentreObjects[_baseName] = nil
+						--log:info("eventHander DEAD: ctld.logisticCentreObjects[_baseName]: $1",inspect(ctld.logisticCentreObjects[_baseName], { newline = " ", indent = "" }))
+						-- (_checkWhichBases,_playerName,_campaignStartSetup)
+						baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership("ALL","none",false)
+						return
+					end
+					
+					
 				end
 			end
 		end
+		
 	end	
 
 end

@@ -1944,6 +1944,12 @@ function ctld.loadUnloadJTACcrate(_args)
 
     local _crateOnboard = ctld.inTransitSlingLoadCrates[_aircraft:getName()] ~= nil
 	
+	--debug
+	if _crateOnboard then
+		log:info("_crateOnboard: $1",inspect(ctld.inTransitSlingLoadCrates[_aircraft:getName()], { newline = " ", indent = "" }))
+	end
+	log:info("_inFOBexclusionZone: $1, _inBaseZoneAndRSRrepairRadius: $2, _closestBaseSide: $3, _closestBaseName: $4, _aircraftSideName: $5, _nearestLogisticsCentreSideName: $6, _nearestLogisticsCentreBaseName: $7 ",_inFOBexclusionZone,_inBaseZoneAndRSRrepairRadius,_closestBaseSide,_closestBaseName,_aircraftSideName,_nearestLogisticsCentreSideName, _nearestLogisticsCentreBaseName)
+
 	if _crateOnboard == false then
 
 		if -- load crate without requiring crate deployment, if no current crate onboard and close enough to command centre
@@ -1957,12 +1963,12 @@ function ctld.loadUnloadJTACcrate(_args)
 			
 			ctld.displayMessageToGroup(_aircraft, "JTAC crate loaded", 10)
 			trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " loaded a JTAC crate for transport.", 10)
-			
+		
 		elseif  -- planes only needs to be in a base with an alive logisitics centre
 			_isPlane == true and 
 			_inBaseZoneAndRSRrepairRadius == true and 
 			(_nearestLogisticsCentreBaseName == _closestBaseName) and 
-			(_aircraftSideName == _nearestLogisticsCentreSide) then
+			(_aircraftSideName == _nearestLogisticsCentreSideName) then
 		
 			local _crateDetails = ctld.crateLookupTable[tostring(_JTACcrateWeightPerSide)]
 			_crateDetails.baseOfOrigin = _nearestLogisticsCentreBaseName
@@ -2841,7 +2847,7 @@ function ctld.getCrateObject(_name)
     return _crate
 end
 
-function ctld.unpackCrates(_arguments)
+function ctld.unpackCrates(_args)
 
     local _status, _err = pcall(function(_args)
 

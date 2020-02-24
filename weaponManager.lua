@@ -273,7 +273,7 @@ local function sendToRsrBot(event)
         }
         if event.target ~= nil  then
             --some events dont have a target
-            if event.target:getPlayerName() then
+            if event.target:getPlayerName() ~= nil then
                 --check for AI or Player
                 event2send.target = event.target:getPlayerName()
             else
@@ -287,7 +287,7 @@ local function sendToRsrBot(event)
         end
         if event.initiator ~= nil then
             --check the event has an initiator
-            if event.initiator:getPlayerName() then
+            if event.initiator:getPlayerName() ~= nil then
                 --check for AI or Player
                 event2send.initiator = event.initiator:getPlayerName()
             else

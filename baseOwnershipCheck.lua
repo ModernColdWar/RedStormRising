@@ -64,7 +64,7 @@ function M.getAllBaseOwnership(_passedBaseName,_playerORunit,_campaignStartSetup
 			_conqueringUnit = ctld.getPlayerNameOrType(_playerORunit) -- get type of ground vehicle if passed
 		end
 		
-		for _k, base in ipairs(world.getAirbases()) do -- WARNING: MOOSE: AIRBASE.GetAllAirbases will not return CONTESTED bases where side == nil
+		for _k, base in pairs(world.getAirbases()) do -- WARNING: MOOSE: AIRBASE.GetAllAirbases will not return CONTESTED bases where side == nil
 			
 			--getName/getCoalition = DCS function, GetName/GetCoalition = MOOSE function
 			local _baseName = base:getName()
@@ -85,13 +85,20 @@ function M.getAllBaseOwnership(_passedBaseName,_playerORunit,_campaignStartSetup
 			local _logisticsCentreName = "NoLCname"
 			local _logisticsCentreSide = "NoLCside"
 			local _logisticsCentreCoalition = 4
-			if _logisticsCentre ~= nil then --mr: IMPORTANT does an object == nil if destroyed?
+			local _logisiticsCentreLife = 0 --10000 = starting command centre static object life
+			if _logisticsCentre ~= nil then
 					--interograte logistics centre static object to determine true RSR side
 					_logisticsCentreName = _logisticsCentre:getName() --getName = DCS function, GetName = MOOSE function
 					_logisticsCentreSide = string.match(_logisticsCentreName,("%w+$")) --"Sochi Logistics Centre #001 red" = "red"
 					_logisticsCentreCoalition = utils.getSide(_logisticsCentreSide)
+					_logisiticsCentreLife = StaticObject.getLife(_logisticsCentre)
 			end
-			log:info("_baseName: $1 _logisticsCentreName: $2",_baseName,_logisticsCentreName)
+			log:info("_baseName: $1 _logisticsCentreName: $2, _logisiticsCentreLife: $3",_baseName,_logisticsCentreName,_logisiticsCentreLife)
+			
+			--clean dead logisitics centres from ctld.logisticCentreObjects but shouldn't be required as handled by deadEventHandler.lua
+			if _logisiticsCentreLife == 0 then
+				ctld.logisticCentreObjects[_baseName] = nil
+			end
 			
 			--[[
 				------------------------------------------------------------------------------------------------------------------------------------------------
@@ -118,7 +125,8 @@ function M.getAllBaseOwnership(_passedBaseName,_playerORunit,_campaignStartSetup
 				local _revBaseNameSideType = utils.baseCaptureZoneToNameSideType(_baseCaptureZone)
 				local _zoneSideFromColor = _revBaseNameSideType[2] --zone color translated to side
 				
-				if _logisticsCentre ~= nil then 
+				if _logisticsCentre ~= nil and _logisiticsCentreLife > 0 then
+						
 					
 					-- should only occur during claiming of FARP with newly built logisitics centre
 					if _RSRowner ~= _logisticsCentreSide then
@@ -237,7 +245,7 @@ function M.getAllBaseOwnership(_passedBaseName,_playerORunit,_campaignStartSetup
 				_RSRowner = utils.getCurrFARPside(_baseName)
 				_RSRcoalition = utils.getSide(_RSRowner)
 				
-				if _logisticsCentre ~= nil then
+				if _logisticsCentre ~= nil and _logisiticsCentreLife > 0 then
 						
 					-- should only occur during claiming of FARP with newly built logisitics centre
 					if _RSRowner ~= _logisticsCentreSide then
@@ -382,7 +390,7 @@ function M.getAllBaseOwnership(_passedBaseName,_playerORunit,_campaignStartSetup
 		local _logisticsCentreName = "noNAME"
 		local _logisticsCentreSide = "noSIDE"
 		local _logisticsCentreCoalition = 4
-		if _logisticsCentre ~= nil then --mr: IMPORTANT does an object == nil if destroyed?
+		if _logisticsCentre ~= nil then
 				--interograte logistics centre static object to determine true RSR side
 				_logisticsCentreName = _logisticsCentre:getName() --getName = DCS function, GetName = MOOSE function
 				_logisticsCentreSide = string.match(_logisticsCentreName,("%w+$")) --"Sochi Logistics Centre #001 red" = "red"
