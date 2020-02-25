@@ -86,6 +86,7 @@ function M.getAllBaseOwnership(_passedBaseName,_playerORunit,_campaignStartSetup
 			local _logisticsCentreSide = "NoLCside"
 			local _logisticsCentreCoalition = 4
 			local _logisiticsCentreLife = 0 --10000 = starting command centre static object life
+			local _logisticsCentreMarkerID = 0
 			if _logisticsCentre ~= nil then
 					--interograte logistics centre static object to determine true RSR side
 					_logisticsCentreName = _logisticsCentre:getName() --getName = DCS function, GetName = MOOSE function
@@ -96,8 +97,13 @@ function M.getAllBaseOwnership(_passedBaseName,_playerORunit,_campaignStartSetup
 			log:info("_baseName: $1 _logisticsCentreName: $2, _logisiticsCentreLife: $3",_baseName,_logisticsCentreName,_logisiticsCentreLife)
 			
 			--clean dead logisitics centres from ctld.logisticCentreObjects but shouldn't be required as handled by deadEventHandler.lua
-			if _logisiticsCentreLife == 0 then
-				ctld.logisticCentreObjects[_baseName] = nil
+			if _logisticsCentre ~= nil then 
+				if _logisiticsCentreLife == 0 then
+					ctld.logisticCentreObjects[_baseName] = nil
+				
+					_logisticsCentreMarkerID = ctld.logisticCentreMarkerID[_baseName]
+					trigger.action.removeMark(_logisticsCentreMarkerID)
+				end
 			end
 			
 			--[[

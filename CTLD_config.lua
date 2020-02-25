@@ -407,12 +407,15 @@ ctld.friendlyLogisiticsCentreSpacing = 20000 --20km
 --need to ensure country is part of neutral coalition e.g. Greece, as neutral static objects will not block DCS controlled rearm/refuel
 ctld.neutralCountry = "Greece"
 
---list populated upon spawning logistics centre static object with base name as index for bases (Airbases/FARPs), and player name as index for s
+--table populated upon spawning logistics centre static object with base name as index for bases (Airbases/FARPs), and player name as index for s
 --only 1 logisitics centre per base due to baseOwnershipCheck.lua reference i.e. ctld.logisticCentreObjects.baseName[1]
 --currently no restrictions on FOBs per player
 ctld.logisticCentreObjects = { }
 
--- airbases/FARPs that if within, do not require a logisitics centre to be present e.g. Oil Platforms
+--table of marker IDs for coalition associated markers of each logisitics centre
+ctld.logisticCentreMarkerID = {}
+
+-- airbases/FARPs that if within, do not require a logisitics centre to be present e.g. Gas Platforms
 ctld.logisticCentreNotReqInBase = {"RedStagingPoint", "BlueStagingPoint"}
 
 -- ************** SPAWNABLE CRATES ******************

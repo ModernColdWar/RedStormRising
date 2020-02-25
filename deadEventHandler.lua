@@ -49,6 +49,7 @@ function M.register()
 				local _storedLogisticsCentreName = "NoLCname"
 				local _storedLogisticsCentreSideName = "NoLCside"
 				local _storedLogisticsCentreCoalition = "NoLCcoalition"
+				local _storedLogisticsCentreMarkerID = 0
 				
 
 				for _baseName, _storedLogisticsCentre in pairs(ctld.logisticCentreObjects) do
@@ -73,6 +74,12 @@ function M.register()
 						ctld.logisticCentreObjects[_baseName] = nil
 						--log:info("eventHander DEAD: ctld.logisticCentreObjects[_baseName]: $1",inspect(ctld.logisticCentreObjects[_baseName], { newline = " ", indent = "" }))
 						-- (_checkWhichBases,_playerName,_campaignStartSetup)
+						
+						-- remove map marker
+						_storedLogisticsCentreMarkerID = ctld.logisticCentreMarkerID[_baseName]
+						trigger.action.removeMark(_storedLogisticsCentreMarkerID)
+						ctld.logisticCentreMarkerID[_baseName] = nil
+						
 						baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership("ALL","none",false)
 						return
 					end

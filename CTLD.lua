@@ -962,7 +962,7 @@ function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight, _side,
     else
         ctld.spawnedCratesBLUE[_name] = _crateType
     end
-
+	log:info("_name: $1, _crateType: $2, _spawnedCrate: $3",_name,inspect(_crateType, { newline = " ", indent = "" }),inspect(_spawnedCrate, { newline = " ", indent = "" }))
     return _spawnedCrate
 end
 
@@ -1040,8 +1040,9 @@ function ctld.spawnLogisticsCentre(_point, _name, _coalition, _baseORfob, _baseO
 		
 		["rate"] = number value for the "score" of the object when it is killed --mr: use to allow assigning points for logistic centre kills
 	--]]
-
-    trigger.action.markToCoalition(UTILS.GetMarkID(),_name,_point,_coalition,true)
+	local _LCmarkerID = UTILS.GetMarkID()
+    trigger.action.markToCoalition(_LCmarkerID,_name,_point,_coalition,true)
+	ctld.logisticCentreMarkerID[_baseORfobName] = _LCmarkerID
 	
 	--[[
 		initate checking all bases for differences = 
@@ -1090,15 +1091,15 @@ function ctld.spawnCrate(_arguments)
 		local _baseType = _baseProximity[4]
 		
 		local _friendlyLogisticsCentreProximity = ctld.friendlyLogisticsCentreProximity(_heli)
-		local _nearestLogisticsCentreName = _friendlyLogisticsCentreProximity[1]
-		local _nearestLogisticsCentreDist = _friendlyLogisticsCentreProximity[2]
-		local _nearestLogisticsCentreBaseName = _friendlyLogisticsCentreProximity[3]
+		local _nearestLogisticsCentreName = _friendlyLogisticsCentreProximity[1] --(rare) if no friendly LC at all = "NoFriendlyLC"
+		local _nearestLogisticsCentreDist = _friendlyLogisticsCentreProximity[2] --(rare) if no friendly LC at all = "NoDist"
+		local _nearestLogisticsCentreBaseName = _friendlyLogisticsCentreProximity[3] --(rare) if no friendly LC at all = "NoBase"
 
         if _crateType ~= nil and _heli ~= nil and ctld.inAir(_heli) == false then
 		
 			local _logisticsCentreReq = true
 			if _inBaseZoneAndRSRrepairRadius then
-				-- airbases/FARPs that if within, do not require a logisitics centre to be present e.g. Oil Platforms
+				-- airbases/FARPs that if within, do not require a logisitics centre to be present e.g. Gas Platforms
 				-- ctld.logisticCentreNotReqInBase = {"RedStagingPoint", "BlueStagingPoint"}
 				for _k, _base in pairs(ctld.logisticCentreNotReqInBase) do
 					if _base == _closestBaseName then
@@ -1199,12 +1200,16 @@ function ctld.spawnCrate(_arguments)
             local _name = string.format("%s #%i (%s)", _crateType.desc, _unitId, _nearestLogisticsCentreBaseName) 
 
 			if not _logisticsCentreReq and _internal == 1 then
-			
-				if _crateType.weight == 501 then
-					ctld.loadUnloadLogisticsCrate(_heli, _logisticsCentreReq)
+				log:info ("spawnCrate: not _logisticsCentreReq: _crateType: $1",inspect(_crateType, { newline = " ", indent = "" }))
+				
+				local _crateDetails = _crateType
+				_crateDetails.baseOfOrigin = _closestBaseName
+				
+				if _crateType.weight == 503 then
+					ctld.inTransitLogisticsCentreCrates[_heli:getName()] = _crateDetails
 					ctld.displayMessageToGroup(_heli, string.format("A %s crate has been provisioned and loaded", _crateType.desc), 20)
-				elseif _crateType.weight == 502 or _crateType.weight == 503 then
-					ctld.loadUnloadJTACcrate(_heli, _logisticsCentreReq)
+				elseif _crateType.weight == 501 or _crateType.weight == 502 then
+					ctld.inTransitSlingLoadCrates[_heli:getName()] = _crateDetails
 					ctld.displayMessageToGroup(_heli, string.format("A %s crate has been provisioned and loaded", _crateType.desc), 20)
 				else
 					env.info("Couldn't find internal crate to provision and load at " .. _closestBaseName)
@@ -1671,7 +1676,7 @@ function ctld.loadUnloadLogisticsCrate(_aircraft,_LCreq)
 	-- proximity to nearest logistics centre object NOT whether player in logisitics zone, and if logistics centre is friendly
     local _friendlyLogisticsCentreProximity = ctld.friendlyLogisticsCentreProximity(_aircraft)
 	local _nearestLogisticsCentreName = _friendlyLogisticsCentreProximity[1] --(rare) if no friendly LC at all = "NoFriendlyLC"
-	local _nearestLogisticsCentreDist = _friendlyLogisticsCentreProximity[2] --(rare) if no friendly LC at all = "10000"
+	local _nearestLogisticsCentreDist = _friendlyLogisticsCentreProximity[2] --(rare) if no friendly LC at all = "NoDist"
 	local _nearestLogisticsCentreBaseName = _friendlyLogisticsCentreProximity[3] --(rare) if no friendly LC at all = "NoBase"
 	
 	local _nearestLogisticsCentreSideName = "neutral"
@@ -1719,7 +1724,7 @@ function ctld.loadUnloadLogisticsCrate(_aircraft,_LCreq)
 		
 		else
 		-- search area for logistics centre crate and load, regardless of aircraft type
-		-- mr: add checks that crate is from same side?
+		-- mr: add checks that crate is from same side? Not required as already done in ctld.getCratesAndDistance
 			-- nearest Crate
 			local _crates = ctld.getCratesAndDistance(_aircraft)
 			local _nearestCrate = ctld.getClosestCrate(_aircraft, _crates, "LogisticsCentre")
@@ -1774,9 +1779,14 @@ function ctld.loadUnloadLogisticsCrate(_aircraft,_LCreq)
 		------------------------------------------------------------------------------------
 		local _unitId = ctld.getNextLogisiticsCentreId()
 		
+		local _crateInTransitDetails = ctld.inTransitLogisticsCentreCrates[_aircraft:getName()]
+		--ctld.spawnCrate: local _name = string.format("%s #%i (%s)", _crateType.desc, _unitId, _nearestLogisticsCentreName)
+		local _crateBaseOfOrigin = _crateInTransitDetails.baseOfOrigin
+		
 		if _inFOBexclusionZone == false then
 		-- if not inFOBexclusionZone then should also not be base zone = deployable FOB or crate for others to pickup
 		-- unpack command should be available to all members of ctld.vehicleTransportEnabled and ctld.interalCargoEnabled
+
 			ctld.inTransitLogisticsCentreCrates[_aircraft:getName()] = nil
 
 			--try to spawn at 6 oclock to us
@@ -1787,8 +1797,8 @@ function ctld.loadUnloadLogisticsCrate(_aircraft,_LCreq)
 			local _point = _aircraft:getPoint()
 			local _6oclockPos = { x = _point.x + _xOffset, z = _point.z + _yOffset }
 
-			-- add _nearestLogisticsCentreBaseName to crate name for later base of origin checks
-			local _newLCcrateName = string.format("Logistics Centre crate #%i %s", _unitId, _nearestLogisticsCentreBaseName)
+			-- add _crateBaseOfOrigin to crate name for later base of origin checks
+			local _newLCcrateName = string.format("Logistics Centre crate #%i (%s)", _unitId, _crateBaseOfOrigin)
 			ctld.spawnLogisticsCentreCrateStatic(_aircraft:getCountry(), _6oclockPos, _newLCcrateName)
 
 			if _side == 1 then
@@ -1807,11 +1817,9 @@ function ctld.loadUnloadLogisticsCrate(_aircraft,_LCreq)
 			((_closestBaseSide == _aircraftSideName) or (_closestBaseSide == "neutral")) and
 			(_nearestLogisticsCentreBaseName ~= _closestBaseName) then -- no logisitics centre at current base
 			
-			local _crateInTransitDetails = ctld.inTransitLogisticsCentreCrates[_aircraft:getName()]
-			
 			-- prevent repair if logisitics centre crate base of origin same as base to be repaired
 			if _crateInTransitDetails.baseOfOrigin == _closestBaseName then
-				ctld.displayMessageToGroup(_heli, "WARNING: " .. "logistics centre crate from " .. _crateInTransitDetails.baseOfOrigin .. ", cannot be unloaded within base of origin (nearest base: " .. _closestBaseName .. ")", 20)
+				ctld.displayMessageToGroup(_heli, "WARNING: logistics centre crate from " .. _crateInTransitDetails.baseOfOrigin .. ", cannot be unloaded and deployed within base of origin (nearest base: " .. _closestBaseName .. ")", 20)
 				return
 			end
 			
@@ -1934,7 +1942,7 @@ function ctld.loadUnloadJTACcrate(_args)
 	-- proximity to nearest logistics centre object NOT whether player in logisitics zone, and if logistics centre is friendly
     local _friendlyLogisticsCentreProximity = ctld.friendlyLogisticsCentreProximity(_aircraft)
 	local _nearestLogisticsCentreName = _friendlyLogisticsCentreProximity[1] --(rare) if no friendly LC at all = "NoFriendlyLC"
-	local _nearestLogisticsCentreDist = _friendlyLogisticsCentreProximity[2] --(rare) if no friendly LC at all = "10000"
+	local _nearestLogisticsCentreDist = _friendlyLogisticsCentreProximity[2] --(rare) if no friendly LC at all = "NoDist"
 	local _nearestLogisticsCentreBaseName = _friendlyLogisticsCentreProximity[3] --(rare) if no friendly LC at all = "NoBase"
 	
 	local _nearestLogisticsCentreSideName = "neutral"
@@ -1948,7 +1956,7 @@ function ctld.loadUnloadJTACcrate(_args)
 	if _crateOnboard then
 		log:info("_crateOnboard: $1",inspect(ctld.inTransitSlingLoadCrates[_aircraft:getName()], { newline = " ", indent = "" }))
 	end
-	log:info("_inFOBexclusionZone: $1, _inBaseZoneAndRSRrepairRadius: $2, _closestBaseSide: $3, _closestBaseName: $4, _aircraftSideName: $5, _nearestLogisticsCentreSideName: $6, _nearestLogisticsCentreBaseName: $7 ",_inFOBexclusionZone,_inBaseZoneAndRSRrepairRadius,_closestBaseSide,_closestBaseName,_aircraftSideName,_nearestLogisticsCentreSideName, _nearestLogisticsCentreBaseName)
+	log:info("_inFOBexclusionZone: $1, _inBaseZoneAndRSRrepairRadius: $2, _closestBaseSide: $3, _closestBaseName: $4, _aircraftSideName: $5, _nearestLogisticsCentreSideName: $6, _nearestLogisticsCentreBaseName: $7",_inFOBexclusionZone,_inBaseZoneAndRSRrepairRadius,_closestBaseSide,_closestBaseName,_aircraftSideName,_nearestLogisticsCentreSideName, _nearestLogisticsCentreBaseName)
 
 	if _crateOnboard == false then
 
@@ -1972,14 +1980,15 @@ function ctld.loadUnloadJTACcrate(_args)
 		
 			local _crateDetails = ctld.crateLookupTable[tostring(_JTACcrateWeightPerSide)]
 			_crateDetails.baseOfOrigin = _nearestLogisticsCentreBaseName
+			log:info("_crateDetails: $1",inspect(_crateDetails, { newline = " ", indent = "" }))
 			ctld.inTransitSlingLoadCrates[_aircraft:getName()] = _crateDetails
-			
+			log:info("inTransitSlingLoadCrates: aircraft: $1",inspect(ctld.inTransitSlingLoadCrates[_aircraft:getName()], { newline = " ", indent = "" }))
 			ctld.displayMessageToGroup(_aircraft, "JTAC crate loaded", 10)
 			trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " loaded a JTAC crate for transport!", 10)
 		
 		else
 		-- search area for logistics centre crate and load, regardless of aircraft type
-		-- mr: add checks that crate is from same side?
+		-- mr: add checks that crate is from same side? Not required as already done in ctld.getCratesAndDistance
 			-- nearest Crate
 			local _crates = ctld.getCratesAndDistance(_aircraft)
 			local _nearestCrate = ctld.getClosestCrate(_aircraft, _crates, _JTACcrateUnit)
@@ -2003,27 +2012,69 @@ function ctld.loadUnloadJTACcrate(_args)
     end
 
 	if _crateOnboard == true then 
+	
+		local _crateInTransitDetails = ctld.inTransitSlingLoadCrates[_aircraft:getName()]
+		--ctld.spawnCrate: local _name = string.format("%s #%i (%s)", _crateType.desc, _unitId, _nearestLogisticsCentreName)
+		local _crateBaseOfOrigin = _crateInTransitDetails.baseOfOrigin
+	
+		if _inBaseZoneAndRSRrepairRadius == false then
+	
+			-- if not _inBaseZoneAndRSRrepairRadius then allow JTAC crate unload for self/others others to unpack, or others to pickup
+			-- unpack command should be available to all members of ctld.vehicleTransportEnabled and ctld.interalCargoEnabled
+			ctld.inTransitSlingLoadCrates[_aircraft:getName()] = nil
+
+			--try to spawn at 6 oclock to us
+			local _position = _aircraft:getPosition()
+			local _angle = math.atan2(_position.x.z, _position.x.x)
+			local _xOffset = math.cos(_angle) * -60
+			local _yOffset = math.sin(_angle) * -60
+			local _point = _aircraft:getPoint()
+			local _6oclockPos = { x = _point.x + _xOffset, z = _point.z + _yOffset }
+
+			local _unitId = ctld.getNextUnitId()
+
+			-- add _crateBaseOfOrigin to crate name for later origin checks
+			-- local _crateName = string.format("%s #%i (%s)", _currentCrate.desc, _unitId, _crateBaseOfOrigin) 
+			local _newJTACcrateName = string.format("JTAC crate #%i (%s)", _unitId, _crateBaseOfOrigin)
+			ctld.spawnCrateStatic(_aircraft:getCountry(), _unitId, _6oclockPos, _newJTACcrateName, _JTACcrateWeightPerSide, _aircraftSide, 1)
+
+			trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " delivered a JTAC crate", 10)
+			ctld.displayMessageToGroup(_aircraft, "Delivered JTAC crate 60m at 6'oclock to you", 10)
+				
+		elseif _inBaseZoneAndRSRrepairRadius == true then
 		
-		ctld.inTransitSlingLoadCrates[_aircraft:getName()] = nil
+			log:info("_crateInTransitDetails.baseOfOrigin: $1, _closestBaseName: $2, _closestBaseSide: $3,",_crateInTransitDetails.baseOfOrigin,_closestBaseName,_closestBaseSide)
+			
+			if (_closestBaseSide == _aircraftSideName) then
+				-- prevent JTAC crate deployment base of origin same as base currently within, otherwise quick load+unload exploit to make JTACs
+				if _crateInTransitDetails.baseOfOrigin == _closestBaseName then
+					ctld.displayMessageToGroup(_aircraft, "WARNING: JTAC crate from " .. _crateInTransitDetails.baseOfOrigin .. ", cannot be unloaded within base of origin (nearest base: " .. _closestBaseName .. "). JTAC crate returned to base.", 20)
+					ctld.inTransitSlingLoadCrates[_aircraft:getName()] = nil
+					return
+				end
+			end
+			
+			-- if JTAC crate not from current base then allow JTAC crate unload for self/others others to unpack, or others to pickup
+			-- unpack command should be available to all members of ctld.vehicleTransportEnabled and ctld.interalCargoEnabled
+			ctld.inTransitSlingLoadCrates[_aircraft:getName()] = nil
 
-		--try to spawn at 6 oclock to us
-		local _position = _aircraft:getPosition()
-		local _angle = math.atan2(_position.x.z, _position.x.x)
-		local _xOffset = math.cos(_angle) * -60
-		local _yOffset = math.sin(_angle) * -60
-		local _point = _aircraft:getPoint()
-		local _6oclockPos = { x = _point.x + _xOffset, z = _point.z + _yOffset }
+			--try to spawn at 6 oclock to us
+			local _position = _aircraft:getPosition()
+			local _angle = math.atan2(_position.x.z, _position.x.x)
+			local _xOffset = math.cos(_angle) * -60
+			local _yOffset = math.sin(_angle) * -60
+			local _point = _aircraft:getPoint()
+			local _6oclockPos = { x = _point.x + _xOffset, z = _point.z + _yOffset }
 
-		local _unitId = ctld.getNextUnitId()
+			local _unitId = ctld.getNextUnitId()
 
-
-		-- add _nearestLogisticsCentreBaseName to crate name for later origin checks
-		local _newJTACcrateName = string.format("JTAC crate #%i", _unitId, _nearestLogisticsCentreBaseName)
-		ctld.spawnCrateStatic(_aircraft:getCountry(), _unitId, _6oclockPos, _newJTACcrateName, _JTACcrateWeightPerSide, _aircraftSide, 1)
-
-		trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " delivered a JTAC crate", 10)
-		ctld.displayMessageToGroup(_aircraft, "Delivered JTAC crate 60m at 6'oclock to you", 10)
-		
+			-- add _crateBaseOfOrigin to crate name for later origin checks
+			local _newJTACcrateName = string.format("JTAC crate #%i (%s)", _unitId, _crateBaseOfOrigin)
+			ctld.spawnCrateStatic(_aircraft:getCountry(), _unitId, _6oclockPos, _newJTACcrateName, _JTACcrateWeightPerSide, _aircraftSide, 1)
+			log:info("_newJTACcrateName: $1",_newJTACcrateName)
+			trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " delivered a JTAC crate", 10)
+			ctld.displayMessageToGroup(_aircraft, "Delivered JTAC crate 60m at 6'oclock to you", 10)
+		end				
 	end
 end
 
@@ -2283,7 +2334,7 @@ function ctld.checkCargoStatus(_args)
     if _troopsORvehicles == nil then
 		
 		local _currentCrate = ctld.inTransitSlingLoadCrates[_aircraft:getName()] -- JTAC crates
-		if _currentCrate ~= nil then
+		if _currentCrate == nil then
 			_currentCrate = ctld.inTransitLogisticsCentreCrates[_aircraft:getName()] -- logistics centre crates
 		end
 		
@@ -2311,11 +2362,11 @@ function ctld.checkCargoStatus(_args)
         end
 		
         if ctld.inTransitSlingLoadCrates[_aircraft:getName()] == true then
-            _txt = _txt .. "1 x " .. _currentCrate.desc .. "\n"
+            _txt = _txt .. "1 x " .. _currentCrate.desc .. " crate\n"
         end
 		
         if ctld.inTransitLogisticsCentreCrates[_aircraft:getName()] == true then
-            _txt = _txt .. " 1 x Logistics Centre Crate\n"
+            _txt = _txt .. " 1 x Logistics Centre crate\n"
         end
 
         if _txt ~= "Currently Transporting: " then
@@ -2328,7 +2379,7 @@ function ctld.checkCargoStatus(_args)
 			end
 			
 			if _currentCrate ~= nil then
-				ctld.displayMessageToGroup(_aircraft, "1 x " .. _currentCrate.desc .. ".", 10)
+				ctld.displayMessageToGroup(_aircraft, "1 x " .. _currentCrate.desc .. " crate", 10)
 			else
 				ctld.displayMessageToGroup(_aircraft, "You are not currently transporting any troops or crates.", 10)
 			end
@@ -2744,9 +2795,9 @@ function ctld.getCratesAndDistance(_heli)
 
             local _dist = ctld.getDistance(_crate:getPoint(), _heli:getPoint())
 
-            local _crateDetails = { crateUnit = _crate, dist = _dist, details = _details }
+            local _crateInfo = { name = _crateName, details = _details, dist = _dist, crateUnit = _crate }
 
-            table.insert(_crates, _crateDetails)
+            table.insert(_crates, _crateInfo)
         end
     end
 
@@ -2767,8 +2818,8 @@ function ctld.getCratesAndDistance(_heli)
             local _dist = ctld.getDistance(_crate:getPoint(), _heli:getPoint())
 
 			-- { desc = "Logistics Centre crate", internal = 1, unit = "LogisticsCentre", weight = 503, baseOfOrigin = "MM75" }
-			local _crateDetails = { crateUnit = _crate, dist = _dist, details = _details } -- full details includes baseOfOrigin
-            table.insert(_crates, _crateDetails)
+			local _crateInfo = { name = _crateName, details = _details, dist = _dist, crateUnit = _crate } -- full details includes baseOfOrigin
+            table.insert(_crates, _crateInfo)
         end
     end
 
@@ -2847,7 +2898,7 @@ function ctld.getCrateObject(_name)
     return _crate
 end
 
-function ctld.unpackCrates(_args)
+function ctld.unpackCrates(_arguments)
 
     local _status, _err = pcall(function(_args)
 
@@ -2879,11 +2930,13 @@ function ctld.unpackCrates(_args)
 			
             local _crates = ctld.getCratesAndDistance(_heli)
             local _crate = ctld.getClosestCrate(_heli, _crates)
-
+			
+			log:info("_crates: $1, _crate: $2",inspect(_crates, { newline = " ", indent = "" }),inspect(_crate, { newline = " ", indent = "" }))
+			
 			local _friendlyLogisticsCentreProximity = ctld.friendlyLogisticsCentreProximity(_heli)
-			local _nearestLogisticsCentreName = _friendlyLogisticsCentreProximity[1]
-			local _nearestLogisticsCentreDist = _friendlyLogisticsCentreProximity[2]
-			local _nearestLogisticsCentreBaseName = _friendlyLogisticsCentreProximity[3]
+			local _nearestLogisticsCentreName = _friendlyLogisticsCentreProximity[1] --(rare) if no friendly LC at all = "NoFriendlyLC"
+			local _nearestLogisticsCentreDist = _friendlyLogisticsCentreProximity[2] --(rare) if no friendly LC at all = "NoDist"
+			local _nearestLogisticsCentreBaseName = _friendlyLogisticsCentreProximity[3] --(rare) if no friendly LC at all = "NoBase"
 			
 			local _nearestLogisticsCentreSideName = "neutral"
 			if (_nearestLogisticsCentreName ~= "NoFriendlyLC") then 
@@ -2918,6 +2971,9 @@ function ctld.unpackCrates(_args)
 				
 				--check if logisitics centre of origin still alive
 				_crateName = _crate.name
+				
+				log:info("_crate.name: $1, _crate: $2",_crate.name,inspect(_crate, { newline = " ", indent = "" }))
+				
 				_crateBaseOfOrigin = string.match(_crateName, "%((.+)%)$")
 				if not ctld.isLogisticsCentreAliveAt(_crateBaseOfOrigin) then
 					local _azToCrate = ctld.getCompassBearing(_heli:getPoint(),_crate.crateUnit:getPoint())
@@ -3253,7 +3309,12 @@ function ctld.unloadInternalCrate (_args)
 	-- ctld.loadNearbyCrate: ctld.inTransitSlingLoadCrates[_name] = _copiedCrate
     local _currentCrate = ctld.inTransitSlingLoadCrates[_heli:getName()]
 	log:info("ctld.unloadInternalCrate: ctld.inTransitSlingLoadCrates: $1", inspect(ctld.inTransitSlingLoadCrates, { newline = " ", indent = "" }))
-
+	
+	if _currentCrate == nil then
+		_currentCrate = ctld.inTransitLogisticsCentreCrates[_heli:getName()]
+	end
+	log:info("ctld.unloadInternalCrate: ctld.inTransitLogisticsCentreCrates: $1", inspect(ctld.inTransitLogisticsCentreCrates, { newline = " ", indent = "" }))
+	
     if _currentCrate == nil then
 		ctld.displayMessageToGroup(_heli, "You are not currently transporting any crates. \n\nTo Pickup a crate - land and use F10 Crate Commands to load one.", 10)
     else
@@ -3264,9 +3325,9 @@ function ctld.unloadInternalCrate (_args)
 		local _heliSideName = utils.getSideName(_heliSide)
 		
 		-- _currentCrate.details = { desc = "Logistics Centre crate", internal = 1, unit = "LogisticsCentre", weight = 503, baseOfOrigin = "MM75" }
-        local _crateName = string.format("%s #%i", _currentCrate.desc, _unitId)
 		local _crateBaseOfOrigin = _currentCrate.baseOfOrigin
-		_crateName = _crateName .. " " .. _crateBaseOfOrigin -- ctld.spawnCrateStatic: local _baseOfOriginFromName = string.gsub(_name, "%((.+)%)$")
+		-- ctld.spawnCrateStatic: local _baseOfOriginFromName = string.match(_name, "%((.+)%)$")
+        local _crateName = string.format("%s #%i (%s)", _currentCrate.desc, _unitId, _crateBaseOfOrigin) 
 		local _isLogisticsCentreCrate = (_currentCrate.unit == "LogisticsCentre" or _currentCrate.unit == "LogisticsCentre-SMALL") 
 		
 		--{_inBaseZoneAndRSRrepairRadius,_inFOBexclusionZone,_closestBaseSideDist,_baseType}
@@ -3294,7 +3355,7 @@ function ctld.unloadInternalCrate (_args)
 		-- proximity to nearest logistics centre object NOT whether player in logisitics zone, and if logistics centre is friendly
 		local _friendlyLogisticsCentreProximity = ctld.friendlyLogisticsCentreProximity(_heli)
 		local _nearestLogisticsCentreName = _friendlyLogisticsCentreProximity[1] --(rare) if no friendly LC at all = "NoFriendlyLC"
-		local _nearestLogisticsCentreDist = _friendlyLogisticsCentreProximity[2] --(rare) if no friendly LC at all = "10000"
+		local _nearestLogisticsCentreDist = _friendlyLogisticsCentreProximity[2] --(rare) if no friendly LC at all = "NoDist"
 		local _nearestLogisticsCentreBaseName = _friendlyLogisticsCentreProximity[3] --(rare) if no friendly LC at all = "NoBase"
 		
 		local _nearestLogisticsCentreSideName = "neutral" 
@@ -3302,68 +3363,92 @@ function ctld.unloadInternalCrate (_args)
 			_nearestLogisticsCentreSideName = _heliSideName
 		end
 		
-		--JTAC or any other internal crate
-		if not _isLogisticsCentreCrate then
-			if (_heli:getTypeName() == "Mi-8MT") then
-				ctld.displayMessageToGroup(_heli, _currentCrate.desc .. " crate has been safely unloaded and is at your 6 o'clock", 10) -- Cargo is from Rear of Mi-8
-			else
-				ctld.displayMessageToGroup(_heli, _currentCrate.desc .. " crate has been safely unloaded from your cargo bay.", 10)
+		
+		local _noLogisticsCentreBase = false
+		if _inBaseZoneAndRSRrepairRadius then
+			-- airbases/FARPs that if within, do not require a logisitics centre to be present e.g. Gas Platforms
+			-- ctld.logisticCentreNotReqInBase = {"RedStagingPoint", "BlueStagingPoint"}
+			for _k, _base in pairs(ctld.logisticCentreNotReqInBase) do
+				if _base == _closestBaseName then
+					_noLogisticsCentreBase = true
+				end
 			end
-			
-			--unload internal crate
-			ctld.inTransitSlingLoadCrates[_heli:getName()] = nil
-			ctld.spawnCrateStatic(_heli:getCountry(), _unitId, _point, _crateName, _currentCrate.weight, _heliSide, _currentCrate.internal)
-			
-		else		
-			--[[ 
-				provide warnings but do not stop crate deploying as may be needed for unique circumstances 
-				e.g. delivery by plane but later pickup by helo, pre-delivery to enemy base prior to capture
-			--]]
-			if _inFOBexclusionZone == true and _inBaseZoneAndRSRrepairRadius == false then
-				local _aircraftDistRSR = _RSRradius - _closestBaseDist
-				ctld.displayMessageToGroup(_heli, "WARNING: You are too far from " .. _closestBaseName .. mist.utils.round((_aircraftDistRSR/1000),1) 
-				.. "for a repair and too close (<" .. (ctld.exclusionZoneFromBasesforFOBs/1000) .. ") to deploy a FOB!", 20)
-			end
-			
-			-- if player not in FOB exclusion zone then proximity to base irrelevant as too far to matter
-			if _inBaseZoneAndRSRrepairRadius == true and ((_closestBaseSide ~= _heliSideName) and (_closestBaseSide ~= "neutral")) then
-				ctld.displayMessageToGroup(_heli, "WARNING: You cannot repair " .. _closestBaseName .. " as it is not a friendly or neutral base!", 20)
-			end
-			
-			--log:info("_inBaseZoneAndRSRrepairRadius: $1, _closestBaseSide: $2, _heliSideName: $3, _crateBaseOfOrigin: $4",_inBaseZoneAndRSRrepairRadius,_closestBaseSide,_heliSideName, _crateBaseOfOrigin)
-			
-			-- if logisitics centre crate base of origin same as base to be repaired, warn player that unpack will be prevented
-			if _crateBaseOfOrigin == _closestBaseName then
-				ctld.displayMessageToGroup(_heli, "WARNING: " .. "logistics centre crate from " .. _crateBaseOfOrigin .. ", cannot be unloaded within base of origin (nearest base: " .. _closestBaseName .. ")", 20)
-			end
-			------------------------------------------------------------------------------------
-			if 
-			-- if logisitics centre already present, return logistics centre crate to base pool to prevent exploit of "backup repair crates"
-				_inBaseZoneAndRSRrepairRadius == true and
-				(_closestBaseSide == _heliSideName) and
-				(_nearestLogisticsCentreBaseName == _closestBaseName) then
-				
-				ctld.displayMessageToGroup(_heli, "Logistics Centre already present.  Logistics Centre crate returned to base.", 10)
+		end
+		
+		if _noLogisticsCentreBase then
+			-- return crate to base and do not allow crate deployment at 'logisitics centre not required' bases
+			if _isLogisticsCentreCrate then
+				ctld.displayMessageToGroup(_heli, "Crate unloading not allowed at " .. _closestBaseName .. ". Returning Logisitics Centre crate to base." , 10)
 				ctld.inTransitLogisticsCentreCrates[_heli:getName()] = nil
 			else
-			--unload internal crate
+				ctld.displayMessageToGroup(_heli, "Crate unloading not allowed at " .. _closestBaseName .. ". Returning " .. _currentCrate.desc .. " crate to base." , 10)
+				ctld.inTransitSlingLoadCrates[_heli:getName()] = nil
+			end
+
+		else
+			--JTAC or any other internal crate
+			if not _isLogisticsCentreCrate then
+				if (_heli:getTypeName() == "Mi-8MT") then
+					ctld.displayMessageToGroup(_heli, _currentCrate.desc .. " crate has been safely unloaded and is at your 6 o'clock", 10) -- Cargo is from Rear of Mi-8
+				else
+					ctld.displayMessageToGroup(_heli, _currentCrate.desc .. " crate has been safely unloaded from your cargo bay.", 10)
+				end
+				
+				--unload internal crate
 				ctld.inTransitSlingLoadCrates[_heli:getName()] = nil
 				ctld.spawnCrateStatic(_heli:getCountry(), _unitId, _point, _crateName, _currentCrate.weight, _heliSide, _currentCrate.internal)
-			
-			-- shouldn't be needed as planes will have unpack option of different combined option that unloads+unpacks at same time
-			--[[
-			elseif 
-			-- initiate immediate base repair, no need for crate spawn
-				_inBaseZoneAndRSRrepairRadius == true and
-				(_closestBaseSide == _heliSideName) and
-				(_nearestLogisticsCentreBaseName ~= _closestBaseName) then -- no logisitics centre at current base
-				local _logisticsCentreName = ""
-				_logisticsCentreName = _logisticsCentreName .. _baseNameORplayerName .. " Logistics Centre #" .. _unitId .. " " .. _heliSide -- "MM75 Logistics Centre #001 red"
-				logisticsManager.spawnLogisticsBuildingForBase(_closestBaseName,_heliSideName,_logisticsCentreName,false, _playerName)
-				trigger.action.outTextForCoalition(_heli:getCoalition(), _playerName .. " has repaired the Logistics Centre at " .. _closestBaseName, 10)
-			--]]
-			
-			end	
+				
+			else		
+				--[[ 
+					provide warnings but do not stop crate deploying as may be needed for unique circumstances 
+					e.g. delivery by plane but later pickup by helo, pre-delivery to enemy base prior to capture
+				--]]
+				if _inFOBexclusionZone == true and _inBaseZoneAndRSRrepairRadius == false then
+					local _aircraftDistRSR = _RSRradius - _closestBaseDist
+					ctld.displayMessageToGroup(_heli, "WARNING: You are too far from " .. _closestBaseName .. mist.utils.round((_aircraftDistRSR/1000),1) 
+					.. "for a repair and too close (<" .. (ctld.exclusionZoneFromBasesforFOBs/1000) .. ") to deploy a FOB!", 20)
+				end
+				
+				-- if player not in FOB exclusion zone then proximity to base irrelevant as too far to matter
+				if _inBaseZoneAndRSRrepairRadius == true and ((_closestBaseSide ~= _heliSideName) and (_closestBaseSide ~= "neutral")) then
+					ctld.displayMessageToGroup(_heli, "WARNING: You cannot repair " .. _closestBaseName .. " as it is not a friendly or neutral base!", 20)
+				end
+				
+				--log:info("_inBaseZoneAndRSRrepairRadius: $1, _closestBaseSide: $2, _heliSideName: $3, _crateBaseOfOrigin: $4",_inBaseZoneAndRSRrepairRadius,_closestBaseSide,_heliSideName, _crateBaseOfOrigin)
+				
+				-- if logisitics centre crate base of origin same as base to be repaired, warn player that unpack will be prevented
+				if _crateBaseOfOrigin == _closestBaseName then
+					ctld.displayMessageToGroup(_heli, "WARNING: " .. "logistics centre crate from " .. _crateBaseOfOrigin .. ", cannot be unloaded within base of origin (nearest base: " .. _closestBaseName .. ")", 20)
+				end
+				------------------------------------------------------------------------------------
+				if 
+				-- if logisitics centre already present, return logistics centre crate to base pool to prevent exploit of "backup repair crates"
+					_inBaseZoneAndRSRrepairRadius == true and
+					(_closestBaseSide == _heliSideName) and
+					(_nearestLogisticsCentreBaseName == _closestBaseName) then
+					
+					ctld.displayMessageToGroup(_heli, "Logistics Centre already present.  Logistics Centre crate returned to base.", 10)
+					ctld.inTransitLogisticsCentreCrates[_heli:getName()] = nil
+				else
+				--unload internal crate
+					ctld.inTransitSlingLoadCrates[_heli:getName()] = nil
+					ctld.spawnCrateStatic(_heli:getCountry(), _unitId, _point, _crateName, _currentCrate.weight, _heliSide, _currentCrate.internal)
+				
+				-- shouldn't be needed as planes will have unpack option of different combined option that unloads+unpacks at same time
+				--[[
+				elseif 
+				-- initiate immediate base repair, no need for crate spawn
+					_inBaseZoneAndRSRrepairRadius == true and
+					(_closestBaseSide == _heliSideName) and
+					(_nearestLogisticsCentreBaseName ~= _closestBaseName) then -- no logisitics centre at current base
+					local _logisticsCentreName = ""
+					_logisticsCentreName = _logisticsCentreName .. _baseNameORplayerName .. " Logistics Centre #" .. _unitId .. " " .. _heliSide -- "MM75 Logistics Centre #001 red"
+					logisticsManager.spawnLogisticsBuildingForBase(_closestBaseName,_heliSideName,_logisticsCentreName,false, _playerName)
+					trigger.action.outTextForCoalition(_heli:getCoalition(), _playerName .. " has repaired the Logistics Centre at " .. _closestBaseName, 10)
+				--]]
+				
+				end	
+			end
 		end
     end
 end
@@ -4860,7 +4945,7 @@ function ctld.friendlyLogisticsCentreProximity(_aircraft)
 	local _aircraftSide = _aircraft:getCoalition()
 	local _aircraftSideName = utils.getSideName(_aircraftSide)
 	
-	local _logisticCentreProx = {"NoFriendlyLC",10000,"NoBase"}
+	local _logisticCentreProx = {"NoFriendlyLC","NoDist","NoBase"}
 	local _logisticCentreName = _logisticCentreProx[1]
 	local _logisticCentreDist = _logisticCentreProx[2]
 	local _logisticsCentreBaseName = _logisticCentreProx[3]
@@ -4893,7 +4978,12 @@ function ctld.friendlyLogisticsCentreProximity(_aircraft)
 			--get distance
 			_logisticCentreDist = ctld.getDistance(_aircraftPoint, _logisticCentrePoint)
 			
-			if _logisticCentreDist < _logisticCentreProx[2] then
+			if _logisticCentreProx[2] == "NoDist" then
+				_logisticCentreProx[1] = _logisticCentreName
+				_logisticCentreProx[2] = _logisticCentreDist
+				_logisticCentreProx[3] = _logisticsCentreBaseName
+	
+			elseif _logisticCentreDist < _logisticCentreProx[2] then
 				_logisticCentreProx[1] = _logisticCentreName
 				_logisticCentreProx[2] = _logisticCentreDist
 				_logisticCentreProx[3] = _logisticsCentreBaseName
