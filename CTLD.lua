@@ -1773,7 +1773,7 @@ function ctld.loadUnloadLogisticsCrate(_aircraft,_LCreq)
 		
 		if _inBaseZoneAndRSRrepairRadius == true and (_closestBaseSide ~= _aircraftSideName) then
 			if _closestBaseSide ~= "neutral" then
-				ctld.displayMessageToGroup(_aircraft, "ABORTING: You cannot repair " .. _closestBaseName .. " as it is not a friendly or neutral base!", 20)
+				ctld.displayMessageToGroup(_aircraft, "ABORTING: You cannot repair " .. _closestBaseName .. " as it is not a friendly or neutral airbase/FARP!", 20)
 				return
 			end
 		end
@@ -3441,7 +3441,7 @@ function ctld.unloadInternalCrate (_args)
 				
 				-- if player not in FOB exclusion zone then proximity to base irrelevant as too far to matter
 				if _inBaseZoneAndRSRrepairRadius == true and ((_closestBaseSide ~= _heliSideName) and (_closestBaseSide ~= "neutral")) then
-					ctld.displayMessageToGroup(_heli, "WARNING: You cannot repair " .. _closestBaseName .. " as it is not a friendly or neutral base!", 20)
+					ctld.displayMessageToGroup(_heli, "WARNING: You cannot repair " .. _closestBaseName .. " as it is not a friendly or neutral airbase/FARP!", 20)
 				end
 				
 				--log:info("_inBaseZoneAndRSRrepairRadius: $1, _closestBaseSide: $2, _heliSideName: $3, _crateBaseOfOrigin: $4",_inBaseZoneAndRSRrepairRadius,_closestBaseSide,_heliSideName, _crateBaseOfOrigin)
@@ -5682,7 +5682,7 @@ function ctld.getLaserCode(_coalition)
 end
 
 function ctld.JTACAutoLase(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
-
+	log:info("START: _jtacGroupName $1, _laserCode: $2", _jtacGroupName, _laserCode)
     if ctld.jtacStop[_jtacGroupName] == true then
         ctld.jtacStop[_jtacGroupName] = nil -- allow it to be started again
         ctld.cleanupJTAC(_jtacGroupName)
@@ -5699,9 +5699,14 @@ function ctld.JTACAutoLase(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
     local _jtacGroup = ctld.getGroup(_jtacGroupName)
     local _jtacUnit
 	local _jtacOwner = utils.getPlayerNameFromGroupName(_jtacGroupName)
-
+	if _jtacOwner == nil then
+		local _jtacBase = utils.getBaseAndSideNamesFromGroupName(_jtacGroupName)
+		--log:info("_jtacBase $1", _jtacBase)
+		_jtacOwner = _jtacBase .. " Support"
+	end
+	log:info("PRE-isNil: _jtacGroup $1", _jtacGroup)
     if _jtacGroup == nil or #_jtacGroup == 0 then
-
+		
         --check not in a heli
         for _, _onboard in pairs(ctld.inTransitTroops) do
             if _onboard ~= nil then
@@ -5725,7 +5730,7 @@ function ctld.JTACAutoLase(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
                 end
             end
         end
-
+		log:info("POST-isNil: ctld.jtacUnits[_jtacGroupName] $1",  mist.utils.basicSerialize(ctld.jtacUnits[_jtacGroupName]))
         if ctld.jtacUnits[_jtacGroupName] ~= nil then
             ctld.notifyCoalition("JTAC Group " .. _jtacGroupName .. " KIA!", 10, ctld.jtacUnits[_jtacGroupName].side)
         end
@@ -5737,11 +5742,15 @@ function ctld.JTACAutoLase(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
 
         return
     else
-
+		
         _jtacUnit = _jtacGroup[1]
         --add to list
         ctld.jtacUnits[_jtacGroupName] = { name = _jtacUnit:getName(), side = _jtacUnit:getCoalition() }
-
+		
+		--log:info("_jtacUnit $1, _jtacGroupName: $3, _jtacGroup: $3", _jtacUnit, _jtacGroupName, inspect(_jtacGroup, { newline = " ", indent = "" }))
+		log:info("_jtacUnit name $1",_jtacUnit:getName())
+		log:info("ctld.jtacUnits $1",inspect(ctld.jtacUnits, { newline = " ", indent = "" }))
+		
         -- work out smoke colour
         if _colour == nil then
 
@@ -5808,6 +5817,7 @@ function ctld.JTACAutoLase(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
         ctld.jtacCurrentTargets[_jtacGroupName] = nil
 
         --stop lasing
+		log:info("cancelLase: _jtacGroupName $1", _jtacGroupName)
         ctld.cancelLase(_jtacGroupName)
     end
 
@@ -5863,6 +5873,7 @@ function ctld.JTACAutoLase(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
         -- env.info('LASE: No Enemies Nearby')
 
         -- stop lazing the old spot
+		log:info("cancelLase: _jtacGroupName $1", _jtacGroupName)
         ctld.cancelLase(_jtacGroupName)
         --  env.info('Timer Slow timerSparkleLase '..jtacGroupName.." "..laserCode.." "..enemyUnit:getName())
 
@@ -5882,6 +5893,7 @@ end
 
 function ctld.cleanupJTAC(_jtacGroupName)
     -- clear laser - just in case
+	log:info("cancelLase: _jtacGroupName $1", _jtacGroupName)
     ctld.cancelLase(_jtacGroupName)
 
     -- Cleanup
@@ -5908,7 +5920,7 @@ function ctld.createSmokeMarker(_enemyUnit, _colour)
 end
 
 function ctld.cancelLase(_jtacGroupName)
-
+	log:info("cancelLase: _jtacGroupName $1", _jtacGroupName)
     --local index = "JTAC_"..jtacUnit:getID()
 
     local _tempLase = ctld.jtacLaserPoints[_jtacGroupName]
@@ -6276,12 +6288,19 @@ function ctld.getJTACStatus(_args)
 	local _coordinateTitle =  "Grid"
 	local _JTACref = -1 --set to -1 for debug
 	
+	log:info("ctld.jtacUnits $1", inspect(ctld.jtacUnits, { newline = " ", indent = "" }))
+	
     for _jtacGroupName, _jtacDetails in pairs(ctld.jtacUnits) do
 
         --look up units
         local _jtacUnit = Unit.getByName(_jtacDetails.name)
 		local _jtacOwner = utils.getPlayerNameFromGroupName(_jtacGroupName) --_groupName = 'CTLD_' .. _types[1] .. '_' .. _id .. ' (' .. _playerName .. ')'
-
+		if _jtacOwner == nil then
+			local _jtacBase = utils.getBaseAndSideNamesFromGroupName(_jtacGroupName)
+			log:info("_jtacBase $1", _jtacBase)
+			_jtacOwner = _jtacBase .. " Support"
+		end
+		
         if _jtacUnit ~= nil and _jtacUnit:getLife() > 0 and _jtacUnit:isActive() == true and _jtacUnit:getCoalition() == _side then
 
             local _enemyUnit = ctld.getCurrentUnit(_jtacUnit, _jtacGroupName)
@@ -6429,7 +6448,7 @@ function ctld.getJTACStatus(_args)
 			local _sJTACref = ""
 			for _key,_jT in ipairs(_searchingJTACs) do
 				-- local _sJTACref = "J" .. _searchingJTACs[_key][3] .. " - " -- ref# designation for better re-refrencing esp. when not targeting anything?
-				_message = _message .. _sJTACref .. _searchingJTACs[_key][4]
+				_message = _message .. _sJTACref .. _searchingJTACs[_key][4] .. "\n"
 			end
 		end
     end

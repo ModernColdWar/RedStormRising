@@ -71,10 +71,13 @@ function M.getAllBaseOwnership(_passedBaseName,_playerORunit,_campaignStartSetup
 			log:info("_baseName: $1", _baseName)
 			local _DCScoalition = base:getCoalition()
 			local _DCSsideName = utils.getSideName(_DCScoalition)  -- EVENTUALLY REPLACE WITH OUTCOME OF GROUD UNIT ENUMERATION
+			
+			-- _DCSsideName == nil if contested
 			if _DCSsideName == nil then
 				log:info("No side returned for $1; setting to neutral", _baseName)
-				_DCSsideName = "neutral"
+				_DCSsideName = "CONTESTED"
 			end
+			
 			local _DCSbaseCategory = base:getDesc().category
 			local _RSRowner = "NoRSRowner"
 			local _RSRcoalition = "NoRSRcoalition"
@@ -155,8 +158,8 @@ function M.getAllBaseOwnership(_passedBaseName,_playerORunit,_campaignStartSetup
 							trigger.action.outTextForCoalition(_logisticsCentreCoalition, _baseName .. " claimed by " .. _logisticsCentreSide .. " team following construction of Logistics Centre.", 10)
 							
 						elseif _zoneSideFromColor ~= "neutral" then
-						-- don NOT provide warning for bases neutral at campaign setup as no base defences associated, capture no based on ground vehicles, and likely message spam
-							if _DCSsideName == nil then -- _DCSsideName == nil if contested
+						-- don NOT provide warning for bases neutral at campaign setup as no base defences associated, capture not based on ground vehicles, and likely message spam
+							if _DCSsideName == "CONTESTED" then
 								-- Q: side specific notification that base being attacked?
 								-- A: Yes.  Aligns with JTAC functionality for all bases upcoming feature: https://github.com/ModernColdWar/RedStormRising/issues/87
 								trigger.action.outTextForCoalition(_RSRcoalition, "ALERT - " .. _baseName .. " IS UNDER ATTACK!", 10)
@@ -216,10 +219,10 @@ function M.getAllBaseOwnership(_passedBaseName,_playerORunit,_campaignStartSetup
 						
 						elseif _DCSsideName == "neutral" then 
 						-- Airbase converts back to MIZ warehouse setting i.e. neutral, if no ground units from either side present
-							trigger.action.outTextForCoalition(_RSRcoalition, "ALERT - " .. _baseName .. " has no friendly ground units within 2km!", 10)
+							trigger.action.outTextForCoalition(_RSRcoalition, "ALERT - " .. _baseName .. " has no friendly ground units within 2km and has no logisitics centre!", 10)
 							log:info("$1 owned by $2 no friendly ground units within 2km and no logisitics centre.  DCS side $3",_baseName,_RSRowner,_DCSsideName)
 							
-						elseif _DCSsideName == nil then 
+						elseif _DCSsideName == "CONTESTED" then 
 						--Check for contested status
 							trigger.action.outTextForCoalition(_RSRcoalition, "ALERT - " .. _baseName .. " is under attack and has no logisitics centre!", 10)
 							log:info("$1 owned by $2 (no logisitics centre) under attack by DCS side $3",_baseName,_RSRowner,_DCSsideName)

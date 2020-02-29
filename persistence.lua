@@ -84,24 +84,45 @@ function M.spawnGroup(groupData)
     -- Currently this code replicates the actions from ctld.unpackCrates
     local sideName = getSideNameFromGroupData(groupData)
     local groupName = groupData.name
-    --log:info("Spawning $1 $2 from groupData", sideName, groupName)
+    log:info("Spawning $1 $2 from groupData", sideName, groupName)
+	
     -- Fix issue where mist group data doesn't contain playerCanDrive flag (it's always true for our persisted units)
+	local _isJTAC = false
     for _, unitData in pairs(groupData.units) do
         unitData.playerCanDrive = true
+		
+		local _unitType = unitData.type
+		if ctld.isJTACUnitType(_unitType) then
+			_isJTAC = true
+		end
     end
     local spawnedGroup = Group.getByName(mist.dynAdd(groupData).name)
 
+	--[[
     if ctld.isJTACUnitType(groupName) then
         local _code = ctld.getLaserCode(Group.getByName(groupName):getCoalition())
         log:info("Configuring group $1 to auto-lase on $2", groupName, _code)
         ctld.JTACAutoLase(groupName, _code)
     end
+	--]]
+	log:info("_isJTAC $1 groupName $2", _isJTAC, groupName)
+	if _isJTAC then
+		local _code = ctld.getLaserCode(Group.getByName(groupName):getCoalition())
+		log:info("Configuring group $1 to auto-lase on $2", groupName, _code)
+		ctld.JTACAutoLase(groupName, _code)
+	end
 
     if string.match(groupName, "1L13 EWR") then
         log:info("Configuring group $1 as EWR", groupName)
         ctld.addEWRTask(spawnedGroup)
     end
-
+	
+	-- make base defence units uncontrollable
+    if not utils.startswith(groupName, "CTLD_") then
+        log:info("Setting $1 as uncontrollable", groupName)
+        groupData["uncontrollable"] = true
+    end
+	
     utils.setGroupControllerOptions(spawnedGroup)
 
     updateSpawnQueue.pushSpawnQueue(groupName)

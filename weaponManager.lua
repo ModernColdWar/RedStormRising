@@ -8,74 +8,147 @@
 local M = {}
 
 local msgTimer = 15
-local limitations = {} -- Do not touch
 
 local rsrConfig = require("RSR_config")
 local perLife = rsrConfig.maxLives
 local JSON = require("json")
+
 local socket = require("socket")
 
 -- ---------------------------LIMITATIONS-----------------------------------
-limitations[1] = {
-    WP_NAME = "AIM_120C",
-    QTY = 4 * perLife,
-    DISPLAY_NAME = "AIM 120C"
+local limitations = {
+    {
+        WP_NAME = "AIM_54A_Mk47",
+        QTY = 1 * perLife,
+        DISPLAY_NAME = "AIM-54A Mk47"
+    },
+    {
+        WP_NAME = "AIM_54A_Mk60",
+        QTY = 4 * perLife,
+        DISPLAY_NAME = "AIM-54A Mk60"
+    },
+    {
+        WP_NAME = "AIM_54C_Mk47",
+        QTY = 1 * perLife,
+        DISPLAY_NAME = "AIM-54C Mk47"
+    },
+    {
+        WP_NAME = "AIM_120",
+        QTY = 1 * perLife,
+        DISPLAY_NAME = "AIM-120B"
+    },
+    {
+        WP_NAME = "AIM_120C",
+        QTY = 4 * perLife,
+        DISPLAY_NAME = "AIM-120C"
+    },
+    --{
+    --    WP_NAME = "weapons.missiles.AGM_88",
+    --    QTY = 0,
+    --    DISPLAY_NAME = "AGM-88C"
+    --},
+    --{
+    --    WP_NAME = "weapons.missiles.AGM_154A",
+    --    QTY = 0,
+    --    DISPLAY_NAME = "AGM-154A"
+    --},
+    {
+        WP_NAME = "weapons.missiles.AGM_154",
+        QTY = 0,
+        DISPLAY_NAME = "AGM-154C"
+    },
+    --{
+    --    WP_NAME = "weapons.bombs.CBU_97",
+    --    QTY = 0,
+    --    DISPLAY_NAME = "CBU-97"
+    --},
+    --{
+    --    WP_NAME = "weapons.missiles.CM-802AK",
+    --    QTY = 0,
+    --    DISPLAY_NAME = "CM-802AK"
+    --},
+    --{
+    --    WP_NAME = "CM-802AKG",
+    --    QTY = 0,
+    --    DISPLAY_NAME = "CM-802AKG"
+    --},
+    {
+        WP_NAME = "weapons.missiles.GB-6",
+        QTY = 1 * perLife,
+        DISPLAY_NAME = "GB-6"
+    },
+    {
+        WP_NAME = "weapons.missiles.GB-6-HE",
+        QTY = 1 * perLife,
+        DISPLAY_NAME = "GB-6-HE"
+    },
+    {
+        WP_NAME = "weapons.missiles.GB-6-SFW",
+        QTY = 1 * perLife,
+        DISPLAY_NAME = "GB-6-SFW"
+    },
+    {
+        WP_NAME = "weapons.bombs.GBU_31",
+        QTY = 1 * perLife,
+        DISPLAY_NAME = "GBU-31"
+    },
+    {
+        WP_NAME = "weapons.bombs.GBU_31_V_3B",
+        QTY = 1 * perLife,
+        DISPLAY_NAME = "GBU-31(V)3/B"
+    },
+    {
+        WP_NAME = "weapons.bombs.GBU_38",
+        QTY = 1 * perLife,
+        DISPLAY_NAME = "GBU-38"
+    },
+    --{
+    --    WP_NAME = "weapons.missiles.X_58",
+    --    QTY = 0,
+    --    DISPLAY_NAME = "Kh-58U"
+    --},
+    --{
+    --    WP_NAME = "weapons.missiles.LD-10",
+    --    QTY = 0,
+    --    DISPLAY_NAME = "LD-10"
+    --},
+    --{
+    --    WP_NAME = "weapons.missiles.LS-6-500",
+    --    QTY = 0,
+    --    DISPLAY_NAME = "LS-6-500"
+    --},
+    --{
+    --    WP_NAME = "P_27TE",
+    --    QTY = 0,
+    --    DISPLAY_NAME = "R-27ET"
+    --},
+    --{
+    --    WP_NAME = "P_27EP",
+    --    QTY = 0,
+    --    DISPLAY_NAME = "R-27ER"
+    --},
+    {
+        WP_NAME = "P_77",
+        QTY = 8 * perLife,
+        DISPLAY_NAME = "R-77"
+    },
+    {
+        WP_NAME = "weapons.bombs.RN-24",
+        QTY = 0,
+        DISPLAY_NAME = "RN-24"
+    },
+    {
+        WP_NAME = "weapons.bombs.RN-28",
+        QTY = 0,
+        DISPLAY_NAME = "RN-28"
+    },
+    {
+        WP_NAME = "SD-10",
+        QTY = 4 * perLife,
+        DISPLAY_NAME = "SD-10"
+    },
 }
-limitations[2] = {
-    WP_NAME = "AIM_120",
-    QTY = 1 * perLife,
-    DISPLAY_NAME = "AIM 120B"
-}
-limitations[3] = {
-    WP_NAME = "SD-10",
-    QTY = 4 * perLife,
-    DISPLAY_NAME = "SD-10"
-}
-limitations[4] = {
-    WP_NAME = "P_77",
-    QTY = 8 * perLife,
-    DISPLAY_NAME = "R-77"
-}
-limitations[5] = {
-    WP_NAME = "AIM_54A_Mk47",
-    QTY = 1 * perLife,
-    DISPLAY_NAME = "AIM 54A-Mk47"
-}
-limitations[6] = {
-    WP_NAME = "AIM_54A_Mk60",
-    QTY = 4 * perLife,
-    DISPLAY_NAME = "AIM 54A-Mk60"
-}
-limitations[7] = {
-    WP_NAME = "AIM_54C_Mk47",
-    QTY = 1 * perLife,
-    DISPLAY_NAME = "AIM 54C-Mk47"
-}
-limitations[8] = {
-    WP_NAME = "PN_24",
-    QTY = 0,
-    DISPLAY_NAME = "RN-24"
-}
-limitations[9] = {
-    WP_NAME = "PN_28",
-    QTY = 0,
-    DISPLAY_NAME = "RN-28"
-}
-limitations[10] = {
-    WP_NAME = "AGM-154C",
-    QTY = 0,
-    DISPLAY_NAME = "AGM 154 JSOW-C"
-}
---limitations[11] = {
---  WP_NAME = "P_27TE",
---  QTY = 1 * perLife,
---  DISPLAY_NAME = "R-27ET"
---}
---limitations[12] = {
---  WP_NAME = "P_27EP",
---  QTY = 1 * perLife,
---  DISPLAY_NAME = "R-27ER"
---}
+
 -- ----------------------- DO NOT TOUCH UNDER HERE-------------------------------
 local playersSettedUp = {}
 local data = {}
@@ -271,9 +344,9 @@ local function sendToRsrBot(event)
             ["targetCoalition"] = 0,
             ["weapon"] = "",
         }
-        if event.target ~= nil  then
+        if event.target then
             --some events dont have a target
-            if event.target:getPlayerName() ~= nil then
+            if event.target:getPlayerName() then
                 --check for AI or Player
                 event2send.target = event.target:getPlayerName()
             else
@@ -285,15 +358,20 @@ local function sendToRsrBot(event)
             --check the event has a weapon associated with it (some dont)
             event2send.weapon = event.weapon_name
         end
-        if event.initiator ~= nil then
+		
+        if event.initiator then
             --check the event has an initiator
-            if event.initiator:getPlayerName() ~= nil then
-                --check for AI or Player
-                event2send.initiator = event.initiator:getPlayerName()
-            else
-                event2send.initiator = "AI"
-            end
-            event2send.initiatorCoalition = event.initiator:getCoalition()
+			if event.initiator:getCategory() == Object.Category.UNIT then
+				 if event.initiator:getGroup():getCategory() == Group.Category.AIRPLANE then
+					if event.initiator:getPlayerName() then
+						--check for AI or Player
+						event2send.initiator = event.initiator:getPlayerName()
+					else
+						event2send.initiator = "AI"
+					end
+					event2send.initiatorCoalition = event.initiator:getCoalition()
+				end
+			end
         end
         --PrintTable(event)
         local udp = assert(socket.udp())
