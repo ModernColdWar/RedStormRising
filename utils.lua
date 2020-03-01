@@ -222,7 +222,7 @@ function M.getCurrFARPside (_FARPname)
 	end
 	
 	if _bOFARPside == "FARPnotFound" then 
-		log:error("$1 FARP not found in 'baseOwnership.FARPs' sides. Reporting side neutral.",_FARPname)
+		--log:error("$1 FARP not found in 'baseOwnership.FARPs' sides.",_FARPname)
 	end
 	return _bOFARPside
 end	
@@ -254,7 +254,7 @@ function M.getCurrABside (_ABname)
 	end
 	
 	if _bOABside == "ABnotFound" then 
-		log:error("$1 Airbase not found in 'baseOwnership.Airbases' sides.",_ABname)
+		--log:error("$1 Airbase not found in 'baseOwnership.Airbases' sides.",_ABname)
 	end
 	return _bOABside
 end

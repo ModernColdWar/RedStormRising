@@ -1064,7 +1064,7 @@ function ctld.spawnLogisticsCentre(_point, _name, _coalition, _baseORfob, _baseO
 	end
 	--(_passedBaseName,_playerORunit,_campaignStartSetup)
 	baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(_checkWhichBases,_playerName,false)
-	log:info("_isMissionInit: $1, _checkWhichBases: $2, _spawnedLogiCentreObject: $3",_isMissionInit,_checkWhichBases,mist.utils.basicSerialize(_spawnedLogiCentreObject))
+	log:info("_isMissionInit: $1, _checkWhichBases: $2, _spawnedLogiCentreObject: $3, _playerName: $4",_isMissionInit,_checkWhichBases,mist.utils.basicSerialize(_spawnedLogiCentreObject),_playerName)
 	
     return _spawnedLogiCentreObject
 end
@@ -4800,6 +4800,7 @@ function ctld.baseProximity(_aircraft) --{_inBaseZoneAndRSRrepairRadius,_inFOBex
 		end
     end
 	
+	--mr: TODO: Convert into function for wider use
 	--determine RSR owner of closest base based on base name from closest zone
 	local _matchedSide = _debugBaseSide
     for _k, _baseTypes in pairs(baseOwnershipCheck.baseOwnership) do
@@ -5702,7 +5703,7 @@ function ctld.JTACAutoLase(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
 	if _jtacOwner == nil then
 		local _jtacBase = utils.getBaseAndSideNamesFromGroupName(_jtacGroupName)
 		--log:info("_jtacBase $1", _jtacBase)
-		_jtacOwner = _jtacBase .. " Support"
+		_jtacOwner = _jtacBase .. " Defence"
 	end
 	log:info("PRE-isNil: _jtacGroup $1", _jtacGroup)
     if _jtacGroup == nil or #_jtacGroup == 0 then
@@ -6298,7 +6299,7 @@ function ctld.getJTACStatus(_args)
 		if _jtacOwner == nil then
 			local _jtacBase = utils.getBaseAndSideNamesFromGroupName(_jtacGroupName)
 			log:info("_jtacBase $1", _jtacBase)
-			_jtacOwner = _jtacBase .. " Support"
+			_jtacOwner = _jtacBase .. " Defence"
 		end
 		
         if _jtacUnit ~= nil and _jtacUnit:getLife() > 0 and _jtacUnit:isActive() == true and _jtacUnit:getCoalition() == _side then

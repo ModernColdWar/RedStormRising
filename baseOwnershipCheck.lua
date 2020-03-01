@@ -24,9 +24,8 @@ end
 
 function M.getAllBaseOwnership(_passedBaseName,_playerORunit,_campaignStartSetup)
 	--mr: intercept first time campaign setup here to read FARP ownership from Trigger Zone Name or Color
-	log:info("_campaignStartSetup: $1",_campaignStartSetup)
-	log:info("_passedBaseName: $1",_passedBaseName)
-
+	log:info("_passedBaseName: $1, _playerORunit: $2, _campaignStartSetup: $3",_passedBaseName,_playerORunit,_campaignStartSetup)
+	
 	if _campaignStartSetup then
 		
 		-- wipe baseOwnership and reconstruct as checking all bases
@@ -60,7 +59,7 @@ function M.getAllBaseOwnership(_passedBaseName,_playerORunit,_campaignStartSetup
 	elseif _passedBaseName == "ALL" then  --search through ALL bases and check status
 		log:info("ctld.logisticCentreObjects $1", ctld.logisticCentreObjects)
 		local _conqueringUnit = "none"
-		if _playerORunit ~= "none" and type(_playerORunit) ~= "string" then --playerName passed as string thus would cause error with ctld.getPlayerNameOrType
+		if _playerORunit ~= "none" and type(_playerORunit) ~= "string" then --_playerORunit not passed as string to ctld.getPlayerNameOrType would cause an error
 			_conqueringUnit = ctld.getPlayerNameOrType(_playerORunit) -- get type of ground vehicle if passed
 		end
 		
@@ -191,7 +190,7 @@ function M.getAllBaseOwnership(_passedBaseName,_playerORunit,_campaignStartSetup
 					--No logistics centre and base contested. IS BASE CAPTURED? 
 			
 					--if base was setup in MIZ as neutral then revert to neutral upon logisitics centre destruction i.e. airbase cannot be captured
-					if _zoneSideFromColor == "neutral" then
+					if _zoneSideFromColor == "neutral" and _RSRowner ~= "neutral" then
 					
 						utils.removeABownership(_baseName)
 						table.insert(baseOwnership.Airbases["neutral"], _baseName)
@@ -215,7 +214,7 @@ function M.getAllBaseOwnership(_passedBaseName,_playerORunit,_campaignStartSetup
 							bases.resupply(_baseName,_DCSsideName, rsrConfig, false, false,false) --activate base defences but DO NOT spawn logistics and NOT missionInit
 							
 							--trigger.action.outText(_baseName .. " HAS BEEN CAPTURED BY A " .. _DCSsideName .. _conqueringUnit, 10)  -don't let defending team know conquering unit!
-							trigger.action.outText(_baseName .. " HAS BEEN CAPTURED BY " .. string.upper(_DCSsideName) .. "TEAM.", 10)
+							trigger.action.outText(_baseName .. " HAS BEEN CAPTURED BY " .. string.upper(_DCSsideName) .. " TEAM", 10)
 						
 						elseif _DCSsideName == "neutral" then 
 						-- Airbase converts back to MIZ warehouse setting i.e. neutral, if no ground units from either side present
@@ -313,15 +312,17 @@ function M.getAllBaseOwnership(_passedBaseName,_playerORunit,_campaignStartSetup
 					end
 					
 					if not _isStagingBase then
-					
-						--no logistics centre then set to owernship to neutral to block slot and other functions, as logisitics centre required for claim
-						log:info("$1 FARP - SETTING TO NEUTRAL: _RSRowner: $2, _DCSsideName: $3",_baseName,_RSRowner,_DCSsideName)
-						utils.removeFARPownership(_baseName)
-						table.insert(baseOwnership.FARPs.neutral, _baseName)
-						bases.configureForSide(_baseName, "neutral") --slotBlocker.lua & pickupZoneManager.lua
-						
-						if _conqueringUnit ~= "none" then
-							--trigger.action.outTextForCoalition(_FARPlogisticsCentreCoalition,_baseName .. " has been neutralized by " .. _conqueringUnit, 10)
+							
+						if _RSRowner ~= "neutral" then
+							--no logistics centre then set to owernship to neutral to block slot and other functions, as logisitics centre required for claim
+							log:info("$1 FARP - SETTING OWNERSHIP TO NEUTRAL AS NO LOGISITICS CENTRE: _RSRowner: $2, _DCSsideName: $3",_baseName,_RSRowner,_DCSsideName)
+							utils.removeFARPownership(_baseName)
+							table.insert(baseOwnership.FARPs.neutral, _baseName)
+							bases.configureForSide(_baseName, "neutral") --slotBlocker.lua & pickupZoneManager.lua
+							
+							if _conqueringUnit ~= "none" then
+								--trigger.action.outTextForCoalition(_FARPlogisticsCentreCoalition,_baseName .. " has been neutralized by " .. _conqueringUnit, 10)
+							end
 						end
 					end
 				end

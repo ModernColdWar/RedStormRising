@@ -91,6 +91,7 @@ function M.spawnGroup(groupData)
     for _, unitData in pairs(groupData.units) do
         unitData.playerCanDrive = true
 		
+		--group name for MIZ pre-placed JTACs won't contain "UAZ" or "Hummer", therefore check unit type
 		local _unitType = unitData.type
 		if ctld.isJTACUnitType(_unitType) then
 			_isJTAC = true
