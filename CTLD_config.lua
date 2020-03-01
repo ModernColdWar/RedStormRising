@@ -38,7 +38,7 @@ ctld.slingLoad = true -- if false, crates can be used WITHOUT slingloading, by h
 ctld.enableSmokeDrop = true -- if false, helis and c-130 will not be able to drop smoke
 
 ctld.maxExtractDistance = 200 -- max distance from vehicle to troops to allow a group extraction
-ctld.maximumDistanceLogistic = 200 -- max distance from vehicle to logistics to allow a loading or spawning operation (-Swallow Changed to 0 for ez testing)
+ctld.maximumDistanceLogistic = 200 -- max distance from vehicle to logistics to allow a loading or spawning operation
 ctld.maximumSearchDistance = 0 -- max distance for troops to search for enemy
 ctld.maximumMoveDistance = 0 -- max distance for troops to move from drop point if no enemy is nearby
 

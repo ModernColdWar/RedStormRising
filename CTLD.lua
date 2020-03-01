@@ -1108,9 +1108,10 @@ function ctld.spawnCrate(_arguments)
 				end
 			end
 			
+			--log:info ("spawnCrate: _nearestLogisticsCentreDist: $1, ctld.maximumDistanceLogistic: $2, ctld.debug: $3",_nearestLogisticsCentreDist,ctld.maximumDistanceLogistic,ctld.debug)
 			if _logisticsCentreReq then
-				if (_nearestLogisticsCentreDist <= ctld.maximumDistanceLogistic) == true and ctld.debug == false then
-					ctld.displayMessageToGroup(_heli, "You are not close enough to friendly logistics to get a crate!", 10)
+				if (_nearestLogisticsCentreDist > ctld.maximumDistanceLogistic) == true and ctld.debug == false then
+					ctld.displayMessageToGroup(_heli, "You are not close enough to friendly logistics centre to get a crate!", 10)
 					return
 				end
 			end
@@ -5683,7 +5684,7 @@ function ctld.getLaserCode(_coalition)
 end
 
 function ctld.JTACAutoLase(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
-	log:info("START: _jtacGroupName $1, _laserCode: $2", _jtacGroupName, _laserCode)
+	--log:info("START: _jtacGroupName $1, _laserCode: $2", _jtacGroupName, _laserCode)
     if ctld.jtacStop[_jtacGroupName] == true then
         ctld.jtacStop[_jtacGroupName] = nil -- allow it to be started again
         ctld.cleanupJTAC(_jtacGroupName)
@@ -5705,7 +5706,7 @@ function ctld.JTACAutoLase(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
 		--log:info("_jtacBase $1", _jtacBase)
 		_jtacOwner = _jtacBase .. " Defence"
 	end
-	log:info("PRE-isNil: _jtacGroup $1", _jtacGroup)
+	--log:info("PRE-isNil: _jtacGroup $1", _jtacGroup)
     if _jtacGroup == nil or #_jtacGroup == 0 then
 		
         --check not in a heli
@@ -5749,8 +5750,8 @@ function ctld.JTACAutoLase(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
         ctld.jtacUnits[_jtacGroupName] = { name = _jtacUnit:getName(), side = _jtacUnit:getCoalition() }
 		
 		--log:info("_jtacUnit $1, _jtacGroupName: $3, _jtacGroup: $3", _jtacUnit, _jtacGroupName, inspect(_jtacGroup, { newline = " ", indent = "" }))
-		log:info("_jtacUnit name $1",_jtacUnit:getName())
-		log:info("ctld.jtacUnits $1",inspect(ctld.jtacUnits, { newline = " ", indent = "" }))
+		--log:info("_jtacUnit name $1",_jtacUnit:getName())
+		--log:info("ctld.jtacUnits $1",inspect(ctld.jtacUnits, { newline = " ", indent = "" }))
 		
         -- work out smoke colour
         if _colour == nil then
@@ -5818,7 +5819,7 @@ function ctld.JTACAutoLase(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
         ctld.jtacCurrentTargets[_jtacGroupName] = nil
 
         --stop lasing
-		log:info("cancelLase: _jtacGroupName $1", _jtacGroupName)
+		--log:info("cancelLase: _jtacGroupName $1", _jtacGroupName)
         ctld.cancelLase(_jtacGroupName)
     end
 
@@ -5874,7 +5875,7 @@ function ctld.JTACAutoLase(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
         -- env.info('LASE: No Enemies Nearby')
 
         -- stop lazing the old spot
-		log:info("cancelLase: _jtacGroupName $1", _jtacGroupName)
+		--log:info("cancelLase: _jtacGroupName $1", _jtacGroupName)
         ctld.cancelLase(_jtacGroupName)
         --  env.info('Timer Slow timerSparkleLase '..jtacGroupName.." "..laserCode.." "..enemyUnit:getName())
 
@@ -5894,7 +5895,7 @@ end
 
 function ctld.cleanupJTAC(_jtacGroupName)
     -- clear laser - just in case
-	log:info("cancelLase: _jtacGroupName $1", _jtacGroupName)
+	--log:info("cancelLase: _jtacGroupName $1", _jtacGroupName)
     ctld.cancelLase(_jtacGroupName)
 
     -- Cleanup
@@ -5921,7 +5922,7 @@ function ctld.createSmokeMarker(_enemyUnit, _colour)
 end
 
 function ctld.cancelLase(_jtacGroupName)
-	log:info("cancelLase: _jtacGroupName $1", _jtacGroupName)
+	--log:info("cancelLase: _jtacGroupName $1", _jtacGroupName)
     --local index = "JTAC_"..jtacUnit:getID()
 
     local _tempLase = ctld.jtacLaserPoints[_jtacGroupName]
