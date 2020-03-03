@@ -49,5 +49,5 @@ function M.spawnLogisticsBuildingForBase(baseName, sideName, logisticsCentreName
 	log:warn("No logistics zone called for $1 found; no logistics building will spawn", baseName)
 	
 end
-log:info("ctld.logisticCentreObjects $1",  mist.utils.basicSerialize(ctld.logisticCentreObjects))
+
 return M

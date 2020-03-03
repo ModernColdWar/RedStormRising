@@ -106,7 +106,7 @@ function M.spawnGroup(groupData)
         ctld.JTACAutoLase(groupName, _code)
     end
 	--]]
-	log:info("_isJTAC $1 groupName $2", _isJTAC, groupName)
+	--log:info("_isJTAC $1 groupName $2", _isJTAC, groupName)
 	if _isJTAC then
 		local _code = ctld.getLaserCode(Group.getByName(groupName):getCoalition())
 		log:info("Configuring group $1 to auto-lase on $2", groupName, _code)

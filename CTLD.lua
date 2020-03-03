@@ -5409,7 +5409,7 @@ function ctld.addCrateMenu(_rootPath, _crateTypeDescription, _unit, _groupId, _s
                     local _requiresMultipleCrates = _crate.cratesRequired ~= nil and _crate.cratesRequired > 1
                     local _hasMultipleUnits = _crate.unitQuantity ~= nil and _crate.unitQuantity > 1
                     if (_requiresMultipleCrates or _hasMultipleUnits) then
-                        _crateRadioMsg = _crateRadioMsg .. "["
+                        --_crateRadioMsg = _crateRadioMsg .. "["
                         if _requiresMultipleCrates then
                             _crateRadioMsg = _crateRadioMsg .. _crate.cratesRequired .. "C"
                             if _hasMultipleUnits then
@@ -5420,9 +5420,10 @@ function ctld.addCrateMenu(_rootPath, _crateTypeDescription, _unit, _groupId, _s
                                 _crateRadioMsg = _crateRadioMsg .. "1C," .. _crate.unitQuantity .. "Q"
                             end
                         end
-                        _crateRadioMsg = _crateRadioMsg .. "] "
+                        _crateRadioMsg = _crateRadioMsg .. "| "
                     else
-						_crateRadioMsg = _crateRadioMsg .. "[1C,1Q] "
+						--_crateRadioMsg = _crateRadioMsg .. "[1C,1Q] "
+						_crateRadioMsg = _crateRadioMsg .. "1C,1Q | "
 					end
 					
 					_crateRadioMsg = _crateRadioMsg .. _crate.desc --add unit description to end of crate and quantity prefix e.g. "[1C,1Q] Avenger"
@@ -6393,7 +6394,7 @@ function ctld.getJTACStatus(_args)
 				-- _mapGrid = mist.tostringMGRS(coord.LLtoMGRS(coord.LOtoLL(_jtacUnit:getPosition().p)), 1)
 				_mapGrid = utils.tostringMGRSnoUTM(coord.LLtoMGRS(coord.LOtoLL(_jtacUnit:getPosition().p)), -1) --Moose.lua: line 7723: playerMenu unit selection and accuracy
 				
-				_searchingJTACsUnsorted[_searchingJTACsCount] = {_jtacUnit,_distToPlayer,_JTACref,"" .. "[" .. _azFromPlayerStr --[[.. utf8.char(730)]] .. " : " .. _roundedDist .. "km] Grid: " .. _mapGrid .. ", JTAC: " .. _jtacOwner .. " | "} --DCS = LUA 5.2, UTF-8 support = LUA 5.3
+				_searchingJTACsUnsorted[_searchingJTACsCount] = {_jtacUnit,_distToPlayer,_JTACref,"" .. "[" .. _azFromPlayerStr --[[.. utf8.char(730)]] .. " : " .. _roundedDist .. "km] Grid: " .. _mapGrid .. ", JTAC: " .. _jtacOwner} --DCS = LUA 5.2, UTF-8 support = LUA 5.3
 
             end
         end
@@ -6436,7 +6437,7 @@ function ctld.getJTACStatus(_args)
 		
 		if _discoveredJTACsCount > 0 then
 		
-			_message = _message .. "\n" ..  "JTACs with Targets [" .. _discoveredJTACsCount .. "of" .. _activeJTACsCount ..  "] : \n"
+			_message = _message .. "\n" ..  "JTACs with Targets |" .. " " .. _discoveredJTACsCount .. " of " .. _activeJTACsCount ..  " : \n"
 			local _dJTACref = ""
 			for _key,_jT in ipairs(_discoveredJTACs) do
 				-- local _dJTACref = "J" .. _discoveredJTACs[_key][3] .. " - " -- ref# designation for better re-refrencing?
@@ -6446,7 +6447,7 @@ function ctld.getJTACStatus(_args)
 		
 		if _searchingJTACsCount > 0 then
 		
-			_message = _message .. "\n" ..  "JTACs Searching for Targets [" .. _searchingJTACsCount .. "of" .. _activeJTACsCount .. "] : \n"
+			_message = _message .. "\n" ..  "JTACs Searching for Targets |" .. " " .. _searchingJTACsCount .. " of " .. _activeJTACsCount .. " : \n"
 			local _sJTACref = ""
 			for _key,_jT in ipairs(_searchingJTACs) do
 				-- local _sJTACref = "J" .. _searchingJTACs[_key][3] .. " - " -- ref# designation for better re-refrencing esp. when not targeting anything?

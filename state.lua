@@ -176,8 +176,8 @@ function M.getOwner(passedBase)
     return nil
 end
 
---mr: just because DCS EH = base owner changed doesn't mean base change accoriding to RSR!
--- checkBaseOwner only utilsed by baseCapturedHandler.lua i.e. DCS baseCaptured eventHandler
+--mr: just because DCS EH = base owner changed doesn't mean base change accoriding to RSR capture logic and requirements!
+-- checkBaseOwner only utilsed by baseCapturedHandler.lua = DCS baseCaptured eventHandler
 function M.checkBaseOwner(baseName, sideName) 
     local currentOwner = M.getOwner(passedBase)
     if currentOwner == sideName then

@@ -73,7 +73,7 @@ function M.getAllBaseOwnership(_passedBaseName,_playerORunit,_campaignStartSetup
 			
 			-- _DCSsideName == nil if contested
 			if _DCSsideName == nil then
-				log:info("No side returned for $1; setting to neutral", _baseName)
+				log:info("No side returned for $1; setting to CONTESTED", _baseName)
 				_DCSsideName = "CONTESTED"
 			end
 			
