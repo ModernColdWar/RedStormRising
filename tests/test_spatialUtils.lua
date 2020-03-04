@@ -38,7 +38,7 @@ function TestSpatialUtils:testFindNearest()
     lu.assertEquals(idx, 2)
     lu.assertAlmostEquals(minDist, 0.1414, 0.001)
 
-    idx, minDist = spatialUtils.findNearest({x=0, y=0}, {})
+    idx, minDist = spatialUtils.findNearest({ x = 0, y = 0 }, {})
     lu.assertIsNil(idx)
     lu.assertIsNil(minDist)
 end

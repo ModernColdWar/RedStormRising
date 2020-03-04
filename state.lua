@@ -154,7 +154,7 @@ function M.updateBaseOwnership()
         return
     end
     local newOwnership = { airbases = { red = {}, blue = {}, neutral = {} },
-                            farps = { red = {}, blue = {}, neutral = {} } }
+                           farps = { red = {}, blue = {}, neutral = {} } }
     for baseType, baseOwnership in pairs(dcsBaseOwnership) do
         -- copy blue and red ownerships directly from DCS
         newOwnership[baseType].red = baseOwnership.red

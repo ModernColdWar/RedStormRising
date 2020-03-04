@@ -143,7 +143,7 @@ function TestState:testUpdateBaseOwnershipFirstTime()
 end
 
 function TestState:testUpdateBaseOwnershipChangingSides()
-    stubDcsBaseOwnership({ airbases = { blue = { "Sochi" }, red = { "Vaziani" }, neutral = {}} })
+    stubDcsBaseOwnership({ airbases = { blue = { "Sochi" }, red = { "Vaziani" }, neutral = {} } })
     state.updateBaseOwnership()
     stubDcsBaseOwnership({ airbases = { blue = { "Sochi", "Vaziani" }, red = { }, neutral = {} } })
     state.updateBaseOwnership()
@@ -239,8 +239,8 @@ function TestState:testUpdateBaseOwnershipWithLotsOfData()
 
     -- Everything goes neutral; no change in state
     local baseOwnership6 = {
-        airbases = { red = {}, blue = {}, neutral = {"AB1", "AB2", "AB3", "AB4", "AB5", "AB6" } },
-        farps = { red = { }, blue = {}, neutral = {"F1", "F2", "F3", "F4" } }
+        airbases = { red = {}, blue = {}, neutral = { "AB1", "AB2", "AB3", "AB4", "AB5", "AB6" } },
+        farps = { red = { }, blue = {}, neutral = { "F1", "F2", "F3", "F4" } }
     }
     stubDcsBaseOwnership(baseOwnership6)
     state.updateBaseOwnership()

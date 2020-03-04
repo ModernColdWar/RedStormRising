@@ -299,7 +299,7 @@ function ewrs.filterUnits(units)
         if valid then
             --another check cause it seems AI radar can detected some ground units
             local category = v["object"]:getDesc().category
-            if category ~= Unit.Category.AIRPLANE  and category ~= Unit.Category.HELICOPTER then
+            if category ~= Unit.Category.AIRPLANE and category ~= Unit.Category.HELICOPTER then
                 valid = false
             end
         end

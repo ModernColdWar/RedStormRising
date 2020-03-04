@@ -15,11 +15,10 @@ SRSAuto.SERVER_SEND_AUTO_CONNECT = true -- set to false to disable auto connect 
 SRSAuto.CHAT_COMMANDS_ENABLED = false -- if true type -freq, -freqs or -frequencies in ALL chat in multilayer to see the frequencies
 
 SRSAuto.SRS_FREQUENCIES = {
-    ["red"]= "Frequencies are in the briefing (Alt+B by default)", -- edit this to the red frequency list
-    ["blue"]= "Frequencies are in the briefing (Alt+B by default)", -- edit this to the blue frequency list
-    ["neutral"]= "" -- edit this to the spectator frequency list
+    ["red"] = "Frequencies are in the briefing (Alt+B by default)", -- edit this to the red frequency list
+    ["blue"] = "Frequencies are in the briefing (Alt+B by default)", -- edit this to the blue frequency list
+    ["neutral"] = "" -- edit this to the spectator frequency list
 }
-
 
 ---- SRS NUDGE MESSAGE ----
 SRSAuto.SRS_NUDGE_ENABLED = false -- set to true to enable the message below
@@ -40,8 +39,8 @@ local HOST_PLAYER_ID = 1
 
 SRSAuto.MESSAGE_PREFIX = "SRS Running @ " -- DO NOT MODIFY!!!
 
-package.path  = package.path..";.\\LuaSocket\\?.lua;"
-package.cpath = package.cpath..";.\\LuaSocket\\?.dll;"
+package.path = package.path .. ";.\\LuaSocket\\?.lua;"
+package.cpath = package.cpath .. ";.\\LuaSocket\\?.dll;"
 
 local JSON = loadfile("Scripts\\JSON.lua")()
 SRSAuto.JSON = JSON
@@ -51,11 +50,11 @@ local socket = require("socket")
 SRSAuto.UDPSendSocket = socket.udp()
 SRSAuto.UDPSendSocket:settimeout(0)
 
-SRSAuto.logFile = io.open(lfs.writedir()..[[Logs\DCS-SRS-AutoConnect.log]], "w")
+SRSAuto.logFile = io.open(lfs.writedir() .. [[Logs\DCS-SRS-AutoConnect.log]], "w")
 
 function SRSAuto.log(str)
     if SRSAuto.logFile then
-        SRSAuto.logFile:write(str.."\n")
+        SRSAuto.logFile:write(str .. "\n")
         SRSAuto.logFile:flush()
     end
 end
@@ -63,13 +62,13 @@ end
 -- Register callbacks --
 
 SRSAuto.onPlayerConnect = function(id)
-	if not DCS.isServer() then
+    if not DCS.isServer() then
         return
     end
-	if SRSAuto.SERVER_SEND_AUTO_CONNECT and id ~= HOST_PLAYER_ID then
+    if SRSAuto.SERVER_SEND_AUTO_CONNECT and id ~= HOST_PLAYER_ID then
         SRSAuto.log(string.format("Sending auto connect message to player %d on connect ", id))
-		net.send_chat_to(string.format(SRSAuto.MESSAGE_PREFIX .. "%s", SRSAuto.SERVER_SRS_HOST), id)
-	end
+        net.send_chat_to(string.format(SRSAuto.MESSAGE_PREFIX .. "%s", SRSAuto.SERVER_SRS_HOST), id)
+    end
 end
 
 SRSAuto.onPlayerChangeSlot = function(id)
@@ -79,7 +78,7 @@ SRSAuto.onPlayerChangeSlot = function(id)
     if SRSAuto.SERVER_SEND_AUTO_CONNECT and id ~= HOST_PLAYER_ID then
         SRSAuto.log(string.format("Sending auto connect message to player %d on switch ", id))
         net.send_chat_to(string.format(SRSAuto.MESSAGE_PREFIX .. "%s", SRSAuto.SERVER_SRS_HOST), id)
-   end
+    end
 end
 
 SRSAuto.trimStr = function(_str)
@@ -89,7 +88,7 @@ end
 SRSAuto.onChatMessage = function(message, playerID)
     local _msg = string.lower(SRSAuto.trimStr(message))
 
-    if  _msg == "-freq" or _msg == "-frequencies" or _msg == "-freqs" then
+    if _msg == "-freq" or _msg == "-frequencies" or _msg == "-freqs" then
 
         local _player = net.get_player_info(playerID)
 
@@ -103,7 +102,7 @@ SRSAuto.onChatMessage = function(message, playerID)
             _freq = SRSAuto.SRS_FREQUENCIES.blue
         end
 
-        local _chatMessage = string.format("*** SRS: %s ***",_freq)
+        local _chatMessage = string.format("*** SRS: %s ***", _freq)
         net.send_chat_to(_chatMessage, _player.id)
         return
     end
@@ -130,9 +129,11 @@ SRSAuto.onSimulationFrame = function()
     end
 end
 
-SRSAuto.readFile = function (path)
+SRSAuto.readFile = function(path)
     local file = io.open(path, "rb") -- r read mode and b binary mode
-    if not file then return nil end
+    if not file then
+        return nil
+    end
     local content = file:read "*a" -- *a or *all reads the whole file
     file:close()
     return content
@@ -145,18 +146,17 @@ SRSAuto.srsNudge = function()
     local _status, _result = pcall(function()
 
         local _playerByName = {}
-        for _,v in pairs(net.get_player_list()) do
+        for _, v in pairs(net.get_player_list()) do
 
             local _player = net.get_player_info(v)
-           
-               
-                if _player.side ~= 0  then
 
-                    _playerByName[_player.name] = _player
-                     --SRSAuto.log("SRS NUDGE - Added ".._player.name)
+            if _player.side ~= 0 then
 
-                end
-            
+                _playerByName[_player.name] = _player
+                --SRSAuto.log("SRS NUDGE - Added ".._player.name)
+
+            end
+
         end
         local fileContent = SRSAuto.readFile(SRSAuto.SRS_NUDGE_PATH);
 
@@ -164,22 +164,22 @@ SRSAuto.srsNudge = function()
         srs = SRSAuto.JSON:decode(fileContent)
 
         if srs and srs.Clients then
-        	srs = srs.Clients
+            srs = srs.Clients
             -- loop through SRS and remove players
-            for _,_srsPlayer in pairs(srs) do
+            for _, _srsPlayer in pairs(srs) do
                 _playerByName[_srsPlayer.Name] = nil
                 --SRSAuto.log("SRS NUDGE - Removed ".._srsPlayer.Name)
             end
 
             -- loop through remaining and nudge
-            for _name,_player in pairs(_playerByName) do
+            for _name, _player in pairs(_playerByName) do
 
                 local _group = DCS.getUnitProperty(_player.slot, DCS.UNIT_GROUP_MISSION_ID)
 
                 if _group then
 
-                    SRSAuto.log("SRS NUDGE - Messaging ".._player.name)
-                    SRSAuto.sendMessage(SRSAuto.SRS_NUDGE_MESSAGE,SRSAuto.SRS_MESSAGE_TIME,_group)
+                    SRSAuto.log("SRS NUDGE - Messaging " .. _player.name)
+                    SRSAuto.sendMessage(SRSAuto.SRS_NUDGE_MESSAGE, SRSAuto.SRS_MESSAGE_TIME, _group)
 
                 end
             end
@@ -189,7 +189,6 @@ SRSAuto.srsNudge = function()
     if not _status then
         SRSAuto.log('ERROR: ' .. _result)
     end
-
 
 
 end

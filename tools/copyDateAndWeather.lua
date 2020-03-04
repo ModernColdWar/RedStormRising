@@ -19,7 +19,6 @@ print(" * Reading weather and date from " .. inputMissionDir)
 local date = mist.utils.deepCopy(mission.date)
 local weather = mist.utils.deepCopy(mission.weather)
 
-
 missionUtils.loadMission(outputMissionDir)
 print(" * Copying " .. inputMissionDir .. " weather to " .. outputMissionDir)
 mission.date = date

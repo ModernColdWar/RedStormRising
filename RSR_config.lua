@@ -3,7 +3,7 @@ local utils = require("utils")
 
 local rsrConfig = {}
 
- -- enables "developer mode"; removes crate spawning/unpacking restrictions, more frequent saves
+-- enables "developer mode"; removes crate spawning/unpacking restrictions, more frequent saves
 rsrConfig.devMode = false
 
 -- Event reporting for the n0xy bot
@@ -37,6 +37,5 @@ rsrConfig.hitMessageDelay = 30
 -- AWACS configuration
 rsrConfig.awacsBases = { "Krasnodar-Center", "Vaziani" } -- bases with linked AWACS spawns
 rsrConfig.awacsSpawnLimit = math.floor(rsrConfig.missionDurationInHours / 2)
-
 
 return rsrConfig
