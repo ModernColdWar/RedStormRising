@@ -61,9 +61,9 @@ function TestUtils:testGetBaseNameFromZoneName()
 end
 
 function TestUtils:testGetRestartHours()
-    lu.assertEquals(utils.getRestartHours(0, 8), {0, 8, 16})
-    lu.assertEquals(utils.getRestartHours(5, 8), {5, 13, 21})
-    lu.assertEquals(utils.getRestartHours(1, 4), {1, 5, 9, 13, 17, 21})
+    lu.assertEquals(utils.getRestartHours(0, 8), { 0, 8, 16 })
+    lu.assertEquals(utils.getRestartHours(5, 8), { 5, 13, 21 })
+    lu.assertEquals(utils.getRestartHours(1, 4), { 1, 5, 9, 13, 17, 21 })
 end
 
 local runner = lu.LuaUnit.new()

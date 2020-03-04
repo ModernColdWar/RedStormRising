@@ -7,32 +7,32 @@ local M = {}
 local log = mist.Logger:new("CTLDUtils", "info")
 
 function M.getLogisticCentreZones(mission)
-	--mr: edit to take into account incrementel zone names for logistics centre location randomization e.g. "MM75 RSRlogisticsZone 02"
-	-- * = LUA string pattern match wildcard should work with missionUtils.getZoneNames() as function uses string.match
+    --mr: edit to take into account incrementel zone names for logistics centre location randomization e.g. "MM75 RSRlogisticsZone 02"
+    -- * = LUA string pattern match wildcard should work with missionUtils.getZoneNames() as function uses string.match
     local zones = missionUtils.getZoneNames(mission, string.lower("RSRlogisticsZone")) --getZoneNames fucntion requires lowercase
     --log:info("RSRlogisticsZone zones in mission are $1", inspect(zones))
     return zones
 end
 
 function M.getRSRbaseCaptureZones (mission)
-	-- DCS getZone function only returns zone position and radius based on name, therefore store complete zone details i.e. color
+    -- DCS getZone function only returns zone position and radius based on name, therefore store complete zone details i.e. color
     local _bCzones = missionUtils.getZones(mission, string.lower("RSRbaseCaptureZone")) --getZoneNames function requires lowercase
-	local RSRbaseCaptureZoneNames = {}
+    local RSRbaseCaptureZoneNames = {}
     for _k, _z in ipairs(_bCzones) do
         table.insert(RSRbaseCaptureZoneNames, _z)
     end
-	--log:info("RSRbaseCaptureZone names (not reporting other zone details) in mission are $1", inspect(RSRbaseCaptureZoneNames))
+    --log:info("RSRbaseCaptureZone names (not reporting other zone details) in mission are $1", inspect(RSRbaseCaptureZoneNames))
     return _bCzones
 end
 
 function M.getRSRcarrierActivateZones (mission)
-	-- DCS getZone function only returns zone position and radius based on name, therefore store complete zone details i.e. color
+    -- DCS getZone function only returns zone position and radius based on name, therefore store complete zone details i.e. color
     local _cAzones = missionUtils.getZones(mission, string.lower("RSRcarrierActivateZone")) --getZoneNames function requires lowercase
-	local RSRcarrierActivateZoneNames = {}
+    local RSRcarrierActivateZoneNames = {}
     for _k, _z in ipairs(_cAzones) do
         table.insert(RSRcarrierActivateZoneNames, _z)
     end
-	--log:info("RSRcarrierActivateZone names (not reporting other zone details) in mission are $1", inspect(RSRcarrierActivateZoneNames))
+    --log:info("RSRcarrierActivateZone names (not reporting other zone details) in mission are $1", inspect(RSRcarrierActivateZoneNames))
     return _cAzones
 end
 

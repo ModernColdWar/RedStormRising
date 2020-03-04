@@ -19,7 +19,6 @@ require("Moose")
 require("CTLD")
 require("CSAR")
 
-
 local log = mist.Logger:new("RSR", "info")
 
 local rsrConfig = require("RSR_config")

@@ -358,20 +358,20 @@ local function sendToRsrBot(event)
             --check the event has a weapon associated with it (some dont)
             event2send.weapon = event.weapon_name
         end
-		
+
         if event.initiator then
             --check the event has an initiator
-			if event.initiator:getCategory() == Object.Category.UNIT then
-				 if event.initiator:getGroup():getCategory() == Group.Category.AIRPLANE then
-					if event.initiator:getPlayerName() then
-						--check for AI or Player
-						event2send.initiator = event.initiator:getPlayerName()
-					else
-						event2send.initiator = "AI"
-					end
-					event2send.initiatorCoalition = event.initiator:getCoalition()
-				end
-			end
+            if event.initiator:getCategory() == Object.Category.UNIT then
+                if event.initiator:getGroup():getCategory() == Group.Category.AIRPLANE then
+                    if event.initiator:getPlayerName() then
+                        --check for AI or Player
+                        event2send.initiator = event.initiator:getPlayerName()
+                    else
+                        event2send.initiator = "AI"
+                    end
+                    event2send.initiatorCoalition = event.initiator:getCoalition()
+                end
+            end
         end
         --PrintTable(event)
         local udp = assert(socket.udp())

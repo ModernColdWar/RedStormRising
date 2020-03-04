@@ -3,7 +3,7 @@ local utils = require("utils")
 
 local rsrConfig = {}
 
- -- enables "developer mode"; removes crate spawning/unpacking restrictions, more frequent saves
+-- enables "developer mode"; removes crate spawning/unpacking restrictions, more frequent saves
 rsrConfig.devMode = false
 
 -- Event reporting for the n0xy bot
@@ -40,6 +40,6 @@ rsrConfig.awacsBases = { "Krasnodar-Center", "Vaziani" } -- bases with linked AW
 rsrConfig.awacsSpawnLimit = math.floor(rsrConfig.missionDurationInHours / 2)
 
 -- staging bases that never change side, never have logisitics centres and cannot be distinguished from FARP helipads
-rsrConfig.stagingBases = {"RedStagingPoint", "BlueStagingPoint"} 
+rsrConfig.stagingBases = { "RedStagingPoint", "BlueStagingPoint" }
 
 return rsrConfig

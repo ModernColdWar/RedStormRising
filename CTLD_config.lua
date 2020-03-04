@@ -243,21 +243,21 @@ ctld.vehicleTransportEnabled = {
 -- add to this list only if aircraft cannot transport vehicles, otherwise menu options duplicated
 --ctld.internalCargoEnabled = {
 ctld.cargoPlanes = {
-	"C-101CC",
-	"L-39ZA",
-	"MiG-15bis",
-	"F-86F Sabre",
-	"TF-51D",
-	"Bf-109K-4",
-	"FW-190D9",
-	"FW-190A8",
-	"I-16",
-	"SpitfireLFMkIX",
-	"SpitfireLFMkIXCW",
-	"P-51D",
-	"P-51D-30-NA",
-	"Christen Eagle II",
-	"Yak-52"
+    "C-101CC",
+    "L-39ZA",
+    "MiG-15bis",
+    "F-86F Sabre",
+    "TF-51D",
+    "Bf-109K-4",
+    "FW-190D9",
+    "FW-190A8",
+    "I-16",
+    "SpitfireLFMkIX",
+    "SpitfireLFMkIXCW",
+    "P-51D",
+    "P-51D-30-NA",
+    "Christen Eagle II",
+    "Yak-52"
 }
 
 
@@ -273,30 +273,30 @@ ctld.cargoPlanes = {
 ctld.unitLoadLimits = {
 
     ["CH-47D"] = 33,
-	---
-	["UH-1H"] = 10,
+    ---
+    ["UH-1H"] = 10,
     ["Mi-8MT"] = 20,
     ["SA342M"] = 2,
     ["SA342L"] = 2,
-	--["Ka-50"] = 1,
-	---
+    --["Ka-50"] = 1,
+    ---
     ["C-101CC"] = 1,
     ["L-39ZA"] = 1,
-	---
-	["MiG-15bis"] = 1,
-	["F-86F Sabre"] = 1,
-	---
-	["TF-51D"] = 1,
-	["Bf-109K-4"] = 1,
-	["FW-190D9"] = 1,
-	["FW-190A8"] = 1,
-	["I-16"] = 1,
-	["SpitfireLFMkIX"] = 1,
-	["SpitfireLFMkIXCW"] = 1,
-	["P-51D"] = 1,
-	["P-51D-30-NA"] = 1,
-	["Christen Eagle II"] = 1,
-	["Yak-52"] = 1
+    ---
+    ["MiG-15bis"] = 1,
+    ["F-86F Sabre"] = 1,
+    ---
+    ["TF-51D"] = 1,
+    ["Bf-109K-4"] = 1,
+    ["FW-190D9"] = 1,
+    ["FW-190A8"] = 1,
+    ["I-16"] = 1,
+    ["SpitfireLFMkIX"] = 1,
+    ["SpitfireLFMkIXCW"] = 1,
+    ["P-51D"] = 1,
+    ["P-51D-30-NA"] = 1,
+    ["Christen Eagle II"] = 1,
+    ["Yak-52"] = 1
 }
 
 
@@ -323,25 +323,25 @@ ctld.unitActions = {
     ["Ka-50"] = { crates = true, troops = false, internal = false },
     ["UH-1H"] = { crates = true, troops = true, internal = true },
     ["Mi-8MT"] = { crates = true, troops = true, internal = true },
-	
-	--allowing 'troops' necessary to allow cargo plane actions for internal cargo load/unload in absence of 'crates' allowance
+
+    --allowing 'troops' necessary to allow cargo plane actions for internal cargo load/unload in absence of 'crates' allowance
     ["C-101CC"] = { crates = false, troops = true, internal = true },
     ["L-39ZA"] = { crates = false, troops = true, internal = true },
-	----
-	["MiG-15bis"] = { crates = false, troops = true, internal = true },
-	["F-86F Sabre"] = { crates = false, troops = true, internal = true },
-	----
-	["TF-51D"] = { crates = false, troops = true, internal = true },
-	["Bf-109K-4"] = { crates = false, troops = true, internal = true },
-	["FW-190D9"] = { crates = false, troops = true, internal = true },
-	["FW-190A8"] = { crates = false, troops = true, internal = true },
-	["I-16"] = { crates = false, troops = true, internal = true },
-	["SpitfireLFMkIX"] = { crates = false, troops = true, internal = true },
-	["SpitfireLFMkIXCW"] = { crates = false, troops = true, internal = true },
-	["P-51D"] = { crates = false, troops = true, internal = true },
-	["P-51D-30-NA"] = { crates = false, troops = true, internal = true },
-	["Christen Eagle II"] = { crates = false, troops = true, internal = true },
-	["Yak-52"] = { crates = false, troops = true, internal = true }
+    ----
+    ["MiG-15bis"] = { crates = false, troops = true, internal = true },
+    ["F-86F Sabre"] = { crates = false, troops = true, internal = true },
+    ----
+    ["TF-51D"] = { crates = false, troops = true, internal = true },
+    ["Bf-109K-4"] = { crates = false, troops = true, internal = true },
+    ["FW-190D9"] = { crates = false, troops = true, internal = true },
+    ["FW-190A8"] = { crates = false, troops = true, internal = true },
+    ["I-16"] = { crates = false, troops = true, internal = true },
+    ["SpitfireLFMkIX"] = { crates = false, troops = true, internal = true },
+    ["SpitfireLFMkIXCW"] = { crates = false, troops = true, internal = true },
+    ["P-51D"] = { crates = false, troops = true, internal = true },
+    ["P-51D-30-NA"] = { crates = false, troops = true, internal = true },
+    ["Christen Eagle II"] = { crates = false, troops = true, internal = true },
+    ["Yak-52"] = { crates = false, troops = true, internal = true }
 }
 
 --transportTypes in missionUtils.lua
@@ -354,24 +354,24 @@ ctld.transportTypes = {
     "Ka-50",
     "UH-1H",
     "Mi-8MT",
-	----
-	"C-101CC",
-	"L-39ZA",
-	----
-	"MiG-15bis",
-	"F-86F Sabre",
-	----
-	"TF-51D",
-	"Bf-109K-4",
-	"FW-190D9",
-	"FW-190A8",
-	"I-16",
-	"SpitfireLFMkIX",
-	"SpitfireLFMkIXCW",
-	"P-51D",
-	"P-51D-30-NA",
-	"Christen Eagle II",
-	"Yak-52"
+    ----
+    "C-101CC",
+    "L-39ZA",
+    ----
+    "MiG-15bis",
+    "F-86F Sabre",
+    ----
+    "TF-51D",
+    "Bf-109K-4",
+    "FW-190D9",
+    "FW-190A8",
+    "I-16",
+    "SpitfireLFMkIX",
+    "SpitfireLFMkIXCW",
+    "P-51D",
+    "P-51D-30-NA",
+    "Christen Eagle II",
+    "Yak-52"
 }
 
 -- ************** INFANTRY GROUPS FOR PICKUP ******************
@@ -416,7 +416,7 @@ ctld.logisticCentreObjects = { }
 ctld.logisticCentreMarkerID = {}
 
 -- airbases/FARPs that if within, do not require a logisitics centre to be present e.g. Gas Platforms
-ctld.logisticCentreNotReqInBase = {"RedStagingPoint", "BlueStagingPoint"}
+ctld.logisticCentreNotReqInBase = { "RedStagingPoint", "BlueStagingPoint" }
 
 -- ************** SPAWNABLE CRATES ******************
 -- Weights must be unique as we use the weight to change the cargo to the correct unit
@@ -433,7 +433,7 @@ ctld.spawnableCrates = {
     -- internal is cargo can be carried in internal bays, set 0 for external.
     -- dont use that option with the HAWK Crates
 
-   ["IFVs & Light Vehicles"] = {
+    ["IFVs & Light Vehicles"] = {
         { weight = 800, desc = "BTR-80", unit = "BTR-80", side = 1, cratesRequired = 1, unitQuantity = 2, internal = 0 },
         { weight = 801, desc = "IFV BMP-1", unit = "BMP-1", side = 1, cratesRequired = 1, unitQuantity = 2, internal = 0 },
         { weight = 802, desc = "IFV BMP-2", unit = "BMP-2", side = 1, cratesRequired = 1, unitQuantity = 2, internal = 0 },
@@ -553,7 +553,6 @@ ctld.spawnableCrates = {
         { weight = 503, desc = "Logistics Centre", unit = "LogisticsCentre", internal = 1 },
     },
 }
-
 
 ctld.internalCratesOnly = ctld.spawnableCrates["Internal Cargo"]
 

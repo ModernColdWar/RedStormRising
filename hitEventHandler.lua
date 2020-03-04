@@ -45,25 +45,26 @@ end
 local function getUnitDesc(coalition, groupName, typeName)
     local ownerName = groupName ~= nil and utils.getPlayerNameFromGroupName(groupName) or nil
     local coalitionName = coalition ~= nil and utils.getSideName(coalition) .. " " or ""
-	
-	local typeDesc = typeName
-	local _isLogisticsCentre = false
-	if typeName == ".Command Center" or typeName == "outpost" then
-		typeDesc = "Logistics Centre"
-		_isLogisticsCentre = true
-	end
-	
-    if ownerName == nil then  --buildings will not have a groupName
-		if _isLogisticsCentre then
-			--buildings will always be neutral coaltion associated, so omit coaltion, otherwise need to do location checks for bases...
-			return string.format("%s", typeDesc) 
-		else
-			return string.format("%s%s", coalitionName, typeDesc)
-		end
+
+    local typeDesc = typeName
+    local _isLogisticsCentre = false
+    if typeName == ".Command Center" or typeName == "outpost" then
+        typeDesc = "Logistics Centre"
+        _isLogisticsCentre = true
+    end
+
+    if ownerName == nil then
+        --buildings will not have a groupName
+        if _isLogisticsCentre then
+            --buildings will always be neutral coaltion associated, so omit coaltion, otherwise need to do location checks for bases...
+            return string.format("%s", typeDesc)
+        else
+            return string.format("%s%s", coalitionName, typeDesc)
+        end
     else
         return string.format("%s's %s%s", ownerName, coalitionName, typeDesc)
     end
-	log:info("HIT: typeDesc: $1 typeName: $2, ownerName: $3",typeDesc,typeName,ownerName)
+    log:info("HIT: typeDesc: $1 typeName: $2, ownerName: $3", typeDesc, typeName, ownerName)
 end
 
 local function getPlayerDesc(coalition, groupName, typeName, playerName)

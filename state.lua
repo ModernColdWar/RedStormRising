@@ -22,7 +22,7 @@ M.defaultState = {
     ctld = {
         nextGroupId = 1,
         nextUnitId = 1,
-		--JTACsPerPlayerPerSide = {}
+        --JTACsPerPlayerPerSide = {}
     },
     persistentGroupData = {}, -- updated by a scheduled task
     baseOwnership = {} -- populated from DCS API if zero-length
@@ -136,31 +136,31 @@ end
 function M.copyToCtld()
     ctld.nextGroupId = M.currentState.ctld.nextGroupId
     ctld.nextUnitId = M.currentState.ctld.nextUnitId
-	ctld.JTACsPerUCIDPerSide = M.currentState.ctld.JTACsPerPlayerPerSide
+    ctld.JTACsPerUCIDPerSide = M.currentState.ctld.JTACsPerPlayerPerSide
 end
 
 function M.copyFromCtld()
     M.currentState.ctld.nextGroupId = ctld.nextGroupId
     M.currentState.ctld.nextUnitId = ctld.nextUnitId
-	M.currentState.ctld.JTACsPerUCIDPerSide  = ctld.JTACsPerUCIDPerSide
+    M.currentState.ctld.JTACsPerUCIDPerSide = ctld.JTACsPerUCIDPerSide
 end
 
 function M.updateBaseOwnership()
-	--(campaignStartSetup,_passedBase,_playerORunit)
-	--campaignStartSetup will take priority over next two args
-	--_passedBase = "ALL" to initiate full check of all bases for persistance
-	if M.campaignStartSetup then
-		--(_passedBaseName,_playerORunit,_campaignStartSetup)
-		M.currentState.baseOwnership = baseOwnershipCheck.getAllBaseOwnership("ALL","none",M.campaignStartSetup)
-		M.campaignStartSetup = false -- only use MIZ zone names and colors to setup bases ONCE, iterate through bases every other time
-	else	
-		if M.missionInitSetup and M.canUseStateFromFile then
-			baseOwnership = M.currentState.baseOwnership -- broadcast global baseOwnership from file to then recheck
-		end
-		--(_passedBaseName,_playerORunit,_campaignStartSetup)
-		M.currentState.baseOwnership = baseOwnershipCheck.getAllBaseOwnership("ALL","none",M.campaignStartSetup)
-	end
-	log:info("M.currentState.baseOwnership $1", M.currentState.baseOwnership)
+    --(campaignStartSetup,_passedBase,_playerORunit)
+    --campaignStartSetup will take priority over next two args
+    --_passedBase = "ALL" to initiate full check of all bases for persistance
+    if M.campaignStartSetup then
+        --(_passedBaseName,_playerORunit,_campaignStartSetup)
+        M.currentState.baseOwnership = baseOwnershipCheck.getAllBaseOwnership("ALL", "none", M.campaignStartSetup)
+        M.campaignStartSetup = false -- only use MIZ zone names and colors to setup bases ONCE, iterate through bases every other time
+    else
+        if M.missionInitSetup and M.canUseStateFromFile then
+            baseOwnership = M.currentState.baseOwnership -- broadcast global baseOwnership from file to then recheck
+        end
+        --(_passedBaseName,_playerORunit,_campaignStartSetup)
+        M.currentState.baseOwnership = baseOwnershipCheck.getAllBaseOwnership("ALL", "none", M.campaignStartSetup)
+    end
+    log:info("M.currentState.baseOwnership $1", M.currentState.baseOwnership)
 end
 
 function M.getOwner(passedBase)
@@ -178,7 +178,7 @@ end
 
 --mr: just because DCS EH = base owner changed doesn't mean base change accoriding to RSR capture logic and requirements!
 -- checkBaseOwner only utilsed by baseCapturedHandler.lua = DCS baseCaptured eventHandler
-function M.checkBaseOwner(baseName, sideName) 
+function M.checkBaseOwner(baseName, sideName)
     local currentOwner = M.getOwner(passedBase)
     if currentOwner == sideName then
         return false  --no change in DCS ownership
@@ -205,22 +205,22 @@ end
 
 function M.setCurrentStateFromFile(stateFileName)
 
-	M.missionInitSetup = true -- persistance.lua: configureBasesAtStartup: state.missionInitSetup = false
-	
+    M.missionInitSetup = true -- persistance.lua: configureBasesAtStartup: state.missionInitSetup = false
+
     if UTILS.FileExists(stateFileName) then
         local stateFromDisk = M.readStateFromDisk(stateFileName)
-		
-         if stateFromDisk ~= nil then
-		    M.canUseStateFromFile = true
-			--M.campaignStartSetup = false --probably unnescessary
-			log:info("State file detected")
-			M.currentState = stateFromDisk
-		end
-		
+
+        if stateFromDisk ~= nil then
+            M.canUseStateFromFile = true
+            --M.campaignStartSetup = false --probably unnescessary
+            log:info("State file detected")
+            M.currentState = stateFromDisk
+        end
+
         if M.getWinner() == nil then
-			-- broadcast global baseOwnership from file to then recheck
-			env.info("state: MISSION INIT: baseOwnership = $1",baseOwnership)
-			baseOwnership = mist.utils.deepCopy(M.currentState.baseOwnership) --deepCopy as variable assingment is a direct reference not a copy
+            -- broadcast global baseOwnership from file to then recheck
+            env.info("state: MISSION INIT: baseOwnership = $1", baseOwnership)
+            baseOwnership = mist.utils.deepCopy(M.currentState.baseOwnership) --deepCopy as variable assingment is a direct reference not a copy
         else
             log:info("State file is from a victory - will not use")
         end
@@ -230,9 +230,9 @@ function M.setCurrentStateFromFile(stateFileName)
 
     if not M.canUseStateFromFile then
         log:info("Setting up from defaults in code, and base(airbase/FARP) ownership from 'RSRbaseCaptureZone Trigger' Zone color")
-		M.campaignStartSetup = true
+        M.campaignStartSetup = true
         M.currentState = mist.utils.deepCopy(M.defaultState)
-		M.updateBaseOwnership()
+        M.updateBaseOwnership()
     end
     log:info("currentState = $1", inspect(M.currentState, { newline = " ", indent = "" }))
     return M.canUseStateFromFile

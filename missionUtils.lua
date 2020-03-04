@@ -117,24 +117,24 @@ local transportTypes = {
     "Ka-50",
     "UH-1H",
     "Mi-8MT",
-	----
-	"C-101CC",
-	"L-39ZA",
-	----
-	"MiG-15bis",
-	"F-86F Sabre",
-	----
-	"TF-51D",
-	"Bf-109K-4",
-	"FW-190D9",
-	"FW-190A8",
-	"I-16",
-	"SpitfireLFMkIX",
-	"SpitfireLFMkIXCW",
-	"P-51D",
-	"P-51D-30-NA",
-	"Christen Eagle II",
-	"Yak-52"
+    ----
+    "C-101CC",
+    "L-39ZA",
+    ----
+    "MiG-15bis",
+    "F-86F Sabre",
+    ----
+    "TF-51D",
+    "Bf-109K-4",
+    "FW-190D9",
+    "FW-190A8",
+    "I-16",
+    "SpitfireLFMkIX",
+    "SpitfireLFMkIXCW",
+    "P-51D",
+    "P-51D-30-NA",
+    "Christen Eagle II",
+    "Yak-52"
 }
 
 function M.isTransportType(type)
@@ -172,18 +172,18 @@ function M.getZones(mission, pattern)
 end
 
 function M.getSpecificZone(mission, pattern)
-	local patternNoHyphen = string.gsub(pattern, "-", "" )
+    local patternNoHyphen = string.gsub(pattern, "-", "")
     local foundZone = "NotFound"
     M.iterZones(mission, function(zone)
-		local zoneName = zone.name
-		local zoneNameNoHyphen = string.gsub(zoneName, "-", "" ) 
+        local zoneName = zone.name
+        local zoneNameNoHyphen = string.gsub(zoneName, "-", "")
         if string.match(zoneNameNoHyphen:lower(), patternNoHyphen) then
             foundZone = zone
         end
     end)
-	if foundZone == "NotFound" then
-		log:error("$1 zone not found.",pattern)
-	end
+    if foundZone == "NotFound" then
+        log:error("$1 zone not found.", pattern)
+    end
     return foundZone
 end
 
