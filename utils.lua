@@ -191,7 +191,6 @@ function M.setGroupControllerOptions(group)
 end
 
 
-
 --searches for FARP name in baseOwnership nested table to determine currently assigned side
 --mr: find more efficient way to transvere nested table
 function M.getCurrFARPside (_FARPname)
@@ -405,6 +404,10 @@ function M.carrierActivateForBaseWhenOwnedBySide(_zone)
         _whenBaseOwnedBySide = "neutral"
     end
     return { _carrierGroup, _RSRcarrierActivateForBase, _whenBaseOwnedBySide }
+end
+
+function M.round(number, roundTo)
+    return math.floor((number + 0.5 * roundTo) / roundTo) * roundTo
 end
 
 return M

@@ -10,6 +10,8 @@
 -- luacheck: no max line length
 local ctldUtils = require("ctldUtils")
 local missionUtils = require("missionUtils")
+local spatialUtils = require("spatialUtils")
+local utils = require("utils")
 
 csar = {}
 
@@ -71,6 +73,8 @@ csar.loadDistance = 60 -- configure distance for pilot to get in helicopter in m
 csar.radioSound = "beacon.ogg" -- the name of the sound file to use for the Pilot radio beacons. If this isnt added to the mission BEACONS WONT WORK!
 
 csar.allowFARPRescue = true --allows pilot to be rescued by landing at a FARP or Airbase
+
+csar.enemyBaseCaptureDistance = 20000 -- minimum distance in m from enemy base to allow CSAR mission spawn (otherwise pilot captured!)
 
 -- SETTINGS FOR MISSION DESIGNER ^^^^^^^^^^^^^^^^^^^*
 
@@ -165,6 +169,21 @@ function csar.pilotsOnboard(_heliName)
         end
     end
     return count
+end
+
+function csar.tooCloseToEnemyBase(_unit)
+    local point = _unit:getPoint()
+    local position = { x = point.x, y = point.z }
+    local unitSideName = utils.getSideName(_unit:getCoalition())
+    if spatialUtils.closestBaseIsEnemyAndWithinRange(position, unitSideName, csar.enemyBaseCaptureDistance) then
+        local nearestBase, _ = spatialUtils.findNearestBase(position)
+        local message = string.format("Mayday, mayday, mayday!  %s was shot down; captured by enemy forces at %s",
+                _unit:getTypeName(), nearestBase)
+        trigger.action.outTextForCoalition(_unit:getCoalition(), message, 10)
+        return true
+    else
+        return false
+    end
 end
 
 -- Handles all world events
@@ -289,6 +308,11 @@ function csar.eventHandler:onEvent(event)
             if csar.doubleEjection(_unit) then
                 env.info("Double ejection")
                 return
+            end
+
+            if csar.tooCloseToEnemyBase(_unit) then
+                csar.handleEjectOrCrash(_unit, true)
+                return true
             end
 
             env.info("Spawning CSAR group")
@@ -652,7 +676,7 @@ function csar.checkDisabledAircraftStatus(_args)
                 end
 
                 -- -1 for lives as we use 1 to indicate out of lives!
-                local _text = string.format("CSAR ACTIVE! \n\nYou have " .. (_lives - 1) .. " lives remaining. Make sure you eject! This way you can be rescued by a friend or yourself to regain the life.")
+                local _text = string.format("CSAR ACTIVE! \n\nYou have " .. (_lives - 1) .. " lives remaining. Make sure you eject! This way you can be rescued by a friend or yourself to regain the life.\n\nSome weapons are limited; check F10 menu for more information")
 
                 csar.displayMessageToSAR(_unit, _text, 20, true)
 
@@ -678,6 +702,17 @@ function csar.checkDisabledAircraftStatus(_args)
             end
         end
     end
+end
+
+function csar.getLivesLeft(playerName)
+    if csar.csarMode ~= 3 then
+        return nil
+    end
+    local _lives = csar.pilotLives[playerName]
+    if _lives == nil then
+        _lives = csar.maxLives + 1
+    end
+    return _lives - 1
 end
 
 function csar.destroyUnit(_unit)

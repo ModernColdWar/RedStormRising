@@ -465,7 +465,7 @@ ctld.spawnableCrates = {
     ["IR SAMs & AAA"] = {
         { weight = 840, desc = "ZSU-23-4 Shilka", unit = "ZSU-23-4 Shilka", side = 1, unitQuantity = 2, internal = 0 },
         { weight = 841, desc = "ZU-23 on Ural", unit = "Ural-375 ZU-23", side = 1, unitQuantity = 2, internal = 0 },
-        { weight = 842, desc = "SA-19 Tunguska", unit = "2S6 Tunguska", side = 1, cratesRequired = 2, unitQuantity = 2, internal = 0 },
+        { weight = 842, desc = "SA-19 Tunguska", unit = "2S6 Tunguska", side = 1, internal = 0 },
         { weight = 843, desc = "SA-9 Strela-1", unit = "Strela-1 9P31", side = 1, unitQuantity = 2, internal = 0 },
         { weight = 844, desc = "SA-13 Strela-10", unit = "Strela-10M3", side = 1, cratesRequired = 1, internal = 0 },
 
@@ -509,11 +509,12 @@ ctld.spawnableCrates = {
         { weight = 877, desc = "Roland Radar", unit = "Roland Radar", side = 2, internal = 0 },
 
         -- HQ-7 (can also be configured as a system, but not currently doing so; just using the launcher)
+        -- HQ-7 launcher has different names per side for immersion sake.
         { weight = 878, desc = "Crotale", unit = "HQ-7_LN_SP", side = 2, cratesRequired = 3, unitQuantity = 2, internal = 0 },
-        --{ weight = 879, desc = "HQ-7 Search Radar", unit = "HQ-7_STR_SP", side = 1, internal = 0 },
+        { weight = 879, desc = "HQ-7", unit = "HQ-7_LN_SP", side = 1, cratesRequired = 3, unitQuantity = 2, internal = 0 },
 
-        -- Tor on both sides
-        { weight = 880, desc = "SA-15 Tor", unit = "Tor 9A331", side = 1, cratesRequired = 2, unitQuantity = 2, internal = 0 },
+        -- Tor on Red
+        { weight = 880, desc = "SA-15 Tor", unit = "Tor 9A331", side = 1, internal = 0 },
 
 
     },
@@ -532,7 +533,7 @@ ctld.spawnableCrates = {
 
     ["Support"] = {
         { weight = 600, desc = "ATZ-10 Fuel Truck", unit = "ATZ-10", side = 1, cratesRequired = 1, internal = 0 },
-        { weight = 601, desc = "Ural-375 Ammo Truck", unit = "Ural-375", side = 1, cratesRequired = 1, internal = 0 },
+        { weight = 601, desc = "KAMAZ-43101 Ammo Truck", unit = "KAMAZ Truck", side = 1, cratesRequired = 1, internal = 0 },
 
         { weight = 610, desc = "M978 HEMTT Tanker", unit = "M978 HEMTT Tanker", side = 2, cratesRequired = 1, internal = 0 },
         { weight = 611, desc = "M-818 Ammo Truck", unit = "M 818", side = 2, cratesRequired = 1, internal = 0 },

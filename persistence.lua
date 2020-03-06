@@ -97,6 +97,13 @@ function M.spawnGroup(groupData)
             _isJTAC = true
         end
     end
+
+    -- make base defence units uncontrollable
+    if not utils.startswith(groupName, "CTLD_") then
+        log:info("Setting $1 as uncontrollable", groupName)
+        groupData["uncontrollable"] = true
+    end
+
     local spawnedGroup = Group.getByName(mist.dynAdd(groupData).name)
 
     --[[

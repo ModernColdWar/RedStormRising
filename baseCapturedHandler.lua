@@ -14,12 +14,16 @@ function M.register()
     function M.eventHandler:OnEventBaseCaptured(event)
         self:I({ event = event })
         local baseName = event.PlaceName
-        local sideName = utils.getSideName(event.IniCoalition) --capturing side
-        log:info("DCS baseCapturedHandler = $1 captured by $2", baseName, sideName)
-
+        local capturingCoalition = event.IniCoalition
+        if capturingCoalition == nil then
+            capturingCoalition = AIRBASE.FindByName(baseName):GetCoalition()
+            log:info("No IniCoalition on event, queried DCS for owner and got $1", capturingCoalition)
+        end
+        local sideName = utils.getSideName(capturingCoalition) --capturing side
+        log:info("Base captured event for $1 captured by $2", baseName, sideName)
         --QUICK INITIAL CHECK: determines if base owner according to DCS differs from that according to RSR
-        --mr: just because DCS EH = base owner changed doesn't mean base change accoriding to RSR!
-        local changedSide = state.checkBaseOwner(baseName, sideName)
+        --mr: just because DCS EH = base owner changed doesn't mean base change according to RSR!
+        local changedSide = state.setBaseOwner(baseName, sideName)
         if changedSide == false then
             log:info("Ignoring capture event for $1: no change of side ($2)", baseName, sideName)
             return

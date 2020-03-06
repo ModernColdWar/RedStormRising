@@ -12,11 +12,6 @@ M.mapMarkers = {}
 
 local log = mist.Logger:new("bases", "info")
 
-local allLateActivatedGroundGroups = SET_GROUP:New()
-                                              :FilterCategories("ground")
-                                              :FilterActive(false)
-                                              :FilterOnce()
-
 local function getRadius(rsrConfig, base)
     if base:GetAirbaseCategory() == Airbase.Category.AIRDROME then
         return rsrConfig.baseDefenceActivationRadiusAirbase
@@ -26,50 +21,55 @@ local function getRadius(rsrConfig, base)
     return 0
 end
 
-local function isReplacementGroup(group)
-    return string.find(group:GetName():lower(), "replacement")
-end
-
 local function activateBaseDefences(baseName, sideName, rsrConfig, missionInit, campaignStartSetup)
     log:info("Activating base defences. missionInit: $1, Add to spawnQueue (campaignStartSetup): $2 ", mist.utils.basicSerialize(missionInit), mist.utils.basicSerialize(campaignStartSetup))
     local base = AIRBASE:FindByName(baseName)
-    local side = utils.getSide(sideName)
     local radius = getRadius(rsrConfig, base)
     log:info("Activating base defences for $1 base $2 within $3m", sideName, baseName, radius)
     local activationZone = ZONE_AIRBASE:New(baseName, radius)
-    allLateActivatedGroundGroups:ForEachGroup(function(group)
-        -- we can't use any of the GROUP:InZone methods as these are late activated units
-        if group:GetCoalition() == side and activationZone:IsVec3InZone(group:GetVec3()) and not isReplacementGroup(group) then
-            local _groupName = group:GetName() --MOOSE
+    local allBaseDefencesGroups = SET_GROUP:New()
+                                           :FilterCategories("ground")
+                                           :FilterActive(false)
+                                           :FilterCoalitions(sideName)
+                                           :FilterOnce()
 
-            log:info("Activating $1 $2 base defence group $3", baseName, sideName, _groupName)
-            group:Activate()
-            --[[
-                campaignStartSetup == true, missionInit = true:
-                    add base defences to spawn queue (persistent unit list) at campaign start and mission start as not yet added
-                campaignStartSetup == true, missionInit = false:
-                    add base defences to spawn queue (persistent unit list) as mission progresses after campaign setup
-                campaignStartSetup == false, missionInit = true:
-                    do NOT add base defences to spawn queue (persistent unit list) at mission start as already present in rsrState.json
-                campaignStartSetup == false, missionInit = false:
-                    add base defences to spawn queue (persistent unit list) as mission progresses
-            --]]
-            if campaignStartSetup or not missionInit then
-                updateSpawnQueue.pushSpawnQueue(_groupName)
+    allBaseDefencesGroups:ForEachGroup(function(group)
+        -- check we have a unit in the group to avoid nil when we call group:GetVec3()
+        if group:GetUnit(1) then
+            -- we can't use any of the GROUP:InZone methods as these are late activated units
+            if activationZone:IsVec3InZone(group:GetVec3()) then
+                local groupName = group:GetName() --MOOSE
+                log:info("Activating $1 $2 base defence group $3", baseName, sideName, groupName)
+                group:Activate()
+                --[[
+                    campaignStartSetup == true, missionInit = true:
+                        add base defences to spawn queue (persistent unit list) at campaign start and mission start as not yet added
+                    campaignStartSetup == true, missionInit = false:
+                        add base defences to spawn queue (persistent unit list) as mission progresses after campaign setup
+                    campaignStartSetup == false, missionInit = true:
+                        do NOT add base defences to spawn queue (persistent unit list) at mission start as already present in rsrState.json
+                    campaignStartSetup == false, missionInit = false:
+                        add base defences to spawn queue (persistent unit list) as mission progresses
+                --]]
+                if campaignStartSetup or not missionInit then
+                    updateSpawnQueue.pushSpawnQueue(groupName)
+                end
+                utils.setGroupControllerOptions(group:GetDCSObject())
+                if ctld.isJTACUnitType(groupName) then
+                    timer.scheduleFunction(function(_groupName)
+                        -- do this 2 seconds later so that group has time to be activated
+                        local _code = ctld.getLaserCode(Group.getByName(_groupName):getCoalition())
+                        log:info("Configuring base defences group $1 to auto-lase on $2", _groupName, _code)
+                        ctld.JTACAutoLase(_groupName, _code)
+                    end, groupName, timer.getTime() + 2)
+                end
+                if string.match(groupName, "1L13 EWR") then
+                    log:info("Configuring group $1 as EWR", groupName)
+                    ctld.addEWRTask(group)
+                end
             end
-
-            if ctld.isJTACUnitType(_groupName) then
-                local _code = ctld.getLaserCode(Group.getByName(_groupName):getCoalition())
-                log:info("Configuring group $1 to auto-lase on $2", _groupName, _code)
-                ctld.JTACAutoLase(_groupName, _code)
-            end
-
-            if string.match(_groupName, "1L13 EWR") then
-                log:info("Configuring group $1 as EWR", _groupName)
-                ctld.addEWRTask(group)
-            end
-
-            utils.setGroupControllerOptions(group)
+        else
+            log:warn("Could not find first unit in group $1", group:GetName())
         end
     end)
 end

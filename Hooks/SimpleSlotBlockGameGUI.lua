@@ -178,6 +178,21 @@ ssb.commanderPlayerUCID = {
     "2e9713fc055304fe1bd6c6c778c0f620", --LeoNerd
     "91ec71924c23f4f15d785f5d7105e6b3", --Salad
     "87dd983a6c5b678de30c9adb55b18cf4", --n0xy standalone
+    "9b1a9d6714bfc414eb0c2e5158f75c89", ---=*26th*=- | Pakster
+    "4f306d55e7ca9d3c683ebd983ad6c859", --Firefly
+    "afce946e4b300ebc03bbbfdee7b07f31", --<64>Kazansky
+    "10fb130391f045766bb836e7c9f66c2c", --Viper 77|Gandalf
+    "964158664f15dd3d7fbb0ea80c6b296f", --The State|LTJG SNOT
+    "20dd4b54a9fc51df4d38cd8955103361", --Disco
+    "4c38b2e3c3647473512e5400017df50e", --8==D Ritt
+    "92fd1d66e41dfa65c7dd73b4f309db87", --8==D Texas
+    "f10c00accc6b3f694490dbb307988e1d", --ROGUE | Archangel
+    "6cb230729c620cd22eea9a1900279dcb", --GasMachine
+    "2afada4c6dcd47147a1140cea34bc43a", --8==D Redback
+    "d64300a70517b5878f2aae5cc4e96968", --8==D Shively
+    "a72632f9d4aef4bc3fc12fb0a6bcdc87", --=R|D= johnnytrump
+    "d125549aa96ca9c8c021e7bfb1028d7c", --Tester
+    "d26bb6e1f0b5268626d41a0feef17727", --Shabi
 }
 
 ssb.version = "1.1"

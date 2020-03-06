@@ -66,6 +66,14 @@ function TestUtils:testGetRestartHours()
     lu.assertEquals(utils.getRestartHours(1, 4), { 1, 5, 9, 13, 17, 21 })
 end
 
+function TestUtils:testRound()
+    lu.assertEquals(utils.round(1234.49, 1), 1234)
+    lu.assertEquals(utils.round(1234.51, 1), 1235)
+    lu.assertEquals(utils.round(1234.56, 10), 1230)
+    lu.assertEquals(utils.round(1234.56, 100), 1200)
+    lu.assertEquals(utils.round(7899.56, 100), 7900)
+end
+
 local runner = lu.LuaUnit.new()
 os.exit(runner:runSuite())
 

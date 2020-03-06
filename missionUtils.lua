@@ -49,6 +49,7 @@ local function serialize(filename, name, object)
     print(name .. " serialized")
 end
 
+-- luacheck: globals warehouses
 function M.serializeMission(mission, missionDir)
     local dcsPath = os.getenv("DCS_PATH")
     if dcsPath == nil then
@@ -85,6 +86,18 @@ function M.iterGroups(mission, groupCallback)
         end
         if country.helicopter ~= nil then
             for _, groups in pairs(country.helicopter) do
+                for _, group in ipairs(groups) do
+                    groupCallback(group, sideName)
+                end
+            end
+        end
+    end)
+end
+
+function M.iterVehicleGroups(mission, groupCallback)
+    M.iterCountries(mission, function(sideName, country)
+        if country.vehicle ~= nil then
+            for _, groups in pairs(country.vehicle) do
                 for _, group in ipairs(groups) do
                     groupCallback(group, sideName)
                 end

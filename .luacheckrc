@@ -10,14 +10,14 @@ stds.moose = {
     read_globals = {
         "BASE", "AIRBASE", "COMMANDCENTER", "COORDINATE", "DATABASE", "DESIGNATE", "DETECTION_AREAS", "EVENTHANDLER",
         "EVENTS", "GROUP", "MENU_GROUP", "MENU_GROUP_COMMAND", "MESSAGE", "SCHEDULER", "SET_CLIENT", "SET_GROUP",
-        "SETTINGS", "SPAWN", "UNIT", "UTILS", "ZONE", "ZONE_AIRBASE", "_SETTINGS"
+        "SET_UNIT", "SETTINGS", "SPAWN", "UNIT", "UTILS", "ZONE", "ZONE_AIRBASE", "_SETTINGS"
     }
 }
 
 std = "lua51+dcs_stub+moose"
 
 read_globals = { "mist" }
-globals = { "csar", "ctld" }
+globals = { "csar", "ctld", "ewrs" }
 
 max_line_length = 160
 

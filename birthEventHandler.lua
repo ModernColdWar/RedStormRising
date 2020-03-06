@@ -1,5 +1,5 @@
 local missionUtils = require("missionUtils")
-local restartInfo = require("restartInfo")
+local missionInfoMenu = require("missionInfoMenu")
 local weaponManager = require("weaponManager")
 
 local M = {}
@@ -35,7 +35,7 @@ function M.BIRTH_EVENTHANDLER:_AddMenus(event)
             self:I("Adding menus for " .. playerGroup:GetName())
             self.groupsMenusAdded[groupName] = true
             local unitName = event.IniUnitName
-            self:_AddTimeUntilRestart(playerGroup)
+            self:_AddMissionInfoMenu(playerGroup)
             self:_AddJTACStatusMenu(groupId, unitName)
             if playerGroup:GetCategory() == Group.Category.AIRPLANE then
                 self:_AddWeaponsManagerMenus(groupId)
@@ -44,18 +44,18 @@ function M.BIRTH_EVENTHANDLER:_AddMenus(event)
                 self:_AddTransportMenus(groupId, unitName)
             else
                 self:_AddRadioListMenu(groupId, unitName)
+                self:_AddLivesLeftMenu(playerGroup, unitName)
             end
+            self:_AddEWRS(groupId, event.IniDCSUnit)
         end
     end
 end
 
-function M.BIRTH_EVENTHANDLER:_AddTimeUntilRestart(playerGroup)
-    MENU_GROUP_COMMAND:New(playerGroup, "Time until restart", nil, function()
-        local secondsUntilRestart = restartInfo.getSecondsUntilRestart(os.date("*t"), self.restartHours)
-        MESSAGE:New(string.format("The server will restart in %s", restartInfo.getSecondsAsString(secondsUntilRestart)), 5):ToGroup(playerGroup)
-    end)
+function M.BIRTH_EVENTHANDLER:_AddMissionInfoMenu(playerGroup)
+    missionInfoMenu.addMenu(playerGroup, self.restartHours)
 end
 
+--luacheck: push no unused
 function M.BIRTH_EVENTHANDLER:_AddJTACStatusMenu(groupId, unitName)
     if ctld.JTAC_jtacStatusF10 then
         missionCommands.addCommandForGroup(groupId, "JTAC Status", nil, ctld.getJTACStatus, { unitName })
@@ -76,8 +76,11 @@ function M.BIRTH_EVENTHANDLER:_AddTransportMenus(groupId, unitName)
 
     if ctld.enableCrates and _unitActions.crates then
         if ctld.unitCanCarryVehicles(_unit) == false then
-            ctld.addCrateMenu(nil, "Light crates", _unit, groupId, ctld.spawnableCrates, 1)
-            ctld.addCrateMenu(nil, "Heavy crates", _unit, groupId, ctld.spawnableCrates, ctld.heavyCrateWeightMultiplier)
+            if _unit:getTypeName() == "Mi-8MT" then
+                ctld.addCrateMenu(nil, "Heavy crates", _unit, groupId, ctld.spawnableCrates, ctld.heavyCrateWeightMultiplier)
+            else
+                ctld.addCrateMenu(nil, "Light crates", _unit, groupId, ctld.spawnableCrates, 1)
+            end
         end
     end
     if (ctld.enabledFOBBuilding or ctld.enableCrates) and _unitActions.crates then
@@ -102,6 +105,31 @@ function M.BIRTH_EVENTHANDLER:_AddRadioListMenu(groupId, unitName)
         missionCommands.addCommandForGroup(groupId, "List Radio Beacons", nil, ctld.listRadioBeacons, { unitName })
     end
 end
+
+function M.BIRTH_EVENTHANDLER:_AddLivesLeftMenu(playerGroup, unitName)
+    MENU_GROUP_COMMAND:New(playerGroup, "Show remaining lives", nil, function()
+        local unit = Unit.getByName(unitName)
+        if unit ~= nil then
+            local playerName = unit:getPlayerName()
+            if playerName ~= nil then
+                local lives = csar.getLivesLeft(playerName)
+                if lives ~= nil then
+                    local message = string.format("You have %d %s remaining", lives, lives == 1 and "life" or "lives")
+                    MESSAGE:New(message, 5):ToGroup(playerGroup)
+                end
+            end
+        end
+    end)
+end
+
+function M.BIRTH_EVENTHANDLER:_AddEWRS(groupId, unit)
+    local playerName = unit:getPlayerName()
+    if playerName ~= nil and ewrs.enabledAircraftTypes[unit:getTypeName()] then
+        ewrs.buildF10Menu(groupId)
+        ewrs.addPlayer(playerName, groupId, unit)
+    end
+end
+-- luacheck: pop
 
 function M.onMissionStart(restartHours)
     M.eventHandler = M.BIRTH_EVENTHANDLER:New(restartHours)

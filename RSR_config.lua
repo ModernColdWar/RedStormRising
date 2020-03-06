@@ -24,7 +24,7 @@ rsrConfig.baseDefenceActivationRadiusFARP = 2500
 
 -- restart schedule
 rsrConfig.firstRestartHour = 5
-rsrConfig.missionDurationInHours = 8
+rsrConfig.missionDurationInHours = 6
 rsrConfig.restartHours = utils.getRestartHours(rsrConfig.firstRestartHour, rsrConfig.missionDurationInHours)
 
 -- life points configuration

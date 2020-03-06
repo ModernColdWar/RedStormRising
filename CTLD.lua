@@ -1184,8 +1184,7 @@ function ctld.spawnCrate(_arguments)
 
             -- check crate spam
             if _heli:getPlayerName() ~= nil and ctld.crateWait[_heli:getPlayerName()] and ctld.crateWait[_heli:getPlayerName()] > timer.getTime() then
-
-                ctld.displayMessageToGroup(_heli, "Sorry you must wait " .. (ctld.crateWait[_heli:getPlayerName()] - timer.getTime()) .. " seconds before you can get another crate", 20)
+                ctld.displayMessageToGroup(_heli, string.format("Sorry you must wait %.f seconds before you can get another crate", ctld.crateWait[_heli:getPlayerName()] - timer.getTime()), 20)
                 return
             end
 
@@ -2140,9 +2139,9 @@ function ctld.loadTroopsFromZone(_args)
     if _extract ~= nil then
         -- search for nearest troops to pickup
         return ctld.extractTroops({ _heli:getName(), _troops })
-    elseif _zone.inZone == true then
+    elseif _zone.inZone == true or ctld.debug == true then
 
-        if _zone.limit - 1 >= 0 then
+        if _zone.limit - 1 >= 0 or ctld.debug == true then
             -- decrease zone counter by 1
             ctld.updateZoneCounter(_zone.index, -1)
 
@@ -4465,6 +4464,7 @@ end
 
 
 -- spawn normal group
+-- luacheck: push no unused
 function ctld.spawnDroppedGroup(_point, _details, _spawnBehind, _maxSearch, _formation)
 
     local _groupName = _details.groupName
@@ -4542,6 +4542,7 @@ function ctld.spawnDroppedGroup(_point, _details, _spawnBehind, _maxSearch, _for
 
     return _spawnedGroup
 end
+-- luacheck: pop
 
 function ctld.findNearestEnemy(_side, _point, _searchDistance)
 
@@ -7042,8 +7043,7 @@ for _coalitionName, _coalitionData in pairs(env.mission.coalition) do
 end
 env.info("END search for crates")
 
-env.info("RSR STARTUP: CTLD.LUA LOADED")
-trigger.action.outText("CTLD.LUA LOADED", 10)
+env.info("CTLD LUA File Loaded ... OK")
 
 
 --DEBUG FUNCTION
