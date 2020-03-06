@@ -1,4 +1,5 @@
 require("mist_4_3_74")
+local log = mist.Logger:new("missionUtils", "info")
 local M = {}
 
 -- From https://wiki.hoggitworld.com/view/Category:Terrain_Information

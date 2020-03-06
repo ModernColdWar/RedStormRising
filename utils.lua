@@ -1,4 +1,5 @@
 require("mist_4_3_74")
+local inspect = require("inspect")
 
 local log = mist.Logger:new("utils", "info")
 

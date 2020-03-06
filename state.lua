@@ -179,7 +179,7 @@ end
 --mr: just because DCS EH = base owner changed doesn't mean base change accoriding to RSR capture logic and requirements!
 -- checkBaseOwner only utilsed by baseCapturedHandler.lua = DCS baseCaptured eventHandler
 function M.checkBaseOwner(baseName, sideName)
-    local currentOwner = M.getOwner(passedBase)
+    local currentOwner = M.getOwner(baseName)
     if currentOwner == sideName then
         return false  --no change in DCS ownership
     end

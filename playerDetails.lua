@@ -30,7 +30,7 @@ function M.getPlayerDetails(_passedPlayerName)
                 local _playerDetails = net.get_player_info(_playerID)
                 if _playerDetails ~= nil and _playerDetails.side ~= 0 and _playerDetails.slot ~= "" and _playerDetails.slot ~= nil then
 
-                    _playerName = net.get_player_info(_playerID, 'name')
+                    local _playerName = net.get_player_info(_playerID, 'name')
                     if _passedPlayerName == _playerName then
                         _matchedPlayerDetails = _playerDetails
                     end
