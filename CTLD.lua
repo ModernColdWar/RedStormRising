@@ -1777,8 +1777,8 @@ function ctld.loadUnloadLogisticsCrate(_args)
         local _friendlyLogisticsCentreSpacing = ctld.friendlyLogisiticsCentreSpacing
         if _inFOBexclusionZone == false and _nearestLogisticsCentreDist < _friendlyLogisticsCentreSpacing then
             ctld.displayMessageToGroup(_aircraft, "ABORTING: An existing friendly logisitics centre at " .. _nearestLogisticsCentreBaseNameOrFOBgrid ..
-                    " (" .. mist.utils.round(((_friendlyLogisticsCentreSpacing - _nearestLogisticsCentreDist) / 1000), 1) .. "km)"
-                    .. " is too close (<" .. _friendlyLogisticsCentreSpacing .. "km) to allow deployment of a FOB!", 20)
+                    " (" .. mist.utils.round((_nearestLogisticsCentreDist / 1000), 1) .. "km)"
+                    .. " is too close (<" .. (_friendlyLogisticsCentreSpacing / 1000) .. "km) to allow deployment of a FOB!", 20)
             return
         end
         ------------------------------------------------------------------------------------
@@ -2985,7 +2985,7 @@ function ctld.unpackCrates(_arguments)
                 local _crateBaseOfOrigin = _crate.details.baseOfOrigin
                 if not ctld.isLogisticsCentreAliveAt(_crateBaseOfOrigin) then
                     local _azToCrate = ctld.getCompassBearing(_heli:getPoint(), _crate.crateUnit:getPoint())
-                    ctld.displayMessageToGroup(_heli, "WARNING: " .. "supplying logisitics centre at " .. _crateBaseOfOrigin .. " for crate (" .. _azToCrate .. "," .. _crate.dist .. "m) destroyed.  Unable to unpack crate.", 20)
+                    ctld.displayMessageToGroup(_heli, "WARNING: " .. "Supplying logisitics centre at " .. _crateBaseOfOrigin .. " for crate (" .. _azToCrate .. "," .. _crate.dist .. "m) destroyed.  Unable to unpack crate.", 20)
                     return
                 end
 
@@ -3163,8 +3163,8 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
         local _friendlyLogisticsCentreSpacing = ctld.friendlyLogisiticsCentreSpacing
         if _inFOBexclusionZone == false and _nearestLogisticsCentreDist < _friendlyLogisticsCentreSpacing then
             ctld.displayMessageToGroup(_aircraft, "ABORTING: An existing friendly logisitics centre at " .. _nearestLogisticsCentreBaseNameOrFOBgrid ..
-                    " (" .. mist.utils.round(((_friendlyLogisticsCentreSpacing - _nearestLogisticsCentreDist) / 1000), 1) .. "km)"
-                    .. " is too close (<" .. _friendlyLogisticsCentreSpacing .. "km) to allow deployment of a FOB!", 20)
+                    " (" .. mist.utils.round((_nearestLogisticsCentreDist / 1000), 1) .. "km)"
+                    .. " is too close (<" .. (_friendlyLogisticsCentreSpacing / 1000) .. "km) to allow deployment of a FOB!", 20)
             _abortUnpack = true
         end
     end
@@ -3248,17 +3248,18 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
         local _unitId = ctld.getNextLogisiticsCentreId()
         local _logisticsCentreName = ""
         local _FOBgrid = utils.tostringMGRSnoUTM(coord.LLtoMGRS(coord.LOtoLL(_aircraft:getPosition().p)), -1)
+		local _FOBname = _FOBgrid .. " FOB"
 
         if _baseORfob == "FOB" then
 
-            _logisticsCentreName = _logisticsCentreName .. _FOBgrid .. " Logistics Centre #" .. _unitId .. " (" .. _playerName .. "'s FOB) " .. _aircraftSideName
+            _logisticsCentreName = _logisticsCentreName .. _FOBname .. " Logistics Centre #" .. _unitId .. " (" .. _playerName .. ") " .. _aircraftSideName
 
             timer.scheduleFunction(function(_args)
 
                 --local _aircraftSideNameForFOB = utils.getSideName(_args[3])
 
-                --(_point, _name, _coalition (only for construction message), _baseORfob, _baseORfobName)
-                local _newLogisticCentre = ctld.spawnLogisticsCentre(_args[1], _args[2], _args[3], "FOB", _args[4])
+				-- (_point, _name, _coalition, _baseORfob, _baseORfobName, _isMissionInit, _constructingPlayerName)
+                local _newLogisticCentre = ctld.spawnLogisticsCentre(_args[1], _args[2], _args[3], "FOB", _args[6], false,_args[4])
 
                 --only deployed s get radio beacon
                 ctld.beaconCount = ctld.beaconCount + 1
@@ -3278,7 +3279,8 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
                         _logisticsCentreName, --_args[2] = name of logistics centre static object
                         _coalition, --_args[3] = coalition for construction message locality
                         _playerName, -- _args[4] = name FOB after player
-                        _country -- _args[5] = country of player, required for radioBeacon but NOT required for logisitics centre which is always neutral
+                        _country, -- _args[5] = country of player, required for radioBeacon but NOT required for logisitics centre which is always neutral
+						_FOBname, -- _args[6] = referenced in ctld.logisticCentreObjects for 'isLogisticsCentreAliveAt' function
                     }, timer.getTime() + _buildTime)
 
             local _txt = string.format("%s started deploying a FOB using %d Logistics Centre crates and it will be finished in %d seconds.", ctld.getPlayerNameOrType(_aircraft), _totalCrates, _buildTime)
@@ -3451,8 +3453,8 @@ function ctld.unloadInternalCrate (_args)
                 local _friendlyLogisticsCentreSpacing = ctld.friendlyLogisiticsCentreSpacing
                 if _inFOBexclusionZone == false and _nearestLogisticsCentreDist < _friendlyLogisticsCentreSpacing then
                     ctld.displayMessageToGroup(_heli, "WARNING: An existing friendly logisitics centre at " .. _nearestLogisticsCentreBaseNameOrFOBgrid ..
-                            " (" .. mist.utils.round(((_friendlyLogisticsCentreSpacing - _nearestLogisticsCentreDist) / 1000), 1) .. "km)"
-                            .. " is too close (<" .. _friendlyLogisticsCentreSpacing .. "km) to allow deployment of a FOB!", 20)
+                            " (" .. mist.utils.round((_nearestLogisticsCentreDist / 1000), 1) .. "km)"
+                            .. " is too close (<" .. (_friendlyLogisticsCentreSpacing / 1000) .. "km) to allow deployment of a FOB!", 20)
                 end
                 ------------------------------------------------------------------------------------
                 if
@@ -5409,20 +5411,20 @@ function ctld.addCrateMenu(_rootPath, _crateTypeDescription, _unit, _groupId, _s
                     local _requiresMultipleCrates = _crate.cratesRequired ~= nil and _crate.cratesRequired > 1
                     local _hasMultipleUnits = _crate.unitQuantity ~= nil and _crate.unitQuantity > 1
                     if (_requiresMultipleCrates or _hasMultipleUnits) then
-                        --_crateRadioMsg = _crateRadioMsg .. "["
                         if _requiresMultipleCrates then
                             _crateRadioMsg = _crateRadioMsg .. _crate.cratesRequired .. "C"
                             if _hasMultipleUnits then
                                 _crateRadioMsg = _crateRadioMsg .. "," .. _crate.unitQuantity .. "Q"
-                            end
+                            else
+								_crateRadioMsg = _crateRadioMsg .. ",1Q"
+							end
                         else
                             if _hasMultipleUnits then
                                 _crateRadioMsg = _crateRadioMsg .. "1C," .. _crate.unitQuantity .. "Q"
                             end
                         end
-                        _crateRadioMsg = _crateRadioMsg .. "| "
+                        _crateRadioMsg = _crateRadioMsg .. " | "
                     else
-                        --_crateRadioMsg = _crateRadioMsg .. "[1C,1Q] "
                         _crateRadioMsg = _crateRadioMsg .. "1C,1Q | "
                     end
 
@@ -7041,7 +7043,7 @@ for _coalitionName, _coalitionData in pairs(env.mission.coalition) do
 end
 env.info("END search for crates")
 
-env.info("CTLD LUA File Loaded ... OK")
+env.info("CTLD.LUA LOADED")
 
 
 --DEBUG FUNCTION
