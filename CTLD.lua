@@ -837,7 +837,8 @@ function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight, _side,
 
     --ctld.spawnCrate: local _name = string.format("%s #%i (%s)", _crateType.desc, _unitId, _nearestLogisticsCentreName)
     local _baseOfOriginFromName = string.match(_name, "%((.+)%)$")
-
+	log:info("_name: $1, _baseOfOriginFromName: $2", _name, _baseOfOriginFromName)
+	
     if ctld.staticBugWorkaround and ctld.slingLoad == false then
         --NOT USED FOR RSR
         local _groupId = ctld.getNextGroupId()
@@ -2939,13 +2940,14 @@ function ctld.unpackCrates(_arguments)
                 'ucid'  : Unique Client Identifier, SERVER ONLY
             --]]
             local _playerUCID = _playerDetails['ucid']
+			local _playerName = ctld.getPlayerNameOrType(_heli)
 
             local _heliCoalition = _heli:getCoalition()
 
             local _crates = ctld.getCratesAndDistance(_heli)
             local _crate = ctld.getClosestCrate(_heli, _crates)
 
-            log:info("_crates: $1, _crate: $2", inspect(_crates, { newline = " ", indent = "" }), inspect(_crate, { newline = " ", indent = "" }))
+            log:info("_playerName: $1, _crate: $2", _playerName, inspect(_crate, { newline = " ", indent = "" }))
 
             local _friendlyLogisticsCentreProximity = ctld.friendlyLogisticsCentreProximity(_heli)
             local _nearestLogisticsCentreName = _friendlyLogisticsCentreProximity[1] --(rare) if no friendly LC at all = "NoFriendlyLC"
@@ -2979,10 +2981,11 @@ function ctld.unpackCrates(_arguments)
                 --check if logisitics centre of origin still alive
                 _crateName = _crate.name
 
-                log:info("_crate.name: $1, _crate: $2", _crate.name, inspect(_crate, { newline = " ", indent = "" }))
-
                 --_crateBaseOfOrigin = string.match(_crateName, "%((.+)%)$")
                 local _crateBaseOfOrigin = _crate.details.baseOfOrigin
+				
+				log:info("_playerName: $1, _crate.name: $2, _crateBaseOfOrigin: $3, _crate: $4", _playerName,_crate.name, _crateBaseOfOrigin, inspect(_crate, { newline = " ", indent = "" }))
+				
                 if not ctld.isLogisticsCentreAliveAt(_crateBaseOfOrigin) then
                     local _azToCrate = ctld.getCompassBearing(_heli:getPoint(), _crate.crateUnit:getPoint())
                     ctld.displayMessageToGroup(_heli, "WARNING: " .. "Supplying logisitics centre at " .. _crateBaseOfOrigin .. " for crate (" .. _azToCrate .. "," .. _crate.dist .. "m) destroyed.  Unable to unpack crate.", 20)
@@ -3042,7 +3045,7 @@ function ctld.unpackCrates(_arguments)
                         quantityTxt = tostring(_crate.details.unitQuantity) .. " "
                         plural = "s"
                     end
-                    trigger.action.outTextForCoalition(_heliCoalition, ctld.getPlayerNameOrType(_heli) .. " successfully deployed " .. quantityTxt .. _crate.details.desc .. plural .. " to the field", 10)
+                    trigger.action.outTextForCoalition(_heliCoalition, _playerName .. " successfully deployed " .. quantityTxt .. _crate.details.desc .. plural .. " to the field", 10)
 
                     if ctld.isJTACUnitType(_crate.details.unit) and ctld.JTAC_dropEnabled then
                         local _code = ctld.getLaserCode(_heliCoalition)
@@ -4403,6 +4406,8 @@ function ctld.spawnCrateGroup(_heli, _positions, _types, _unitQuantity)
     local _playerName = ctld.getPlayerNameOrType(_heli)
     local _groupName = 'CTLD_' .. _types[1] .. '_' .. _id .. ' (' .. _playerName .. ')' -- encountered some issues with using "type #number" on some servers
 
+	log:info("_playerName: $1, _groupName: $2", _playerName,_groupName)
+
     local _group = {
         ["visible"] = false,
         -- ["groupId"] = _id,
@@ -5183,8 +5188,13 @@ function ctld.unitCanCarryVehicles(_unit)
 
     for _, _name in ipairs(ctld.vehicleTransportEnabled) do
         local _nameLower = string.lower(_name)
+		--[[
         if string.match(_type, _nameLower) then
             return true
+        end
+		--]]
+		if _type == _nameLower then 
+		    return true
         end
     end
 
@@ -5197,8 +5207,16 @@ function ctld.isCargoPlane(_unit)
 
     for _, _name in ipairs(ctld.cargoPlanes) do
         local _nameLower = string.lower(_name)
+
+		--mr: does not work for for "Bf-109K-4" for some reason?!
+		--[[
         if string.match(_type, _nameLower) then
             return true
+        end
+		--]]
+		
+		if _type == _nameLower then 
+		    return true
         end
     end
 

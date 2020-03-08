@@ -70,6 +70,7 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
             --getName/getCoalition = DCS function, GetName/GetCoalition = MOOSE function
             local _baseName = base:getName()
             log:info("_baseName: $1", _baseName)
+			
             local _DCScoalition = base:getCoalition()
             local _DCSsideName = utils.getSideName(_DCScoalition)  -- EVENTUALLY REPLACE WITH OUTCOME OF GROUD UNIT ENUMERATION
 

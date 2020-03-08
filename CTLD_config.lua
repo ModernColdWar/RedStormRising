@@ -401,8 +401,8 @@ ctld.logisticCentreL3 = ".Command Center"
 
 ctld.maximumDistFromFARPToRepair = 3000
 ctld.maximumDistFromAirbaseToRepair = 5000
-ctld.exclusionZoneFromBasesForFOBs = 20000 --20km
-ctld.friendlyLogisiticsCentreSpacing = 20000 --20km
+ctld.exclusionZoneFromBasesForFOBs = 15000 --15km
+ctld.friendlyLogisiticsCentreSpacing = 15000 --15km
 
 --need to ensure country is part of neutral coalition e.g. Greece, as neutral static objects will not block DCS controlled rearm/refuel
 ctld.neutralCountry = "Greece"

@@ -23,8 +23,8 @@ function M.register()
         log:info("Base captured event for $1 captured by $2", baseName, sideName)
         --QUICK INITIAL CHECK: determines if base owner according to DCS differs from that according to RSR
         --mr: just because DCS EH = base owner changed doesn't mean base change according to RSR!
-        local changedSide = state.setBaseOwner(baseName, sideName)
-        if changedSide == false then
+        local changedSide = state.checkBaseOwner(baseName, sideName)
+        if changedSide == false then --false = no change in ownership
             log:info("Ignoring capture event for $1: no change of side ($2)", baseName, sideName)
             return
         end

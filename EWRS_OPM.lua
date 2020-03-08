@@ -46,7 +46,7 @@ ewrs = {} --DO NOT REMOVE
 ----SCRIPT OPTIONS----
 
 ewrs.messageUpdateInterval = 5 --How often EWRS will update automated BRA messages (seconds)
-ewrs.messageDisplayTime = 2 --How long EWRS BRA messages will show for (seconds)
+ewrs.messageDisplayTime = 4 --How long EWRS BRA messages will show for (seconds)
 ewrs.useImprovedDetectionLogic = true --this makes the messages more realistic. If the radar doesn't know the type or distance to the detected threat, it will be reflected in the picture report / BRA message
 ewrs.maxThreatDisplay = 1 -- Max amounts of threats to display on picture report (0 will display all)
 ewrs.radarUnitsUpdateInterval = 60 -- minimum time between radar units update
