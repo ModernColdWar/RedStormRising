@@ -292,7 +292,8 @@ function ewrs.filterUnits(units)
     local newUnits = {}
     for _, v in pairs(units) do
         local valid = true
-        if v["object"]:getCategory() ~= Object.Category.UNIT then
+        local object = v["object"]
+        if object ~= nil and object:getCategory() ~= Object.Category.UNIT then
             --rare but i've had it detect missiles
             valid = false
         end
