@@ -837,8 +837,8 @@ function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight, _side,
 
     --ctld.spawnCrate: local _name = string.format("%s #%i (%s)", _crateType.desc, _unitId, _nearestLogisticsCentreName)
     local _baseOfOriginFromName = string.match(_name, "%((.+)%)$")
-	log:info("_name: $1, _baseOfOriginFromName: $2", _name, _baseOfOriginFromName)
-	
+    log:info("_name: $1, _baseOfOriginFromName: $2", _name, _baseOfOriginFromName)
+
     if ctld.staticBugWorkaround and ctld.slingLoad == false then
         --NOT USED FOR RSR
         local _groupId = ctld.getNextGroupId()
@@ -2940,7 +2940,7 @@ function ctld.unpackCrates(_arguments)
                 'ucid'  : Unique Client Identifier, SERVER ONLY
             --]]
             local _playerUCID = _playerDetails['ucid']
-			local _playerName = ctld.getPlayerNameOrType(_heli)
+            local _playerName = ctld.getPlayerNameOrType(_heli)
 
             local _heliCoalition = _heli:getCoalition()
 
@@ -2983,9 +2983,9 @@ function ctld.unpackCrates(_arguments)
 
                 --_crateBaseOfOrigin = string.match(_crateName, "%((.+)%)$")
                 local _crateBaseOfOrigin = _crate.details.baseOfOrigin
-				
-				log:info("_playerName: $1, _crate.name: $2, _crateBaseOfOrigin: $3, _crate: $4", _playerName,_crate.name, _crateBaseOfOrigin, inspect(_crate, { newline = " ", indent = "" }))
-				
+
+                log:info("_playerName: $1, _crate.name: $2, _crateBaseOfOrigin: $3, _crate: $4", _playerName, _crate.name, _crateBaseOfOrigin, inspect(_crate, { newline = " ", indent = "" }))
+
                 if not ctld.isLogisticsCentreAliveAt(_crateBaseOfOrigin) then
                     local _azToCrate = ctld.getCompassBearing(_heli:getPoint(), _crate.crateUnit:getPoint())
                     ctld.displayMessageToGroup(_heli, "WARNING: " .. "Supplying logisitics centre at " .. _crateBaseOfOrigin .. " for crate (" .. _azToCrate .. "," .. _crate.dist .. "m) destroyed.  Unable to unpack crate.", 20)
@@ -3251,7 +3251,7 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
         local _unitId = ctld.getNextLogisiticsCentreId()
         local _logisticsCentreName = ""
         local _FOBgrid = utils.tostringMGRSnoUTM(coord.LLtoMGRS(coord.LOtoLL(_aircraft:getPosition().p)), -1)
-		local _FOBname = _FOBgrid .. " FOB"
+        local _FOBname = _FOBgrid .. " FOB"
 
         if _baseORfob == "FOB" then
 
@@ -3261,8 +3261,8 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
 
                 --local _aircraftSideNameForFOB = utils.getSideName(_args[3])
 
-				-- (_point, _name, _coalition, _baseORfob, _baseORfobName, _isMissionInit, _constructingPlayerName)
-                local _newLogisticCentre = ctld.spawnLogisticsCentre(_args[1], _args[2], _args[3], "FOB", _args[6], false,_args[4])
+                -- (_point, _name, _coalition, _baseORfob, _baseORfobName, _isMissionInit, _constructingPlayerName)
+                local _newLogisticCentre = ctld.spawnLogisticsCentre(_args[1], _args[2], _args[3], "FOB", _args[6], false, _args[4])
 
                 --only deployed s get radio beacon
                 ctld.beaconCount = ctld.beaconCount + 1
@@ -3283,7 +3283,7 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
                         _coalition, --_args[3] = coalition for construction message locality
                         _playerName, -- _args[4] = name FOB after player
                         _country, -- _args[5] = country of player, required for radioBeacon but NOT required for logisitics centre which is always neutral
-						_FOBname, -- _args[6] = referenced in ctld.logisticCentreObjects for 'isLogisticsCentreAliveAt' function
+                        _FOBname, -- _args[6] = referenced in ctld.logisticCentreObjects for 'isLogisticsCentreAliveAt' function
                     }, timer.getTime() + _buildTime)
 
             local _txt = string.format("%s started deploying a FOB using %d Logistics Centre crates and it will be finished in %d seconds.", ctld.getPlayerNameOrType(_aircraft), _totalCrates, _buildTime)
@@ -4406,7 +4406,7 @@ function ctld.spawnCrateGroup(_heli, _positions, _types, _unitQuantity)
     local _playerName = ctld.getPlayerNameOrType(_heli)
     local _groupName = 'CTLD_' .. _types[1] .. '_' .. _id .. ' (' .. _playerName .. ')' -- encountered some issues with using "type #number" on some servers
 
-	log:info("_playerName: $1, _groupName: $2", _playerName,_groupName)
+    log:info("_playerName: $1, _groupName: $2", _playerName, _groupName)
 
     local _group = {
         ["visible"] = false,
@@ -5188,13 +5188,13 @@ function ctld.unitCanCarryVehicles(_unit)
 
     for _, _name in ipairs(ctld.vehicleTransportEnabled) do
         local _nameLower = string.lower(_name)
-		--[[
+        --[[
         if string.match(_type, _nameLower) then
             return true
         end
-		--]]
-		if _type == _nameLower then 
-		    return true
+        --]]
+        if _type == _nameLower then
+            return true
         end
     end
 
@@ -5208,15 +5208,15 @@ function ctld.isCargoPlane(_unit)
     for _, _name in ipairs(ctld.cargoPlanes) do
         local _nameLower = string.lower(_name)
 
-		--mr: does not work for for "Bf-109K-4" for some reason?!
-		--[[
+        --mr: does not work for for "Bf-109K-4" for some reason?!
+        --[[
         if string.match(_type, _nameLower) then
             return true
         end
-		--]]
-		
-		if _type == _nameLower then 
-		    return true
+        --]]
+
+        if _type == _nameLower then
+            return true
         end
     end
 
@@ -5434,8 +5434,8 @@ function ctld.addCrateMenu(_rootPath, _crateTypeDescription, _unit, _groupId, _s
                             if _hasMultipleUnits then
                                 _crateRadioMsg = _crateRadioMsg .. "," .. _crate.unitQuantity .. "Q"
                             else
-								_crateRadioMsg = _crateRadioMsg .. ",1Q"
-							end
+                                _crateRadioMsg = _crateRadioMsg .. ",1Q"
+                            end
                         else
                             if _hasMultipleUnits then
                                 _crateRadioMsg = _crateRadioMsg .. "1C," .. _crate.unitQuantity .. "Q"

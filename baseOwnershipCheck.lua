@@ -70,7 +70,7 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
             --getName/getCoalition = DCS function, GetName/GetCoalition = MOOSE function
             local _baseName = base:getName()
             log:info("_baseName: $1", _baseName)
-			
+
             local _DCScoalition = base:getCoalition()
             local _DCSsideName = utils.getSideName(_DCScoalition)  -- EVENTUALLY REPLACE WITH OUTCOME OF GROUD UNIT ENUMERATION
 
@@ -144,57 +144,58 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
                         log:error("$1: Current Airbase Owner: $2. Logistics Centre Owner: $3.  DCSside: $4. Current Airbase owner does not match Logistics Centre owner!", _baseName, _RSRowner, _logisticsCentreSide, _DCSsideName)
                     end
 
-					-- neutral airbases
-					-- _DCSsideName irrelevant in these cases
-					if _zoneSideFromColor == "neutral" then
-						
-						--required if neutral airbase has no units on it but player builds logisitics centre
-						if _RSRowner ~= _logisticsCentreSide then
-                        
-							if _RSRowner == "neutral" then
-								-- ctld.unpackLogisticsCentreCrates & ctld.loadUnloadLogisticsCrate = checks for OWNED friendly or neutral base before allowing logisitics centre crate unpack
-								-- if logistics centre built on neutral AB, set ownership to side associated with logistics centre and notify side
-								utils.removeABownership(_baseName)
-								table.insert(baseOwnership.Airbases[_logisticsCentreSide], _baseName)
-								log:info("Logistics Centre Alive: $1 OWNED BY $2, CAPTURED BY $3", _baseName, _RSRowner, _logisticsCentreSide)
+                    -- neutral airbases
+                    -- _DCSsideName irrelevant in these cases
+                    if _zoneSideFromColor == "neutral" then
 
-								bases.configureForSide(_baseName, _logisticsCentreSide)  --slotBlocker.lua & pickupZoneManager.lua
-								log:info("$1 RESUPPLYING: _RSRowner: $2, _DCSsideName: $3", _baseName, _RSRowner, _DCSsideName)
-								-- (baseName, sideName, rsrConfig, spawnLC, missionInit, campaignStartSetup)
-								bases.resupply(_baseName, _logisticsCentreSide, rsrConfig, false, false, false) --activate base defences but DO NOT spawn logistics and NOT missionInit
-								trigger.action.outTextForCoalition(_logisticsCentreCoalition, _baseName .. " claimed by " .. _logisticsCentreSide .. " team following construction of Logistics Centre.", 10)
-							end
-							-- do NOT provide warning for neutral bases at campaign setup as no base defences associated, capture not based on ground vehicles, and likely message spam
-						end 
-					
-					-- capturable airbases ALERTS only, as no capture can occur until defending side logistic centre destroyed
-					elseif _zoneSideFromColor ~= "neutral" then
-					
-						-- Q: side specific notification that base being attacked?
-						-- A: Yes.  Aligns with JTAC functionality for all bases upcoming feature: https://github.com/ModernColdWar/RedStormRising/issues/87
-						
-						if _RSRowner ~= _DCSsideName then
-							
-							if _DCSsideName == "CONTESTED" then
+                        --required if neutral airbase has no units on it but player builds logisitics centre
+                        if _RSRowner ~= _logisticsCentreSide then
 
-								trigger.action.outTextForCoalition(_RSRcoalition, "ALERT - " .. _baseName .. " IS UNDER ATTACK!", 10)
-								log:info("$1 owned by $2 (LC: $3) under attack by DCS side $4", _baseName, _RSRowner, _logisticsCentreSide, _DCSsideName)
-								
-							elseif _DCSsideName == "neutral" then
-							
-								trigger.action.outTextForCoalition(_RSRcoalition, "ALERT - " .. _baseName .. " has no friendly ground units within 2km!", 10)
-								log:info("$1 owned by $2 (LC $3) no friendly ground units within 2km.  DCS side $4", _baseName, _RSRowner, _logisticsCentreSide, _DCSsideName)
-								
-							else -- if not contested or neutral but RSRowner not matching DCSside, then enemy must be holding base
-							
-								trigger.action.outTextForCoalition(_RSRcoalition, "ALERT - " .. _baseName .. " IS BEING HELD BY THE ENEMY! Friendly logistics centre still present.", 10)
-								log:info("$1 owned by $2 (LC: $3) under attack by DCS side $4", _baseName, _RSRowner, _logisticsCentreSide, _DCSsideName)
-								
-							end
+                            if _RSRowner == "neutral" then
+                                -- ctld.unpackLogisticsCentreCrates & ctld.loadUnloadLogisticsCrate = checks for OWNED friendly or neutral base before allowing logisitics centre crate unpack
+                                -- if logistics centre built on neutral AB, set ownership to side associated with logistics centre and notify side
+                                utils.removeABownership(_baseName)
+                                table.insert(baseOwnership.Airbases[_logisticsCentreSide], _baseName)
+                                log:info("Logistics Centre Alive: $1 OWNED BY $2, CAPTURED BY $3", _baseName, _RSRowner, _logisticsCentreSide)
 
-						end
-						
-					end
+                                bases.configureForSide(_baseName, _logisticsCentreSide)  --slotBlocker.lua & pickupZoneManager.lua
+                                log:info("$1 RESUPPLYING: _RSRowner: $2, _DCSsideName: $3", _baseName, _RSRowner, _DCSsideName)
+                                -- (baseName, sideName, rsrConfig, spawnLC, missionInit, campaignStartSetup)
+                                bases.resupply(_baseName, _logisticsCentreSide, rsrConfig, false, false, false) --activate base defences but DO NOT spawn logistics and NOT missionInit
+                                trigger.action.outTextForCoalition(_logisticsCentreCoalition, _baseName .. " claimed by " .. _logisticsCentreSide .. " team following construction of Logistics Centre.", 10)
+                            end
+                            -- do NOT provide warning for neutral bases at campaign setup as no base defences associated, capture not based on ground vehicles, and likely message spam
+                        end
+
+                        -- capturable airbases ALERTS only, as no capture can occur until defending side logistic centre destroyed
+                    elseif _zoneSideFromColor ~= "neutral" then
+
+                        -- Q: side specific notification that base being attacked?
+                        -- A: Yes.  Aligns with JTAC functionality for all bases upcoming feature: https://github.com/ModernColdWar/RedStormRising/issues/87
+
+                        if _RSRowner ~= _DCSsideName then
+
+                            if _DCSsideName == "CONTESTED" then
+
+                                trigger.action.outTextForCoalition(_RSRcoalition, "ALERT - " .. _baseName .. " IS UNDER ATTACK!", 10)
+                                log:info("$1 owned by $2 (LC: $3) under attack by DCS side $4", _baseName, _RSRowner, _logisticsCentreSide, _DCSsideName)
+
+                            elseif _DCSsideName == "neutral" then
+
+                                trigger.action.outTextForCoalition(_RSRcoalition, "ALERT - " .. _baseName .. " has no friendly ground units within 2km!", 10)
+                                log:info("$1 owned by $2 (LC $3) no friendly ground units within 2km.  DCS side $4", _baseName, _RSRowner, _logisticsCentreSide, _DCSsideName)
+
+                            else
+                                -- if not contested or neutral but RSRowner not matching DCSside, then enemy must be holding base
+
+                                trigger.action.outTextForCoalition(_RSRcoalition, "ALERT - " .. _baseName .. " IS BEING HELD BY THE ENEMY! Friendly logistics centre still present.", 10)
+                                log:info("$1 owned by $2 (LC: $3) under attack by DCS side $4", _baseName, _RSRowner, _logisticsCentreSide, _DCSsideName)
+
+                            end
+
+                        end
+
+                    end
 
                 else
                     --No logistics centre and base contested. IS BASE CAPTURED?
