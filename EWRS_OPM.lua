@@ -152,7 +152,7 @@ function ewrs.buildThreatTable(activePlayer)
 
     local _self = Unit.getByName(activePlayer.unitname)
     if _self == nil then
-        return
+        return threatTable
     end
     local selfpos = _self:getPosition()
     local referenceX = selfpos.p.x
