@@ -354,12 +354,12 @@ local function sendToRsrBot(event)
             end
             event2send.targetCoalition = event.target:getCoalition()
         end
-        if event.weapon_name then
+        if event.weapon_name ~= nil then
             --check the event has a weapon associated with it (some dont)
             event2send.weapon = event.weapon_name
         end
 
-        if event.initiator then
+        if event.initiator ~= nil then
             --check the event has an initiator
             if event.initiator:getCategory() == Object.Category.UNIT then
                 if event.initiator:getGroup():getCategory() == Group.Category.AIRPLANE then
