@@ -24,7 +24,7 @@ end
 function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSetup)
     --mr: intercept first time campaign setup here to read FARP ownership from Trigger Zone Name or Color
     log:info("_passedBaseName: $1, _playerORunit: $2, _campaignStartSetup: $3", _passedBaseName, _playerORunit, _campaignStartSetup)
-
+	log:info("ctld.logisticCentreObjects $1", ctld.logisticCentreObjects)
     if _campaignStartSetup then
 
         -- wipe baseOwnership and reconstruct as checking all bases
@@ -85,7 +85,6 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
             local _RSRcoalition = "NoRSRcoalition"
 
             --get logistics centre deails if present
-            log:info("ctld.logisticCentreObjects $1", ctld.logisticCentreObjects)
             local _logisticsCentre = ctld.logisticCentreObjects[_baseName]
             local _logisticsCentreName = "NoLCname"
             local _logisticsCentreSide = "NoLCside"
@@ -180,13 +179,11 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
 								trigger.action.outTextForCoalition(_RSRcoalition, "ALERT - " .. _baseName .. " IS UNDER ATTACK!", 10)
 								log:info("ALERT MSG: $1 owned by $2 (LC: $3) under attack by DCS side $4", _baseName, _RSRowner, _logisticsCentreSide, _DCSsideName)
 							
-							--disable alert for now to prevent message spam due to DCSside reporting issue: https://github.com/ModernColdWar/RedStormRising/issues/157
-							--[[
-							elseif _DCSsideName == "neutral" then
 							
-								trigger.action.outTextForCoalition(_RSRcoalition, "ALERT - " .. _baseName .. " has no friendly ground units within 2km!", 10)
-								log:info("$1 owned by $2 (LC $3) no friendly ground units within 2km.  DCS side $4", _baseName, _RSRowner, _logisticsCentreSide, _DCSsideName)
-							--]]
+							elseif _DCSsideName == "neutral" then
+								--disable alert for now to prevent message spam due to DCSside reporting issue: https://github.com/ModernColdWar/RedStormRising/issues/157
+								--trigger.action.outTextForCoalition(_RSRcoalition, "ALERT - " .. _baseName .. " has no friendly ground units within 2km!", 10)
+								log:info("ALERT MSG: $1 owned by $2 (LC $3) no friendly ground units within 2km.  DCS side $4", _baseName, _RSRowner, _logisticsCentreSide, _DCSsideName)
 							
 							else -- if not contested or neutral but RSRowner not matching DCSside, then enemy must be holding base
 							
