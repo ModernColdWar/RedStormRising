@@ -92,7 +92,7 @@ function M.BIRTH_EVENTHANDLER:_AddTransportMenus(groupId, unitName)
         missionCommands.addCommandForGroup(groupId, "Unpack Nearby Crate", nil, ctld.unpackCrates, { unitName })
         if (ctld.slingLoad == false) or (ctld.internalCargo == true) then
             missionCommands.addCommandForGroup(groupId, "Load Nearby Crate", nil, ctld.loadNearbyCrate, { unitName })
-            missionCommands.addCommandForGroup(groupId, "Drop Crate", nil, ctld.dropSlingCrate, { unitName })
+            missionCommands.addCommandForGroup(groupId, "Drop Crate", nil, ctld.unloadInternalCrate, { unitName })
         end
     end
     if _unitActions.troops then
