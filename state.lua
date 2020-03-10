@@ -32,7 +32,7 @@ M.defaultState = {
 M.currentState = nil
 
 -- mission init with no rsrState.json = campaign init = use zone name and color to determining starting base ownership
--- make global as a lot of 
+-- make global as a lot of
 M.campaignStartSetup = false
 
 -- mission init regardless of rsrState.json
@@ -164,9 +164,9 @@ function M.updateBaseOwnership()
 end
 
 function M.getOwner(passedBase)
-    for _k, baseOwnership in pairs(M.currentState.baseOwnership) do
+    for _, baseOwnership in pairs(M.currentState.baseOwnership) do
         for sideName, baseList in pairs(baseOwnership) do
-            for _k, _baseName in ipairs(baseList) do
+            for _, _baseName in ipairs(baseList) do
                 if _baseName == passedBase then
                     return sideName
                 end

@@ -15,9 +15,8 @@ function M.spawnLogisticsBuildingForBase(baseName, sideName, logisticsCentreName
     log:info("Spawning Logistics Centre Static Object for $1 as owned by $2", baseName, sideName)
     --log:info("ctld.logisticCentreZones: $1",ctld.logisticCentreZones)
     local _availLogiZones = {}
-    local _availLogiZonesCount = 0
-    for _k, logisticsZoneName in ipairs(ctld.logisticCentreZones) do
-        local zoneBaseName = utils.getBaseNameFromZoneName(logisticsZoneName, string.lower("RSRlogisticsZone")) --getBaseNameFromZoneName requires lowercase 
+    for _, logisticsZoneName in ipairs(ctld.logisticCentreZones) do
+        local zoneBaseName = utils.getBaseNameFromZoneName(logisticsZoneName, string.lower("RSRlogisticsZone")) --getBaseNameFromZoneName requires lowercase
         if utils.matchesBaseName(baseName, zoneBaseName) then
             table.insert(_availLogiZones, logisticsZoneName)
         end
@@ -30,7 +29,7 @@ function M.spawnLogisticsBuildingForBase(baseName, sideName, logisticsCentreName
         _staticObjectName = logisticsCentreName
     end
     --log:info("Logistics Centre Name $1", _staticObjectName)
-    _availLogiZonesCount = #_availLogiZones
+    local _availLogiZonesCount = #_availLogiZones
     if _availLogiZonesCount > 0 then
         -- math.randomseed(os.clock()) --not avail or needed: https://forums.eagle.ru/showthread.php?t=101098
         local _randomLogiZoneNumber = 1

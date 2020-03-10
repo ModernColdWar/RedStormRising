@@ -52,6 +52,7 @@ local function getUnitDesc(coalition, groupName, typeName)
         typeDesc = "Logistics Centre"
         _isLogisticsCentre = true
     end
+    log:info("HIT: typeDesc: $1 typeName: $2, ownerName: $3", typeDesc, typeName, ownerName)
 
     if ownerName == nil then
         --buildings will not have a groupName
@@ -64,7 +65,6 @@ local function getUnitDesc(coalition, groupName, typeName)
     else
         return string.format("%s's %s%s", ownerName, coalitionName, typeDesc)
     end
-    log:info("HIT: typeDesc: $1 typeName: $2, ownerName: $3", typeDesc, typeName, ownerName)
 end
 
 local function getPlayerDesc(coalition, groupName, typeName, playerName)

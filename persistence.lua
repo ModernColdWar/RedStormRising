@@ -201,7 +201,7 @@ function M.restoreFromState(rsrConfig)
     log:info("Number of persistent groups at restore is $1", #state.currentState.persistentGroupData)
     state.currentState.persistentGroupData = {}
     for _, groupData in ipairs(persistentGroupData) do
-        M.spawnGroup(groupData) --updateSpawnQueue.pushSpawnQueue(groupName) 
+        M.spawnGroup(groupData) --updateSpawnQueue.pushSpawnQueue(groupName)
     end
 
     log:info("Mission state restored")

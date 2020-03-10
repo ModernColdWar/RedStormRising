@@ -199,7 +199,7 @@ end
 --mr: find more efficient way to transvere nested table
 function M.getCurrFARPside (_FARPname)
     local _bOFARPside = "FARPnotFound"
-    for _k, _b in pairs(baseOwnership.FARPs.red) do
+    for _, _b in pairs(baseOwnership.FARPs.red) do
         if _b == _FARPname then
             _bOFARPside = "red"
             break
@@ -207,7 +207,7 @@ function M.getCurrFARPside (_FARPname)
     end
 
     if _bOFARPside == "FARPnotFound" then
-        for _k, _b in pairs(baseOwnership.FARPs.blue) do
+        for _, _b in pairs(baseOwnership.FARPs.blue) do
             if _b == _FARPname then
                 _bOFARPside = "blue"
                 break
@@ -216,7 +216,8 @@ function M.getCurrFARPside (_FARPname)
     end
 
     if _bOFARPside == "FARPnotFound" then
-        for _k, _b in pairs(baseOwnership.FARPs.neutral) do
+        --log:error("$1 FARP not found in 'baseOwnership.FARPs' sides.",_FARPname)
+        for _, _b in pairs(baseOwnership.FARPs.neutral) do
             if _b == _FARPname then
                 _bOFARPside = "neutral"
                 break
@@ -224,14 +225,12 @@ function M.getCurrFARPside (_FARPname)
         end
     end
 
-    if _bOFARPside == "FARPnotFound" then
-        --log:error("$1 FARP not found in 'baseOwnership.FARPs' sides.",_FARPname)
-    end
     return _bOFARPside
 end
+
 function M.getCurrABside (_ABname)
     local _bOABside = "ABnotFound"
-    for _k, _b in pairs(baseOwnership.Airbases.red) do
+    for _, _b in pairs(baseOwnership.Airbases.red) do
         if _b == _ABname then
             _bOABside = "red"
             break
@@ -239,7 +238,7 @@ function M.getCurrABside (_ABname)
     end
 
     if _bOABside == "ABnotFound" then
-        for _k, _b in pairs(baseOwnership.Airbases.blue) do
+        for _, _b in pairs(baseOwnership.Airbases.blue) do
             if _b == _ABname then
                 _bOABside = "blue"
                 break
@@ -248,7 +247,8 @@ function M.getCurrABside (_ABname)
     end
 
     if _bOABside == "ABnotFound" then
-        for _k, _b in pairs(baseOwnership.Airbases.neutral) do
+        --log:error("$1 Airbase not found in 'baseOwnership.Airbases' sides.",_ABname)
+        for _, _b in pairs(baseOwnership.Airbases.neutral) do
             if _b == _ABname then
                 _bOABside = "neutral"
                 break
@@ -256,11 +256,9 @@ function M.getCurrABside (_ABname)
         end
     end
 
-    if _bOABside == "ABnotFound" then
-        --log:error("$1 Airbase not found in 'baseOwnership.Airbases' sides.",_ABname)
-    end
     return _bOABside
 end
+
 function M.removeFARPownership (_FARPname)
     local _FARPremoved = false
     for _k, _b in pairs(baseOwnership.FARPs.red) do
@@ -295,6 +293,7 @@ function M.removeFARPownership (_FARPname)
         log:error("$1 FARP not found in 'baseOwnership.FARPs' sides. No ownership record to remove.", _FARPname)
     end
 end
+
 function M.removeABownership (_ABname)
     local _ABremoved = false
     for _k, _b in pairs(baseOwnership.Airbases.red) do
@@ -329,6 +328,7 @@ function M.removeABownership (_ABname)
         log:error("$1 Airbase not found in 'baseOwnership.Airbases' sides. No ownership record to remove.", _ABname)
     end
 end
+
 function M.baseCaptureZoneToNameSideType(_zone)
     local _zoneName = _zone.name
     --"MM75 RSRbaseCaptureZone FARP" = "MM75" i.e. from whitepace and RSR up
