@@ -310,7 +310,8 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
                         
                         utils.removeFARPownership(_baseName)
                         table.insert(baseOwnership.FARPs[_logisticsCentreSide], _baseName)
-
+						
+						bases.configureForSide(_baseName, _logisticsCentreSide) --slotBlocker.lua & pickupZoneManager.lua
                         -- (baseName, sideName, rsrConfig, spawnLC, missionInit, campaignStartSetup)
                         bases.resupply(_baseName, _logisticsCentreSide, rsrConfig, false, false, false) --activate base defences (FARP trucks) but DO NOT spawn logistics and NOT missionInit
 
