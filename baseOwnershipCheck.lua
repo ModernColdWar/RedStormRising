@@ -59,7 +59,7 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
         --search through ALL bases and check status
         log:info("ctld.logisticCentreObjects $1", ctld.logisticCentreObjects)
         local _conqueringUnit = "none"
-        if _playerORunit ~= "none" and type(_playerORunit) ~= "string" then
+        if _playerORunit ~= "none" and _playerORunit ~= "LCdead" and type(_playerORunit) ~= "string" then
             --_playerORunit not passed as string to ctld.getPlayerNameOrType would cause an error
             _conqueringUnit = ctld.getPlayerNameOrType(_playerORunit) -- get type of ground vehicle if passed
         end
@@ -161,7 +161,7 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
 								bases.configureForSide(_baseName, _logisticsCentreSide)  --slotBlocker.lua & pickupZoneManager.lua
 								-- (baseName, sideName, rsrConfig, spawnLC, missionInit, campaignStartSetup)
 								bases.resupply(_baseName, _logisticsCentreSide, rsrConfig, false, false, false) --activate base defences but DO NOT spawn logistics and NOT missionInit
-								trigger.action.outTextForCoalition(_logisticsCentreCoalition, _baseName .. " claimed by " .. _logisticsCentreSide .. " team following construction of Logistics Centre.", 10)
+								trigger.action.outTextForCoalition(_logisticsCentreCoalition, _baseName .. " claimed by " .. _logisticsCentreSide .. " team following construction of a Logistics Centre.", 10)
 							end
 							-- do NOT provide warning for neutral bases at campaign setup as no base defences associated, capture not based on ground vehicles, and likely message spam
 						end 
@@ -222,13 +222,17 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
                             bases.configureForSide(_baseName, _DCSsideName) --slotBlocker.lua & pickupZoneManager.lua
                             -- (baseName, sideName, rsrConfig, spawnLC, missionInit, campaignStartSetup)
                             bases.resupply(_baseName, _DCSsideName, rsrConfig, false, false, false) --activate base defences but DO NOT spawn logistics and NOT missionInit
-
-                            --trigger.action.outText(_baseName .. " HAS BEEN CAPTURED BY A " .. _DCSsideName .. _conqueringUnit, 10)  -don't let defending team know conquering unit!
+							
+							if _playerORunit == "LCdead" then
+								trigger.action.outTextForCoalition(_DCSsideName, _baseName .. " was held by  " .. _DCSsideName .. " ground units, and captured following destruction of the " .. _RSRowner .. " Logistics Centre", 10)
+							else
+								trigger.action.outTextForCoalition(_DCSsideName, _baseName .. " was captured by a " .. _DCSsideName .. " " .. _conqueringUnit, 10)
+							end
                             trigger.action.outText(_baseName .. " HAS BEEN CAPTURED BY " .. string.upper(_DCSsideName) .. " TEAM", 10)
 
                         elseif _DCSsideName == "neutral" then
                             -- Airbase converts back to MIZ warehouse setting i.e. neutral, if no ground units from either side present
-                            trigger.action.outTextForCoalition(_RSRcoalition, "ALERT - " .. _baseName .. " has no friendly ground units within 2km and has no logisitics centre!", 10)
+                            trigger.action.outTextForCoalition(_RSRcoalition, "ALERT - " .. _baseName .. " has no friendly ground units within 2km and has no Logisitics Centre!", 10)
                             log:info("ALERT MSG: $1 owned by $2 no friendly ground units within 2km and no logisitics centre.  DCS side $3", _baseName, _RSRowner, _DCSsideName)
 
                         elseif _DCSsideName == "CONTESTED" then

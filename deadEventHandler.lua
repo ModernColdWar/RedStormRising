@@ -80,7 +80,7 @@ function M.register()
                         trigger.action.removeMark(_storedLogisticsCentreMarkerID)
                         ctld.logisticCentreMarkerID[_baseName] = nil
 
-                        baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership("ALL", "none", false)
+                        baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership("ALL", "LCdead", false)
                         return
                     end
 
