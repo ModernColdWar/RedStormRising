@@ -5,14 +5,13 @@
 	'id'    : playerID
 	'name'  : player name
 	'side'  : 0 - spectators, 1 - red, 2 - blue
-	'slot'  : slotID of the player or 
+	'slot'  : slotID of the player or
 	'ping'  : ping of the player in ms
 	'ipaddr': IP address of the player, SERVER ONLY
 	'ucid'  : Unique Client Identifier, SERVER ONLY
 --]]
 
 require("mist_4_3_74")
-local log = mist.Logger:new("playeDetails", "info")
 
 -- net.get_my_player_id( ) -- Returns the playerID of the local player. Always returns 1 for server.
 
@@ -24,7 +23,7 @@ function M.getPlayerDetails(_passedPlayerName)
         if DCS.getModelTime() > 1 then
 
             local _playersList = net.get_player_list()
-            for _playerIDIndex, _playerID in pairs(_playersList) do
+            for _, _playerID in pairs(_playersList) do
 
                 -- is player still in a valid slot
                 local _playerDetails = net.get_player_info(_playerID)

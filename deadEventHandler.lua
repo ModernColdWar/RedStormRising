@@ -1,8 +1,6 @@
 require("mist_4_3_74")
 require("Moose")
 
-local utils = require("utils")
-local inspect = require("inspect")
 local baseOwnershipCheck = require("baseOwnershipCheck")
 
 local log = mist.Logger:new("deadEventHandler", "info")
@@ -18,16 +16,12 @@ function M.register()
         --log:info("eventHander DEAD: event: $1",inspect(Event, { newline = " ", indent = "" }))
         log:info("eventHander DEAD: TYPE: $1, DCS NAME: $2, UNIT: $3", Event.IniTypeName, Event.IniDCSUnitName, Event.IniDCSUnit)
 
-        local _deadUnit = Event.IniDCSUnit
         local _deadUnitCategory = Event.IniObjectCategory
         local _deadUnitType = Event.IniTypeName
         local _deadUnitName = Event.IniDCSUnitName
         --log:info("eventHander DEAD: TEST1 DEAD LC = nil: $1",mist.utils.basicSerialize(_deadUnit == nil))
 
 
-        if _deadUnitCategory == Object.Category.UNIT then
-
-        end
         if _deadUnitCategory == Object.Category.STATIC then
             --[[
             -- MOOSE
@@ -44,13 +38,10 @@ function M.register()
 
             if _deadUnitType == ctld.logisticCentreL3 or _deadUnitType == ctld.logisticCentreL2 then
 
-                local _baseName = "NoBase"
                 local _storedLogisticsCentreBase = "NoLCbase"
-                local _storedLogisticsCentre = "NoLC"
                 local _storedLogisticsCentreName = "NoLCname"
-                local _storedLogisticsCentreSideName = "NoLCside"
-                local _storedLogisticsCentreCoalition = "NoLCcoalition"
-                local _storedLogisticsCentreMarkerID = 0
+                local _storedLogisticsCentreSideName
+                local _storedLogisticsCentreMarkerID
 
                 for _baseName, _storedLogisticsCentre in pairs(ctld.logisticCentreObjects) do
 
@@ -58,7 +49,6 @@ function M.register()
                         _storedLogisticsCentreName = _storedLogisticsCentre:getName() --getName = DCS function, GetName = MOOSE function
                         _storedLogisticsCentreBase = string.match(_storedLogisticsCentreName, ("^(.+)%sLog")) --"Sochi Logistics Centre #001 red" = "Sochi"
                         _storedLogisticsCentreSideName = string.match(_storedLogisticsCentreName, ("%w+$")) --"Sochi Logistics Centre #001 red" = "red"
-                        _storedLogisticsCentreCoalition = utils.getSide(_storedLogisticsCentreSideName)
 
                         log:info("eventHander DEAD: _storedLogisticsCentre: $1, _storedLogisticsCentreName: $2, _storedLogisticsCentreBase: $3, _storedLogisticsCentreSideName: $4", _storedLogisticsCentre, _storedLogisticsCentreName, _storedLogisticsCentreBase, _storedLogisticsCentreSideName)
 

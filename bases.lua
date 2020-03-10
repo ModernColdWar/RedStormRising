@@ -5,7 +5,6 @@ local pickupZoneManager = require("pickupZoneManager")
 local slotBlocker = require("slotBlocker")
 local updateSpawnQueue = require("updateSpawnQueue")
 local utils = require("utils")
-local rsrConfig = require("RSR_config")
 
 local M = {}
 M.mapMarkers = {}
