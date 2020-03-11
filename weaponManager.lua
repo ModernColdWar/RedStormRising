@@ -334,7 +334,7 @@ local function sendToRsrBot(event)
     if not rsrConfig.udpEventReporting then
         return
     end
-    if (event.id ~= 1 and event.id < 10) then
+    if (event.id>1 and event.id<10) or (event.id==28) then
         local event2send = {
             ["id"] = event.id,
             ["time"] = event.time,
