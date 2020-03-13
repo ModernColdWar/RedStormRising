@@ -65,7 +65,7 @@ ctld.cratesRequiredForLogisticsCentre = 1 -- The amount of crates required to bu
 -- Small Logistics Centre crates can be moved by helicopter. The Logistics Centre will require ctld.cratesRequiredForLogisticsCentre larges crates and small crates are 1/3 of a large Logistics Centre crate
 -- To build the Logistics Centre entirely out of small crates you will need ctld.cratesRequiredForLogisticsCentre * 3
 
-ctld.troopPickupAtFOB = true -- if true, troops can also be picked up at a created 
+ctld.troopPickupAtFOB = true -- if true, troops can also be picked up at a created FOB
 
 ctld.buildTimeFOB = 60 --time in seconds for the FOB to be built
 
@@ -344,6 +344,9 @@ ctld.unitActions = {
     ["Yak-52"] = { crates = false, troops = true, internal = true }
 }
 
+-- allow cargo planes and helos to carry troops and internal crates simultaneously
+ctld.simultaneousTroopInternalCrateLoad = true
+
 --transportTypes in missionUtils.lua
 --ctld.transportTypes unused and not able to be included in missionUtils.lua due to loop creation
 ctld.transportTypes = {
@@ -401,19 +404,30 @@ ctld.logisticCentreL3 = ".Command Center"
 
 ctld.maximumDistFromFARPToRepair = 3000
 ctld.maximumDistFromAirbaseToRepair = 5000
+
+--[[
+	FOBs needs to be spaced-out > 10km from airbases, FARPs and other FOBs 
+	- for balancing given that logistics centre crates are available from FOBs and logistics centre destruction required for all captures
+	- for ctld.spawnLogisticsCentre referencing as each FOB named after it's airbase or MGRS grid which is a 10km square
+--]]
 ctld.exclusionZoneFromBasesForFOBs = 15000 --15km
 ctld.friendlyLogisiticsCentreSpacing = 15000 --15km
 
 --need to ensure country is part of neutral coalition e.g. Greece, as neutral static objects will not block DCS controlled rearm/refuel
 ctld.neutralCountry = "Greece"
 
---table populated upon spawning logistics centre static object with base name as index for bases (Airbases/FARPs), and player name as index for s
---only 1 logisitics centre per base due to baseOwnershipCheck.lua reference i.e. ctld.logisticCentreObjects.baseName[1]
---currently no restrictions on FOBs per player
-ctld.logisticCentreObjects = { }
+--[[
+	ctld.logisticCentreObjects populated upon spawning logistics centre static object with:
+		- airbase, FARP or FOB grid + "FOB (e.g. "CK61 FOB") name as index
+	seperate lists for red and blue teams to allow for rare occurence of FOBs from both team in same grid
+	due to spacing ctld.friendlyLogisiticsCentreSpacing restrictions, friendly FOBs should never be in the same 10km grid, important for referencing
+	important that only 1 logisitics centre per base due to baseOwnershipCheck.lua referencing elsewhere
+		i.e.  _LCobj = ctld.logisticCentreObjects[_sideName][_baseORfobName][1]
+--]]
+ctld.logisticCentreObjects = { red = {}, blue = {} }
 
 --table of marker IDs for coalition associated markers of each logisitics centre
-ctld.logisticCentreMarkerID = {}
+ctld.logisticCentreMarkerID = { red = {}, blue = {} }
 
 -- airbases/FARPs that if within, do not require a logisitics centre to be present e.g. Gas Platforms
 ctld.logisticCentreNotReqInBase = { "RedStagingPoint", "BlueStagingPoint" }

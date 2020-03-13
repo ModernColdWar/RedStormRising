@@ -12,7 +12,7 @@ function M.spawnLogisticsBuildingForBase(baseName, sideName, logisticsCentreName
         _playerName = constructingPlayerName
     end
 
-    log:info("Spawning Logistics Centre Static Object for $1 as owned by $2", baseName, sideName)
+    log:info("Spawning Logistics Centre Static Object for $1 as owned by $2.  _playerName: $3", baseName, sideName, _playerName)
     --log:info("ctld.logisticCentreZones: $1",ctld.logisticCentreZones)
     local _availLogiZones = {}
     for _, logisticsZoneName in ipairs(ctld.logisticCentreZones) do
@@ -41,7 +41,7 @@ function M.spawnLogisticsBuildingForBase(baseName, sideName, logisticsCentreName
         local point = ZONE:New(_selectedLogiZone):GetPointVec2()
         log:info("isMissionInit: $1", isMissionInit)
         --(_point, _name, _coalition, _baseORfarp, _baseORfarpName)
-        ctld.spawnLogisticsCentre(point, _staticObjectName, utils.getSide(sideName), "BASE", baseName, isMissionInit, _playerName)
+        ctld.spawnLogisticsCentre(point, _staticObjectName, sideName, "BASE", baseName, isMissionInit, _playerName)
         log:info("$1 Logistics Centre spawned at $2", sideName, mist.utils.basicSerialize(_selectedLogiZone))
         return
     end

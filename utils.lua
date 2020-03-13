@@ -128,23 +128,40 @@ function M.getRestartHours(firstRestart, missionDuration)
     return restartHours
 end
 
---mr: copied from MIST
--- acc the accuracy of each easting/northing. Can be: 0, 1, 2, 3, 4, or 5.
--- added -1 as additional accuracy setting to remove UTMZone and condense to simple grid e.g. MN61
-function M.tostringMGRSnoUTM(MGRS, acc)
-    if acc == -1 then
-        local _gridAcc = 1
-        return MGRS.MGRSDigraph .. string.format('%0' .. _gridAcc .. 'd', mist.utils.round(MGRS.Easting / (10 ^ (5 - _gridAcc)), 0))
-                .. string.format('%0' .. _gridAcc .. 'd', mist.utils.round(MGRS.Northing / (10 ^ (5 - _gridAcc)), 0))
-    end
-
-    if acc == 0 then
-        return MGRS.MGRSDigraph
-    else
-        return MGRS.MGRSDigraph .. ' ' .. string.format('%0' .. acc .. 'd', mist.utils.round(MGRS.Easting / (10 ^ (5 - acc)), 0))
-                .. ' ' .. string.format('%0' .. acc .. 'd', mist.utils.round(MGRS.Northing / (10 ^ (5 - acc)), 0))
-    end
+function M.round(number, roundTo)
+    return math.floor((number + 0.5 * roundTo) / roundTo) * roundTo
 end
+
+-- MGRS coordinate with no UTM and only 10km square e.g. LP49
+function M.posToMapGrid(position)
+
+	-- .p as coord.LOtoLL requires x,y,z format
+	local _MGRStable = coord.LLtoMGRS(coord.LOtoLL(position.p))
+	--log:info("_MGRStable: $1",inspect(_MGRStable, { newline = " ", indent = "" }))
+	
+	-- DCS drops lleading 0 for 10km map grids
+	-- e.g. Vazani @ NM00: MGRStable = { Easting = 2566, MGRSDigraph = "NM", Northing = 9426, UTMZone = "38T" }
+	local _easting10kmGrid
+	if string.len(_MGRStable.Easting) < 5 then
+		_easting10kmGrid = 0 
+	else
+		_easting10kmGrid = string.match(_MGRStable.Easting,"(%d)%d%d%d%d$")
+	end
+	
+	local _northing10kmGrid 
+	if string.len(_MGRStable.Northing) < 5 then
+		_northing10kmGrid = 0 
+	else
+		_northing10kmGrid = string.match(_MGRStable.Northing,"(%d)%d%d%d%d$")
+	end
+	
+	-- first digit of 5 digit MGRS Easting and Northing more accurate for 10km grid than MIST method of rounding-up MGRS coordinates
+    local _MapGrid = _MGRStable.MGRSDigraph .. _easting10kmGrid .. _northing10kmGrid
+	--log:info("_MapGrid: $1",_MapGrid)
+	
+	return _MapGrid
+end
+
 -- based on ctld.isInfantry
 local function isInfantry(unit)
     local typeName = string.lower(unit:getTypeName() .. "")
@@ -410,8 +427,61 @@ function M.carrierActivateForBaseWhenOwnedBySide(_zone)
     return { _carrierGroup, _RSRcarrierActivateForBase, _whenBaseOwnedBySide }
 end
 
-function M.round(number, roundTo)
-    return math.floor((number + 0.5 * roundTo) / roundTo) * roundTo
+-- will check if LC alive not just nil i.e. StaticObject.getLife() and clean-up list if not alive
+function M.getAliveLogisticsCentreforBase(_airbaseORfarpORfob)
+
+	local _aliveLCobj
+	local _LCfound = false
+	local _foundLCbaseRef = "NoBase" --debug
+	local _foundLCsideRef = "NoSide" --debug
+	for _refLCsideName, _baseTable in pairs(ctld.logisticCentreObjects) do
+		for _refLCbaseName, _LCobj in pairs(_baseTable) do
+			if _refLCbaseName == _airbaseORfarpORfob then
+			
+				log:info("_refLCbaseName: $1, _LCobj: $2",_refLCbaseName, mist.utils.basicSerialize(_LCobj))
+
+				if _LCobj ~= nil then
+				
+					if StaticObject.getLife(_LCobj) == 0 then  --10000 = starting command centre static object life
+						ctld.logisticCentreObjects[_refLCsideName][_refLCbaseName] = nil
+						local _LCmarkerID = ctld.logisticCentreMarkerID[_refLCsideName][_refLCbaseName]
+						trigger.action.removeMark(_LCmarkerID)
+
+					else
+						if _LCfound then -- should not occur
+							log:error("DUPLICATE LC record: _foundLCbaseRef: $1, _foundLCsideRef: $2, _refLCbaseName: $3, _refLCsideName: 4",_foundLCbaseRef,_foundLCsideRef, _refLCbaseName,_refLCsideName)
+						end
+						
+						_aliveLCobj = _LCobj
+						
+						--debug
+						_LCfound = true
+						_foundLCbaseRef = _refLCbaseName
+						_foundLCsideRef = _refLCsideName
+						
+						local _LCname = _LCobj:getName()
+						log:info("_LCname: $1",_LCname)
+						
+						--"Krymsk Logistics Centre #001 red" = "red"
+						local _derivedLCsideName = string.match(_LCname, ("%w+$"))
+
+						--"Sochi Logistics Centre #001 red" = "Sochi" i.e. from whitepace and 'Log' up
+						local _derivedLCbaseNameOrGrid = string.match(_LCname, ("^(.+)%sLog"))
+						
+						-- run checks
+						if _refLCsideName ~= _derivedLCsideName then
+							log:error("Reference LC side in ctld.logisticCentreObjects (_refLCsideName: $1) and derived LC side by name (_derivedLCsideName: $2) mistmatch",_refLCsideName,_derivedLCsideName)
+						end
+						
+						if _airbaseORfarpORfob ~= _derivedLCbaseNameOrGrid then
+							log:error("Passed LC base (_airbaseORfarpORfob: $1) and derived base from LC name (_derivedLCbaseNameOrGrid: $2) mistmatch",_refLCsideName,_derivedLCsideName)
+						end
+					end
+				end
+			end
+		end
+	end
+	return _aliveLCobj
 end
 
 return M

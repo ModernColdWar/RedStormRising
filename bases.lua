@@ -1,5 +1,6 @@
 env.info("RSR STARTUP: bases.LUA INIT")
 require("mist_4_3_74")
+local inspect = require("inspect")
 local logisticsManager = require("logisticsManager")
 local pickupZoneManager = require("pickupZoneManager")
 local slotBlocker = require("slotBlocker")
@@ -40,6 +41,7 @@ local function activateBaseDefences(baseName, sideName, rsrConfig, missionInit, 
                 local groupName = group:GetName() --MOOSE
                 log:info("Activating $1 $2 base defence group $3", baseName, sideName, groupName)
                 group:Activate()
+				
                 --[[
                     campaignStartSetup == true, missionInit = true:
                         add base defences to spawn queue (persistent unit list) at campaign start and mission start as not yet added
@@ -54,7 +56,8 @@ local function activateBaseDefences(baseName, sideName, rsrConfig, missionInit, 
                     updateSpawnQueue.pushSpawnQueue(groupName)
                 end
                 utils.setGroupControllerOptions(group:GetDCSObject())
-                if ctld.isJTACUnitType(groupName) then
+				
+                if ctld.isJTACUnitType(group:GetTypeName()) then
                     timer.scheduleFunction(function(_groupName)
                         -- do this 2 seconds later so that group has time to be activated
                         local _code = ctld.getLaserCode(Group.getByName(_groupName):getCoalition())
@@ -62,6 +65,7 @@ local function activateBaseDefences(baseName, sideName, rsrConfig, missionInit, 
                         ctld.JTACAutoLase(_groupName, _code)
                     end, groupName, timer.getTime() + 2)
                 end
+				
                 if string.match(groupName, "1L13 EWR") then
                     log:info("Configuring group $1 as EWR", groupName)
                     ctld.addEWRTask(group)

@@ -193,6 +193,7 @@ ssb.commanderPlayerUCID = {
     "a72632f9d4aef4bc3fc12fb0a6bcdc87", --=R|D= johnnytrump
     "d125549aa96ca9c8c021e7bfb1028d7c", --Tester
     "d26bb6e1f0b5268626d41a0feef17727", --Shabi
+	"09bc71361a591195159e2b84dfc67482", --ROSS Pups added by deebix
 }
 
 ssb.version = "1.1"

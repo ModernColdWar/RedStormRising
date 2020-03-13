@@ -90,14 +90,16 @@ function M.spawnGroup(groupData)
     local _isJTAC = false
     for _, unitData in pairs(groupData.units) do
         unitData.playerCanDrive = true
-
+	
         --group name for MIZ pre-placed JTACs won't contain "UAZ" or "Hummer", therefore check unit type
         local _unitType = unitData.type
         if ctld.isJTACUnitType(_unitType) then
             _isJTAC = true
         end
     end
-
+	
+	--log:info("_isJTAC $1 groupName $2", _isJTAC, groupName)
+	
     -- make base defence units uncontrollable
     if not utils.startswith(groupName, "CTLD_") then
         log:info("Setting $1 as uncontrollable", groupName)

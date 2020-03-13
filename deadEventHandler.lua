@@ -1,6 +1,6 @@
 require("mist_4_3_74")
 require("Moose")
-
+local inspect = require("inspect")
 local baseOwnershipCheck = require("baseOwnershipCheck")
 
 local log = mist.Logger:new("deadEventHandler", "info")
@@ -43,38 +43,38 @@ function M.register()
                 local _storedLogisticsCentreSideName
                 local _storedLogisticsCentreMarkerID
 
-                for _baseName, _storedLogisticsCentre in pairs(ctld.logisticCentreObjects) do
+				for _LCsideName, _baseTable in pairs(ctld.logisticCentreObjects) do
+	
+					for _LCbaseName, _storedLogisticsCentre in pairs(_baseTable) do
+					
+						if _storedLogisticsCentre ~= nil then
+							_storedLogisticsCentreName = _storedLogisticsCentre:getName() --getName = DCS function, GetName = MOOSE function
+							_storedLogisticsCentreBase = string.match(_storedLogisticsCentreName, ("^(.+)%sLog")) --"Sochi Logistics Centre #001 red" = "Sochi"
+							_storedLogisticsCentreSideName = string.match(_storedLogisticsCentreName, ("%w+$")) --"Sochi Logistics Centre #001 red" = "red"
 
-                    if _storedLogisticsCentre ~= nil then
-                        _storedLogisticsCentreName = _storedLogisticsCentre:getName() --getName = DCS function, GetName = MOOSE function
-                        _storedLogisticsCentreBase = string.match(_storedLogisticsCentreName, ("^(.+)%sLog")) --"Sochi Logistics Centre #001 red" = "Sochi"
-                        _storedLogisticsCentreSideName = string.match(_storedLogisticsCentreName, ("%w+$")) --"Sochi Logistics Centre #001 red" = "red"
+							--log:info("eventHander DEAD: _storedLogisticsCentre: $1, _storedLogisticsCentreName: $2, _storedLogisticsCentreBase: $3, _storedLogisticsCentreSideName: $4", _storedLogisticsCentre, _storedLogisticsCentreName, _storedLogisticsCentreBase, _storedLogisticsCentreSideName)
 
-                        log:info("eventHander DEAD: _storedLogisticsCentre: $1, _storedLogisticsCentreName: $2, _storedLogisticsCentreBase: $3, _storedLogisticsCentreSideName: $4", _storedLogisticsCentre, _storedLogisticsCentreName, _storedLogisticsCentreBase, _storedLogisticsCentreSideName)
+						end
 
-                        --log:info("eventHander DEAD: TEST2 LC = nil: $1",mist.utils.basicSerialize(_storedLogisticsCentre == nil))
-                        --log:info("eventHander DEAD: TEST3 LC getLife: $1",mist.utils.basicSerialize(StaticObject.getLife(_storedLogisticsCentre)))
-                        --log:info("eventHander DEAD: _storedLogisticsCentreBase: $1, _storedLogisticsCentreSideName: $2",_storedLogisticsCentreBase,_storedLogisticsCentreSideName)
-                    end
+						--log:info("eventHander DEAD: _logisticsCentreName: $1, _deadUnitName: $2", _storedLogisticsCentreName, _deadUnitName)
+						--log:info("eventHander DEAD: _storedLogisticsCentreBase: $1, _LCbaseName: $2", _storedLogisticsCentreBase, _LCbaseName)
+						if _storedLogisticsCentreName == _deadUnitName and _storedLogisticsCentreSideName == _LCsideName and _storedLogisticsCentreBase == _LCbaseName then
+						
+							--log:info("eventHander DEAD (PRE): ctld.logisticCentreObjects[_LCsideName][_LCbaseName]: $1",inspect(ctld.logisticCentreObjects[_LCsideName][_LCbaseName], { newline = " ", indent = "" }))
+							ctld.logisticCentreObjects[_LCsideName][_LCbaseName] = nil
+							--log:info("eventHander DEAD (POST): ctld.logisticCentreObjects[_LCsideName][_LCbaseName]: $1",inspect(ctld.logisticCentreObjects[_LCsideName][_LCbaseName], { newline = " ", indent = "" }))
+							
+							-- remove map marker
+							_storedLogisticsCentreMarkerID = ctld.logisticCentreMarkerID[_LCsideName][_LCbaseName]
+							trigger.action.removeMark(_storedLogisticsCentreMarkerID)
+							ctld.logisticCentreMarkerID[_LCsideName][_LCbaseName] = nil
+							
+							-- (_checkWhichBases,_playerName,_campaignStartSetup)
+							baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership("ALL", "LCdead", false)
+							return
+						end
 
-                    log:info("eventHander DEAD: _logisticsCentreName: $1, _deadUnitName: $2", _storedLogisticsCentreName, _deadUnitName)
-                    log:info("eventHander DEAD: _storedLogisticsCentreBase: $1, _baseName: $2", _storedLogisticsCentreBase, _baseName)
-                    if _storedLogisticsCentreName == _deadUnitName and _storedLogisticsCentreBase == _baseName then
-                        --log:info("eventHander DEAD: ctld.logisticCentreObjects[_baseName]: $1",inspect(ctld.logisticCentreObjects[_baseName], { newline = " ", indent = "" }))
-                        ctld.logisticCentreObjects[_baseName] = nil
-                        --log:info("eventHander DEAD: ctld.logisticCentreObjects[_baseName]: $1",inspect(ctld.logisticCentreObjects[_baseName], { newline = " ", indent = "" }))
-                        -- (_checkWhichBases,_playerName,_campaignStartSetup)
-
-                        -- remove map marker
-                        _storedLogisticsCentreMarkerID = ctld.logisticCentreMarkerID[_baseName]
-                        trigger.action.removeMark(_storedLogisticsCentreMarkerID)
-                        ctld.logisticCentreMarkerID[_baseName] = nil
-
-                        baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership("ALL", "LCdead", false)
-                        return
-                    end
-
-
+					end
                 end
             end
         end

@@ -4,6 +4,8 @@
        ]]
 -- luacheck: no max line length
 -- luacheck: globals EV_MANAGER
+local inspect = require("inspect")
+local log = mist.Logger:new("weaponManager", "info")
 
 local M = {}
 
@@ -344,15 +346,21 @@ local function sendToRsrBot(event)
             ["targetCoalition"] = 0,
             ["weapon"] = "",
         }
-        if event.target then
-            --some events dont have a target
-            if event.target:getPlayerName() then
-                --check for AI or Player
-                event2send.target = event.target:getPlayerName()
+		
+		--log:info("event: $1",inspect(event, { newline = " ", indent = "" }))
+		log:info("event.target: $1, event.TgtPlayerName: $2, event.TgtCoalition: $3",event.target, event.TgtPlayerName, event.TgtCoalition)
+		
+		--some events dont have a target
+        if event.target ~= nil then
+		
+            --check for AI or Player
+            if event.TgtPlayerName then
+
+                event2send.target = event.TgtPlayerName
             else
                 event2send.target = "AI"
             end
-            event2send.targetCoalition = event.target:getCoalition()
+            event2send.targetCoalition = event.TgtCoalition
         end
         if event.weapon_name ~= nil then
             --check the event has a weapon associated with it (some dont)

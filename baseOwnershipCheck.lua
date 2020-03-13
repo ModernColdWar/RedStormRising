@@ -24,7 +24,7 @@ end
 function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSetup)
     --mr: intercept first time campaign setup here to read FARP ownership from Trigger Zone Name or Color
     log:info("_passedBaseName: $1, _playerORunit: $2, _campaignStartSetup: $3", _passedBaseName, _playerORunit, _campaignStartSetup)
-    log:info("ctld.logisticCentreObjects $1", ctld.logisticCentreObjects)
+    log:info("ctld.logisticCentreObjects $1",ctld.logisticCentreObjects)
     if _campaignStartSetup then
 
         -- wipe baseOwnership and reconstruct as checking all bases
@@ -57,7 +57,6 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
         --]]
     elseif _passedBaseName == "ALL" then
         --search through ALL bases and check status
-        log:info("ctld.logisticCentreObjects $1", ctld.logisticCentreObjects)
         local _conqueringUnit = "none"
         if _playerORunit ~= "none" and _playerORunit ~= "LCdead" and type(_playerORunit) ~= "string" then
             --_playerORunit not passed as string to ctld.getPlayerNameOrType would cause an error
@@ -84,31 +83,22 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
             local _RSRowner = "NoRSRowner"
             local _RSRcoalition = "NoRSRcoalition"
 
-            --get logistics centre deails if present
-            local _logisticsCentre = ctld.logisticCentreObjects[_baseName]
+            -- utils.getAliveLogisticsCentreforBase will also if LC alive not just nil i.e. StaticObject.getLife() and clean-up list if not alive
+			local _logisticsCentreObj = utils.getAliveLogisticsCentreforBase(_baseName)
             local _logisticsCentreName = "NoLCname"
             local _logisticsCentreSide = "NoLCside"
             local _logisticsCentreCoalition = 4
-            local _logisiticsCentreLife = 0 --10000 = starting command centre static object life
             local _logisticsCentreMarkerID = 0
-            if _logisticsCentre ~= nil then
+			
+			--get logistics centre deails if present
+            if _logisticsCentreObj ~= nil then
                 --interograte logistics centre static object to determine true RSR side
-                _logisticsCentreName = _logisticsCentre:getName() --getName = DCS function, GetName = MOOSE function
+                _logisticsCentreName = _logisticsCentreObj:getName() --getName = DCS function, GetName = MOOSE function
                 _logisticsCentreSide = string.match(_logisticsCentreName, ("%w+$")) --"Sochi Logistics Centre #001 red" = "red"
                 _logisticsCentreCoalition = utils.getSide(_logisticsCentreSide)
-                _logisiticsCentreLife = StaticObject.getLife(_logisticsCentre)
             end
-            log:info("_baseName: $1 _logisticsCentreName: $2, _logisiticsCentreLife: $3", _baseName, _logisticsCentreName, _logisiticsCentreLife)
+            log:info("_baseName: $1 _logisticsCentreName: $2, _logisticsCentreSide: $3", _baseName, _logisticsCentreName, _logisticsCentreSide)
 
-            --clean dead logisitics centres from ctld.logisticCentreObjects but shouldn't be required as handled by deadEventHandler.lua
-            if _logisticsCentre ~= nil then
-                if _logisiticsCentreLife == 0 then
-                    ctld.logisticCentreObjects[_baseName] = nil
-
-                    _logisticsCentreMarkerID = ctld.logisticCentreMarkerID[_baseName]
-                    trigger.action.removeMark(_logisticsCentreMarkerID)
-                end
-            end
 
             --[[
                 ------------------------------------------------------------------------------------------------------------------------------------------------
@@ -135,12 +125,12 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
                 local _revBaseNameSideType = utils.baseCaptureZoneToNameSideType(_baseCaptureZone)
                 local _zoneSideFromColor = _revBaseNameSideType[2] --zone color translated to side
 
-                if _logisticsCentre ~= nil and _logisiticsCentreLife > 0 then
+                if _logisticsCentreObj ~= nil then
 
 
                     -- should only occur during claiming of neutral airfield with newly built logisitics centre
                     if _RSRowner ~= _logisticsCentreSide then
-                        log:error("$1: Current Airbase Owner: $2. Logistics Centre Owner: $3.  DCSside: $4. Current Airbase owner does not match Logistics Centre owner!", _baseName, _RSRowner, _logisticsCentreSide, _DCSsideName)
+                        log:info("$1: Current Airbase Owner: $2. Logistics Centre Owner: $3.  DCSside: $4. Current Airbase owner does not match Logistics Centre owner!", _baseName, _RSRowner, _logisticsCentreSide, _DCSsideName)
                     end
 
                     -- neutral airbases
@@ -151,7 +141,7 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
                         if _RSRowner ~= _logisticsCentreSide then
 
                             if _RSRowner == "neutral" then
-                                log:info("$1 OWNERSHIP CHANGE (no LC): [Neutral Airbase] _zoneSideFromColor: $2 | CURRENT OWNER: _RSRowner: $3, NEW OWNER: _logisticsCentreSide: $4 | DCSsideName: $5", _baseName, _zoneSideFromColor, _RSRowner, _logisticsCentreSide, _DCSsideName)
+                                log:info("$1 OWNERSHIP CHANGE (no LC): [Neutral Airbase] _zoneSideFromColor: $2 | CURRENT OWNER: _RSRowner: $3, NEW OWNER: _logisticsCentreSide: $4 | DCSsideName: $5, _playerORunit: $6", _baseName, _zoneSideFromColor, _RSRowner, _logisticsCentreSide, _DCSsideName,_playerORunit)
 
                                 -- ctld.unpackLogisticsCentreCrates & ctld.loadUnloadLogisticsCrate = checks for OWNED friendly or neutral base before allowing logisitics centre crate unpack
                                 -- if logistics centre built on neutral AB, set ownership to side associated with logistics centre and notify side
@@ -166,7 +156,7 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
                             -- do NOT provide warning for neutral bases at campaign setup as no base defences associated, capture not based on ground vehicles, and likely message spam
                         end
 
-                        -- capturable airbases ALERTS only, as no capture can occur until defending side logistic centre destroyed
+					-- capturable airbases ALERTS only, as no capture can occur until defending side logistic centre destroyed
                     elseif _zoneSideFromColor ~= "neutral" then
 
                         -- Q: side specific notification that base being attacked?
@@ -202,7 +192,7 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
 
                     --if base was setup in MIZ as neutral then revert to neutral upon logisitics centre destruction i.e. airbase cannot be captured
                     if _zoneSideFromColor == "neutral" and _RSRowner ~= "neutral" then
-                        log:info("$1 OWNERSHIP CHANGE (no LC): [Neutral Airbase] _zoneSideFromColor: $2 | CURRENT OWNER: _RSRowner: $3, NEW OWNER: neutral | DCSsideName: $4", _baseName, _zoneSideFromColor, _RSRowner, _DCSsideName)
+                        log:info("$1 OWNERSHIP CHANGE (no LC): [Neutral Airbase] _zoneSideFromColor: $2 | CURRENT OWNER: _RSRowner: $3, NEW OWNER: neutral | DCSsideName: $4, _playerORunit: $5", _baseName, _zoneSideFromColor, _RSRowner, _DCSsideName,_playerORunit)
                         utils.removeABownership(_baseName)
                         table.insert(baseOwnership.Airbases["neutral"], _baseName)
                         bases.configureForSide(_baseName, "neutral") --slotBlocker.lua & pickupZoneManager.lua
@@ -214,7 +204,7 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
                     elseif _zoneSideFromColor ~= "neutral" and _RSRowner ~= _DCSsideName then
 
                         if _DCSsideName == "red" or _DCSsideName == "blue" then
-                            log:info("$1 OWNERSHIP CHANGE (no LC): [Capturable Airbase] | CURRENT OWNER: _RSRowner: $2, NEW OWNER: DCSsideName: $3 | _conqueringUnit: $4", _baseName, _RSRowner, _DCSsideName, _conqueringUnit)
+                            log:info("$1 OWNERSHIP CHANGE (no LC): [Capturable Airbase] | CURRENT OWNER: _RSRowner: $2, NEW OWNER: DCSsideName: $3 | _conqueringUnit: $4, _playerORunit: $5", _baseName, _RSRowner, _DCSsideName, _conqueringUnit,_playerORunit)
 
                             -- BASE CAPTURED!
                             utils.removeABownership(_baseName)
@@ -225,9 +215,9 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
                             bases.resupply(_baseName, _DCSsideName, rsrConfig, false, false, false) --activate base defences but DO NOT spawn logistics and NOT missionInit
 
                             if _playerORunit == "LCdead" then
-                                trigger.action.outTextForCoalition(_DCSsideName, _baseName .. " was held by  " .. _DCSsideName .. " ground units, and captured following destruction of the " .. _RSRowner .. " Logistics Centre", 10)
+                                trigger.action.outTextForCoalition(_DCScoalition, _baseName .. " was held by  " .. _DCSsideName .. " ground units, and captured following destruction of the " .. _RSRowner .. " Logistics Centre", 10)
                             else
-                                trigger.action.outTextForCoalition(_DCSsideName, _baseName .. " was captured by a " .. _DCSsideName .. " " .. _conqueringUnit, 10)
+                                trigger.action.outTextForCoalition(_DCScoalition, _baseName .. " was captured by a " .. _DCSsideName .. " " .. _conqueringUnit, 10)
                             end
                             trigger.action.outText(_baseName .. " HAS BEEN CAPTURED BY " .. string.upper(_DCSsideName) .. " TEAM", 10)
 
@@ -268,7 +258,7 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
                 _RSRowner = utils.getCurrFARPside(_baseName)
                 _RSRcoalition = utils.getSide(_RSRowner)
 
-                if _logisticsCentre ~= nil and _logisiticsCentreLife > 0 then
+                if _logisticsCentreObj ~= nil then
 
                     -- should only occur during claiming of FARP with newly built logisitics centre
                     if _RSRowner ~= _logisticsCentreSide then
@@ -281,7 +271,7 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
                             -- if logistics centre built on neutral FARP, set ownership to side associated with logistics centre and notify side
                             -- ctld.unpackLogisticsCentreCrates & ctld.loadUnloadLogisticsCrate = checks for friendly or neutral base before allowing logisitics centre crate unpack
 
-                            log:info("$1 OWNERSHIP CHANGE (alive LC): [FARP] | CURRENT OWNER: _RSRowner: $2, NEW OWNER: _logisticsCentreSide: $3 | _DCSsideName: $4", _baseName, _RSRowner, _logisticsCentreSide, _DCSsideName)
+                            log:info("$1 OWNERSHIP CHANGE (alive LC): [FARP] | CURRENT OWNER: _RSRowner: $2, NEW OWNER: _logisticsCentreSide: $3 | _DCSsideName: $4, _playerORunit: $5", _baseName, _RSRowner, _logisticsCentreSide, _DCSsideName,_playerORunit)
 
                             utils.removeFARPownership(_baseName)
                             table.insert(baseOwnership.FARPs[_logisticsCentreSide], _baseName)
@@ -298,16 +288,19 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
                             bases.resupply(_baseName, _logisticsCentreSide, rsrConfig, false, false, false) --activate base defences (FARP trucks) but DO NOT spawn logistics and NOT missionInit
 
                         else
-                            --if _DCSsideName ~= "neutral" then --unnecessary
-                            -- if contested then _DCSsideName == nil, do nothing
-                            -- if opposing team then _DCSsideName == opposing team, still do nothing as logisitics centre owner takes priority
-                            log:info("$1 CONTESTED (alive LC): [FARP] | CURRENT OWNER: _RSRowner: $2, _logisticsCentreSide: $3, _DCSsideName: $4", _baseName, _RSRowner, _logisticsCentreSide, _DCSsideName)
+							if _DCSsideName == "neutral" then -- if FARP has LC but no friendly units then _DCSsideName == "neutral"
+								log:info("$1 UNOCCUPIED (alive LC): [FARP] | CURRENT OWNER: _RSRowner: $2, _logisticsCentreSide: $3, _DCSsideName: $4", _baseName, _RSRowner, _logisticsCentreSide, _DCSsideName)
+							else
+								-- if contested then _DCSsideName == nil, do nothing
+								-- if opposing team then _DCSsideName == opposing team, still do nothing as logisitics centre owner takes priority
+								log:info("$1 CONTESTED (alive LC): [FARP] | CURRENT OWNER: _RSRowner: $2, _logisticsCentreSide: $3, _DCSsideName: $4", _baseName, _RSRowner, _logisticsCentreSide, _DCSsideName)
+							end
                         end
 
                     elseif _RSRowner ~= _logisticsCentreSide then
                         -- only resupply if FARP 'attacked and being held' then logisitics centre built by attacking player (_playerORunit ~= "none")
 
-                        log:info("$1 OWNERSHIP CHANGE (alive LC): [FARP] | CURRENT OWNER: _RSRowner: $2, NEW OWNER: _logisticsCentreSide: $3 | _DCSsideName: $4", _baseName, _RSRowner, _logisticsCentreSide, _DCSsideName)
+                        log:info("$1 OWNERSHIP CHANGE (alive LC): [FARP] | CURRENT OWNER: _RSRowner: $2, NEW OWNER: _logisticsCentreSide: $3 | _DCSsideName: $4, _playerORunit: $5", _baseName, _RSRowner, _logisticsCentreSide, _DCSsideName, _playerORunit)
 
                         utils.removeFARPownership(_baseName)
                         table.insert(baseOwnership.FARPs[_logisticsCentreSide], _baseName)
@@ -335,7 +328,7 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
 
                         if _RSRowner ~= "neutral" then
                             --no logistics centre then set to owernship to neutral to block slot and other functions, as logisitics centre required for claim
-                            log:info("$1 OWNERSHIP CHANGE (no LC): [FARP] | CURRENT OWNER: _RSRowner: $2, NEW OWNER: neutral | _DCSsideName: $3", _baseName, _RSRowner, _DCSsideName)
+                            log:info("$1 OWNERSHIP CHANGE (no LC): [FARP] | CURRENT OWNER: _RSRowner: $2, NEW OWNER: neutral | _DCSsideName: $3,  _playerORunit: $4", _baseName, _RSRowner, _DCSsideName, _playerORunit)
 
                             utils.removeFARPownership(_baseName)
                             table.insert(baseOwnership.FARPs.neutral, _baseName)
@@ -415,20 +408,23 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
         local _DCSbaseCategory = _passedBase:getDesc().category
         local _RSRowner = "NoRSRowner"
         local _RSRcoalition = "NoRSRcoalition"
+		
+		-- utils.getAliveLogisticsCentreforBase will also if LC alive not just nil i.e. StaticObject.getLife() and clean-up list if not alive
+		local _logisticsCentreObj = utils.getAliveLogisticsCentreforBase(_baseName)
+		local _logisticsCentreName = "NoLCname"
+		local _logisticsCentreSide = "NoLCside"
+		local _logisticsCentreCoalition = 4
+		local _logisticsCentreMarkerID = 0
+		
+		--get logistics centre deails if present
+		if _logisticsCentreObj ~= nil then
+			--interograte logistics centre static object to determine true RSR side
+			_logisticsCentreName = _logisticsCentreObj:getName() --getName = DCS function, GetName = MOOSE function
+			_logisticsCentreSide = string.match(_logisticsCentreName, ("%w+$")) --"Sochi Logistics Centre #001 red" = "red"
+			_logisticsCentreCoalition = utils.getSide(_logisticsCentreSide)
+		end
+		log:info("_baseName: $1 _logisticsCentreName: $2, _logisticsCentreSide: $3", _baseName, _logisticsCentreName, _logisticsCentreSide)
 
-        --get logistics centre deails if present
-        log:info("ctld.logisticCentreObjects $1", ctld.logisticCentreObjects)
-        local _logisticsCentre = ctld.logisticCentreObjects[_baseName]
-        local _logisticsCentreName = "noNAME"
-        local _logisticsCentreSide = "noSIDE"
-        local _logisticsCentreCoalition = 4
-        if _logisticsCentre ~= nil then
-            --interograte logistics centre static object to determine true RSR side
-            _logisticsCentreName = _logisticsCentre:getName() --getName = DCS function, GetName = MOOSE function
-            _logisticsCentreSide = string.match(_logisticsCentreName, ("%w+$")) --"Sochi Logistics Centre #001 red" = "red"
-            _logisticsCentreCoalition = utils.getSide(_logisticsCentreSide)
-        end
-        log:info("_baseName: $1 _logisticsCentreName: $2", _baseName, _logisticsCentreName)
     end
     log:info("baseOwnership (_passedBaseName: $1) = $2", _passedBaseName, inspect(baseOwnership, { newline = " ", indent = "" }))
     return baseOwnership

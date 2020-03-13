@@ -19,7 +19,7 @@ rsrConfig.writeDelay = rsrConfig.devMode and 10 or 180  -- initial delay for per
 -- base defences
 --mr: ensure that associated RSRbaseCaptureZone zone, which is used as a pre-filter, is larger than these values
 -- CTLD_config.lua: ctld.RSRbaseCaptureZones = ctldUtils.getRSRbaseCaptureZones(env.mission)
-rsrConfig.baseDefenceActivationRadiusAirbase = 5000
+rsrConfig.baseDefenceActivationRadiusAirbase = 10000
 rsrConfig.baseDefenceActivationRadiusFARP = 2500
 
 -- restart schedule
