@@ -126,7 +126,7 @@ ssb.commanderPlayerUCID = {
     "6e1c8117ab788fa693feec6326320a5e",
     "842514dc165092ba9631f8c7d2052d0a",
     "837f1acd1132ed0a60f2a6a1f57bcc1c",
-    "263d36e3b60782a6c16e2b3c5cebf3f9",
+    "263d36e3b60782a6c16e2b3c5cebf3f9", --mad rabbit
     "b12d9af45f2b08a353f1e706e034eaec",
     "0a312f0e5531d0fb0e1b1d90bb559fa3",
     "e011e49e75560dbe802d50cd0f1ce68d",
@@ -146,7 +146,6 @@ ssb.commanderPlayerUCID = {
     "eae6f83ee3693287e92229d7eeab25b3",
     "5df2d8f9d4675adf07a1d0f7eed7f9e0",
     "b148135d459915551e3d2b5489821c16",
-    "00e5296e187ccfb8ee5edb55a7968d39",
     "6e14d6e4deb4bf3b08d99713754cd1dc",
     "00e5296e187ccfb8ee5edb55a7968d39", --★ВАРЯГ★
     "25bd8aec82ad88e26c5534abddb3cc22", --HanSolo
