@@ -1424,9 +1424,9 @@ function ctld.deployTroops(_heli, _troops)
                     ctld.inTransitTroops[_heli:getName()].troops = nil
 
                     if ctld.inAir(_heli) then
-                        trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " troops fast-ropped from " .. _heli:getTypeName() .. " into combat", 10)
+                        trigger.action.outTextForCoalition(_heli:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_heli) .. " troops fast-ropped from " .. _heli:getTypeName() .. " into combat", 10)
                     else
-                        trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " troops dropped from " .. _heli:getTypeName() .. " into combat", 10)
+                        trigger.action.outTextForCoalition(_heli:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_heli) .. " troops dropped from " .. _heli:getTypeName() .. " into combat", 10)
                     end
 
                     ctld.processCallback({ unit = _heli, unloaded = _droppedTroops, action = "dropped_troops" })
@@ -1443,9 +1443,9 @@ function ctld.deployTroops(_heli, _troops)
                     ctld.inTransitTroops[_heli:getName()].troops = nil
 
                     if ctld.inAir(_heli) then
-                        trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " troops fast-ropped from " .. _heli:getTypeName() .. " into " .. _extractZone.name, 10)
+                        trigger.action.outTextForCoalition(_heli:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_heli) .. " troops fast-ropped from " .. _heli:getTypeName() .. " into " .. _extractZone.name, 10)
                     else
-                        trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " troops dropped from " .. _heli:getTypeName() .. " into " .. _extractZone.name, 10)
+                        trigger.action.outTextForCoalition(_heli:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_heli) .. " troops dropped from " .. _heli:getTypeName() .. " into " .. _extractZone.name, 10)
                     end
                 end
             else
@@ -1471,7 +1471,7 @@ function ctld.deployTroops(_heli, _troops)
 
                 ctld.processCallback({ unit = _heli, unloaded = _droppedVehicles, action = "dropped_vehicles" })
 
-                trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " dropped vehicles from " .. _heli:getTypeName() .. " into combat", 10)
+                trigger.action.outTextForCoalition(_heli:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_heli) .. " dropped vehicles from " .. _heli:getTypeName() .. " into combat", 10)
             end
         end
     end
@@ -1623,7 +1623,7 @@ function ctld.loadTroops(_heli, _troops, _numberOrTemplate)
 
         _onboard.troops = ctld.generateTroopTypes(_heli:getCoalition(), _numberOrTemplate, _heli:getCountry())
 
-        trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " loaded troops into " .. _heli:getTypeName(), 10)
+        trigger.action.outTextForCoalition(_heli:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_heli) .. " loaded troops into " .. _heli:getTypeName(), 10)
 
         ctld.processCallback({ unit = _heli, onboard = _onboard.troops, action = "load_troops" })
     else
@@ -1634,7 +1634,7 @@ function ctld.loadTroops(_heli, _troops, _numberOrTemplate)
 
         ctld.processCallback({ unit = _heli, onboard = _onboard.vehicles, action = "load_vehicles" })
 
-        trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " loaded " .. _count .. " vehicles into " .. _heli:getTypeName(), 10)
+        trigger.action.outTextForCoalition(_heli:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_heli) .. " loaded " .. _count .. " vehicles into " .. _heli:getTypeName(), 10)
     end
 
     ctld.inTransitTroops[_heli:getName()] = _onboard
@@ -1747,7 +1747,7 @@ function ctld.loadUnloadLogisticsCrate(_args)
             ctld.inTransitLogisticsCentreCrates[_aircraft:getName()] = _crateDetails
 
             ctld.displayMessageToGroup(_aircraft, "Logistics Centre crate loaded", 10)
-            trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " loaded a Logistics Centre crate for transport!", 10)
+            trigger.action.outTextForCoalition(_aircraft:getCoalition(), "[TEAM]: " .. ctld.getPlayerNameOrType(_aircraft) .. " loaded a Logistics Centre crate for transport!", 10)
 
         elseif -- planes only needs to be in a base with an alive logisitics centre
         _isPlane == true and
@@ -1761,7 +1761,7 @@ function ctld.loadUnloadLogisticsCrate(_args)
             ctld.inTransitLogisticsCentreCrates[_aircraft:getName()] = _crateDetails
 
             ctld.displayMessageToGroup(_aircraft, "Logistics Centre crate loaded", 10)
-            trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " loaded a Logistics Centre crate for transport!", 10)
+            trigger.action.outTextForCoalition(_aircraft:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " loaded a Logistics Centre crate for transport!", 10)
 
         else
             -- search area for logistics centre crate and load, regardless of aircraft type
@@ -1779,7 +1779,7 @@ function ctld.loadUnloadLogisticsCrate(_args)
                 ctld.inTransitLogisticsCentreCrates[_aircraft:getName()] = _crateDetails
 
                 ctld.displayMessageToGroup(_aircraft, "Logistics Centre crate loaded", 10)
-                trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " loaded a Logistics Centre crate for transport!", 10)
+                trigger.action.outTextForCoalition(_aircraft:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " loaded a Logistics Centre crate for transport!", 10)
 
                 if _aircraftSide == 1 then
                     ctld.droppedLogisticsCentreCratesRED[_nearestCrateDetails.crateUnit:getName()] = nil
@@ -1857,7 +1857,7 @@ function ctld.loadUnloadLogisticsCrate(_args)
                 ctld.droppedLogisticsCentreCratesBLUE[_newLCcrateName] = _crateOnboardDetails
             end
 
-            trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " delivered a Logistics Centre crate", 10)
+            trigger.action.outTextForCoalition(_aircraft:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " delivered a Logistics Centre crate", 10)
 
             ctld.displayMessageToGroup(_aircraft, "Delivered Logistics Centre crate 60m at 6'oclock to you", 10)
 
@@ -2021,7 +2021,7 @@ function ctld.loadUnloadJTACcrate(_args)
             ctld.inTransitSlingLoadCrates[_aircraft:getName()] = _crateDetails
 
             ctld.displayMessageToGroup(_aircraft, "JTAC crate loaded", 10)
-            trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " loaded a JTAC crate for transport.", 10)
+            trigger.action.outTextForCoalition(_aircraft:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " loaded a JTAC crate for transport.", 10)
 
         elseif -- planes only needs to be in a base with an alive logisitics centre
         _isPlane == true and
@@ -2035,7 +2035,7 @@ function ctld.loadUnloadJTACcrate(_args)
             ctld.inTransitSlingLoadCrates[_aircraft:getName()] = _crateDetails
             log:info("inTransitSlingLoadCrates: aircraft: $1", inspect(ctld.inTransitSlingLoadCrates[_aircraft:getName()], { newline = " ", indent = "" }))
             ctld.displayMessageToGroup(_aircraft, "JTAC crate loaded", 10)
-            trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " loaded a JTAC crate for transport!", 10)
+            trigger.action.outTextForCoalition(_aircraft:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " loaded a JTAC crate for transport!", 10)
 
         else
             -- search area for logistics centre crate and load, regardless of aircraft type
@@ -2051,7 +2051,7 @@ function ctld.loadUnloadJTACcrate(_args)
                 ctld.inTransitSlingLoadCrates[_aircraft:getName()] = _crateDetails
 
                 ctld.displayMessageToGroup(_aircraft, "JTAC crate loaded", 10)
-                trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " loaded a JTAC crate for transport!", 10)
+                trigger.action.outTextForCoalition(_aircraft:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " loaded a JTAC crate for transport!", 10)
 
                 --remove
                 _nearestCrate.crateUnit:destroy()
@@ -2089,7 +2089,7 @@ function ctld.loadUnloadJTACcrate(_args)
             local _newJTACcrateName = string.format("JTAC crate #%i (%s)", _unitId, _crateBaseOfOrigin)
             ctld.spawnCrateStatic(_aircraft:getCountry(), _unitId, _6oclockPos, _newJTACcrateName, _JTACcrateWeightPerSide, _aircraftSide, 1)
 
-            trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " delivered a JTAC crate", 10)
+            trigger.action.outTextForCoalition(_aircraft:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " delivered a JTAC crate", 10)
             ctld.displayMessageToGroup(_aircraft, "Delivered JTAC crate 60m at 6'oclock to you", 10)
 
         elseif _inBaseZoneAndRSRrepairRadius == true then
@@ -2123,7 +2123,7 @@ function ctld.loadUnloadJTACcrate(_args)
             local _newJTACcrateName = string.format("JTAC crate #%i (%s)", _unitId, _crateBaseOfOrigin)
             ctld.spawnCrateStatic(_aircraft:getCountry(), _unitId, _6oclockPos, _newJTACcrateName, _JTACcrateWeightPerSide, _aircraftSide, 1)
             log:info("_newJTACcrateName: $1", _newJTACcrateName)
-            trigger.action.outTextForCoalition(_aircraft:getCoalition(), ctld.getPlayerNameOrType(_aircraft) .. " delivered a JTAC crate", 10)
+            trigger.action.outTextForCoalition(_aircraft:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " delivered a JTAC crate", 10)
             ctld.displayMessageToGroup(_aircraft, "Delivered JTAC crate 60m at 6'oclock to you", 10)
         end
     end
@@ -2316,7 +2316,7 @@ function ctld.extractTroops(_args)
 
             _onboard.troops = _extractTroops.details
 
-            trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " extracted troops in " .. _heli:getTypeName() .. " from combat", 10)
+            trigger.action.outTextForCoalition(_heli:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_heli) .. " extracted troops in " .. _heli:getTypeName() .. " from combat", 10)
 
             if _heli:getCoalition() == 1 then
                 ctld.droppedTroopsRED[_extractTroops.group:getName()] = nil
@@ -2358,7 +2358,7 @@ function ctld.extractTroops(_args)
                 ctld.droppedVehiclesBLUE[_extractVehicles.group:getName()] = nil
             end
 
-            trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " extracted vehicles in " .. _heli:getTypeName() .. " from combat", 10)
+            trigger.action.outTextForCoalition(_heli:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_heli) .. " extracted vehicles in " .. _heli:getTypeName() .. " from combat", 10)
 
             ctld.processCallback({ unit = _heli, extracted = _extractVehicles, action = "extract_vehicles" })
             --remove
@@ -3099,7 +3099,7 @@ function ctld.unpackCrates(_arguments)
                         quantityTxt = tostring(_crate.details.unitQuantity) .. " "
                         plural = "s"
                     end
-                    trigger.action.outTextForCoalition(_heliCoalition, _playerName .. " successfully deployed " .. quantityTxt .. _crate.details.desc .. plural .. " to the field", 10)
+                    trigger.action.outTextForCoalition(_heliCoalition, "[TEAM] " .. _playerName .. " successfully deployed " .. quantityTxt .. _crate.details.desc .. plural .. " to the field", 10)
 
                     if ctld.isJTACUnitType(_crate.details.unit) and ctld.JTAC_dropEnabled then
                         local _code = ctld.getLaserCode(_heliCoalition)
@@ -3332,22 +3332,22 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
 				log:info("ctld.FOBbeacons: $1", inspect(ctld.FOBbeacons, { newline = " ", indent = "" }))
 			
                 if ctld.troopPickupAtFOB == true then
-                    trigger.action.outTextForCoalition(_args[3], "Finished building Logistics Centre! Crates and Troops can now be picked up.", 10)
+                    trigger.action.outTextForCoalition(_args[3], "[TEAM] " .. "Finished building " .. _FOBname .. ". Crates and Troops can now be picked up.", 10)
                 else
-                    trigger.action.outTextForCoalition(_args[3], "Finished building Logistics Centre! Crates can now be picked up.", 10)
+                    trigger.action.outTextForCoalition(_args[3], "[TEAM] " .. "Finished building " .. _FOBname .. ". Crates can now be picked up.", 10)
                 end
             end,
-                    {
-                        _centroid, --_args[1] = ignore for base (airbase/FARP) repair
-                        _logisticsCentreName, --_args[2] = name of logistics centre static object
-                        _coalition, --_args[3] = _coalition for ctld.logisticCentreObjects nested table reference and coaltion message
-                        _playerName, -- _args[4] = name FOB after player
-                        _country, -- _args[5] = country of player, but static objects are always neutral country e.g. Greece
-                        _FOBname, -- _args[6] = referenced in ctld.logisticCentreObjects for 'isLogisticsCentreAliveAt' function
-                    }, timer.getTime() + _buildTime)
+			{
+				_centroid, --_args[1] = ignore for base (airbase/FARP) repair
+				_logisticsCentreName, --_args[2] = name of logistics centre static object
+				_coalition, --_args[3] = _coalition for ctld.logisticCentreObjects nested table reference and coaltion message
+				_playerName, -- _args[4] = name FOB after player
+				_country, -- _args[5] = country of player, but static objects are always neutral country e.g. Greece
+				_FOBname, -- _args[6] = referenced in ctld.logisticCentreObjects for 'isLogisticsCentreAliveAt' function
+			}, timer.getTime() + _buildTime)
 
-            local _txt = string.format("%s started deploying a FOB using %d Logistics Centre crates and it will be finished in %d seconds.", ctld.getPlayerNameOrType(_aircraft), _totalCrates, _buildTime)
-            trigger.action.outTextForCoalition(_coalition, _txt, 10)
+            local _txt = string.format("%s started deploying a FOB @ %s and it will be finished in %d seconds.", ctld.getPlayerNameOrType(_aircraft), _FOBgrid, _buildTime)
+            trigger.action.outTextForCoalition(_coalition, "[TEAM] " .. _txt, 10)
 
         else
             --[[
@@ -3362,7 +3362,7 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
 
                 >>>>> logistic centre name will inlcude team name (red/blue) therefore 'replacement = destroy' with same name only useful for airbase "repair"
             --]]
-            _logisticsCentreName = _logisticsCentreName .. _baseName .. " Logistics Centre #" .. _unitId .. " " .. _aircraftSideName -- "MM75 Logistics Centre #001 red"
+            _logisticsCentreName = _logisticsCentreName .. _baseName .. " Logistics Centre #" .. _LCid .. " " .. _aircraftSideName -- "MM75 Logistics Centre #001 red"
             logisticsManager.spawnLogisticsBuildingForBase(_baseName, _aircraftSideName, _logisticsCentreName, false, _playerName)
             --trigger.action.outTextForCoalition(_aircraft:getCoalition(), _playerName .. " has repaired the Logistics Centre at " .. _closestBaseName, 10) --moved to baseOwnershipCheck.lua
         end
@@ -3548,7 +3548,7 @@ function ctld.unloadInternalCrate (_args)
                         local _logisticsCentreName = ""
                         _logisticsCentreName = _logisticsCentreName .. _baseNameORplayerName .. " Logistics Centre #" .. _unitId .. " " .. _heliSide -- "MM75 Logistics Centre #001 red"
                         logisticsManager.spawnLogisticsBuildingForBase(_closestBaseName,_heliSideName,_logisticsCentreName,false, _playerName)
-                        trigger.action.outTextForCoalition(_heli:getCoalition(), _playerName .. " has repaired the Logistics Centre at " .. _closestBaseName, 10)
+                        trigger.action.outTextForCoalition(_heli:getCoalition(), "[TEAM] " .. _playerName .. " has repaired the Logistics Centre at " .. _closestBaseName, 10)
                     --]]
 
                 end
@@ -3935,7 +3935,7 @@ function ctld.removeRadioBeacon(_args)
                 _fmGroup:destroy()
             end
 
-            trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " removed a Radio Beacon.\n\n" .. _closetBeacon.text, 20)
+            trigger.action.outTextForCoalition(_heli:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_heli) .. " removed a Radio Beacon.\n\n" .. _closetBeacon.text, 20)
         else
             ctld.displayMessageToGroup(_heli, "No Radio Beacons within 500m.", 20)
         end
@@ -4065,7 +4065,7 @@ function ctld.rearmAASystem(_heli, _nearestCrate, _aaSystemTemplate)
 
                 ctld.processCallback({ unit = _heli, crate = _nearestCrate, spawnedGroup = _spawnedGroup, action = "rearm" })
 
-                trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " successfully rearmed a full " .. _aaSystemTemplate.name .. " in the field", 10)
+                trigger.action.outTextForCoalition(_heli:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_heli) .. " successfully rearmed a full " .. _aaSystemTemplate.name .. " in the field", 10)
 
                 if _heli:getCoalition() == 1 then
                     ctld.spawnedCratesRED[_nearestCrate.crateUnit:getName()] = nil
@@ -4199,7 +4199,7 @@ function ctld.unpackAASystem(_heli, _nearestCrate, _nearbyCrates, _aaSystemTempl
     env.info("Active: " .. _activeLaunchers .. " Allowed: " .. _allowed)
 
     if _activeLaunchers + 1 > _allowed then
-        trigger.action.outTextForCoalition(_heli:getCoalition(), "Out of parts for AA Systems. Current limit is " .. _allowed .. " \n", 10)
+        trigger.action.outTextForCoalition(_heli:getCoalition(), "[TEAM] " .. "Out of parts for AA Systems. Current limit is " .. _allowed .. " \n", 10)
         return
     end
 
@@ -4230,7 +4230,7 @@ function ctld.unpackAASystem(_heli, _nearestCrate, _nearbyCrates, _aaSystemTempl
 
         ctld.processCallback({ unit = _heli, crate = _nearestCrate, spawnedGroup = _spawnedGroup, action = "unpack" })
 
-        trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " successfully deployed a full " .. _aaSystemTemplate.name .. " to the field. \n\nAA Active System limit is: " .. _allowed .. "\nActive: " .. (_activeLaunchers + 1), 10)
+        trigger.action.outTextForCoalition(_heli:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_heli) .. " successfully deployed a full " .. _aaSystemTemplate.name .. " to the field. \n\nAA Active System limit is: " .. _allowed .. "\nActive: " .. (_activeLaunchers + 1), 10)
 
     end
 end
@@ -4322,7 +4322,7 @@ function ctld.repairAASystem(_heli, _nearestCrate, _aaSystem)
 
         ctld.processCallback({ unit = _heli, crate = _nearestCrate, spawnedGroup = _spawnedGroup, action = "repair" })
 
-        trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " successfully repaired a full " .. _aaSystem.name .. " in the field", 10)
+        trigger.action.outTextForCoalition(_heli:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_heli) .. " successfully repaired a full " .. _aaSystem.name .. " in the field", 10)
 
         if _heli:getCoalition() == 1 then
             ctld.spawnedCratesRED[_nearestCrate.crateUnit:getName()] = nil
@@ -4415,7 +4415,7 @@ function ctld.unpackMultiCrate(_heli, _nearestCrate, _nearbyCrates)
         end
         local _txt = string.format("%s successfully deployed %s%s%s to the field using %d crates", ctld.getPlayerNameOrType(_heli), quantityTxt, _nearestCrate.details.desc, plural, #_nearbyMultiCrates)
 
-        trigger.action.outTextForCoalition(_heliCoalition, _txt, 10)
+        trigger.action.outTextForCoalition(_heliCoalition, "[TEAM] " .. _txt, 10)
 
         if ctld.isJTACUnitType(_nearestCrate.details.unit) and ctld.JTAC_dropEnabled then
             local _code = ctld.getLaserCode(_heliCoalition)
@@ -5285,7 +5285,7 @@ function ctld.dropSmoke(_args)
 
         trigger.action.smoke(_pos3, _args[2])
 
-        trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " dropped " .. _colour .. " smoke ", 10)
+        trigger.action.outTextForCoalition(_heli:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_heli) .. " dropped " .. _colour .. " smoke ", 10)
     end
 end
 
@@ -5863,7 +5863,7 @@ function ctld.JTACAutoLase(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
         end
         log:info("POST-isNil: ctld.jtacUnits[_jtacGroupName] $1", mist.utils.basicSerialize(ctld.jtacUnits[_jtacGroupName]))
         if ctld.jtacUnits[_jtacGroupName] ~= nil then
-            ctld.notifyCoalition("JTAC Group " .. _jtacGroupName .. " KIA!", 10, ctld.jtacUnits[_jtacGroupName].side)
+            ctld.notifyCoalition("JTAC: " .. _jtacGroupName .. " KIA!", 10, ctld.jtacUnits[_jtacGroupName].side)
         end
 
         --remove from list
@@ -6036,7 +6036,7 @@ end
 function ctld.notifyCoalition(_message, _displayFor, _side)
 
 
-    trigger.action.outTextForCoalition(_side, _message, _displayFor)
+    trigger.action.outTextForCoalition(_side, "[TEAM] " .. _message, _displayFor)
     trigger.action.outSoundForCoalition(_side, "radiobeep.ogg")
 end
 

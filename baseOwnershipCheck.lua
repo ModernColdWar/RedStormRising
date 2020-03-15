@@ -151,7 +151,7 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
                                 bases.configureForSide(_baseName, _logisticsCentreSide)  --slotBlocker.lua & pickupZoneManager.lua
                                 -- (baseName, sideName, rsrConfig, spawnLC, missionInit, campaignStartSetup)
                                 bases.resupply(_baseName, _logisticsCentreSide, rsrConfig, false, false, false) --activate base defences but DO NOT spawn logistics and NOT missionInit
-                                trigger.action.outTextForCoalition(_logisticsCentreCoalition, _baseName .. " claimed by " .. _logisticsCentreSide .. " team following construction of a Logistics Centre.", 10)
+                                trigger.action.outTextForCoalition(_logisticsCentreCoalition,"[TEAM] " .. _baseName .. " claimed by " .. _logisticsCentreSide .. " team following construction of a Logistics Centre.", 10)
                             end
                             -- do NOT provide warning for neutral bases at campaign setup as no base defences associated, capture not based on ground vehicles, and likely message spam
                         end
@@ -166,7 +166,7 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
 
                             if _DCSsideName == "CONTESTED" then
 
-                                trigger.action.outTextForCoalition(_RSRcoalition, "ALERT - " .. _baseName .. " IS UNDER ATTACK!", 10)
+                                trigger.action.outTextForCoalition(_RSRcoalition, "[TEAM] " ..  "ALERT - " .. _baseName .. " IS UNDER ATTACK!", 10)
                                 log:info("ALERT MSG: $1 owned by $2 (LC: $3) under attack by DCS side $4", _baseName, _RSRowner, _logisticsCentreSide, _DCSsideName)
 
 
@@ -174,13 +174,13 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
                                 --disable alert for now to prevent message spam due to DCSside reporting issue: https://github.com/ModernColdWar/RedStormRising/issues/157
                                 --trigger.action.outTextForCoalition(_RSRcoalition, "ALERT - " .. _baseName .. " has no friendly ground units within 2km!", 10)
                                 log:info("ALERT MSG: $1 owned by $2 (LC $3) no friendly ground units within 2km.  DCS side $4", _baseName, _RSRowner, _logisticsCentreSide, _DCSsideName)
-
+							
                             else
                                 -- if not contested or neutral but RSRowner not matching DCSside, then enemy must be holding base
-
-                                trigger.action.outTextForCoalition(_RSRcoalition, "ALERT - " .. _baseName .. " IS BEING HELD BY THE ENEMY! Friendly logistics centre still present.", 10)
+								
+								-- disabled due to bugs with DCS determining airbase side, possibly ignoring late activated units
+                               -- trigger.action.outTextForCoalition(_RSRcoalition, "[TEAM] " .. "ALERT - " .. _baseName .. " IS BEING HELD BY THE ENEMY! Friendly logistics centre still present.", 10)
                                 log:info("ALERT MSG: $1 owned by $2 (LC: $3) held by DCS side $4", _baseName, _RSRowner, _logisticsCentreSide, _DCSsideName)
-
                             end
 
                         end
@@ -215,20 +215,20 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
                             bases.resupply(_baseName, _DCSsideName, rsrConfig, false, false, false) --activate base defences but DO NOT spawn logistics and NOT missionInit
 
                             if _playerORunit == "LCdead" then
-                                trigger.action.outTextForCoalition(_DCScoalition, _baseName .. " was held by  " .. _DCSsideName .. " ground units, and captured following destruction of the " .. _RSRowner .. " Logistics Centre", 10)
+                                trigger.action.outTextForCoalition(_DCScoalition,"[TEAM] " .. _baseName .. " was held by  " .. _DCSsideName .. " ground units, and captured following destruction of the " .. _RSRowner .. " Logistics Centre", 10)
                             else
-                                trigger.action.outTextForCoalition(_DCScoalition, _baseName .. " was captured by a " .. _DCSsideName .. " " .. _conqueringUnit, 10)
+                                trigger.action.outTextForCoalition(_DCScoalition,"[TEAM] " .. _baseName .. " was captured by a " .. _DCSsideName .. " " .. _conqueringUnit, 10)
                             end
-                            trigger.action.outText(_baseName .. " HAS BEEN CAPTURED BY " .. string.upper(_DCSsideName) .. " TEAM", 10)
+                            trigger.action.outText("[ALL] " .. _baseName .. " HAS BEEN CAPTURED BY " .. string.upper(_DCSsideName) .. " TEAM", 10)
 
                         elseif _DCSsideName == "neutral" then
                             -- Airbase converts back to MIZ warehouse setting i.e. neutral, if no ground units from either side present
-                            trigger.action.outTextForCoalition(_RSRcoalition, "ALERT - " .. _baseName .. " has no friendly ground units within 2km and has no Logisitics Centre!", 10)
+                            trigger.action.outTextForCoalition(_RSRcoalition, "[TEAM] " .. "ALERT - " .. _baseName .. " has no friendly ground units within 2km and has no Logisitics Centre!", 10)
                             log:info("ALERT MSG: $1 owned by $2 no friendly ground units within 2km and no logisitics centre.  DCS side $3", _baseName, _RSRowner, _DCSsideName)
 
                         elseif _DCSsideName == "CONTESTED" then
                             --Check for contested status
-                            trigger.action.outTextForCoalition(_RSRcoalition, "ALERT - " .. _baseName .. " is under attack and has no logisitics centre!", 10)
+                            trigger.action.outTextForCoalition(_RSRcoalition, "[TEAM] " .. "ALERT - " .. _baseName .. " is under attack and has no logisitics centre!", 10)
                             log:info("ALERT MSG: $1 owned by $2 (no logisitics centre) under attack by DCS side $3", _baseName, _RSRowner, _DCSsideName)
                         end
                     end
@@ -279,7 +279,7 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
                             --mr: RSR TEAM = (option A) must clear FARP area.  Therefore allow attacking team to know when they capture the FARP, but not opposition to allow sneaky tactics
                             if _conqueringUnit ~= "none" then
                                 -- _conqueringUnit should be player and not friendly unit if FARP neutral
-                                trigger.action.outTextForCoalition(_DCScoalition, _baseName .. " FARP claimed by " .. _logisticsCentreSide
+                                trigger.action.outTextForCoalition(_DCScoalition, "[TEAM] " .. _baseName .. " FARP claimed by " .. _logisticsCentreSide
                                         .. " team following construction of Logistics Centre by " .. _conqueringUnit, 10) --_conqueringUnit = playerName
                             end
 
@@ -310,7 +310,7 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
                         bases.resupply(_baseName, _logisticsCentreSide, rsrConfig, false, false, false) --activate base defences (FARP trucks) but DO NOT spawn logistics and NOT missionInit
 
                         if _conqueringUnit ~= "none" then
-                            trigger.action.outTextForCoalition(_DCScoalition, _baseName .. " FARP claimed by " .. _logisticsCentreSide
+                            trigger.action.outTextForCoalition(_DCScoalition, "[TEAM] " .. _baseName .. " FARP claimed by " .. _logisticsCentreSide
                                     .. " team following construction of Logistics Centre by " .. _conqueringUnit, 10) --_conqueringUnit = playerName
                         end
 

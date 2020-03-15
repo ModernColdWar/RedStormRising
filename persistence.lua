@@ -74,7 +74,7 @@ local function persistState(rsrConfig)
     end
     local winner = state.getWinner()
     if winner ~= nil then
-        local message = "VICTORY for the " .. winner .. " side!  The map will reset at the next restart"
+        local message = "[ALL] " .. "VICTORY for the " .. winner .. " side!  The map will reset at the next restart"
         log:info(message)
         trigger.action.outText(message, 30)
     end

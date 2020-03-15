@@ -16,24 +16,28 @@ end
 
 function M.getRSRbaseCaptureZones (mission)
     -- DCS getZone function only returns zone position and radius based on name, therefore store complete zone details i.e. color
-    local _bCzones = missionUtils.getZones(mission, string.lower("RSRbaseCaptureZone")) --getZoneNames function requires lowercase
-    local RSRbaseCaptureZoneNames = {}
+    local  _RSRbaseCaptureZones = missionUtils.getZones(mission, string.lower("RSRbaseCaptureZone")) --getZones function requires lowercase
+	--[[
+    local _RSRbaseCaptureZoneNames = {}
     for _, _z in ipairs(_bCzones) do
         table.insert(RSRbaseCaptureZoneNames, _z)
     end
     --log:info("RSRbaseCaptureZone names (not reporting other zone details) in mission are $1", inspect(RSRbaseCaptureZoneNames))
-    return _bCzones
+	--]]
+    return _RSRbaseCaptureZones
 end
 
 function M.getRSRcarrierActivateZones (mission)
     -- DCS getZone function only returns zone position and radius based on name, therefore store complete zone details i.e. color
-    local _cAzones = missionUtils.getZones(mission, string.lower("RSRcarrierActivateZone")) --getZoneNames function requires lowercase
-    local RSRcarrierActivateZoneNames = {}
+    local _RSRcarrierActivateZone = missionUtils.getZones(mission, string.lower("RSRcarrierActivateZone")) --getZones function requires lowercase
+	--[[
+    local _RSRcarrierActivateZoneNames = {}
     for _, _z in ipairs(_cAzones) do
         table.insert(RSRcarrierActivateZoneNames, _z)
     end
     --log:info("RSRcarrierActivateZone names (not reporting other zone details) in mission are $1", inspect(RSRcarrierActivateZoneNames))
-    return _cAzones
+	--]]
+    return _RSRcarrierActivateZone
 end
 
 function M.getPickupZones(mission)

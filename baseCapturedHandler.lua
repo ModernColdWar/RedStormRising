@@ -35,14 +35,6 @@ function M.register()
         --]]
         -- enumerate units within RSRbaseCaptureZones in-line with RSR radiuses
 
-        --[[
-        local message = baseName .. " has been captured by a " .. sideName .. " " .. event.IniTypeName
-        self:I(message)
-        trigger.action.outText(message, 10)
-        --]]
-        --MORE INTENSIVE CHECK: as DCS base owner has changed, recheck status of all logistics centres to determine true RSR base owner
-        --baseOwnershipCheck.lua = all base side setting and capture messages
-
         baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership("ALL", "none", false)
         --baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(baseName,"none",false)
         -- inefficient to check ALL bases given base known?  Should just pass base and update baseOwnershipCheck.lua for specific change
