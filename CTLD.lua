@@ -967,7 +967,6 @@ function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight, _side,
 
         _crate["country"] = _country
         mist.dynAddStatic(_crate)
-
         _spawnedCrate = StaticObject.getByName(_crate["name"])
     end
 
@@ -995,35 +994,10 @@ function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight, _side,
     return _spawnedCrate
 end
 
---obsolete
---[[
-function ctld.spawnLogisticsCentreCrateStatic(_country, _point, _name)
-
-    local _crate = {
-        ["category"] = "Fortifications",
-        ["shape_name"] = "konteiner_red1",
-        ["type"] = "Container red 1",
-        --   ["unitId"] = _unitId,
-        ["y"] = _point.z,
-        ["x"] = _point.x,
-        ["name"] = _name,
-        ["canCargo"] = false,
-        ["heading"] = 0,
-    }
-
-    _crate["country"] = _country
-
-    mist.dynAddStatic(_crate)
-
-    local _spawnedCrate = StaticObject.getByName(_crate["name"])
-    --local _spawnedCrate = coalition.addStaticObject(_country, _crate)
-
-    return _spawnedCrate
-end
---]]
-
 function ctld.spawnLogisticsCentre(_point, _name, _sideName, _baseORfob, _baseORfobName, _isMissionInit, _constructingPlayerName)
-
+	--FOB: ctld.spawnLogisticsCentre(_args[1], _args[2], _aircraftSideNameForFOB, "FOB", _args[6], false, _args[4]
+	--log:info("_point: $1, _name: $2, _sideName: $3, _baseORfob: $4, _baseORfobName: $5, _isMissionInit: $5, _constructingPlayerName: $7",_point, _name, _sideName, _baseORfob, _baseORfobName, _isMissionInit, _constructingPlayerName)
+	
 	local _coalition = utils.getSide(_sideName)
     local _logiCentreType = ctld.logisticCentreL3 --bunker
 
@@ -1083,7 +1057,10 @@ function ctld.spawnLogisticsCentre(_point, _name, _sideName, _baseORfob, _baseOR
 			i.e.  _LCobj = ctld.logisticCentreObjects[_sideName][_baseORfobName][1]
 	--]]
     ctld.logisticCentreObjects[_sideName][_baseORfobName] = _spawnedLogiCentreObject
-
+	
+	--log:info("ctld.logisticCentreObjects $1",ctld.logisticCentreObjects)
+	--log:info("ctld.logisticCentreObjects[_sideName][_baseORfobName] $1",ctld.logisticCentreObjects[_sideName][_baseORfobName])
+	
     local _LCmarkerID = UTILS.GetMarkID()
     trigger.action.markToCoalition(_LCmarkerID, _name, _point, _coalition, true)
     ctld.logisticCentreMarkerID[_sideName][_baseORfobName] = _LCmarkerID
@@ -1295,6 +1272,23 @@ function ctld.getPointAtXOclock(_unit, _oclock, _offset)
     -- Returns a position at X O'clock from current position, at offset distance
     local _position = _unit:getPosition()
     local _angle = math.atan2(_position.x.z, _position.x.x)
+    if _oclock == 12 then
+        _oclock = 0
+    end
+    local _offsetangle = math.rad(_oclock / 12 * 360)
+
+    local _xOffset = math.cos(_angle + _offsetangle) * _offset
+    local _yOffset = math.sin(_angle + _offsetangle) * _offset
+
+    local _point = _unit:getPoint()
+    return { x = _point.x + _xOffset, z = _point.z + _yOffset, y = _point.y }
+
+end
+
+function ctld.getPointAtXOclockStaticObject(_unit, _oclock, _offset,_angle)
+
+    local _position = _unit:getPosition()
+	
     if _oclock == 12 then
         _oclock = 0
     end
@@ -2658,6 +2652,42 @@ function ctld.refreshRadioBeacons()
             table.remove(ctld.deployedRadioBeacons, _index)
         end
     end
+	
+	for _index, _beaconDetails in ipairs(ctld.deployedFOBRadioBeacons) do
+
+        --trigger.action.outTextForCoalition(_beaconDetails.coalition,_beaconDetails.text,10)
+        if ctld.updateRadioBeacon(_beaconDetails) == false then
+
+            --search used frequencies + remove, add back to unused
+
+            for _i, _freq in ipairs(ctld.usedUHFFrequencies) do
+                if _freq == _beaconDetails.uhf then
+
+                    table.insert(ctld.freeUHFFrequencies, _freq)
+                    table.remove(ctld.usedUHFFrequencies, _i)
+                end
+            end
+
+            for _i, _freq in ipairs(ctld.usedVHFFrequencies) do
+                if _freq == _beaconDetails.vhf then
+
+                    table.insert(ctld.freeVHFFrequencies, _freq)
+                    table.remove(ctld.usedVHFFrequencies, _i)
+                end
+            end
+
+            for _i, _freq in ipairs(ctld.usedFMFrequencies) do
+                if _freq == _beaconDetails.fm then
+
+                    table.insert(ctld.freeFMFrequencies, _freq)
+                    table.remove(ctld.usedFMFrequencies, _i)
+                end
+            end
+
+            --clean up beacon table
+            table.remove(ctld.deployedRadioBeacons, _index)
+        end
+    end
 end
 
 function ctld.getClockDirection(_heli, _crate)
@@ -2786,7 +2816,7 @@ function ctld.listFOBs(_args)
     -- now check spawned fobs
     for _, _LCobj in ipairs(_fobs) do
 		local _LCname = _LCobj:getName()
-        _msg = string.format("%s\n%s\n%s", _msg, _LCname,ctld.getPositionString(_LCobj))
+        _msg = string.format("%s\n%s\n%s", _msg, _LCname,ctld.getFOBposStringAndBeacons(_LCobj))
     end
 
     if _msg == "Friendly FOB Positions:" then
@@ -2796,7 +2826,7 @@ function ctld.listFOBs(_args)
     end
 end
 
-function ctld.getPositionString(_fob)
+function ctld.getFOBposStringAndBeacons(_fob)
 
     local _lat, _lon = coord.LOtoLL(_fob:getPosition().p)
 
@@ -3317,9 +3347,9 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
             _logisticsCentreName = _logisticsCentreName .. _FOBname .. " Logistics Centre #" .. _LCid .. " (" .. _playerName .. ") " .. _aircraftSideName
 
             timer.scheduleFunction(function(_args)
-
+				
                 local _aircraftSideNameForFOB = utils.getSideName(_args[3])
-
+				
                 -- (_point, _name, _sideName, _baseORfob, _baseORfobName, _isMissionInit, _constructingPlayerName)
                 local _newLogisticCentre = ctld.spawnLogisticsCentre(_args[1], _args[2], _aircraftSideNameForFOB, "FOB", _args[6], false, _args[4])
 
@@ -3327,14 +3357,14 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
                 ctld.beaconCount = ctld.beaconCount + 1
                 local _radioBeaconName = " Beacon #" .. ctld.beaconCount
 				-- (_point, _coalition, _country, _name, _batteryTime, _isFOB, _FOBobj)
-                local _radioBeaconDetails = ctld.createRadioBeacon(_args[1], _args[3], _args[5], _radioBeaconName, nil, true)
+                local _radioBeaconDetails = ctld.createRadioBeacon(_args[1], _args[3], _args[5], _radioBeaconName, nil, true, _newLogisticCentre)
                 ctld.FOBbeacons[_newLogisticCentre:getName()] = { vhf = _radioBeaconDetails.vhf, uhf = _radioBeaconDetails.uhf, fm = _radioBeaconDetails.fm }
 				log:info("ctld.FOBbeacons: $1", inspect(ctld.FOBbeacons, { newline = " ", indent = "" }))
 			
                 if ctld.troopPickupAtFOB == true then
-                    trigger.action.outTextForCoalition(_args[3], "[TEAM] " .. "Finished building " .. _FOBname .. ". Crates and Troops can now be picked up.", 10)
+                    trigger.action.outTextForCoalition(_args[3], "[TEAM] " .. "Finished building " .. _args[6] .. ". Crates and Troops can now be picked up.", 10)
                 else
-                    trigger.action.outTextForCoalition(_args[3], "[TEAM] " .. "Finished building " .. _FOBname .. ". Crates can now be picked up.", 10)
+                    trigger.action.outTextForCoalition(_args[3], "[TEAM] " .. "Finished building " .. _args[6] .. ". Crates can now be picked up.", 10)
                 end
             end,
 			{
@@ -3346,7 +3376,7 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
 				_FOBname, -- _args[6] = referenced in ctld.logisticCentreObjects for 'isLogisticsCentreAliveAt' function
 			}, timer.getTime() + _buildTime)
 
-            local _txt = string.format("%s started deploying a FOB @ %s and it will be finished in %d seconds.", ctld.getPlayerNameOrType(_aircraft), _FOBgrid, _buildTime)
+            local _txt = string.format("%s started deploying a FOB in %s and it will be finished in %d seconds.", ctld.getPlayerNameOrType(_aircraft), _FOBgrid, _buildTime)
             trigger.action.outTextForCoalition(_coalition, "[TEAM] " .. _txt, 10)
 
         else
@@ -3650,15 +3680,29 @@ end
 --spawns a radio beacon made up of two units,
 -- one for VHF and one for UHF
 -- The units are set to to NOT engage
-function ctld.createRadioBeacon(_point, _coalition, _country, _name, _batteryTime, _isFOB)
+function ctld.createRadioBeacon(_point, _coalition, _country, _name, _batteryTime, _isFOB, _outpost)
 	
 	log:info("_point: $1, _coalition: $2, _country: $3, _name: $4, _batteryTime: $5, _isFOB: $6",_point, _coalition, _country, _name, _batteryTime, _isFOB)
-
-	local _radioBeaconObj = ctld.spawnRadioBeaconObject(_point)
+	
+	local _radioBeaconObj
+	if _isFOB then
+		_radioBeaconObj = ctld.spawnRadioBeaconObjectInOutpost(_outpost)
+	else
+		_radioBeaconObj = ctld.spawnRadioBeaconObject(_point,_name)
+	end
 
 	log:info("_radioBeaconObj: $1, _radioBeaconObj (serialized): $2",_radioBeaconObj, mist.utils.basicSerialize(_radioBeaconObj))
 	
+	local _message = _name
+	
     local _freq = ctld.generateADFFrequencies()
+
+
+    local _lat, _lon = coord.LOtoLL(_point)
+
+    local _latLngStr = mist.tostringLL(_lat, _lon, 3, ctld.location_DMS)
+
+    --local _mgrsString = mist.tostringMGRS(coord.LLtoMGRS(coord.LOtoLL(_point)), 5)
 
     --create timeout
     local _battery
@@ -3668,14 +3712,6 @@ function ctld.createRadioBeacon(_point, _coalition, _country, _name, _batteryTim
     else
         _battery = timer.getTime() + (_batteryTime * 60)
     end
-
-    local _lat, _lon = coord.LOtoLL(_point)
-
-    local _latLngStr = mist.tostringLL(_lat, _lon, 3, ctld.location_DMS)
-
-    --local _mgrsString = mist.tostringMGRS(coord.LLtoMGRS(coord.LOtoLL(_point)), 5)
-
-    local _message = _name
 
     if _isFOB then
         --  _message = "FOB " .. _message
@@ -3704,11 +3740,15 @@ function ctld.createRadioBeacon(_point, _coalition, _country, _name, _batteryTim
         battery = _battery,
         coalition = _coalition,
     }
-    ctld.updateRadioBeacon(_beaconDetails)
-
-    table.insert(ctld.deployedRadioBeacons, _beaconDetails)
 	
-	log:info("ctld.deployedRadioBeacons: $1", inspect(ctld.deployedRadioBeacons, { newline = " ", indent = "" }))
+	if _isFOB then
+		table.insert(ctld.deployedFOBRadioBeacons, _beaconDetails)
+	else
+		table.insert(ctld.deployedRadioBeacons, _beaconDetails)
+	end
+	ctld.updateRadioBeacon(_beaconDetails)
+
+	log:info("ctld.deployedFOBRadioBeacons: $1", inspect(ctld.deployedFOBRadioBeacons, { newline = " ", indent = "" }))
 
     return _beaconDetails
 end
@@ -3744,22 +3784,49 @@ function ctld.generateADFFrequencies()
     --- return {uhf=_uhf,vhf=_vhf}
 end
 
---function ctld.spawnRadioBeaconUnit(_point, _country, _beaconType)
-function ctld.spawnRadioBeaconObject(_point)
+function ctld.spawnRadioBeaconObjectInOutpost(_outpost)
 
-    local _unitId = ctld.getNextUnitId()
+local _azimuth = mist.getHeading(_outpost)
+-- outpost spawns 20m east from registered if facing north
+local _offsetPos = ctld.getPointAtXOclockStaticObject(_outpost,3,20,_azimuth)
+local _unitId = ctld.getNextUnitId()
 
 	--local _radioGroup = {
 	local _radioStaticObjDetails = {
 		["visible"] = false,
 		["hidden"] = false,
 		["canCargo"] = false,
-        ["type"] = "house2arm", --wooden watchtower
+        ["type"] = "TACAN_beacon", --TACAN beacon
         ["rate"] = 1,
-        ["y"] = _point.z + -36.57142857,
-        ["x"] = _point.x + 14.85714286,
+        ["y"] = _offsetPos.z,
+        ["x"] = _offsetPos.x,
         --["name"] = _beaconType .. " Radio Beacon Unit #" .. _unitId,
 		["name"] = "Radio Beacon Unit #" .. _unitId,
+        ["heading"] = _azimuth,
+		["category"] = "Fortifications",
+		--["country"] = _country
+		["country"] = ctld.neutralCountry --need to ensure country is part of neutral coalition e.g. Greece = neutral static obj
+    }
+	
+	mist.dynAddStatic(_radioStaticObjDetails)
+    local _radioStaticObj = StaticObject.getByName(_radioStaticObjDetails["name"])
+	
+	return _radioStaticObj
+end
+
+function ctld.spawnRadioBeaconObject(_point,_name)
+
+	--local _radioGroup = {
+	local _radioStaticObjDetails = {
+		["visible"] = false,
+		["hidden"] = false,
+		["canCargo"] = false,
+        ["type"] = "TACAN_beacon", --TACAN beacon
+        ["rate"] = 1,
+        ["y"] = _point.z,
+        ["x"] = _point.x,
+        --["name"] = _beaconType .. " Radio Beacon Unit #" .. _unitId,
+		["name"] = _name,
         ["heading"] = 0,
 		["category"] = "Fortifications",
 		--["country"] = _country
@@ -3767,34 +3834,41 @@ function ctld.spawnRadioBeaconObject(_point)
     }
 	
 	mist.dynAddStatic(_radioStaticObjDetails)
-    local _radioStaticObj = StaticObject.getByName(_radioStaticObj["name"])
+    local _radioStaticObj = StaticObject.getByName(_radioStaticObjDetails["name"])
 	
 	return _radioStaticObj
 end
 
+
 function ctld.updateRadioBeacon(_beaconDetails)
 
-    local _vhfGroup = Group.getByName(_beaconDetails.vhfGroup)
+    local _vhfGroup = StaticObject.getByName(_beaconDetails.vhfGroup)
 
-    local _uhfGroup = Group.getByName(_beaconDetails.uhfGroup)
+    local _uhfGroup = StaticObject.getByName(_beaconDetails.uhfGroup)
 
-    local _fmGroup = Group.getByName(_beaconDetails.fmGroup)
+    local _fmGroup = StaticObject.getByName(_beaconDetails.fmGroup)
 
     local _radioLoop = {}
 
-    if _vhfGroup ~= nil and _vhfGroup:getUnits() ~= nil and #_vhfGroup:getUnits() == 1 then
+    if _vhfGroup ~= nil and StaticObject.getLife(_vhfGroup) > 0 then
         table.insert(_radioLoop, { group = _vhfGroup, freq = _beaconDetails.vhf, silent = false, mode = 0 })
     end
 
-    if _uhfGroup ~= nil and _uhfGroup:getUnits() ~= nil and #_uhfGroup:getUnits() == 1 then
+    if _uhfGroup ~= nil and StaticObject.getLife(_uhfGroup) > 0 then
         table.insert(_radioLoop, { group = _uhfGroup, freq = _beaconDetails.uhf, silent = true, mode = 0 })
     end
 
-    if _fmGroup ~= nil and _fmGroup:getUnits() ~= nil and #_fmGroup:getUnits() == 1 then
+    if _fmGroup ~= nil and StaticObject.getLife(_fmGroup) > 0  then
         table.insert(_radioLoop, { group = _fmGroup, freq = _beaconDetails.fm, silent = false, mode = 1 })
     end
-
+	
+	--fobs have unlimited battery life
     local _batLife = _beaconDetails.battery - timer.getTime()
+	--[[
+	if _battery ~= -1 then
+		_text = _text.." "..mist.utils.round(_batLife).." seconds of battery"
+    end
+	--]]
 
     if (_batLife <= 0 and _beaconDetails.battery ~= -1) or #_radioLoop ~= 3 then
         -- ran out of batteries
@@ -3812,14 +3886,7 @@ function ctld.updateRadioBeacon(_beaconDetails)
         return false
     end
 
-    --fobs have unlimited battery life
-    --    if _battery ~= -1 then
-    --        _text = _text.." "..mist.utils.round(_batLife).." seconds of battery"
-    --    end
-
     for _, _radio in pairs(_radioLoop) do
-
-        local _groupController = _radio.group:getController()
 
         local _sound = ctld.radioSound
         if _radio.silent then
@@ -3828,30 +3895,28 @@ function ctld.updateRadioBeacon(_beaconDetails)
 
         _sound = "l10n/DEFAULT/" .. _sound
 
-        _groupController:setOption(AI.Option.Ground.id.ROE, AI.Option.Ground.val.ROE.WEAPON_HOLD)
-
-        trigger.action.radioTransmission(_sound, _radio.group:getUnit(1):getPoint(), _radio.mode, false, _radio.freq, 1000)
+        trigger.action.radioTransmission(_sound, _radio.group:getPoint(), _radio.mode, false, _radio.freq, 1000)
         --This function doesnt actually stop transmitting when then sound is false. My hope is it will stop if a new beacon is created on the same
         -- frequency... OR they fix the bug where it wont stop.
         --        end
 
         --
     end
-
+	
+	--  trigger.action.radioTransmission(ctld.radioSound, _point, 1, true, _frequency, 1000)
+	
     return true
-
-    --  trigger.action.radioTransmission(ctld.radioSound, _point, 1, true, _frequency, 1000)
 end
 
 function ctld.listRadioBeacons(_args)
 
     local _heli = ctld.getTransportUnit(_args[1])
     local _message = ""
-
+	
     if _heli ~= nil then
-
+	
         for _, _details in pairs(ctld.deployedRadioBeacons) do
-			log:info("_heli:getCoalition(): $1, _details: $2", _heli:getCoalition(), inspect(_details, { newline = " ", indent = "" }))
+
             if _details.coalition == _heli:getCoalition() then
                 _message = _message .. _details.text .. "\n"
             end
@@ -5076,7 +5141,7 @@ function ctld.isLogisticsCentreAliveAt(_passedLogisiticsCentreBase)
     return _LogisiticsCentreAlive
 end
 
--- proximity to nearest FRIENDLY logistics centre object NOT whether player in logisitics zone
+-- proximity to nearest FRIENDLY logistics centre object, including deployed FOBs, NOT whether player in logisitics zone
 function ctld.friendlyLogisticsCentreProximity(_aircraft)
 
     local _aircraftPoint = _aircraft:getPoint()
@@ -6838,6 +6903,7 @@ function ctld.generateFMFrequencies()
     end
 end
 
+
 function ctld.getPositionString(_unit)
 
     if ctld.JTAC_location == false then
@@ -6885,6 +6951,7 @@ ctld.completeAASystems = {} -- stores complete spawned groups from multiple crat
 ctld.FOBbeacons = {} -- stores FOB radio beacon details, refreshed every 60 seconds
 
 ctld.deployedRadioBeacons = {} -- stores details of deployed radio beacons
+ctld.deployedFOBRadioBeacons = {} -- stores details of deployed FOB radio beacons
 
 ctld.beaconCount = 1
 

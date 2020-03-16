@@ -34,8 +34,11 @@ function M.register()
         -- ZONE_BASE.IsPointVec2InZone(_aircraft) -- MOOSE: Returns if a 2D point vector is within the zone
         --]]
         -- enumerate units within RSRbaseCaptureZones in-line with RSR radiuses
-
-        baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership("ALL", "none", false)
+		if event.IniTypeName ~= nil then
+			baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership("ALL", event.IniTypeName, false)
+		else
+			baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership("ALL", "none", false)
+		end
         --baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(baseName,"none",false)
         -- inefficient to check ALL bases given base known?  Should just pass base and update baseOwnershipCheck.lua for specific change
 

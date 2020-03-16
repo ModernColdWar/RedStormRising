@@ -28,7 +28,7 @@ function M.spawnLogisticsBuildingForBase(baseName, sideName, logisticsCentreName
     if logisticsCentreName ~= "none" then
         _staticObjectName = logisticsCentreName
     end
-    --log:info("Logistics Centre Name $1", _staticObjectName)
+    log:info("Logistics Centre Name: $1", _staticObjectName)
     local _availLogiZonesCount = #_availLogiZones
     if _availLogiZonesCount > 0 then
         -- math.randomseed(os.clock()) --not avail or needed: https://forums.eagle.ru/showthread.php?t=101098
@@ -37,12 +37,12 @@ function M.spawnLogisticsBuildingForBase(baseName, sideName, logisticsCentreName
             _randomLogiZoneNumber = math.random(1, _availLogiZonesCount)
         end
         --log:info("Base: $1, availLogiZonesCount: $2, randomLogiZoneNumber: $3", baseName,_availLogiZonesCount,_randomLogiZoneNumber)
-        local _selectedLogiZone = _availLogiZones[_randomLogiZoneNumber]
-        local point = ZONE:New(_selectedLogiZone):GetPointVec2()
+        local _selectedLogiZoneName = _availLogiZones[_randomLogiZoneNumber]
+		local _position = trigger.misc.getZone(_selectedLogiZoneName)
         log:info("isMissionInit: $1", isMissionInit)
         --(_point, _name, _coalition, _baseORfarp, _baseORfarpName)
-        ctld.spawnLogisticsCentre(point, _staticObjectName, sideName, "BASE", baseName, isMissionInit, _playerName)
-        log:info("$1 Logistics Centre spawned at $2", sideName, mist.utils.basicSerialize(_selectedLogiZone))
+        ctld.spawnLogisticsCentre(_position.point, _staticObjectName, sideName, "BASE", baseName, isMissionInit, _playerName)
+        log:info("$1 Logistics Centre spawned at $2", sideName, mist.utils.basicSerialize(_selectedLogiZoneName))
         return
     end
     log:warn("No logistics zone called for $1 found; no logistics building will spawn", baseName)

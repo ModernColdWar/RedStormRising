@@ -58,9 +58,14 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
     elseif _passedBaseName == "ALL" then
         --search through ALL bases and check status
         local _conqueringUnit = "none"
-        if _playerORunit ~= "none" and _playerORunit ~= "LCdead" and type(_playerORunit) ~= "string" then
-            --_playerORunit not passed as string to ctld.getPlayerNameOrType would cause an error
-            _conqueringUnit = ctld.getPlayerNameOrType(_playerORunit) -- get type of ground vehicle if passed
+        if _playerORunit ~= "none" and _playerORunit ~= "LCdead" then
+			if type(_playerORunit) ~= "string" then
+				--_playerORunit not passed as string to ctld.getPlayerNameOrType would cause an error
+				_conqueringUnit = ctld.getPlayerNameOrType(_playerORunit) -- get type of ground vehicle if passed
+			else
+				-- playerName passed as string
+				_conqueringUnit = _playerORunit
+			end
         end
 
         for _, base in pairs(world.getAirbases()) do
@@ -97,7 +102,7 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
                 _logisticsCentreSide = string.match(_logisticsCentreName, ("%w+$")) --"Sochi Logistics Centre #001 red" = "red"
                 _logisticsCentreCoalition = utils.getSide(_logisticsCentreSide)
             end
-            log:info("_baseName: $1 _logisticsCentreName: $2, _logisticsCentreSide: $3", _baseName, _logisticsCentreName, _logisticsCentreSide)
+            log:info("_baseName: $1 _logisticsCentreName: $2, _logisticsCentreSide: $3, _logisticsCentreCoalition: $4, _conqueringUnit: $5", _baseName, _logisticsCentreName, _logisticsCentreSide, _logisticsCentreCoalition,_conqueringUnit)
 
 
             --[[
@@ -151,7 +156,11 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
                                 bases.configureForSide(_baseName, _logisticsCentreSide)  --slotBlocker.lua & pickupZoneManager.lua
                                 -- (baseName, sideName, rsrConfig, spawnLC, missionInit, campaignStartSetup)
                                 bases.resupply(_baseName, _logisticsCentreSide, rsrConfig, false, false, false) --activate base defences but DO NOT spawn logistics and NOT missionInit
-                                trigger.action.outTextForCoalition(_logisticsCentreCoalition,"[TEAM] " .. _baseName .. " claimed by " .. _logisticsCentreSide .. " team following construction of a Logistics Centre.", 10)
+								
+								if _conqueringUnit ~= "none" then
+									trigger.action.outTextForCoalition(_logisticsCentreCoalition,"[TEAM] " .. _baseName .. " claimed by " .. _logisticsCentreSide .. " team following construction of a Logistics Centre by " .. _conqueringUnit, 10) --_conqueringUnit = playerName
+								end
+                                
                             end
                             -- do NOT provide warning for neutral bases at campaign setup as no base defences associated, capture not based on ground vehicles, and likely message spam
                         end
@@ -278,7 +287,6 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
 
                             --mr: RSR TEAM = (option A) must clear FARP area.  Therefore allow attacking team to know when they capture the FARP, but not opposition to allow sneaky tactics
                             if _conqueringUnit ~= "none" then
-                                -- _conqueringUnit should be player and not friendly unit if FARP neutral
                                 trigger.action.outTextForCoalition(_DCScoalition, "[TEAM] " .. _baseName .. " FARP claimed by " .. _logisticsCentreSide
                                         .. " team following construction of Logistics Centre by " .. _conqueringUnit, 10) --_conqueringUnit = playerName
                             end
@@ -335,6 +343,7 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
                             bases.configureForSide(_baseName, "neutral") --slotBlocker.lua & pickupZoneManager.lua
 
                             if _conqueringUnit ~= "none" then
+								--commented-out as hit notification for red/blue Logistics Centre should be sufficient to hint to both teams that a FARP ownership has changed
                                 --trigger.action.outTextForCoalition(_FARPlogisticsCentreCoalition,_baseName .. " has been neutralized by " .. _conqueringUnit, 10)
                             end
                         end
