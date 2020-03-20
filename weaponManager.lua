@@ -348,7 +348,7 @@ local function sendToRsrBot(event)
         }
 		
 		--log:info("event: $1",inspect(event, { newline = " ", indent = "" }))
-		log:info("event.target: $1, event.TgtPlayerName: $2, event.TgtCoalition: $3",event.target, event.TgtPlayerName, event.TgtCoalition)
+		--log:info("event.target: $1, event.TgtPlayerName: $2, event.TgtCoalition: $3",event.target, event.TgtPlayerName, event.TgtCoalition)
 		
 		--some events dont have a target
         if event.target ~= nil then

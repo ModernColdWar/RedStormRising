@@ -990,7 +990,7 @@ function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight, _side,
 			ctld.spawnedCratesBLUE[_name] = _crateDetails
 		end
     end
-    log:info("_name: $1, _crateDetails: $2, _spawnedCrate: $3", _name, inspect(_crateDetails, { newline = " ", indent = "" }), inspect(_spawnedCrate, { newline = " ", indent = "" }))
+    log:info("_name: $1, _crateDetails: $2", _name, inspect(_crateDetails, { newline = " ", indent = "" })
     return _spawnedCrate
 end
 
@@ -3034,7 +3034,7 @@ function ctld.unpackCrates(_arguments)
             local _crates = ctld.getCratesAndDistance(_aircraft)
             local _crate = ctld.getClosestCrate(_aircraft, _crates)
 
-            log:info("ctld.unpackCrates: _playerName: $1, _crate: $2", _playerName, inspect(_crate, { newline = " ", indent = "" }))
+            --log:info("ctld.unpackCrates: _playerName: $1, _crate: $2", _playerName, inspect(_crate, { newline = " ", indent = "" }))
 
             local _friendlyLogisticsCentreProximity = ctld.friendlyLogisticsCentreProximity(_aircraft)
             local _nearestLogisticsCentreName = _friendlyLogisticsCentreProximity[1] --(rare) if no friendly LC at all = "NoFriendlyLC"
@@ -3072,7 +3072,8 @@ function ctld.unpackCrates(_arguments)
                 --_crateBaseOfOrigin = string.match(_crateName, "%((.+)%)$")
                 local _crateBaseOfOrigin = _crate.details.baseOfOrigin
 
-                log:info("ctld.unpackCrates: _playerName: $1, _crate.name: $2, _crateBaseOfOrigin: $3, _crate: $4", _playerName, _crate.name, _crateBaseOfOrigin, inspect(_crate, { newline = " ", indent = "" }))
+                --log:info("ctld.unpackCrates: _playerName: $1, _crate.name: $2, _crateBaseOfOrigin: $3, _crate: $4", _playerName, _crate.name, _crateBaseOfOrigin, inspect(_crate, { newline = " ", indent = "" }))
+				log:info("ctld.unpackCrates: _playerName: $1, _crate.name: $2, _crateBaseOfOrigin: $3", _playerName, _crate.name, _crateBaseOfOrigin)
 
                 if not ctld.isLogisticsCentreAliveAt(_crateBaseOfOrigin) then
                     local _azToCrate = ctld.getCompassBearing(_aircraft:getPoint(), _crate.crateUnit:getPoint())
