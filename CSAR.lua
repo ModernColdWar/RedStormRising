@@ -177,7 +177,7 @@ function csar.tooCloseToEnemyBase(_unit)
     local unitSideName = utils.getSideName(_unit:getCoalition())
     if spatialUtils.closestBaseIsEnemyAndWithinRange(position, unitSideName, csar.enemyBaseCaptureDistance) then
         local nearestBase, _ = spatialUtils.findNearestBase(position)
-        local message = string.format("Mayday, mayday, mayday!  %s was shot down; captured by enemy forces at %s",
+        local message = string.format("[TEAM] Mayday, mayday, mayday!  %s was shot down; captured by enemy forces at %s",
                 _unit:getTypeName(), nearestBase)
         trigger.action.outTextForCoalition(_unit:getCoalition(), message, 10)
         return true
@@ -260,7 +260,7 @@ function csar.eventHandler:onEvent(event)
                 if csar.doubleEjection(_unit) then
                     return
                 end
-                local message = "Mayday, mayday, mayday!  " .. _unit:getTypeName() .. " was shot down; no chute spotted"
+                local message = "[TEAM] Mayday, mayday, mayday!  " .. _unit:getTypeName() .. " was shot down; no chute spotted"
                 --trigger.action.outTextForCoalition(_unit:getCoalition(), message, 10)
                 env.info(message)
                 csar.handleEjectOrCrash(_unit, true)
@@ -319,7 +319,7 @@ function csar.eventHandler:onEvent(event)
             local _spawnedGroup = csar.spawnGroup(_unit)
             csar.addSpecialParametersToGroup(_spawnedGroup)
 
-            local message = "Mayday, mayday, mayday!  " .. _unit:getTypeName() .. " was shot down; chute spotted"
+            local message = "[TEAM] Mayday, mayday, mayday!  " .. _unit:getTypeName() .. " was shot down; chute spotted"
             trigger.action.outTextForCoalition(_unit:getCoalition(), message, 10)
             env.info(message)
 

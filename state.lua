@@ -184,7 +184,7 @@ function M.checkBaseOwner(baseName, sideName)
         return false  --no change in DCS ownership
     end
 
-    log:info("DCS EH ownership of $1 from $2 to $3", baseName, currentOwner, sideName)
+    log:info("baseCapturedHandler: DCS side of $1 from $2 to $3 detected by eventHandler", baseName, currentOwner, sideName)
     return true --change in DCS ownership
 end
 
@@ -219,7 +219,7 @@ function M.setCurrentStateFromFile(stateFileName)
 
         if M.getWinner() == nil then
             -- broadcast global baseOwnership from file to then recheck
-            env.info("state: MISSION INIT: baseOwnership = $1", baseOwnership)
+            log:info("state: MISSION INIT: baseOwnership (PRE): $1", baseOwnership)
             baseOwnership = mist.utils.deepCopy(M.currentState.baseOwnership) --deepCopy as variable assingment is a direct reference not a copy
         else
             log:info("State file is from a victory - will not use")

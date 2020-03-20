@@ -139,12 +139,14 @@ function M.buildHitMessage(event)
         -- AI on AI; no interest
         return nil
     end
-    local message = ''
+	
+    local message = ""
     if event.IniPlayerName ~= nil then
         message = message .. getPlayerDesc(event.IniCoalition, event.IniGroupName, event.IniTypeName, event.IniPlayerName, event.IniUnitName)
     else
         message = message .. getUnitDesc(event.IniCoalition, event.IniGroupName, event.IniTypeName)
     end
+	
     message = message .. " hit "
     if event.TgtPlayerName ~= nil then
         message = message .. getPlayerDesc(event.TgtCoalition, event.TgtGroupName, event.TgtTypeName, event.TgtPlayerName, event.IniUnitName)
@@ -164,6 +166,8 @@ function M.buildHitMessage(event)
     if event.IniPlayerName ~= nil and event.TgtPlayerName ~= nil and event.IniCoalition == event.TgtCoalition then
         message = "FRIENDLY FIRE: " .. message
     end
+
+	message = "[ALL] " .. message -- let player know that hit notifications are seen by both teams
 
     return message:gsub("^%l", string.upper)
 end

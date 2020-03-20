@@ -87,11 +87,11 @@ ssb.enabledFlagValue = 0  -- what value to look for to enable a slot.
 -- The examples below can be turned on by removing the -- in front
 --
 ssb.prefixes = {
-    -- "-=104th=-",
-    -- "-=VSAAF=-",
-    -- "ciribob", -- you could also add in an actual player name instead
-    "some_clan_tag",
-    "-=AnotherClan=-",
+  -- "-=104th=-",
+  -- "-=VSAAF=-",
+  -- "ciribob", -- you could also add in an actual player name instead
+  "some_clan_tag",
+  "-=AnotherClan=-",
 }
 
 
@@ -126,7 +126,7 @@ ssb.commanderPlayerUCID = {
   "6e1c8117ab788fa693feec6326320a5e",
   "842514dc165092ba9631f8c7d2052d0a",
   "837f1acd1132ed0a60f2a6a1f57bcc1c", --Smitty
-  "263d36e3b60782a6c16e2b3c5cebf3f9", --mad rabbit
+  "263d36e3b60782a6c16e2b3c5cebf3f9",
   "b12d9af45f2b08a353f1e706e034eaec",
   "0a312f0e5531d0fb0e1b1d90bb559fa3",
   "e011e49e75560dbe802d50cd0f1ce68d",
@@ -199,195 +199,201 @@ ssb.commanderPlayerUCID = {
   "079236f5f48b0350bdaf364d042dccfe", -- rocket_knight added by deebix
   "09bc71361a591195159e2b84dfc67482", --ROSS Pups added by deebix
   "8f3e2a5beadbd739a973027607f4a5cc", --Rigez added by mad rabbit
+  "7c6028ee85d15cb5008a07403f486522", --outcast 1-1 by deebix
+  "37922d84eaf6bb71e775a54af9b1c75d", --Drip added by deebix
 }
+
+
 
 ssb.version = "1.1"
 
 
 
 -- Logic for determining if player is allowed in a slot
-function ssb.shouldAllowAircraftSlot(_playerID, _slotID)
-    -- _slotID == Unit ID unless its multi aircraft in which case slotID is unitId_seatID
+function ssb.shouldAllowAircraftSlot(_playerID, _slotID) -- _slotID == Unit ID unless its multi aircraft in which case slotID is unitId_seatID
 
-    local _groupName = ssb.getGroupName(_slotID)
+  local _groupName = ssb.getGroupName(_slotID)
 
-    if _groupName == nil or _groupName == "" then
-        net.log("SSB - Unable to get group name for slot " .. _slotID)
-        return true
-    end
+  if _groupName == nil or _groupName == "" then
+    net.log("SSB - Unable to get group name for slot ".._slotID)
+    return true
+  end
 
-    _groupName = ssb.trimStr(_groupName)
+  _groupName = ssb.trimStr(_groupName)
 
-    if not ssb.checkClanSlot(_playerID, _groupName) then
-        return false
-    end
-
-    -- check flag value
-    local _flag = ssb.getFlagValue(_groupName)
-
-    if _flag == ssb.enabledFlagValue then
-        return true
-    end
-
+  if not ssb.checkClanSlot(_playerID, _groupName) then
     return false
+  end
+
+  -- check flag value
+  local _flag = ssb.getFlagValue(_groupName)
+
+  if _flag == ssb.enabledFlagValue then
+    return true
+  end
+
+  return false
 
 end
 
 
 -- Logic to allow a player in a slot
-function ssb.allowAircraftSlot(_playerID, _slotID)
-    -- _slotID == Unit ID unless its multi aircraft in which case slotID is unitId_seatID (added by FlightControl)
+function ssb.allowAircraftSlot(_playerID, _slotID) -- _slotID == Unit ID unless its multi aircraft in which case slotID is unitId_seatID (added by FlightControl)
 
-    local _groupName = ssb.getGroupName(_slotID)
+  local _groupName = ssb.getGroupName(_slotID)
 
-    if _groupName == nil or _groupName == "" then
-        net.log("SSB - Unable to get group name for slot " .. _slotID)
-        return true
-    end
+  if _groupName == nil or _groupName == "" then
+    net.log("SSB - Unable to get group name for slot ".._slotID)
+    return true
+  end
 
-    _groupName = ssb.trimStr(_groupName)
+  _groupName = ssb.trimStr(_groupName)
 
-    if not ssb.checkClanSlot(_playerID, _groupName) then
-        return false
-    end
+  if not ssb.checkClanSlot(_playerID, _groupName) then
+    return false
+  end
 
-    -- check flag value
-    local _result = ssb.setFlagValue(_groupName, 0)
+  -- check flag value
+  local _result = ssb.setFlagValue(_groupName, 0)
 
-    return _result
+  return _result
 
 end
+
 
 function ssb.checkClanSlot(_playerID, _unitName)
 
-    for _, _value in pairs(ssb.prefixes) do
+  for _,_value in pairs(ssb.prefixes) do
 
-        if string.find(_unitName, _value, 1, true) ~= nil then
+    if string.find(_unitName, _value, 1, true) ~= nil then
 
-            net.log("SSB - " .. _unitName .. " is clan slot for " .. _value)
+      net.log("SSB - ".._unitName.." is clan slot for ".._value)
 
-            local _playerName = net.get_player_info(_playerID, 'name')
+      local _playerName = net.get_player_info(_playerID, 'name')
 
-            if _playerName ~= nil and string.find(_playerName, _value, 1, true) then
+      if _playerName ~= nil and string.find(_playerName, _value, 1, true) then
 
-                net.log("SSB - " .. _playerName .. " is clan member for " .. _value .. " for " .. _unitName .. " Allowing so far")
-                --passed clan test, carry on!
-                return true
-            end
+        net.log("SSB - ".._playerName.." is clan member for ".._value.." for ".._unitName.." Allowing so far")
+        --passed clan test, carry on!
+        return true
+      end
 
-            if _playerName ~= nil then
-                net.log("SSB - " .. _playerName .. " is NOT clan member for " .. _value .. " for " .. _unitName .. " Rejecting")
-            end
+      if _playerName ~= nil then
+        net.log("SSB - ".._playerName.." is NOT clan member for ".._value.." for ".._unitName.." Rejecting")
+      end
 
-            -- clan tag didnt match, quit!
-            return false
-        end
+      -- clan tag didnt match, quit!
+      return false
     end
+  end
 
-    return true
+  return true
 end
+
 
 function ssb.getFlagValue(_flag)
 
-    local _status, _error = net.dostring_in('server', " return trigger.misc.getUserFlag(\"" .. _flag .. "\"); ")
+  local _status,_error  = net.dostring_in('server', " return trigger.misc.getUserFlag(\"".._flag.."\"); ")
 
-    if not _status and _error then
-        net.log("SSB - error getting flag: " .. _error)
-        return tonumber(ssb.enabledFlagValue)
-    else
+  if not _status and _error then
+    net.log("SSB - error getting flag: ".._error)
+    return tonumber(ssb.enabledFlagValue)
+  else
 
-        --disabled
-        return tonumber(_status)
-    end
+    --disabled
+    return tonumber(_status)
+  end
 end
 
-function ssb.setFlagValue(_flag, _number)
-    -- Added by FlightControl
 
-    local _status, _error = net.dostring_in('server', " return trigger.action.setUserFlag(\"" .. _flag .. "\", " .. _number .. "); ")
+function ssb.setFlagValue(_flag, _number) -- Added by FlightControl
 
-    if not _status and _error then
-        net.log("SSB - error setting flag: " .. _error)
-        return false
-    end
-    return true
+  local _status,_error  = net.dostring_in('server', " return trigger.action.setUserFlag(\"".._flag.."\", " .. _number .. "); ")
+
+  if not _status and _error then
+    net.log("SSB - error setting flag: ".._error)
+    return false
+  end
+  return true
 end
 
 
 -- _slotID == Unit ID unless its multi aircraft in which case slotID is unitId_seatID
 function ssb.getUnitId(_slotID)
-    local _unitId = tostring(_slotID)
-    if string.find(tostring(_unitId), "_", 1, true) then
-        --extract substring
-        _unitId = string.sub(_unitId, 1, string.find(_unitId, "_", 1, true))
-        net.log("Unit ID Substr " .. _unitId)
-    end
+  local _unitId = tostring(_slotID)
+  if string.find(tostring(_unitId),"_",1,true) then
+    --extract substring
+    _unitId = string.sub(_unitId,1,string.find(_unitId,"_",1,true))
+    net.log("Unit ID Substr ".._unitId)
+  end
 
-    return tonumber(_unitId)
+  return tonumber(_unitId)
 end
+
 
 function ssb.getGroupName(_slotID)
 
-    local _name = DCS.getUnitProperty(_slotID, DCS.UNIT_GROUPNAME)
+  local _name = DCS.getUnitProperty(_slotID, DCS.UNIT_GROUPNAME)
 
-    return _name
+  return _name
 
 end
+
 
 --- Reset the persistent variables when a new mission is loaded.
 ssb.onMissionLoadEnd = function()
 
-    ssb.kickTimePrev = 0 -- Reset when a new mission has been loaded!
+  ssb.kickTimePrev = 0 -- Reset when a new mission has been loaded!
 
 end
+
 
 --- For each simulation frame, check if a player needs to be kicked.
 ssb.onSimulationFrame = function()
 
-    -- For each slot, check the flags...
+  -- For each slot, check the flags...
 
-    ssb.kickTimeNow = DCS.getModelTime()
+  ssb.kickTimeNow = DCS.getModelTime()
 
-    -- Check every 5 seconds if a player needs to be kicked.
-    if ssb.kickPlayers and ssb.kickTimePrev + ssb.kickTimeInterval <= ssb.kickTimeNow then
+  -- Check every 5 seconds if a player needs to be kicked.
+  if ssb.kickPlayers and ssb.kickTimePrev + ssb.kickTimeInterval <= ssb.kickTimeNow then
 
-        ssb.kickTimePrev = ssb.kickTimeNow
+    ssb.kickTimePrev = ssb.kickTimeNow
 
-        if DCS.isServer() and DCS.isMultiplayer() then
-            if DCS.getModelTime() > 1 and ssb.slotBlockEnabled() then
-                -- must check this to prevent a possible CTD by using a_do_script before the game is ready to use a_do_script. -- Source GRIMES :)
+    if DCS.isServer() and DCS.isMultiplayer() then
+      if DCS.getModelTime() > 1 and  ssb.slotBlockEnabled() then  -- must check this to prevent a possible CTD by using a_do_script before the game is ready to use a_do_script. -- Source GRIMES :)
 
-                local Players = net.get_player_list()
-                for PlayerIDIndex, playerID in pairs(Players) do
+        local Players = net.get_player_list()
+        for PlayerIDIndex, playerID in pairs( Players ) do
 
-                    -- is player still in a valid slot
-                    local _playerDetails = net.get_player_info(playerID)
+          -- is player still in a valid slot
+          local _playerDetails = net.get_player_info( playerID )
 
-                    if _playerDetails ~= nil and _playerDetails.side ~= 0 and _playerDetails.slot ~= "" and _playerDetails.slot ~= nil then
+          if _playerDetails ~=nil and _playerDetails.side ~= 0 and _playerDetails.slot ~= "" and _playerDetails.slot ~= nil then
 
-                        local _unitRole = DCS.getUnitType(_playerDetails.slot)
-                        if _unitRole ~= nil and
-                                (_unitRole == "forward_observer" or
-                                        _unitRole == "instructor" or
-                                        _unitRole == "artillery_commander" or
-                                        _unitRole == "observer")
-                        then
-                            return true
-                        end
-
-                        local _allow = ssb.shouldAllowAircraftSlot(playerID, _playerDetails.slot)
-
-                        if not _allow then
-                            ssb.rejectPlayer(playerID)
-                            if ssb.kickReset then
-                                ssb.allowAircraftSlot(playerID, _playerDetails.slot)
-                            end
-                        end
-                    end
-                end
+            local _unitRole = DCS.getUnitType( _playerDetails.slot )
+            if _unitRole ~= nil and
+              ( _unitRole == "forward_observer" or
+              _unitRole == "instructor"or
+              _unitRole == "artillery_commander" or
+              _unitRole == "observer" )
+            then
+              return true
             end
+
+            local _allow = ssb.shouldAllowAircraftSlot(playerID, _playerDetails.slot)
+
+            if not _allow then
+              ssb.rejectPlayer(playerID)
+              if ssb.kickReset then
+                ssb.allowAircraftSlot(playerID,_playerDetails.slot)
+              end    
+            end
+          end
         end
+      end
     end
+  end
 end
 
 
@@ -399,113 +405,117 @@ end
 --"self_kill", playerID
 ssb.onPlayerTryChangeSlot = function(playerID, side, slotID)
 
-    if DCS.isServer() and DCS.isMultiplayer() then
-        if (side ~= 0 and slotID ~= '' and slotID ~= nil) and ssb.slotBlockEnabled() then
+  if  DCS.isServer() and DCS.isMultiplayer() then
+    if  (side ~=0 and  slotID ~='' and slotID ~= nil)  and  ssb.slotBlockEnabled() then
 
-            local _ucid = net.get_player_info(playerID, 'ucid')
-            local _playerName = net.get_player_info(playerID, 'name')
+      local _ucid = net.get_player_info(playerID, 'ucid')
+      local _playerName = net.get_player_info(playerID, 'name')
 
-            if _playerName == nil then
-                _playerName = ""
+      if _playerName == nil then
+        _playerName = ""
+      end
+
+      net.log("SSB - Player Selected slot - player: ".._playerName.." side:"..side.." slot: "..slotID.." ucid: ".._ucid)
+
+      local _unitRole = DCS.getUnitType(slotID)
+
+      if _unitRole ~= nil and
+        (_unitRole == "forward_observer"
+        or _unitRole == "instructor"
+        or _unitRole == "artillery_commander"
+        or _unitRole == "observer")
+      then
+
+        net.log("SSB - Player Selected Non Aircraft Slot - player: ".._playerName.." side:"..side.." slot: "..slotID.." ucid: ".._ucid.." type: ".._unitRole)
+
+        local _allow = false
+
+        if ssb.controlNonAircraftSlots and  ssb.slotBlockEnabled()  then
+
+          for _,_value in pairs(ssb.commanderPlayerUCID) do
+
+            if _value == _ucid then
+              _allow  = true
+              break
             end
+          end
 
-            net.log("SSB - Player Selected slot - player: " .. _playerName .. " side:" .. side .. " slot: " .. slotID .. " ucid: " .. _ucid)
+          if not _allow then
 
-            local _unitRole = DCS.getUnitType(slotID)
+            ssb.rejectMessage(playerID)
+            net.log("SSB - REJECTING Player Selected Non Aircraft Slot - player: ".._playerName.." side:"..side.." slot: "..slotID.." ucid: ".._ucid.." type: ".._unitRole)
 
-            if _unitRole ~= nil and
-                    (_unitRole == "forward_observer"
-                            or _unitRole == "instructor"
-                            or _unitRole == "artillery_commander"
-                            or _unitRole == "observer")
-            then
-
-                net.log("SSB - Player Selected Non Aircraft Slot - player: " .. _playerName .. " side:" .. side .. " slot: " .. slotID .. " ucid: " .. _ucid .. " type: " .. _unitRole)
-
-                local _allow = false
-
-                if ssb.controlNonAircraftSlots and ssb.slotBlockEnabled() then
-
-                    for _, _value in pairs(ssb.commanderPlayerUCID) do
-
-                        if _value == _ucid then
-                            _allow = true
-                            break
-                        end
-                    end
-
-                    if not _allow then
-
-                        ssb.rejectMessage(playerID)
-                        net.log("SSB - REJECTING Player Selected Non Aircraft Slot - player: " .. _playerName .. " side:" .. side .. " slot: " .. slotID .. " ucid: " .. _ucid .. " type: " .. _unitRole)
-
-                        return false
-                    end
-                end
-
-                net.log("SSB - ALLOWING Player Selected Non Aircraft Slot - player: " .. _playerName .. " side:" .. side .. " slot: " .. slotID .. " ucid: " .. _ucid .. " type: " .. _unitRole)
-
-                return
-            else
-                local _allow = ssb.shouldAllowAircraftSlot(playerID, slotID)
-
-                if not _allow then
-                    net.log("SSB - REJECTING Aircraft Slot - player: " .. _playerName .. " side:" .. side .. " slot: " .. slotID .. " ucid: " .. _ucid)
-
-                    ssb.rejectMessage(playerID)
-
-                    return false
-                else
-                    if ssb.showEnabledMessage then
-                        --Disable chat message to user
-                        local _chatMessage = string.format("*** %s - Slot Allowed! ***", _playerName)
-                        net.send_chat_to(_chatMessage, playerID)
-                    end
-                end
-            end
-
-            net.log("SSB - ALLOWING Aircraft Slot - player: " .. _playerName .. " side:" .. side .. " slot: " .. slotID .. " ucid: " .. _ucid)
-
+            return false
+          end
         end
-    end
 
-    return
+        net.log("SSB - ALLOWING Player Selected Non Aircraft Slot - player: ".._playerName.." side:"..side.." slot: "..slotID.." ucid: ".._ucid.." type: ".._unitRole)
+
+        return 
+      else
+        local _allow = ssb.shouldAllowAircraftSlot(playerID,slotID)
+
+        if not _allow then
+          net.log("SSB - REJECTING Aircraft Slot - player: ".._playerName.." side:"..side.." slot: "..slotID.." ucid: ".._ucid)
+
+          ssb.rejectMessage(playerID)
+
+          return false
+        else
+          if ssb.showEnabledMessage then
+            --Disable chat message to user
+            local _chatMessage = string.format("*** %s - Slot Allowed! ***",_playerName)
+            net.send_chat_to(_chatMessage, playerID)
+          end
+        end
+      end
+
+      net.log("SSB - ALLOWING Aircraft Slot - player: ".._playerName.." side:"..side.." slot: "..slotID.." ucid: ".._ucid)
+
+    end
+  end
+
+  return 
 
 end
+
 
 ssb.slotBlockEnabled = function()
 
-    local _res = ssb.getFlagValue("SSB") --SSB disabled by Default
+  local _res = ssb.getFlagValue("SSB") --SSB disabled by Default
 
-    return _res == 100
+  return _res == 100
 
 end
+
 
 ssb.rejectMessage = function(playerID)
-    local _playerName = net.get_player_info(playerID, 'name')
+  local _playerName = net.get_player_info(playerID, 'name')
 
-    if _playerName ~= nil then
-        --Disable chat message to user
-        local _chatMessage = string.format("*** Sorry %s, this slot is only active if your side controls this base ***", _playerName)
-        net.send_chat_to(_chatMessage, playerID)
-    end
+  if _playerName ~= nil then
+    --Disable chat message to user
+    local _chatMessage = string.format("*** Sorry %s, this slot is only active if your side controls this base ***",_playerName)
+    net.send_chat_to(_chatMessage, playerID)
+  end
 
 end
+
 
 ssb.rejectPlayer = function(playerID)
-    net.log("SSB - REJECTING Slot - force spectators - " .. playerID)
+  net.log("SSB - REJECTING Slot - force spectators - "..playerID)
 
-    -- put to spectators
-    net.force_player_slot(playerID, 0, '')
+  -- put to spectators
+  net.force_player_slot(playerID, 0, '')
 
-    ssb.rejectMessage(playerID)
-
+  ssb.rejectMessage(playerID)
+  
 end
 
+
 ssb.trimStr = function(_str)
-    return string.format("%s", _str:match("^%s*(.-)%s*$"))
+  return  string.format( "%s", _str:match( "^%s*(.-)%s*$" ) )
 end
 
 DCS.setUserCallbacks(ssb)
 
-net.log("Loaded - SIMPLE SLOT BLOCK v" .. ssb.version .. " by Ciribob")
+net.log("Loaded - SIMPLE SLOT BLOCK v".. ssb.version.. " by Ciribob")

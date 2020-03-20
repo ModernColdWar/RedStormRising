@@ -44,7 +44,7 @@ local function sendRestartWarning(args)
     if minutesUntilRestart == 1 then
         plural = ""
     end
-    trigger.action.outText("The server will restart in " .. minutesUntilRestart .. " minute" .. plural, 15)
+    trigger.action.outText("[ALL] The server will restart in " .. minutesUntilRestart .. " minute" .. plural, 15)
 end
 
 function M.onMissionStart(restartHours, restartWarningMinutes)

@@ -139,7 +139,7 @@ function M.posToMapGrid(position)
 	local _MGRStable = coord.LLtoMGRS(coord.LOtoLL(position.p))
 	--log:info("_MGRStable: $1",inspect(_MGRStable, { newline = " ", indent = "" }))
 	
-	-- DCS drops lleading 0 for 10km map grids
+	-- DCS drops leading 0 for 10km map grids
 	-- e.g. Vazani @ NM00: MGRStable = { Easting = 2566, MGRSDigraph = "NM", Northing = 9426, UTMZone = "38T" }
 	local _easting10kmGrid
 	if string.len(_MGRStable.Easting) < 5 then
@@ -438,7 +438,7 @@ function M.getAliveLogisticsCentreforBase(_airbaseORfarpORfob)
 		for _refLCbaseName, _LCobj in pairs(_baseTable) do
 			if _refLCbaseName == _airbaseORfarpORfob then
 			
-				log:info("_refLCbaseName: $1, _LCobj: $2",_refLCbaseName, mist.utils.basicSerialize(_LCobj))
+				--log:info("_refLCbaseName: $1, _LCobj: $2",_refLCbaseName, mist.utils.basicSerialize(_LCobj))
 
 				if _LCobj ~= nil then
 				
@@ -460,7 +460,7 @@ function M.getAliveLogisticsCentreforBase(_airbaseORfarpORfob)
 						_foundLCsideRef = _refLCsideName
 						
 						local _LCname = _LCobj:getName()
-						log:info("_LCname: $1",_LCname)
+						--log:info("_LCname: $1",_LCname)
 						
 						--"Krymsk Logistics Centre #001 red" = "red"
 						local _derivedLCsideName = string.match(_LCname, ("%w+$"))

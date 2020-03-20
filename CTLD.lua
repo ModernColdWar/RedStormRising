@@ -1871,7 +1871,8 @@ function ctld.loadUnloadLogisticsCrate(_args)
             local _logisticsCentreName = ""
             _logisticsCentreName = _logisticsCentreName .. _closestBaseName .. " Logistics Centre #" .. _unitId .. " " .. _aircraftSideName -- "MM75 Logistics Centre #001 red"
             logisticsManager.spawnLogisticsBuildingForBase(_closestBaseName, _aircraftSideName, _logisticsCentreName, false, _playerName)
-            --trigger.action.outTextForCoalition(_aircraft:getCoalition(), _playerName .. " has repaired the Logistics Centre at " .. _closestBaseName, 10) --moved to baseOwnershipCheck.lua
+            --trigger.action.outTextForCoalition(_aircraft:getCoalition(), "[TEAM]" .. _playerName .. " has repaired the Logistics Centre at " .. _closestBaseName, 10) --moved to baseOwnershipCheck.lua
+			ctld.inTransitLogisticsCentreCrates[_aircraft:getName()] = nil --remove Logistics Centre crate from internal cargo
 
         elseif
         -- return logistics crate to pool to prevent exploit of "backup repair crates"
@@ -1880,7 +1881,7 @@ function ctld.loadUnloadLogisticsCrate(_args)
                 (_nearestLogisticsCentreBaseNameOrFOBgrid == _closestBaseName) then
 
             ctld.displayMessageToGroup(_aircraft, "Logistics Centre already present.  Logistics Centre crate returned to base.", 10)
-            ctld.inTransitLogisticsCentreCrates[_aircraft:getName()] = nil
+            ctld.inTransitLogisticsCentreCrates[_aircraft:getName()] = nil --remove Logistics Centre crate from internal cargo
         end
     end
 end
@@ -2129,13 +2130,16 @@ function ctld.loadTroopsFromZone(_args)
     local _troops = _args[2]
     local _groupTemplate = _args[3] or ""
     local _allowExtract = _args[4]
+	
+	--log:info("_args[1]: $1, _heli: $2, _troops: $3, _groupTemplate: $4, _allowExtract: $5", _args[1], _heli, _troops, _groupTemplate, _allowExtract)
 
     if _heli == nil then
         return false
     end
 
-	-- detemines if heli in pre-placed MIZ trigger zone with 'pickup' suffix, or <150m from logistics centre at dynamically spawned FOB 
-    local _zone = ctld.inPickupZone(_heli)
+	-- detemines if heli in pre-placed MIZ trigger zone with 'PickUp' suffix, or <150m from logistics centre at dynamically spawned FOB
+	-- _inPickupZone = { inZone = true, limit = 10000, index = -1, dist = _dist, pickupName = _FOBnameFromLCobj, pickupArea = "Outpost" }	
+    local _PickUpZoneDetails = ctld.inPickupZone(_heli)
 
     if ctld.troopsOnboard(_heli, _troops) then
 
@@ -2180,11 +2184,11 @@ function ctld.loadTroopsFromZone(_args)
     if _extract ~= nil then
         -- search for nearest troops to pickup
         return ctld.extractTroops({ _heli:getName(), _troops })
-    elseif _zone.inZone == true or ctld.debug == true then
+    elseif _PickUpZoneDetails.inZone == true or ctld.debug == true then
 
-        if _zone.limit - 1 >= 0 or ctld.debug == true then
+        if _PickUpZoneDetails.limit - 1 >= 0 or ctld.debug == true then
             -- decrease zone counter by 1
-            ctld.updateZoneCounter(_zone.index, -1)
+            ctld.updateZoneCounter(_PickUpZoneDetails.index, -1)
 
             ctld.loadTroops(_heli, _troops, _groupTemplate)
 
@@ -2197,9 +2201,9 @@ function ctld.loadTroopsFromZone(_args)
 
     else
         if _allowExtract then
-            ctld.displayMessageToGroup(_heli, "You are not in a pickup zone and no one is nearby to extract", 10)
+            ctld.displayMessageToGroup(_heli, "There are no friendly troops nearby to extract, and you cannot load troops from this area. Closest loading area: " .. _PickUpZoneDetails.pickupName .. " (" .. _PickUpZoneDetails.pickupArea .. "," .. mist.utils.round((_PickUpZoneDetails.dist / 1000), 1) .. ")", 10)
         else
-            ctld.displayMessageToGroup(_heli, "You are not in a pickup zone", 10)
+            ctld.displayMessageToGroup(_heli, "You cannot load troops from this area.  Closest loading area: " .. _PickUpZoneDetails.pickupName .. " (" .. _PickUpZoneDetails.pickupArea .. "," .. mist.utils.round((_PickUpZoneDetails.dist / 1000), 1) .. "km)", 10)
         end
 
         return false
@@ -2404,11 +2408,11 @@ function ctld.checkCargoStatus(_args)
         local _txt = "Currently Transporting: "
 
         if _troops ~= nil and _troops.units ~= nil and #_troops.units > 0 then
-            _txt = _txt .. "\n" .. " " .. #_troops.units .. " troops"
+            _txt = _txt .. "\n" .. " " .. #_troops.units .. " x troops"
         end
 
         if _vehicles ~= nil and _vehicles.units ~= nil and #_vehicles.units > 0 then
-            _txt = _txt .. "\n" .. " " .. #_vehicles.units .. " vehicles"
+            _txt = _txt .. "\n" .. " " .. #_vehicles.units .. " x vehicles"
         end
 
         if ctld.inTransitSlingLoadCrates[_aircraft:getName()] ~= nil then
@@ -3350,7 +3354,7 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
 				
                 local _aircraftSideNameForFOB = utils.getSideName(_args[3])
 				
-                -- (_point, _name, _sideName, _baseORfob, _baseORfobName, _isMissionInit, _constructingPlayerName)
+                -- (_centroid, _logisticsCentreName, _sideName, _baseORfob, _FOBname, _isMissionInit, _playerName)
                 local _newLogisticCentre = ctld.spawnLogisticsCentre(_args[1], _args[2], _aircraftSideNameForFOB, "FOB", _args[6], false, _args[4])
 
                 --only deployed FOBs get radio beacon
@@ -3394,7 +3398,7 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
             --]]
             _logisticsCentreName = _logisticsCentreName .. _baseName .. " Logistics Centre #" .. _LCid .. " " .. _aircraftSideName -- "MM75 Logistics Centre #001 red"
             logisticsManager.spawnLogisticsBuildingForBase(_baseName, _aircraftSideName, _logisticsCentreName, false, _playerName)
-            --trigger.action.outTextForCoalition(_aircraft:getCoalition(), _playerName .. " has repaired the Logistics Centre at " .. _closestBaseName, 10) --moved to baseOwnershipCheck.lua
+            --trigger.action.outTextForCoalition(_aircraft:getCoalition(), "[TEAM]" .. _playerName .. " has repaired the Logistics Centre at " .. _closestBaseName, 10) --moved to baseOwnershipCheck.lua
         end
 
         ctld.processCallback({ unit = _aircraft, position = _centroid, action = "fob" }) --mr: what does this do?!
@@ -3947,7 +3951,7 @@ function ctld.dropRadioBeacon(_args)
 
         -- mark with flare?
 
-        trigger.action.outTextForCoalition(_heli:getCoalition(), ctld.getPlayerNameOrType(_heli) .. " deployed a Radio Beacon.\n\n" .. _radioBeaconDetails.text, 20)
+        trigger.action.outTextForCoalition(_heli:getCoalition(), "[TEAM]" .. ctld.getPlayerNameOrType(_heli) .. " deployed a Radio Beacon.\n\n" .. _radioBeaconDetails.text, 20)
 
     else
         ctld.displayMessageToGroup(_heli, "You need to land before you can deploy a Radio Beacon!", 20)
@@ -4988,10 +4992,16 @@ function ctld.inPickupZone(_heli)
         return { inZone = false, limit = -1, index = -1 }
     end
 
+	local _heliCoalition = _heli:getCoalition()
     local _heliPoint = _heli:getPoint()
 
+	local _inPickupZone = { inZone = false, limit = -1, index = -1, dist = -1, pickupName = "NoName", pickupArea = "NoArea" }
+	
+    --(zoneName, smokeColor, reinforcementsAvail, active, coalition)
+	--{ "Beslan PickUp", -1, 10000, 0, 0 }
+	local _firstBaseSet = false
     for _i, _zoneDetails in pairs(ctld.pickupZones) do
-
+		
         local _triggerZone = trigger.misc.getZone(_zoneDetails[1])
 
         if _triggerZone == nil then
@@ -5007,35 +5017,68 @@ function ctld.inPickupZone(_heli)
         end
 
         if _triggerZone ~= nil then
-
-            --get distance to center
-
-            local _dist = ctld.getDistance(_heliPoint, _triggerZone.point)
-
-            if _dist <= _triggerZone.radius then
-                local _heliCoalition = _heli:getCoalition()
-                if _zoneDetails[4] == 1 and (_zoneDetails[5] == _heliCoalition or _zoneDetails[5] == 0) then
-                    return { inZone = true, limit = _zoneDetails[3], index = _i }
-                end
-            end
+		
+			-- is pickUp zone active and friendly
+			if _zoneDetails[4] == 1 and (_zoneDetails[5] == _heliCoalition or _zoneDetails[5] == 0) then
+			
+				local _dist = ctld.getDistance(_heliPoint, _triggerZone.point)
+				local _BaseNameFromTriggerZoneName = string.match(_zoneDetails[1], ("^(.+)%sPick"))
+				
+				local _isAirbase = utils.getCurrABside(_BaseNameFromTriggerZoneName)
+				if _isAirbase ~= "ABnotFound" then
+					_pickupArea = "Runway"
+					_pickupName = _BaseNameFromTriggerZoneName .. " Airbase"
+				end
+				
+				local _isFARP = utils.getCurrFARPside(_BaseNameFromTriggerZoneName)
+				if _isFARP ~= "FARPnotFound" then
+					_pickupArea = "FARP helipad"
+					_pickupName = _BaseNameFromTriggerZoneName .. " FARP"
+				end
+				
+				if _isAirbase ~= "ABnotFound" and _isFARP ~= "FARPnotFound" then
+					log:error("No friendly airbases or FARPs found for troop pickup: _BaseNameFromTriggerZoneName: $1, _isAirbase: $2, _isFARP: $3", _BaseNameFromTriggerZoneName,_isAirbase, _isFARP)
+				end
+				--log:info("_BaseNameFromTriggerZoneName: $1, _isAirbase: $2, _isFARP: $3, _dist: $4, _inPickupZone.dist: $5", _BaseNameFromTriggerZoneName,_isAirbase, _isFARP,_dist,_inPickupZone.dist)
+				--log:info("TEST: $1",_dist < _inPickupZone.dist)
+				if _firstBaseSet and _dist < _inPickupZone.dist then
+					_inPickupZone = { inZone = false, limit = _zoneDetails[3], index = _i, dist = _dist, pickupName = _BaseNameFromTriggerZoneName, pickupArea = _pickupArea}
+				elseif not _firstBaseSet then
+					_inPickupZone = { inZone = false, limit = _zoneDetails[3], index = _i, dist = _dist, pickupName = _BaseNameFromTriggerZoneName, pickupArea = _pickupArea}
+					_firstBaseSet = true
+				end
+				
+				if _dist <= _triggerZone.radius then
+					_inPickupZone.inZone = true
+					return _inPickupZone
+				end
+			end
         end
     end
-
+	
+	-- no airbases or FARPs close enough, so check deployed FOBs
     local _fobs = ctld.getFriendlyFOBsLCs(_heli)
 
-    -- now check spawned fobs
     for _, _fob in ipairs(_fobs) do
 
-        --get distance to center
-
         local _dist = ctld.getDistance(_heliPoint, _fob:getPoint())
-
+		local _LCobjName = _fob:getName()
+		--local _FOBsideFromLCobj = string.match(_LCobjName, ("%w+$"))
+		--local _FOBcoalition = utils.getSide(_FOBsideFromLCobj)
+		local _FOBnameFromLCobj = string.match(_LCobjName, ("^(.+)%sLog"))
+		
+		--log:info("_LCobjName: $1, _FOBnameFromLCobj: $2", _LCobjName, _FOBnameFromLCobj)
+		if _dist < _inPickupZone.dist then
+			_inPickupZone = { inZone = false, limit = 10000, index = -1, dist = _dist, pickupName = _FOBnameFromLCobj, pickupArea = "Outpost" }
+		end
+		
         if _dist <= 150 then
-            return { inZone = true, limit = 10000, index = -1 }
+			_inPickupZone.inZone = true
+            return _inPickupZone
         end
     end
-
-    return { inZone = false, limit = -1, index = -1 }
+	log:info("_inPickupZone: $1", _inPickupZone)
+    return _inPickupZone
 end
 
 function ctld.getFriendlyFOBsLCs(_aircraft)
@@ -5524,6 +5567,7 @@ function ctld.checkAIStatus()
                 if _zone.inZone == true and not ctld.troopsOnboard(_unit, true) then
                     --   env.error("in zone, loading.. ".._unit:getName())
 
+					--mr: ctld.allowRandomAiTeamPickups = false in CTLD_config.lua for RSR = unused
                     if ctld.allowRandomAiTeamPickups == true then
                         -- Random troop pickup implementation
                         if _unit:getCoalition() == 1 then
@@ -5649,16 +5693,34 @@ function ctld.addF10MenuOptions(_unitName)
                         missionCommands.addCommandForGroup(_groupId, "Unload / Extract Troops", _troopCommandsPath, ctld.unloadExtractTroops, { _unitName })
                         missionCommands.addCommandForGroup(_groupId, "Check Cargo", _troopCommandsPath, ctld.checkCargoStatus, { _unitName })
 
-                        -- local _loadPath = missionCommands.addSubMenuForGroup(_groupId, "Load From Zone", _troopCommandsPath)
-                        for _, _loadGroup in pairs(ctld.loadableGroups) do
-                            if not _loadGroup.side or _loadGroup.side == _unit:getCoalition() then
+						if ctld.isCargoPlane(_unit) then 
 
-                                -- check size & unit
-                                if ctld.getTransportLimit(_unit:getTypeName()) >= _loadGroup.total then
-                                    missionCommands.addCommandForGroup(_groupId, "Load " .. _loadGroup.name, _troopCommandsPath, ctld.loadTroopsFromZone, { _unitName, true, _loadGroup, false })
-                                end
-                            end
-                        end
+							for _, _loadGroup in pairs(ctld.loadableGroupsCargoPlanes) do --cargo planes
+								
+								-- check for side restricted troop types
+								if not _loadGroup.side or _loadGroup.side == _unit:getCoalition() then
+									
+									-- check size & unit
+									if ctld.getTransportLimit(_unit:getTypeName()) >= _loadGroup.total then
+										missionCommands.addCommandForGroup(_groupId, "Load " .. _loadGroup.name, _troopCommandsPath, ctld.loadTroopsFromZone, { _unitName, true, _loadGroup, false })
+									end
+								end
+							end
+						else
+							-- local _loadPath = missionCommands.addSubMenuForGroup(_groupId, "Load From Zone", _troopCommandsPath)
+							for _, _loadGroup in pairs(ctld.loadableGroupsHelis) do  --helis
+								
+								-- check for side restricted troop types
+								if not _loadGroup.side or _loadGroup.side == _unit:getCoalition() then
+									
+									-- check size & unit
+									if ctld.getTransportLimit(_unit:getTypeName()) >= _loadGroup.total then
+										missionCommands.addCommandForGroup(_groupId, "Load " .. _loadGroup.name, _troopCommandsPath, ctld.loadTroopsFromZone, { _unitName, true, _loadGroup, false })
+									end
+								end
+							end
+						end
+						
                     end
 
                     if ctld.unitCanCarryVehicles(_unit) then
@@ -5678,9 +5740,8 @@ function ctld.addF10MenuOptions(_unitName)
                         missionCommands.addCommandForGroup(_groupId, "Check Cargo", _vehicleCommandsPath, ctld.checkCargoStatus, { _unitName })
                     end
 
-                    if ctld.isCargoPlane(_unit) and not ctld.unitCanCarryVehicles(_unit) then
-                        --avoid duplication
-
+                    if ctld.isCargoPlane(_unit) and not ctld.unitCanCarryVehicles(_unit) then --avoid duplication
+                        
                         local _internalCargoCommandsPath = missionCommands.addSubMenuForGroup(_groupId, "Internal Cargo", _rootPath)
                         if ctld.enabledFOBBuilding and ctld.staticBugWorkaround == false then
                             missionCommands.addCommandForGroup(_groupId, "Load / Unload Logistics Centre crate", _internalCargoCommandsPath, ctld.loadUnloadLogisticsCrate, { _unitName })
@@ -6494,7 +6555,7 @@ function ctld.getJTACStatus(_args)
         local _jtacOwner = utils.getPlayerNameFromGroupName(_jtacGroupName) --_groupName = 'CTLD_' .. _types[1] .. '_' .. _id .. ' (' .. _playerName .. ')'
         if _jtacOwner == nil then
             local _jtacBase = utils.getBaseAndSideNamesFromGroupName(_jtacGroupName)
-            log:info("_jtacBase $1", _jtacBase)
+            --log:info("_jtacBase $1", _jtacBase)
             _jtacOwner = _jtacBase .. " Defence"
         end
 
@@ -7016,7 +7077,8 @@ for _, _crates in pairs(ctld.spawnableCrates) do
     end
 end
 
-
+--(zoneName, smokeColor, reinforcementsAvail, active, coalition)
+--{ "Beslan PickUp", -1, 10000, 0, 0 }
 --sort out pickup zones
 for _, _zone in pairs(ctld.pickupZones) do
 
@@ -7116,7 +7178,7 @@ for _, _groupName in pairs(ctld.extractableGroups) do
     end
 end
 
-
+--mr: ctld.allowRandomAiTeamPickups = false in CTLD_config.lua for RSR = unused
 -- Seperate troop teams into red and blue for random AI pickups
 if ctld.allowRandomAiTeamPickups == true then
     ctld.redTeams = {}
@@ -7135,7 +7197,7 @@ end
 
 -- add total count
 
-for _, _loadGroup in pairs(ctld.loadableGroups) do
+for _, _loadGroup in pairs(ctld.loadableGroupsHelis) do
 
     _loadGroup.total = 0
     if _loadGroup.aa then
@@ -7160,6 +7222,30 @@ for _, _loadGroup in pairs(ctld.loadableGroups) do
 
 end
 
+for _, _loadGroup in pairs(ctld.loadableGroupsCargoPlanes) do
+
+    _loadGroup.total = 0
+    if _loadGroup.aa then
+        _loadGroup.total = _loadGroup.aa + _loadGroup.total
+    end
+
+    if _loadGroup.inf then
+        _loadGroup.total = _loadGroup.inf + _loadGroup.total
+    end
+
+    if _loadGroup.mg then
+        _loadGroup.total = _loadGroup.mg + _loadGroup.total
+    end
+
+    if _loadGroup.at then
+        _loadGroup.total = _loadGroup.at + _loadGroup.total
+    end
+
+    if _loadGroup.mortar then
+        _loadGroup.total = _loadGroup.mortar + _loadGroup.total
+    end
+
+end
 
 -- Scheduled functions (run cyclically) -- but hold execution for a second so we can override parts
 
