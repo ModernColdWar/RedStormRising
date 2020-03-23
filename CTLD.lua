@@ -990,7 +990,7 @@ function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight, _side,
 			ctld.spawnedCratesBLUE[_name] = _crateDetails
 		end
     end
-    log:info("_name: $1, _crateDetails: $2", _name, inspect(_crateDetails, { newline = " ", indent = "" })
+    log:info("_name: $1, _crateDetails: $2", _name, inspect(_crateDetails, { newline = " ", indent = "" }))
     return _spawnedCrate
 end
 
