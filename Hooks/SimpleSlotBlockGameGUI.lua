@@ -201,6 +201,8 @@ ssb.commanderPlayerUCID = {
   "8f3e2a5beadbd739a973027607f4a5cc", --Rigez added by mad rabbit
   "7c6028ee85d15cb5008a07403f486522", --outcast 1-1 by deebix
   "37922d84eaf6bb71e775a54af9b1c75d", --Drip added by deebix
+  "88e28730b17a4cacae63e61fafbded1e", -- Airogue added by mad rabbit
+  "a83dd704a242de5450deec9887e7c9d3", -- Sephryn added by mad rabbit
 }
 
 
