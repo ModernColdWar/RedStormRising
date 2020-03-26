@@ -192,9 +192,16 @@ function M.getWinner()
     local redCount = #M.currentState.baseOwnership.Airbases.red
     local blueCount = #M.currentState.baseOwnership.Airbases.blue
     local neutralCount = #M.currentState.baseOwnership.Airbases.neutral
+	
+	log:info("Airbases: redCount:$1 blueCount: $2 neutralCount: $3", redCount, blueCount, neutralCount)
+	--disabled as neutral bases don't count towards win unless owned by either red/blue
+	--disabled as capturable bases are always either red/blue
+	--[[
     if neutralCount > 0 or (redCount + blueCount + neutralCount == 0) then
         return nil
     end
+	--]]
+	
     if redCount > 0 and blueCount == 0 then
         return "red"
     end
@@ -216,13 +223,15 @@ function M.setCurrentStateFromFile(stateFileName)
             log:info("State file detected")
             M.currentState = stateFromDisk
         end
-
-        if M.getWinner() == nil then
+		
+		local _campaignWinner = M.getWinner()
+        if _campaignWinner == nil then
             -- broadcast global baseOwnership from file to then recheck
             log:info("state: MISSION INIT: baseOwnership (PRE): $1", baseOwnership)
             baseOwnership = mist.utils.deepCopy(M.currentState.baseOwnership) --deepCopy as variable assingment is a direct reference not a copy
         else
-            log:info("State file is from a victory - will not use")
+            log:info("$1 TEAM WON CAMPAIGN! Ignoring state file and resetting campaign.", _campaignWinner)
+			M.canUseStateFromFile = false
         end
     else
         log:info("No state file found")

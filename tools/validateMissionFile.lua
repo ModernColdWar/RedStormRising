@@ -50,7 +50,7 @@ local countermeasuresSettings = {
 -- default length in mission editor is 15m
 local ropeLengths = {
     Ka_50 = 20,
-    Mi_8MT = 20,
+    Mi_8MT = 25,
     UH_1H = 10,
 }
 

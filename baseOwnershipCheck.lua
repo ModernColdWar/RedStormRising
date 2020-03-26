@@ -287,7 +287,7 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
 
                             --mr: RSR TEAM = (option A) must clear FARP area.  Therefore allow attacking team to know when they capture the FARP, but not opposition to allow sneaky tactics
                             if _conqueringUnit ~= "none" then
-                                trigger.action.outTextForCoalition(_DCScoalition, "[TEAM] " .. _baseName .. " FARP claimed by " .. _logisticsCentreSide
+                                trigger.action.outTextForCoalition(_logisticsCentreCoalition, "[TEAM] " .. _baseName .. " FARP claimed by " .. _logisticsCentreSide
                                         .. " team following construction of Logistics Centre by " .. _conqueringUnit, 10) --_conqueringUnit = playerName
                             end
 
@@ -318,7 +318,7 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
                         bases.resupply(_baseName, _logisticsCentreSide, rsrConfig, false, false, false) --activate base defences (FARP trucks) but DO NOT spawn logistics and NOT missionInit
 
                         if _conqueringUnit ~= "none" then
-                            trigger.action.outTextForCoalition(_DCScoalition, "[TEAM] " .. _baseName .. " FARP claimed by " .. _logisticsCentreSide
+                            trigger.action.outTextForCoalition(_logisticsCentreCoalition, "[TEAM] " .. _baseName .. " FARP claimed by " .. _logisticsCentreSide
                                     .. " team following construction of Logistics Centre by " .. _conqueringUnit, 10) --_conqueringUnit = playerName
                         end
 

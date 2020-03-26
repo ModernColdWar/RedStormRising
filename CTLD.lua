@@ -1112,9 +1112,10 @@ function ctld.spawnCrate(_arguments)
         local _baseType = _baseProximity[4]
 
         local _friendlyLogisticsCentreProximity = ctld.friendlyLogisticsCentreProximity(_heli)
-        local _nearestLogisticsCentreName = _friendlyLogisticsCentreProximity[1] --(rare) if no friendly LC at all = "NoFriendlyLC"
-        local _nearestLogisticsCentreDist = _friendlyLogisticsCentreProximity[2] --(rare) if no friendly LC at all = "NoDist"
-        local _nearestLogisticsCentreBaseNameOrFOBgrid = _friendlyLogisticsCentreProximity[3] --(rare) if no friendly LC at all = "NoBase"
+        local _nearestLogisticsCentreName = _friendlyLogisticsCentreProximity[1]
+        local _nearestLogisticsCentreDist = _friendlyLogisticsCentreProximity[2]
+		--(extremely rare) if no friendly LC AND staging point object (e.g. gas platform) dead = "NoBase"
+        local _nearestLogisticsCentreBaseNameOrFOBgrid = _friendlyLogisticsCentreProximity[3] 
 
         if _crateType ~= nil and _heli ~= nil and ctld.inAir(_heli) == false then
 
@@ -1130,14 +1131,18 @@ function ctld.spawnCrate(_arguments)
             end
 
             --log:info ("spawnCrate: _nearestLogisticsCentreDist: $1, ctld.maximumDistanceLogistic: $2, ctld.debug: $3",_nearestLogisticsCentreDist,ctld.maximumDistanceLogistic,ctld.debug)
-            if _logisticsCentreReq then
-                if (_nearestLogisticsCentreDist > ctld.maximumDistanceLogistic) == true and ctld.debug == false then
-                    ctld.displayMessageToGroup(_heli, "You are not close enough to friendly logistics centre to get a crate!", 10)
+            if _logisticsCentreReq then	
+				if _nearestLogisticsCentreBaseNameOrFOBgrid == "NoBase" then
+					-- should not occur as airbases, FARP helipad and gas platforms are indestructible!
+					ctld.displayMessageToGroup(_heli, "Your team can no longer be supplied!", 10)
+                    return
+                elseif (_nearestLogisticsCentreDist > ctld.maximumDistanceLogistic) == true and ctld.debug == false then
+                    ctld.displayMessageToGroup(_heli, "You are not close enough to a friendly Logistics Centre to get a crate! \nNearest Logistics Centre at " .. _nearestLogisticsCentreBaseNameOrFOBgrid .. " (" .. mist.utils.round((_nearestLogisticsCentreDist / 1000), 1) .. "km)", 10)
                     return
                 end
             end
 
-            if not _logisticsCentreReq and _internal == 0 then
+            if not _logisticsCentreReq and _internal == 0 and _nearestLogisticsCentreBaseNameOrFOBgrid ~= "NoBase" then
                 ctld.displayMessageToGroup(_heli, "Only internal crates are available from " .. _closestBaseName, 10)
                 return
             end
@@ -1233,7 +1238,7 @@ function ctld.spawnCrate(_arguments)
                     ctld.inTransitSlingLoadCrates[_heli:getName()] = _crateDetails
                     ctld.displayMessageToGroup(_heli, string.format("A %s crate has been provisioned and loaded", _crateType.desc), 20)
                 else
-                    env.info("Couldn't find internal crate to provision and load at " .. _nearestLogisticsCentreBaseNameOrFOBgrid)
+                    log:error("Couldn't find internal crate to provision and load at " .. _nearestLogisticsCentreBaseNameOrFOBgrid)
                 end
 
             else
@@ -3210,7 +3215,7 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
     if _inBaseZoneAndRSRradius then
         _baseName = _closestBaseName -- exchange playerName for baseName
         _baseORfob = _baseType --provides distinction between deploying or repairing airbase/FARP in below messages
-        _buildTime = 1 --reduce build time for airbase/FARP as it's a repair + avoids problems with potentially multiple logistics centres! --uncessary
+        _buildTime = 1 --reduce build time for airbase/FARP as it's a repair + avoids problems with potentially multiple logistics centres! --unnecessary
     end
 
     local _RSRradius = 10000 -- RSRbaseCaptureZones FARP zones 5km in MIZ, most RSRbaseCaptureZones Airbase zones 10km in MIZ
@@ -3381,8 +3386,8 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
 				_FOBname, -- _args[6] = referenced in ctld.logisticCentreObjects for 'isLogisticsCentreAliveAt' function
 			}, timer.getTime() + _buildTime)
 
-            local _txt = string.format("%s started deploying a FOB in %s and it will be finished in %d seconds.", ctld.getPlayerNameOrType(_aircraft), _FOBgrid, _buildTime)
-            trigger.action.outTextForCoalition(_coalition, "[TEAM] " .. _txt, 10)
+            local _FOBbuildMSG = string.format("[TEAM] %s started deploying a FOB in %s and it will be finished in %d seconds.", _playerName, _FOBgrid, _buildTime)
+			trigger.action.outTextForCoalition(_coalition, _FOBbuildMSG, 10)
 
         else
             --[[
@@ -3399,7 +3404,8 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
             --]]
             _logisticsCentreName = _logisticsCentreName .. _baseName .. " Logistics Centre #" .. _LCid .. " " .. _aircraftSideName -- "MM75 Logistics Centre #001 red"
             logisticsManager.spawnLogisticsBuildingForBase(_baseName, _aircraftSideName, _logisticsCentreName, false, _playerName)
-            --trigger.action.outTextForCoalition(_aircraft:getCoalition(), "[TEAM]" .. _playerName .. " has repaired the Logistics Centre at " .. _closestBaseName, 10) --moved to baseOwnershipCheck.lua
+			
+            trigger.action.outTextForCoalition(_coalition, "[TEAM]" .. _playerName .. " has repaired the Logistics Centre at " .. _baseName, 10) 
         end
 
         ctld.processCallback({ unit = _aircraft, position = _centroid, action = "fob" }) --mr: what does this do?!
@@ -3408,8 +3414,8 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
         --trigger.action.smoke(_centroid, trigger.smokeColor.Green)
 
     else
-        local _txt = string.format("Cannot build Logistics Centre!\n\nIt requires %d Large Logistics Centre crates ( 3 small Logistics Centre crates equal 1 large Logistics Centre Crate) and there are the equivalent of %d large Logistics Centre crates nearby\n\nOr the crates are not within 750m of each other", ctld.cratesRequiredForLogisticsCentre, _totalCrates)
-        ctld.displayMessageToGroup(_aircraft, _txt, 20)
+        local _playerMSG = string.format("Cannot build Logistics Centre!\n\nIt requires %d Large Logistics Centre crates ( 3 small Logistics Centre crates equal 1 large Logistics Centre Crate) and there are the equivalent of %d large Logistics Centre crates nearby\n\nOr the crates are not within 750m of each other", ctld.cratesRequiredForLogisticsCentre, _totalCrates)
+        ctld.displayMessageToGroup(_aircraft, _playerMSG, 20)
     end
 end
 
@@ -5185,23 +5191,26 @@ function ctld.isLogisticsCentreAliveAt(_passedLogisiticsCentreBase)
     return _LogisiticsCentreAlive
 end
 
--- proximity to nearest FRIENDLY logistics centre object, including deployed FOBs, NOT whether player in logisitics zone
+-- proximity to nearest FRIENDLY logistics centre object, including deployed FOBs and staging bases, NOT whether player in logisitics zone
 function ctld.friendlyLogisticsCentreProximity(_aircraft)
 
     local _aircraftPoint = _aircraft:getPoint()
     local _aircraftSide = _aircraft:getCoalition()
     local _aircraftSideName = utils.getSideName(_aircraftSide)
+	local _aircraftName = _aircraft:getName()
+	
+	-- "RedStagingPoint Red Helos #003" = "RedStagingPoint"
+	local _aircraftHomeBase = string.match(_aircraftName, ("^%w+"))
 
-    local _LCprox = { "NoFriendlyLC", "NoDist", "NoBase" }
-    local _LCname = _LCprox[1]
-    local _LCdist = _LCprox[2]
-    local _derivedLCbaseNameOrGrid = _LCprox[3]
-
-    local _derivedLCsideName = "NoSide"
+	local _derivedLCsideName = "NoSide"
     local _LCpoint = { 0, 0, 0 }
     local _LCobj
-    local _isFOB = false
-
+	
+	local _LCprox = { "NoFriendlyLC", "NoDist", "NoBase" }
+	local _LCname = _LCprox[1]
+    local _LCdist = _LCprox[2]
+    local _derivedLCbaseNameOrGrid = _LCprox[3]
+		
 	for _refLCsideName, _baseTable in pairs(ctld.logisticCentreObjects) do
 		for _refLCbaseName, _LCobj in pairs(_baseTable) do
 
@@ -5230,33 +5239,101 @@ function ctld.friendlyLogisticsCentreProximity(_aircraft)
 				if _refLCbaseName ~= _derivedLCbaseNameOrGrid then
 					log:error("Reference LC base (_refLCbaseName: $1) and derived base from LC name (_derivedLCbaseNameOrGrid: $2) mistmatch",_refLCbaseName,_derivedLCbaseNameOrGrid)
 				end
-			end
 
-			--log:info("_LCobj: $1, _derivedLCsideName: $2, _derivedLCbaseNameOrGrid: $3",_LCobj,_derivedLCsideName,_derivedLCbaseNameOrGrid)
+				--log:info("_LCobj: $1, _derivedLCsideName: $2, _derivedLCbaseNameOrGrid: $3",_LCobj,_derivedLCsideName,_derivedLCbaseNameOrGrid)
 
-			if _derivedLCsideName == _aircraftSideName then
-			
-				--log:info("_LCname: $1, _derivedLCsideName: $2, _aircraftSideName: $3",_LCname,_derivedLCsideName,_aircraftSideName)
+				if _derivedLCsideName == _aircraftSideName then
 				
-				--get distance
-				_LCdist = ctld.getDistance(_aircraftPoint, _LCpoint)
+					log:info("_LCname: $1, _derivedLCsideName: $2, _aircraftSideName: $3",_LCname,_derivedLCsideName,_aircraftSideName)
+					
+					--get distance
+					_LCdist = ctld.getDistance(_aircraftPoint, _LCpoint)
 
-				if _LCprox[2] == "NoDist" then
-					_LCprox[1] = _LCname
-					_LCprox[2] = _LCdist
-					_LCprox[3] = _derivedLCbaseNameOrGrid
+					if _LCprox[2] == "NoDist" then --if no LC set, set first alive LC to compare others against
+						_LCprox[1] = _LCname
+						_LCprox[2] = _LCdist
+						_LCprox[3] = _derivedLCbaseNameOrGrid
 
-				elseif _LCdist < _LCprox[2] then
-					_LCprox[1] = _LCname
-					_LCprox[2] = _LCdist
-					_LCprox[3] = _derivedLCbaseNameOrGrid
+					elseif _LCdist < _LCprox[2] then
+						_LCprox[1] = _LCname
+						_LCprox[2] = _LCdist
+						_LCprox[3] = _derivedLCbaseNameOrGrid
+					end
 				end
-
 			end
 		end	
     end
+	
+	log:info("_aircraftName: $1, _LCprox: $2", _aircraftName, inspect(_LCprox, { newline = " ", indent = "" }))
+	
+	-- (rare) no friendly LCs alive, set to LCdist to integer to prevent error when comparing distance to staging bases
+	if _LCprox[2] == "NoDist" then
+		_LCprox[2] = 999999 -- 999km
+	end
+	
+	--check staging base proximity, regardless if no friendly LC found anywhere, OR (extremely rare) if staging base closer than LC at helo base of origin
+	for _k, _stagingBaseName in ipairs (rsrConfig.stagingBases) do
+		log:info("_aircraftName: $1, _aircraftHomeBase: $2, _stagingBaseName: $3",_aircraftName,_aircraftHomeBase,_stagingBaseName)
+		
+		local _stagingBaseSideFound = false
+		local _stagingBaseSideName = "NoSide"
+		local _ABside = utils.getCurrABside(_stagingBaseName)
+		if _ABside ~= "ABnotFound" then
+			_stagingBaseSideName = _ABside
+			_stagingBaseSideFound = true
+		end
+		
+		local _FARPside = utils.getCurrFARPside(_stagingBaseName)
+		if _FARPside ~= "FARPnotFound" then
+			_stagingBaseSideName = _FARPside
+			_stagingBaseSideFound = true
+		end
+		
+		if not _stagingBaseSideFound then
+			log:error("Staging Base: $1, side not found",_stagingBaseName)
+		end
 
-    log:info("_LCprox: $1", inspect(_LCprox, { newline = " ", indent = "" }))
+		local _stagingBaseObject = Airbase.getByName(_stagingBaseName)
+
+		--[[
+			-- command centre static object life = 10000, gas platform static object life = 3600
+			-- gas platforms seems indestructible, despite being reported as destroyed with large missiles/bombs in SP
+			-- airbases are not an object and will produce an error when inspecting life points
+			local _testGasPlatformLife = StaticObject.getLife(_stagingBaseObject)
+			local _testABobj = Airbase.getByName("Mozdok")
+			--local _testABLife = Airbase.getLife(_testABobj) -- produces error
+			local _testABLife = -1
+			log:info("_testGasPlatformLife: $1, _testABobj: $2, _testABLife: $3",_testGasPlatformLife,_testABobj,_testABLife)
+		--]]
+		
+		-- if staging base an object e.g. gas platform, check it's still alive
+		if _stagingBaseObject ~= nil and _stagingBaseSideName == _aircraftSideName then
+			
+			local _stagingBasePoint = _stagingBaseObject:getPoint()
+			local _stagingBaseDist = ctld.getDistance(_aircraftPoint, _stagingBasePoint)
+			
+			-- check if helo from staging area (gas platform)? not reliable enough as helo could go from airbase/FARP 'to' gas platform
+			-- if string.lower(_aircraftHomeBase) == string.lower(_stagingBaseName) then
+			
+			if _stagingBaseDist < _LCprox[2] then
+				_LCprox[1] = _stagingBaseName .. " NoLC " .. "#999 " .. _aircraftSideName --fake LC name
+				_LCprox[2] = _stagingBaseDist
+				_LCprox[3] = _stagingBaseName
+			end
+		end
+	end
+	
+    log:info("_aircraftName: $1, _LCprox: $2", _aircraftName, inspect(_LCprox, { newline = " ", indent = "" }))
+	
+	-- gas platforms seem indestructible, despite being reported as destroyed with large missiles/bombs in SP
+	--[[
+		-- no friendly LCs at all and staging base is an object (e.g. gas platform) that is dead
+		if _LCprox[3] == "NoBase" then
+			log:info("No friendly LCs for $1 and all friendly staging point base objects all dead",_aircraftSideName)
+	
+		end
+	--]]
+	
     return _LCprox
 end
 

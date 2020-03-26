@@ -52,6 +52,8 @@ birthEventHandler.onMissionStart(rsrConfig.restartHours)
 deadEventHandler.register()
 restartInfo.onMissionStart(rsrConfig.restartHours, rsrConfig.restartWarningMinutes)
 
--- _SETTINGS:SetPlayerMenuOff()
+--disables MOOSE player setting radio menu item that allows player to set own coordinate and measurement system (not yet integrated)
+_SETTINGS:SetPlayerMenuOff()
+
 trigger.action.outText("RSR.LUA LOADED", 10)
 env.info("RSR STARTUP: RSR.LUA LOADED")
