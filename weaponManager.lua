@@ -12,7 +12,7 @@ local M = {}
 local msgTimer = 15
 
 local rsrConfig = require("RSR_config")
-local perLife = rsrConfig.maxLives
+local perLife = math.floor(rsrConfig.maxLives / rsrConfig.livesMultiplier + 0.5)
 local JSON = require("json")
 
 local socket = require("socket")
