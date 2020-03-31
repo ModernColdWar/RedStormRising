@@ -419,8 +419,8 @@ ctld.maximumDistFromAirbaseToRepair = 5000
 	- for balancing given that logistics centre crates are available from FOBs and logistics centre destruction required for all captures
 	- for ctld.spawnLogisticsCentre referencing as each FOB named after it's airbase or MGRS grid which is a 10km square
 --]]
-ctld.exclusionZoneFromBasesForFOBs = 15000 --15km
-ctld.friendlyLogisiticsCentreSpacing = 15000 --15km
+ctld.exclusionZoneFromBasesForFOBs = 10000 --15km
+ctld.friendlyLogisiticsCentreSpacing = 10000 --15km
 
 --need to ensure country is part of neutral coalition e.g. Greece, as neutral static objects will not block DCS controlled rearm/refuel
 ctld.neutralCountry = "Greece"
@@ -494,8 +494,9 @@ ctld.spawnableCrates = {
 
         { weight = 850, desc = "M163 Vulcan", unit = "Vulcan", side = 2, cratesRequired = 1, unitQuantity = 2, internal = 0 },
         { weight = 851, desc = "Gepard", unit = "Gepard", side = 2, cratesRequired = 1, unitQuantity = 2, internal = 0 },
-        { weight = 852, desc = "M1097 Avenger", unit = "M1097 Avenger", side = 2, cratesRequired = 1, unitQuantity = 1, internal = 0 },
-        { weight = 853, desc = "M6 Linebacker", unit = "M6 Linebacker", side = 2, cratesRequired = 2, unitQuantity = 1, internal = 0 },
+		{ weight = 852, desc = "M48 Chaparral", unit = "M48 Chaparral", side = 2, cratesRequired = 1, unitQuantity = 2, internal = 0 },
+        { weight = 853, desc = "M1097 Avenger", unit = "M1097 Avenger", side = 2, cratesRequired = 1, unitQuantity = 1, internal = 0 },
+        { weight = 854, desc = "M6 Linebacker", unit = "M6 Linebacker", side = 2, cratesRequired = 2, unitQuantity = 1, internal = 0 },
     },
 
 

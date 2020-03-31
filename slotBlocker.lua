@@ -61,8 +61,6 @@ function M.configureSlotsForBase(baseName, sideName)
                 if groupSideName == sideName then
                     enableSlot(groupName)
                 else
-                    --mr: add exception here for FOBs wherein no friendly unit exists within 2km to claim but friendly CC still there?
-                    -- state.lua: function M.getOwner(baseName)
                     disableSlot(groupName)
                 end
             end

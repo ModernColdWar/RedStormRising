@@ -108,9 +108,19 @@ end
 function M.configureForSide(baseName, sideName)
     log:info("Configuring base $1 for $2", baseName, sideName)
     setMapMarker(baseName, sideName)
+	
+	--[[
+		commented-out as any neutral ownership of a FARP or neutral airbase (due to logistics centre destruction)
+		should result in slots blocked and pickup zone blocked
+		capturable airbases will always either be red/blue so abort will never occur
+		remnant abort from when baseCaptureEH was sole determinant whereas now baseOwnershipCheck pre-determines capture logic
+	--]]
+	--[[
     if checkNeutral(baseName, sideName) then
+		log:info("Aborting slot blocking and pickup zone blocking for $1", baseName)
         return
     end
+	--]]
     slotBlocker.configureSlotsForBase(baseName, sideName)
     pickupZoneManager.configurePickupZonesForBase(baseName, sideName)
 end
