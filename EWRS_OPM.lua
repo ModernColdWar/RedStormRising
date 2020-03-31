@@ -45,8 +45,8 @@ ewrs = {} --DO NOT REMOVE
 
 ----SCRIPT OPTIONS----
 
-ewrs.messageUpdateInterval = 5 --How often EWRS will update automated BRA messages (seconds)
-ewrs.messageDisplayTime = 4 --How long EWRS BRA messages will show for (seconds)
+ewrs.messageUpdateInterval = 30 --How often EWRS will update automated BRA messages (seconds)
+ewrs.messageDisplayTime = 20 --How long EWRS BRA messages will show for (seconds)
 ewrs.useImprovedDetectionLogic = true --this makes the messages more realistic. If the radar doesn't know the type or distance to the detected threat, it will be reflected in the picture report / BRA message
 ewrs.maxThreatDisplay = 1 -- Max amounts of threats to display on picture report (0 will display all)
 ewrs.radarUnitsUpdateInterval = 60 -- minimum time between radar units update
@@ -85,9 +85,18 @@ Aircraft type list
 This is used to restrict availability to just these types
 ]]
 ewrs.enabledAircraftTypes = {
+    ["A-10A"] = true,
+    ["A-10C"] = true,
+    ["AJS37"] = true,
+    ["AV8BNA"] = true,
+    ["AV8BNA"] = true,
+    ["Bf-109K-4"] = true,
     ["C-101CC"] = true,
     ["F-5E-3"] = true,
     ["F-86F Sabre"] = true,
+    ["FW-190A8"] = true,
+    ["FW-190D9"] = true,
+    ["I-16"] = true,
     ["Ka-50"] = true,
     ["L-39ZA"] = true,
     ["Mi-8MT"] = true,
@@ -97,8 +106,12 @@ ewrs.enabledAircraftTypes = {
     ["MiG-29A"] = true,
     ["MiG-29G"] = true,
     ["MiG-29S"] = true,
+    ["P-51D"] = true,
+    ["P-51D-30-NA"] = true,
     ["SA342L"] = true,
     ["SA342M"] = true,
+    ["Su-25T"] = true,
+    ["TF-51D"] = true,
     ["UH-1H"] = true,
 }
 
@@ -229,9 +242,9 @@ function ewrs.outText(groupID, threatTable)
             local threat = threatTable[1]
             local message
             if threat.range == ewrs.notAvailable then
-                message = "EWRS: Nearest target position unknown"
+                message = "GCI: Nearest target position unknown"
             else
-                message = string.format("EWRS: Nearest target %03d for %d%s at %d%s, type %s, heading %03d at %d%s",
+                message = string.format("GCI: Nearest target %03d for %d%s at %d%s, type %s, heading %03d at %d%s",
                         threat.bearing,
                         utils.round(threat.range, 1), rangeUnits,
                         utils.round(threat.altitude, 100), altUnits,
@@ -242,7 +255,7 @@ function ewrs.outText(groupID, threatTable)
             end
             trigger.action.outTextForGroup(groupID, message, ewrs.messageDisplayTime)
         else
-            trigger.action.outTextForGroup(groupID, "EWRS: No targets detected", ewrs.messageDisplayTime)
+            trigger.action.outTextForGroup(groupID, "GCI: No targets detected", ewrs.messageDisplayTime)
         end
     end)
     if not status then
@@ -425,7 +438,7 @@ end
 function ewrs.setGroupMeasurements(args)
     local groupID = args[1]
     ewrs.groupSettings[tostring(groupID)].measurements = args[2]
-    trigger.action.outTextForGroup(groupID, "Measurement units changed to " .. args[2], ewrs.messageDisplayTime)
+    trigger.action.outTextForGroup(groupID, "GCI: Measurement units changed to " .. args[2], ewrs.messageDisplayTime)
 end
 
 function ewrs.setGroupUpdates(args)
@@ -437,7 +450,7 @@ function ewrs.setGroupUpdates(args)
         onOff = "off"
     end
     ewrs.groupSettings[tostring(groupID)].pictureUpdates = args[2]
-    trigger.action.outTextForGroup(groupID, "Picture updates for group turned " .. onOff, ewrs.messageDisplayTime)
+    trigger.action.outTextForGroup(groupID, "GCI: Picture updates for group turned " .. onOff, ewrs.messageDisplayTime)
     if args[2] then
         ewrs.onDemandMessage(groupID)
     end

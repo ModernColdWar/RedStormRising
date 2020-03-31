@@ -114,6 +114,7 @@ function M.iterZones(mission, zoneCallback)
 end
 
 function M.isClientGroup(group)
+    -- returns true if any unit in the group is a Client, otherwise false
     for _, unit in ipairs(group.units) do
         if unit.skill == "Client" then
             return true

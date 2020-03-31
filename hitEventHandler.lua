@@ -60,22 +60,27 @@ end
 
 
 function M.HIT_EVENTHANDLER:onHit(event)
+
+    log:info("event.IniObjectCategory : $1, event.IniCategory: $2, event.TgtCategory: $3,  event.TgtObjectCategory: $4", event.IniObjectCategory, event.IniCategory, event.TgtCategory, event.TgtObjectCategory)
+    log:info("event.IniUnitName : $1, event.IniTypeName: $2, event.TgtDCSUnitName: $3, event.TgtTypeName: $4 ", event.IniUnitName, event.IniTypeName, event.TgtDCSUnitName, event.TgtTypeName)
+    --[[
+        Object.Category
+        UNIT    1
+        WEAPON  2
+        STATIC  3
+        BASE    4
+        SCENERY 5
+        CARGO   6
+    --]]
 	
-	log:info("event.IniObjectCategory : $1, event.IniCategory: $2, event.TgtCategory: $3,  event.TgtObjectCategory: $4",event.IniObjectCategory , event.IniCategory, event.TgtCategory, event.TgtObjectCategory)
-	log:info("event.IniUnitName : $1, event.IniTypeName: $2, event.TgtDCSUnitName: $3, event.TgtTypeName: $4 ",event.IniUnitName , event.IniTypeName, event.TgtDCSUnitName, event.TgtTypeName)
-	--[[
-		Object.Category
-		UNIT    1
-		WEAPON  2
-		STATIC  3
-		BASE    4
-		SCENERY 5
-		Cargo   6
-	--]]
-	
-	--exclude scenery hits e.g. missed bomb hitting tree/house, from hit notifications
-	if event.TgtObjectCategory == Object.Category.SCENERY then
-		log:info("Aborting hit notification for scenery object: event.TgtObjectCategory: $1, event.TgtTypeName: $2", event.TgtObjectCategory, event.TgtTypeName)
+    --exclude scenery hits e.g. missed bomb hitting tree/house, from hit notifications
+    if event.TgtObjectCategory == Object.Category.SCENERY then
+        log:info("Aborting hit notification for scenery object: event.TgtObjectCategory: $1, event.TgtTypeName: $2", event.TgtObjectCategory, event.TgtTypeName)
+        return
+    end
+
+	if event.IniObjectCategory == Object.Category.CARGO then
+		log:info("Aborting hit notification for cargo object: event.TgtObjectCategory: $1, event.TgtTypeName: $2", event.TgtObjectCategory, event.TgtTypeName)
 		return
 	end
 
@@ -100,15 +105,15 @@ local function getUnitDesc(coalition, groupName, typeName, unitName)
 
     local typeDesc = typeName
     local _isLogisticsCentre = false
-	local _LCsideName
+    local _LCsideName
     if (typeName == ".Command Center" or typeName == "outpost") and unitName ~= nil then
-	
+
         typeDesc = "Logistics Centre"
-		
-		--buildings will always be neutral coaltion associated, therefore derive side from name
-		local _logisticsCentreName = unitName
-		_LCsideName = string.match(_logisticsCentreName, ("%w+$")) --"Sochi Logistics Centre #001 red" = "red"
-		
+
+        --buildings will always be neutral coaltion associated, therefore derive side from name
+        local _logisticsCentreName = unitName
+        _LCsideName = string.match(_logisticsCentreName, ("%w+$")) --"Sochi Logistics Centre #001 red" = "red"
+
         _isLogisticsCentre = true
     end
     log:info("typeDesc: $1 typeName: $2, unitName: $3, ownerName: $4", typeDesc, typeName, unitName, ownerName)
@@ -116,12 +121,12 @@ local function getUnitDesc(coalition, groupName, typeName, unitName)
     if ownerName == nil then
         --buildings will not have a groupName
         if _isLogisticsCentre then
-		
-			if _LCsideName ~= nil then
-				return string.format("%s %s", _LCsideName, typeDesc)
-			else
-				return string.format("%s", typeDesc)
-			end
+
+            if _LCsideName ~= nil then
+                return string.format("%s %s", _LCsideName, typeDesc)
+            else
+                return string.format("%s", typeDesc)
+            end
         else
             return string.format("%s%s", coalitionName, typeDesc)
         end
@@ -139,14 +144,14 @@ function M.buildHitMessage(event)
         -- AI on AI; no interest
         return nil
     end
-	
+
     local message = ""
     if event.IniPlayerName ~= nil then
         message = message .. getPlayerDesc(event.IniCoalition, event.IniGroupName, event.IniTypeName, event.IniPlayerName, event.IniUnitName)
     else
         message = message .. getUnitDesc(event.IniCoalition, event.IniGroupName, event.IniTypeName)
     end
-	
+
     message = message .. " hit "
     if event.TgtPlayerName ~= nil then
         message = message .. getPlayerDesc(event.TgtCoalition, event.TgtGroupName, event.TgtTypeName, event.TgtPlayerName, event.IniUnitName)
@@ -154,12 +159,12 @@ function M.buildHitMessage(event)
         message = message .. getUnitDesc(event.TgtCoalition, event.TgtGroupName, event.TgtTypeName, event.TgtUnitName)
     end
 
-	log:info("event.WeaponName: $1", event.WeaponName)
-	log:info("event.Weapon: getDesc(): $1", event.Weapon)
-	
+    log:info("event.WeaponName: $1", event.WeaponName)
+    log:info("event.Weapon: getDesc(): $1", event.Weapon)
+
     if event.Weapon ~= nil then
-		local _weaponDesc = event.Weapon:getDesc()
-		local _weaponDisplayName = _weaponDesc.displayName
+        local _weaponDesc = event.Weapon:getDesc()
+        local _weaponDisplayName = _weaponDesc.displayName
         message = message .. " with " .. _weaponDisplayName
     end
 
@@ -167,7 +172,7 @@ function M.buildHitMessage(event)
         message = "FRIENDLY FIRE: " .. message
     end
 
-	message = "[ALL] " .. message -- let player know that hit notifications are seen by both teams
+    message = "[ALL] " .. message -- let player know that hit notifications are seen by both teams
 
     return message:gsub("^%l", string.upper)
 end

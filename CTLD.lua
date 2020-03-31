@@ -205,7 +205,7 @@ function ctld.cratesInZone(_zone, _flagNumber)
     local _zonePos = mist.utils.zoneToVec3(_zone)
 
     --ignore side, if crate has been used its discounted from the count
-	--mr: what about: ctld.droppedLogisticsCentreCratesRED and ctld.droppedLogisticsCentreCratesBLUE?!
+    --mr: what about: ctld.droppedLogisticsCentreCratesRED and ctld.droppedLogisticsCentreCratesBLUE?!
     local _crateTables = { ctld.spawnedCratesRED, ctld.spawnedCratesBLUE, ctld.missionEditorCargoCrates }
 
     local _crateCount = 0
@@ -870,99 +870,99 @@ function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight, _side,
 
         _spawnedCrate = Unit.getByName(_baseOfOriginRemovedFromName)
     else
-		--[[ Placeholder for different type of cargo containers. Let's say pipes and trunks, fuel for FOB building
-			
+        --[[ Placeholder for different type of cargo containers. Let's say pipes and trunks, fuel for FOB building
 
-			--Internal cargo
-			["category"] = "Fortifications",
-			["shape_name"] = "bw_container_cargo",
-			["type"] = "container_cargo",
-			
-			--Slingloadable container
-			["category"] = "Cargos",
-			["shape_name"] = "iso_container_small_cargo",
-			["type"] = "iso_container_small",
 
-			------------------------------------------------
-			--narrow and tall red crate
-			["category"] = "Fortifications",
-			["shape_name"] = "konteiner_red1",
-			["type"] = "Container red 1",
-			
-			["shape_name"] = "ab-212_cargo",
-			["type"] = "uh1h_cargo" --new type for the container previously used
+            --Internal cargo
+            ["category"] = "Fortifications",
+            ["shape_name"] = "bw_container_cargo",
+            ["type"] = "container_cargo",
 
-			["shape_name"] = "ammo_box_cargo",
-			["type"] = "ammo_cargo",
+            --Slingloadable container
+            ["category"] = "Cargos",
+            ["shape_name"] = "iso_container_small_cargo",
+            ["type"] = "iso_container_small",
 
-			["shape_name"] = "barrels_cargo",
-			["type"] = "barrels_cargo",
+            ------------------------------------------------
+            --narrow and tall red crate
+            ["category"] = "Fortifications",
+            ["shape_name"] = "konteiner_red1",
+            ["type"] = "Container red 1",
 
-			["shape_name"] = "f_bar_cargo",
-			["type"] = "f_bar_cargo",
+            ["shape_name"] = "ab-212_cargo",
+            ["type"] = "uh1h_cargo" --new type for the container previously used
 
-			["shape_name"] = "fueltank_cargo",
-			["type"] = "fueltank_cargo",
+            ["shape_name"] = "ammo_box_cargo",
+            ["type"] = "ammo_cargo",
 
-			["shape_name"] = "iso_container_cargo",
-			["type"] = "iso_container",
+            ["shape_name"] = "barrels_cargo",
+            ["type"] = "barrels_cargo",
 
-			["shape_name"] = "iso_container_small_cargo",
-			["type"] = "iso_container_small",
+            ["shape_name"] = "f_bar_cargo",
+            ["type"] = "f_bar_cargo",
 
-			["shape_name"] = "oiltank_cargo",
-			["type"] = "oiltank_cargo",
+            ["shape_name"] = "fueltank_cargo",
+            ["type"] = "fueltank_cargo",
 
-			["shape_name"] = "pipes_big_cargo",
-			["type"] = "pipes_big_cargo",
+            ["shape_name"] = "iso_container_cargo",
+            ["type"] = "iso_container",
 
-			["shape_name"] = "pipes_small_cargo",
-			["type"] = "pipes_small_cargo",
+            ["shape_name"] = "iso_container_small_cargo",
+            ["type"] = "iso_container_small",
 
-			["shape_name"] = "tetrapod_cargo",
-			["type"] = "tetrapod_cargo",
+            ["shape_name"] = "oiltank_cargo",
+            ["type"] = "oiltank_cargo",
 
-			["shape_name"] = "trunks_long_cargo",
-			["type"] = "trunks_long_cargo",
+            ["shape_name"] = "pipes_big_cargo",
+            ["type"] = "pipes_big_cargo",
 
-			["shape_name"] = "trunks_small_cargo",
-			["type"] = "trunks_small_cargo",
-		]]--
-		
+            ["shape_name"] = "pipes_small_cargo",
+            ["type"] = "pipes_small_cargo",
+
+            ["shape_name"] = "tetrapod_cargo",
+            ["type"] = "tetrapod_cargo",
+
+            ["shape_name"] = "trunks_long_cargo",
+            ["type"] = "trunks_long_cargo",
+
+            ["shape_name"] = "trunks_small_cargo",
+            ["type"] = "trunks_small_cargo",
+        ]]--
+
         if ctld.slingLoad and _internal ~= 1 then
-			
-			--Slingloadable container
-			_crate = {
-				["category"] = "Cargos", --now plurar
-				["shape_name"] = "iso_container_small_cargo",
-				["type"] = "iso_container_small",
-				-- ["unitId"] = _unitId,
-				["y"] = _point.z,
-				["x"] = _point.x,
-				["mass"] = _weight,
-				["name"] = _name,
-				["canCargo"] = true,
-				["heading"] = 0,
-				--            ["displayName"] = "name 2", -- getCargoDisplayName function exists but no way to set the variable
-				--            ["DisplayName"] = "name 2",
-				--            ["cargoDisplayName"] = "cargo123",
-				--            ["CargoDisplayName"] = "cargo123",
-			}
+
+            --Slingloadable container
+            _crate = {
+                ["category"] = "Cargos", --now plurar
+                ["shape_name"] = "iso_container_small_cargo",
+                ["type"] = "iso_container_small",
+                -- ["unitId"] = _unitId,
+                ["y"] = _point.z,
+                ["x"] = _point.x,
+                ["mass"] = _weight,
+                ["name"] = _name,
+                ["canCargo"] = true,
+                ["heading"] = 0,
+                --            ["displayName"] = "name 2", -- getCargoDisplayName function exists but no way to set the variable
+                --            ["DisplayName"] = "name 2",
+                --            ["cargoDisplayName"] = "cargo123",
+                --            ["CargoDisplayName"] = "cargo123",
+            }
         else
 
-			--camo pattern container = internal cargo that is not Logistic Centre crate
-			_crate = {
-				["category"] = "Fortifications",
-				["shape_name"] = "bw_container_cargo",
-				["type"] = "container_cargo",
-				--   ["unitId"] = _unitId,
-				["y"] = _point.z,
-				["x"] = _point.x,
-				["name"] = _name,
-				["canCargo"] = true,
-				["heading"] = 0,
-				["mass"] = _weight,
-			}
+            --camo pattern container = internal cargo that is not Logistic Centre crate
+            _crate = {
+                ["category"] = "Fortifications",
+                ["shape_name"] = "bw_container_cargo",
+                ["type"] = "container_cargo",
+                --   ["unitId"] = _unitId,
+                ["y"] = _point.z,
+                ["x"] = _point.x,
+                ["name"] = _name,
+                ["canCargo"] = true,
+                ["heading"] = 0,
+                ["mass"] = _weight,
+            }
         end
 
         _crate["country"] = _country
@@ -974,57 +974,58 @@ function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight, _side,
     local _crateDetails = ctld.crateLookupTable[tostring(_weight)]
     _crateDetails.baseOfOrigin = _baseOfOriginFromName
 
-
-	local _isLCcrate = false
-	_isLCcrate = _crateDetails.unit == "LogisticsCentre"
+    local _isLCcrate = false
+    _isLCcrate = _crateDetails.unit == "LogisticsCentre"
     if _side == 1 then
-		if _isLCcrate then
-			ctld.droppedLogisticsCentreCratesRED[_name] = _crateDetails
-		else
-			ctld.spawnedCratesRED[_name] = _crateDetails
-		end
+        if _isLCcrate then
+            ctld.droppedLogisticsCentreCratesRED[_name] = _crateDetails
+        else
+            ctld.spawnedCratesRED[_name] = _crateDetails
+        end
     else
-		if _isLCcrate then
-			ctld.droppedLogisticsCentreCratesBLUE[_name] = _crateDetails
-		else
-			ctld.spawnedCratesBLUE[_name] = _crateDetails
-		end
+        if _isLCcrate then
+            ctld.droppedLogisticsCentreCratesBLUE[_name] = _crateDetails
+        else
+            ctld.spawnedCratesBLUE[_name] = _crateDetails
+        end
     end
     log:info("_name: $1, _crateDetails: $2", _name, inspect(_crateDetails, { newline = " ", indent = "" }))
     return _spawnedCrate
 end
 
 function ctld.spawnLogisticsCentre(_point, _name, _sideName, _baseORfob, _baseORfobName, _isMissionInit, _constructingPlayerName)
-	--FOB: ctld.spawnLogisticsCentre(_args[1], _args[2], _aircraftSideNameForFOB, "FOB", _args[6], false, _args[4]
-	--log:info("_point: $1, _name: $2, _sideName: $3, _baseORfob: $4, _baseORfobName: $5, _isMissionInit: $5, _constructingPlayerName: $7",_point, _name, _sideName, _baseORfob, _baseORfobName, _isMissionInit, _constructingPlayerName)
-	
-	local _coalition = utils.getSide(_sideName)
+    --FOB: ctld.spawnLogisticsCentre(_args[1], _args[2], _aircraftSideNameForFOB, "FOB", _args[6], false, _args[4]
+    --log:info("_point: $1, _name: $2, _sideName: $3, _baseORfob: $4, _baseORfobName: $5, _isMissionInit: $5, _constructingPlayerName: $7",_point, _name, _sideName, _baseORfob, _baseORfobName, _isMissionInit, _constructingPlayerName)
+
+    local _coalition = utils.getSide(_sideName)
     local _logiCentreType = ctld.logisticCentreL3 --bunker
 
 	local _posORnegZ = math.random(-1, 1)
 	local _posORnegX = math.random(-1, 1)
-	local _randomZ100 = 0
-	local _randomX100 = 0
+    local _randomZ100 = 0
+    local _randomX100 = 0
     if _baseORfob == "FOB" then
         _logiCentreType = ctld.logisticCentreL2 --outpost
     else
-		--[[
-			ctld.maximumDistanceLogistic = 200, but irrelevant given that proximity based on distance to spawned LCobj not zone centre
-			'RSRlogisticsZone' e.g. "MM75 RSRlogisticsZone 03" selected at random in logisticsManager.lua
-			therefore set and use 'RSRlogisticsZone' trigger zone radius of 200 to detemine possible area of random logistic centre placement
-		--]]
-		-- bunker command centre = 30m x 35m
+        --[[
+            ctld.maximumDistanceLogistic = 200, but irrelevant given that proximity based on distance to spawned LCobj not zone centre
+            'RSRlogisticsZone' e.g. "MM75 RSRlogisticsZone 03" selected at random in logisticsManager.lua
+            therefore set and use 'RSRlogisticsZone' trigger zone radius of 150 to detemine possible area of random logistic centre placement
+        --]]
+        -- bunker command centre = 30m x 35m
 		if _posORnegZ > 0 then
-			_randomZ100 = math.random(30, 75)
+			_randomZ100 = math.random(40, 75)
 		else
-			_randomZ100 = math.random(-30, -75)
+			_randomZ100 = math.random(-40, -75)
 		end
-		if _posORnegZ > 0 then
-			_randomZ100 = math.random(30, 75)
+		if _posORnegX > 0 then
+			_randomX100 = math.random(40, 75)
 		else
-			_randomZ100 = math.random(-30, -75)
+			_randomX100 = math.random(-40, -75)
 		end
-	end
+    end
+	
+	--log:info("_posORnegZ: $1, _posORnegX: $2, _randomZ100: $3, _randomX100: $4, _point.z: $5, _point.x: $6", _posORnegZ,_posORnegX, _randomZ100, _randomX100, _point.z, _point.x)
 
     local _playerName = "none"
     if _constructingPlayerName ~= "none" then
@@ -1041,10 +1042,10 @@ function ctld.spawnLogisticsCentre(_point, _name, _sideName, _baseORfob, _baseOR
         ["canCargo"] = false,
         ["heading"] = 0,
         ["country"] = ctld.neutralCountry --need to ensure country is part of neutral coalition e.g. Greece = neutral static object
-		--["rate"] = --mr: number value for the "score" of the object when it is killed. use to allow assigning points for logistic centre kills?
+        --["rate"] = --mr: number value for the "score" of the object when it is killed. use to allow assigning points for logistic centre kills?
     }
-	
-	--[[
+
+    --[[
         mist.dynAddStatic => addStaticObject
                     unitID required?  If not set, new static object of same name will overwrite (= delete? = advantageous for repair) old object
                     > https://wiki.hoggitworld.com/view/DCS_func_addStaticObject
@@ -1052,24 +1053,24 @@ function ctld.spawnLogisticsCentre(_point, _name, _sideName, _baseORfob, _baseOR
                     >> If unitId is not specified or matches an existing object, a new Id will be generated.
                     >> Coalition of the object is defined based on the country the object is spawning to.
     --]]
-	
+
     mist.dynAddStatic(_logiCentre)
     local _spawnedLogiCentreObject = StaticObject.getByName(_logiCentre["name"])
 
 
-	--[[
-		ctld.logisticCentreObjects populated upon spawning logistics centre static object with:
-			- airbase, FARP or FOB grid + "FOB (e.g. "CK61 FOB") name as index
-		seperate lists for red and blue teams to allow for rare occurence of FOBs from both team in same grid
-		due to spacing ctld.friendlyLogisiticsCentreSpacing restrictions, friendly FOBs should never be in the same 10km grid, important for referencing
-		important that only 1 logisitics centre per base due to baseOwnershipCheck.lua referencing elsewhere
-			i.e.  _LCobj = ctld.logisticCentreObjects[_sideName][_baseORfobName][1]
-	--]]
+    --[[
+        ctld.logisticCentreObjects populated upon spawning logistics centre static object with:
+            - airbase, FARP or FOB grid + "FOB (e.g. "CK61 FOB") name as index
+        seperate lists for red and blue teams to allow for rare occurence of FOBs from both team in same grid
+        due to spacing ctld.friendlyLogisiticsCentreSpacing restrictions, friendly FOBs should never be in the same 10km grid, important for referencing
+        important that only 1 logisitics centre per base due to baseOwnershipCheck.lua referencing elsewhere
+            i.e.  _LCobj = ctld.logisticCentreObjects[_sideName][_baseORfobName][1]
+    --]]
     ctld.logisticCentreObjects[_sideName][_baseORfobName] = _spawnedLogiCentreObject
-	
-	--log:info("ctld.logisticCentreObjects $1",ctld.logisticCentreObjects)
-	--log:info("ctld.logisticCentreObjects[_sideName][_baseORfobName] $1",ctld.logisticCentreObjects[_sideName][_baseORfobName])
-	
+
+    --log:info("ctld.logisticCentreObjects $1",ctld.logisticCentreObjects)
+    --log:info("ctld.logisticCentreObjects[_sideName][_baseORfobName] $1",ctld.logisticCentreObjects[_sideName][_baseORfobName])
+
     local _LCmarkerID = UTILS.GetMarkID()
     trigger.action.markToCoalition(_LCmarkerID, _name, _point, _coalition, true)
     ctld.logisticCentreMarkerID[_sideName][_baseORfobName] = _LCmarkerID
@@ -1094,7 +1095,7 @@ function ctld.spawnLogisticsCentre(_point, _name, _sideName, _baseORfob, _baseOR
     end
     --(_passedBaseName,_playerORunit,_campaignStartSetup)
     baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(_checkWhichBasesAndFARPs, _playerName, false)
-    log:info("_isMissionInit: $1, _checkWhichBasesAndFARPs: $2,  _playerName: $3, _name: $4_spawnedLogiCentreObject: $5,", _isMissionInit, _playerName,_name,_checkWhichBasesAndFARPs, mist.utils.basicSerialize(_spawnedLogiCentreObject))
+    log:info("_isMissionInit: $1, _checkWhichBasesAndFARPs: $2,  _playerName: $3, _name: $4_spawnedLogiCentreObject: $5,", _isMissionInit, _playerName, _name, _checkWhichBasesAndFARPs, mist.utils.basicSerialize(_spawnedLogiCentreObject))
 
     return _spawnedLogiCentreObject
 end
@@ -1123,8 +1124,8 @@ function ctld.spawnCrate(_arguments)
         local _friendlyLogisticsCentreProximity = ctld.friendlyLogisticsCentreProximity(_heli)
         local _nearestLogisticsCentreName = _friendlyLogisticsCentreProximity[1]
         local _nearestLogisticsCentreDist = _friendlyLogisticsCentreProximity[2]
-		--(extremely rare) if no friendly LC AND staging point object (e.g. gas platform) dead = "NoBase"
-        local _nearestLogisticsCentreBaseNameOrFOBgrid = _friendlyLogisticsCentreProximity[3] 
+        --(extremely rare) if no friendly LC AND staging point object (e.g. gas platform) dead = "NoBase"
+        local _nearestLogisticsCentreBaseNameOrFOBgrid = _friendlyLogisticsCentreProximity[3]
 
         if _crateType ~= nil and _heli ~= nil and ctld.inAir(_heli) == false then
 
@@ -1140,10 +1141,10 @@ function ctld.spawnCrate(_arguments)
             end
 
             --log:info ("spawnCrate: _nearestLogisticsCentreDist: $1, ctld.maximumDistanceLogistic: $2, ctld.debug: $3",_nearestLogisticsCentreDist,ctld.maximumDistanceLogistic,ctld.debug)
-            if _logisticsCentreReq then	
-				if _nearestLogisticsCentreBaseNameOrFOBgrid == "NoBase" then
-					-- should not occur as airbases, FARP helipad and gas platforms are indestructible!
-					ctld.displayMessageToGroup(_heli, "Your team can no longer be supplied!", 10)
+            if _logisticsCentreReq then
+                if _nearestLogisticsCentreBaseNameOrFOBgrid == "NoBase" then
+                    -- should not occur as airbases, FARP helipad and gas platforms are indestructible!
+                    ctld.displayMessageToGroup(_heli, "Your team can no longer be supplied!", 10)
                     return
                 elseif (_nearestLogisticsCentreDist > ctld.maximumDistanceLogistic) == true and ctld.debug == false then
                     ctld.displayMessageToGroup(_heli, "You are not close enough to a friendly Logistics Centre to get a crate! \nNearest Logistics Centre at " .. _nearestLogisticsCentreBaseNameOrFOBgrid .. " (" .. mist.utils.round((_nearestLogisticsCentreDist / 1000), 1) .. "km)", 10)
@@ -1307,10 +1308,10 @@ function ctld.getPointAtXOclock(_unit, _oclock, _offset)
 
 end
 
-function ctld.getPointAtXOclockStaticObject(_unit, _oclock, _offset,_angle)
+function ctld.getPointAtXOclockStaticObject(_unit, _oclock, _offset, _angle)
 
     local _position = _unit:getPosition()
-	
+
     if _oclock == 12 then
         _oclock = 0
     end
@@ -1743,9 +1744,9 @@ function ctld.loadUnloadLogisticsCrate(_args)
     end
 
     local _crateOnboard = ctld.inTransitLogisticsCentreCrates[_aircraft:getName()] ~= nil
-	local _crateOnboardDetails -- { baseOfOrigin = "Gelendzhik", desc = "Logistics Centre", internal = 1, unit = "LogisticsCentre", weight = 503 }
+    local _crateOnboardDetails -- { baseOfOrigin = "Gelendzhik", desc = "Logistics Centre", internal = 1, unit = "LogisticsCentre", weight = 503 }
     if _crateOnboard then
-		_crateOnboardDetails = ctld.inTransitLogisticsCentreCrates[_aircraft:getName()]
+        _crateOnboardDetails = ctld.inTransitLogisticsCentreCrates[_aircraft:getName()]
         log:info("_crateOnboardDetails: $1", inspect(ctld.inTransitLogisticsCentreCrates[_aircraft:getName()], { newline = " ", indent = "" }))
     end
     log:info("_inFOBexclusionZone: $1, _inBaseZoneAndRSRrepairRadius: $2, _closestBaseSide: $3, _closestBaseName: $4, _aircraftSideName: $5, _nearestLogisticsCentreSideName: $6, _nearestLogisticsCentreBaseNameOrFOBgrid: $7 ", _inFOBexclusionZone, _inBaseZoneAndRSRrepairRadius, _closestBaseSide, _closestBaseName, _aircraftSideName, _nearestLogisticsCentreSideName, _nearestLogisticsCentreBaseNameOrFOBgrid)
@@ -1771,7 +1772,8 @@ function ctld.loadUnloadLogisticsCrate(_args)
             ctld.inTransitLogisticsCentreCrates[_aircraft:getName()] = _crateDetails
 
             ctld.displayMessageToGroup(_aircraft, "Logistics Centre crate loaded", 10)
-            trigger.action.outTextForCoalition(_aircraftCoalition, "[TEAM]: " .. ctld.getPlayerNameOrType(_aircraft) .. " loaded a Logistics Centre crate for transport!", 10)
+            trigger.action.outTextForCoalition(_aircraftCoalition, "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " loaded a Logistics Centre crate for transport from " .. _nearestLogisticsCentreBaseNameOrFOBgrid, 10)
+			log:info("$1 loaded Logistics crate from $2",_playerName,_nearestLogisticsCentreBaseNameOrFOBgrid)
 
         elseif -- planes only needs to be in a base with an alive logisitics centre
         _isPlane == true and
@@ -1785,24 +1787,25 @@ function ctld.loadUnloadLogisticsCrate(_args)
             ctld.inTransitLogisticsCentreCrates[_aircraft:getName()] = _crateDetails
 
             ctld.displayMessageToGroup(_aircraft, "Logistics Centre crate loaded", 10)
-            trigger.action.outTextForCoalition(_aircraftCoalition, "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " loaded a Logistics Centre crate for transport!", 10)
+            trigger.action.outTextForCoalition(_aircraftCoalition, "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " loaded a Logistics Centre crate for transport from " .. _nearestLogisticsCentreBaseNameOrFOBgrid, 10)
+			log:info("$1 loaded Logistics crate from $2",_playerName,_nearestLogisticsCentreBaseNameOrFOBgrid)
 
         else
-            -- search area for logistics centre crate and load, regardless of aircraft type
-            -- mr: add checks that crate is from same side? Not required as already done in ctld.getCratesAndDistance
-            -- nearest Crate
+           
+            -- search area for crates
+			-- mr: add checks that crate is from same side? Not required as already done in ctld.getCratesAndDistance
             local _crates = ctld.getCratesAndDistance(_aircraft)
+			
+			-- search area for logistics centre crate
             local _nearestCrateDetails = ctld.getClosestCrate(_aircraft, _crates, "LogisticsCentre")
 
             if _nearestCrateDetails ~= nil and _nearestCrateDetails.dist < ctld.maximumCrateDistanceForLoading then
 
-                -- { desc = "Logistics Centre crate", internal = 1, unit = "LogisticsCentre", weight = 503, baseOfOrigin = "MM75" }
-                local _crateDetails = ctld.crateLookupTable[tostring(503)]
-                _crateDetails.baseOfOrigin = _nearestLogisticsCentreBaseNameOrFOBgrid
-                ctld.inTransitLogisticsCentreCrates[_aircraft:getName()] = _crateDetails
+                ctld.inTransitLogisticsCentreCrates[_aircraft:getName()] = _nearestCrateDetails.details
 
                 ctld.displayMessageToGroup(_aircraft, "Logistics Centre crate loaded", 10)
-                trigger.action.outTextForCoalition(_aircraftCoalition, "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " loaded a Logistics Centre crate for transport!", 10)
+				trigger.action.outTextForCoalition(_aircraftCoalition, "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " loaded a Logistics Centre crate for transport originally from " .. _nearestLogisticsCentreBaseNameOrFOBgrid, 10)
+				log:info("$1 loaded Logistics crate originally from $2",_playerName,_nearestCrateDetails.details.baseOfOrigin)
 
                 if _aircraftCoalition == 1 then
                     ctld.droppedLogisticsCentreCratesRED[_nearestCrateDetails.crateUnit:getName()] = nil
@@ -1871,15 +1874,15 @@ function ctld.loadUnloadLogisticsCrate(_args)
             -- add _crateBaseOfOrigin to crate name for later base of origin checks
             local _newLCcrateName = string.format("Logistics Centre crate #%i (%s)", _unitId, _crateBaseOfOrigin)
             --ctld.spawnLogisticsCentreCrateStatic(_aircraft:getCountry(), _6oclockPos, _newLCcrateName)
-			ctld.spawnCrateStatic(_aircraft:getCountry(), _unitId, _6oclockPos, _newLCcrateName, _crateOnboardDetails.weight, _aircraftSide, _crateOnboardDetails.internal)
-			
+            ctld.spawnCrateStatic(_aircraft:getCountry(), _unitId, _6oclockPos, _newLCcrateName, _crateOnboardDetails.weight, _aircraftSide, _crateOnboardDetails.internal)
+
             if _aircraftSide == 1 then
                 ctld.droppedLogisticsCentreCratesRED[_newLCcrateName] = _crateOnboardDetails
             else
                 ctld.droppedLogisticsCentreCratesBLUE[_newLCcrateName] = _crateOnboardDetails
             end
 
-            trigger.action.outTextForCoalition(_aircraftCoalition, "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " delivered a Logistics Centre crate", 10)
+            trigger.action.outTextForCoalition(_aircraftCoalition, "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " delivered a Logistics Centre crate from " .. _crateBaseOfOrigin, 10)
             ctld.displayMessageToGroup(_aircraft, "Delivered Logistics Centre crate 60m at 6'oclock to you", 10)
 			log:info("$1 delivered Logistics crate from $2",_playerName,_crateBaseOfOrigin)
 
@@ -1899,8 +1902,8 @@ function ctld.loadUnloadLogisticsCrate(_args)
             local _logisticsCentreName = ""
             _logisticsCentreName = _logisticsCentreName .. _closestBaseName .. " Logistics Centre #" .. _unitId .. " " .. _aircraftSideName -- "MM75 Logistics Centre #001 red"
             logisticsManager.spawnLogisticsBuildingForBase(_closestBaseName, _aircraftSideName, _logisticsCentreName, false, _playerName)
-            trigger.action.outTextForCoalition(_aircraftCoalition, "[TEAM]" .. _playerName .. " has repaired the Logistics Centre at " .. _closestBaseName, 10)
-			ctld.inTransitLogisticsCentreCrates[_aircraft:getName()] = nil --remove Logistics Centre crate from internal cargo
+            trigger.action.outTextForCoalition(_aircraftCoalition, "[TEAM] " .. _playerName .. " has repaired the Logistics Centre at " .. _closestBaseName, 10)
+            ctld.inTransitLogisticsCentreCrates[_aircraft:getName()] = nil --remove Logistics Centre crate from internal cargo
 			log:info("$1 repaired $2",_playerName,_closestBaseName)
 
         elseif
@@ -2045,7 +2048,8 @@ function ctld.loadUnloadJTACcrate(_args)
             ctld.inTransitSlingLoadCrates[_aircraft:getName()] = _crateDetails
 
             ctld.displayMessageToGroup(_aircraft, "JTAC crate loaded", 10)
-            trigger.action.outTextForCoalition(_aircraft:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " loaded a JTAC crate for transport.", 10)
+            trigger.action.outTextForCoalition(_aircraft:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " loaded a JTAC crate for transport from " .. _nearestLogisticsCentreBaseNameOrFOBgrid, 10)
+			log:info("$1 loaded JTAC crate from $2",_playerName,_nearestLogisticsCentreBaseNameOrFOBgrid)
 
         elseif -- planes only needs to be in a base with an alive logisitics centre
         _isPlane == true and
@@ -2059,8 +2063,9 @@ function ctld.loadUnloadJTACcrate(_args)
             ctld.inTransitSlingLoadCrates[_aircraft:getName()] = _crateDetails
             log:info("inTransitSlingLoadCrates: aircraft: $1", inspect(ctld.inTransitSlingLoadCrates[_aircraft:getName()], { newline = " ", indent = "" }))
             ctld.displayMessageToGroup(_aircraft, "JTAC crate loaded", 10)
-            trigger.action.outTextForCoalition(_aircraft:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " loaded a JTAC crate for transport!", 10)
-
+            trigger.action.outTextForCoalition(_aircraft:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " loaded a JTAC crate for transport from " .. _nearestLogisticsCentreBaseNameOrFOBgrid, 10)
+			log:info("$1 loaded JTAC crate from $2",_playerName,_nearestLogisticsCentreBaseNameOrFOBgrid)
+			
         else
             -- search area for logistics centre crate and load, regardless of aircraft type
             -- mr: add checks that crate is from same side? Not required as already done in ctld.getCratesAndDistance
@@ -2070,12 +2075,11 @@ function ctld.loadUnloadJTACcrate(_args)
 
             if _nearestCrate ~= nil and _nearestCrate.dist < ctld.maximumCrateDistanceForLoading then
 
-                local _crateDetails = ctld.crateLookupTable[tostring(_JTACcrateWeightPerSide)]
-                _crateDetails.baseOfOrigin = _nearestLogisticsCentreBaseNameOrFOBgrid
                 ctld.inTransitSlingLoadCrates[_aircraft:getName()] = _crateDetails
 
                 ctld.displayMessageToGroup(_aircraft, "JTAC crate loaded", 10)
-                trigger.action.outTextForCoalition(_aircraft:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " loaded a JTAC crate for transport!", 10)
+                trigger.action.outTextForCoalition(_aircraft:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " loaded a JTAC crate for transport originally from " .. _nearestCrate.details.baseOfOrigin, 10)
+				log:info("$1 loaded JTAC crate originally from $2",_playerName,_nearestCrate.details.baseOfOrigin)
 
                 --remove
                 _nearestCrate.crateUnit:destroy()
@@ -2112,9 +2116,9 @@ function ctld.loadUnloadJTACcrate(_args)
             -- local _crateName = string.format("%s #%i (%s)", _currentCrate.desc, _unitId, _crateBaseOfOrigin)
             local _newJTACcrateName = string.format("JTAC crate #%i (%s)", _unitId, _crateBaseOfOrigin)
             ctld.spawnCrateStatic(_aircraft:getCountry(), _unitId, _6oclockPos, _newJTACcrateName, _JTACcrateWeightPerSide, _aircraftSide, 1)
-
+			ctld.displayMessageToGroup(_aircraft, "Delivered JTAC crate 60m at 6'oclock to you", 10)
             trigger.action.outTextForCoalition(_aircraft:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " delivered a JTAC crate", 10)
-            ctld.displayMessageToGroup(_aircraft, "Delivered JTAC crate 60m at 6'oclock to you", 10)
+			log:info("$1 delivered JTAC crate originally from $2",_playerName,_crateBaseOfOrigin)
 
         elseif _inBaseZoneAndRSRrepairRadius == true then
 
@@ -2146,9 +2150,12 @@ function ctld.loadUnloadJTACcrate(_args)
             -- add _crateBaseOfOrigin to crate name for later origin checks
             local _newJTACcrateName = string.format("JTAC crate #%i (%s)", _unitId, _crateBaseOfOrigin)
             ctld.spawnCrateStatic(_aircraft:getCountry(), _unitId, _6oclockPos, _newJTACcrateName, _JTACcrateWeightPerSide, _aircraftSide, 1)
-            log:info("_newJTACcrateName: $1", _newJTACcrateName)
-            trigger.action.outTextForCoalition(_aircraft:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " delivered a JTAC crate", 10)
+			
             ctld.displayMessageToGroup(_aircraft, "Delivered JTAC crate 60m at 6'oclock to you", 10)
+            trigger.action.outTextForCoalition(_aircraft:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " delivered a JTAC crate", 10)
+			log:info("$1 delivered JTAC crate originally from $2",_playerName,_crateBaseOfOrigin)
+			log:info("_newJTACcrateName: $1", _newJTACcrateName)
+            
         end
     end
 end
@@ -2159,15 +2166,15 @@ function ctld.loadTroopsFromZone(_args)
     local _troops = _args[2]
     local _groupTemplate = _args[3] or ""
     local _allowExtract = _args[4]
-	
-	--log:info("_args[1]: $1, _heli: $2, _troops: $3, _groupTemplate: $4, _allowExtract: $5", _args[1], _heli, _troops, _groupTemplate, _allowExtract)
+
+    --log:info("_args[1]: $1, _heli: $2, _troops: $3, _groupTemplate: $4, _allowExtract: $5", _args[1], _heli, _troops, _groupTemplate, _allowExtract)
 
     if _heli == nil then
         return false
     end
 
-	-- detemines if heli in pre-placed MIZ trigger zone with 'PickUp' suffix, or <150m from logistics centre at dynamically spawned FOB
-	-- _inPickupZone = { inZone = true, limit = 10000, index = -1, dist = _dist, pickupName = _FOBnameFromLCobj, pickupArea = "Outpost" }	
+    -- detemines if heli in pre-placed MIZ trigger zone with 'PickUp' suffix, or <150m from logistics centre at dynamically spawned FOB
+    -- _inPickupZone = { inZone = true, limit = 10000, index = -1, dist = _dist, pickupName = _FOBnameFromLCobj, pickupArea = "Outpost" }
     local _PickUpZoneDetails = ctld.inPickupZone(_heli)
 
     if ctld.troopsOnboard(_heli, _troops) then
@@ -2180,16 +2187,16 @@ function ctld.loadTroopsFromZone(_args)
 
         return false
     end
-	
-	if not ctld.simultaneousTroopInternalCrateLoad then 
-	
-		if ctld.inTransitSlingLoadCrates[_args[1]] ~= nil or ctld.inTransitLogisticsCentreCrates[_args[1]] ~= nil then
-			ctld.displayMessageToGroup(_heli, "You have a cargo container on board. There's no room!", 10)
-			return false
-		end
-		
-	end
-	
+
+    if not ctld.simultaneousTroopInternalCrateLoad then
+
+        if ctld.inTransitSlingLoadCrates[_args[1]] ~= nil or ctld.inTransitLogisticsCentreCrates[_args[1]] ~= nil then
+            ctld.displayMessageToGroup(_heli, "You have a cargo container on board. There's no room!", 10)
+            return false
+        end
+
+    end
+
     local _extract
 
     if _allowExtract then
@@ -2581,13 +2588,13 @@ function ctld.loadNearbyCrate(_aircraft)
             ctld.displayMessageToGroup(_transUnit, "You must land before you can load a crate!", 10, true)
             return
         end
-		
-		if not ctld.simultaneousTroopInternalCrateLoad then 
-			if ctld.troopsOnboard(_transUnit, true) then
-				ctld.displayMessageToGroup(_transUnit, "You already have troops on board. There's no room!", 10, true)
-				return
-			end
-		end
+
+        if not ctld.simultaneousTroopInternalCrateLoad then
+            if ctld.troopsOnboard(_transUnit, true) then
+                ctld.displayMessageToGroup(_transUnit, "You already have troops on board. There's no room!", 10, true)
+                return
+            end
+        end
 
         if ctld.unitCargoDoorsOpen(_transUnit) ~= true then
             ctld.displayMessageToGroup(_transUnit, "You must open, or remove, the cargo doors to load cargo", 10, true)
@@ -2685,8 +2692,8 @@ function ctld.refreshRadioBeacons()
             table.remove(ctld.deployedRadioBeacons, _index)
         end
     end
-	
-	for _index, _beaconDetails in ipairs(ctld.deployedFOBRadioBeacons) do
+
+    for _index, _beaconDetails in ipairs(ctld.deployedFOBRadioBeacons) do
 
         --trigger.action.outTextForCoalition(_beaconDetails.coalition,_beaconDetails.text,10)
         if ctld.updateRadioBeacon(_beaconDetails) == false then
@@ -2790,7 +2797,7 @@ function ctld.listNearbyCrates(_args)
     for _, _crate in pairs(_crates) do
 
         if _crate.dist < 1000 and _crate.details.unit ~= "LogisticsCentre" then
-            _message = string.format("%s\n%s crate - kg %i - %i m - %d o'clock", _message, _crate.details.desc, _crate.details.weight, _crate.dist, ctld.getClockDirection(_heli, _crate.crateUnit))
+            _message = string.format("%s\n%s crate (%i kg), %i m, %d o'clock", _message, _crate.details.desc, _crate.details.weight, _crate.dist, ctld.getClockDirection(_heli, _crate.crateUnit))
         end
     end
 
@@ -2798,7 +2805,7 @@ function ctld.listNearbyCrates(_args)
     for _, _logisticsCentreCrate in pairs(_crates) do
 
         if _logisticsCentreCrate.dist < 1000 and _logisticsCentreCrate.details.unit == "LogisticsCentre" then
-            _logisticsCentreMsg = _logisticsCentreMsg .. string.format("Logistics Center crate - %d m - %d o'clock\n", _logisticsCentreCrate.dist, ctld.getClockDirection(_heli, _logisticsCentreCrate.crateUnit))
+            _logisticsCentreMsg = _logisticsCentreMsg .. string.format("Logistics Centre crate, %d m, %d o'clock\n", _logisticsCentreCrate.dist, ctld.getClockDirection(_heli, _logisticsCentreCrate.crateUnit))
         end
     end
 
@@ -2848,8 +2855,8 @@ function ctld.listFOBs(_args)
 
     -- now check spawned fobs
     for _, _LCobj in ipairs(_fobs) do
-		local _LCname = _LCobj:getName()
-        _msg = string.format("%s\n%s\n%s", _msg, _LCname,ctld.getFOBposStringAndBeacons(_LCobj))
+        local _LCname = _LCobj:getName()
+        _msg = string.format("%s\n%s\n%s", _msg, _LCname, ctld.getFOBposStringAndBeacons(_LCobj))
     end
 
     if _msg == "Friendly FOB Positions:" then
@@ -2870,9 +2877,9 @@ function ctld.getFOBposStringAndBeacons(_fob)
     local _message = _latLngStr
 
     local _beaconInfo = ctld.FOBbeacons[_fob:getName()]
-	
-	log:info("_beaconInfo: $1", inspect(_beaconInfo, { newline = " ", indent = "" }))
-	
+
+    log:info("_beaconInfo: $1", inspect(_beaconInfo, { newline = " ", indent = "" }))
+
     if _beaconInfo ~= nil then
         _message = string.format("%s - %.2f KHz ", _message, _beaconInfo.vhf / 1000)
         _message = string.format("%s - %.2f MHz ", _message, _beaconInfo.uhf / 1000000)
@@ -3081,8 +3088,8 @@ function ctld.unpackCrates(_arguments)
                     return
                 end
             end
-			
-			--do not use _crate.details.weight == 503 to check if Logistics Centre crate, as heavy Logistic crate heavier
+
+            --do not use _crate.details.weight == 503 to check if Logistics Centre crate, as heavy Logistic crate heavier
             if _crate ~= nil and _crate.dist < 750 and _crate.details.unit == "LogisticsCentre" then
                 --will conduct FOB exclusion zone and friendly FOB proximity checks
                 ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
@@ -3102,7 +3109,7 @@ function ctld.unpackCrates(_arguments)
                 local _crateBaseOfOrigin = _crate.details.baseOfOrigin
 
                 --log:info("ctld.unpackCrates: _playerName: $1, _crate.name: $2, _crateBaseOfOrigin: $3, _crate: $4", _playerName, _crate.name, _crateBaseOfOrigin, inspect(_crate, { newline = " ", indent = "" }))
-				log:info("ctld.unpackCrates: _playerName: $1, _crate.name: $2, _crateBaseOfOrigin: $3", _playerName, _crate.name, _crateBaseOfOrigin)
+                log:info("ctld.unpackCrates: _playerName: $1, _crate.name: $2, _crateBaseOfOrigin: $3", _playerName, _crate.name, _crateBaseOfOrigin)
 
                 if not ctld.isLogisticsCentreAliveAt(_crateBaseOfOrigin) then
                     local _azToCrate = ctld.getCompassBearing(_aircraft:getPoint(), _crate.crateUnit:getPoint())
@@ -3316,18 +3323,18 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
             if _crateBaseOfOrigin == _closestBaseName and _inBaseZoneAndRSRradius then
                 local _azToCrate = ctld.getCompassBearing(_aircraft:getPoint(), _nearbyCrate.crateUnit:getPoint())
                 ctld.displayMessageToGroup(_aircraft, "ABORTING: Logistics centre crate (" .. _azToCrate .. " : " .. mist.utils.round(_nearbyCrate.dist, 1) .. "m)" .. " from " .. _crateBaseOfOrigin .. ", cannot be unpacked at base of origin (nearest base: " .. _closestBaseName .. ")", 20)
-				return
+                return
             else
                 if _nearbyCrate.details.unit == "LogisticsCentre" then
                     _bigLogisticsCentreCrates = _bigLogisticsCentreCrates + 1
                     table.insert(_nearbyMultiCrates, _nearbyCrate)
-					
-				--obsolete
-				--[[
-                elseif _nearbyCrate.details.unit == "LogisticsCentre-SMALL" then
-                    _smallLogisticsCentreCrates = _smallLogisticsCentreCrates + 1
-                    table.insert(_nearbyMultiCrates, _nearbyCrate)
-				--]]
+
+                    --obsolete
+                    --[[
+                    elseif _nearbyCrate.details.unit == "LogisticsCentre-SMALL" then
+                        _smallLogisticsCentreCrates = _smallLogisticsCentreCrates + 1
+                        table.insert(_nearbyMultiCrates, _nearbyCrate)
+                    --]]
                 end
             end
 
@@ -3382,37 +3389,37 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
             _logisticsCentreName = _logisticsCentreName .. _FOBname .. " Logistics Centre #" .. _LCid .. " (" .. _playerName .. ") " .. _aircraftSideName
 
             timer.scheduleFunction(function(_args)
-				
+
                 local _aircraftSideNameForFOB = utils.getSideName(_args[3])
-				
+
                 -- (_centroid, _logisticsCentreName, _sideName, _baseORfob, _FOBname, _isMissionInit, _playerName)
                 local _newLogisticCentre = ctld.spawnLogisticsCentre(_args[1], _args[2], _aircraftSideNameForFOB, "FOB", _args[6], false, _args[4])
 
                 --only deployed FOBs get radio beacon
                 ctld.beaconCount = ctld.beaconCount + 1
                 local _radioBeaconName = " Beacon #" .. ctld.beaconCount
-				-- (_point, _coalition, _country, _name, _batteryTime, _isFOB, _FOBobj)
+                -- (_point, _coalition, _country, _name, _batteryTime, _isFOB, _FOBobj)
                 local _radioBeaconDetails = ctld.createRadioBeacon(_args[1], _args[3], _args[5], _radioBeaconName, nil, true, _newLogisticCentre)
                 ctld.FOBbeacons[_newLogisticCentre:getName()] = { vhf = _radioBeaconDetails.vhf, uhf = _radioBeaconDetails.uhf, fm = _radioBeaconDetails.fm }
-				log:info("ctld.FOBbeacons: $1", inspect(ctld.FOBbeacons, { newline = " ", indent = "" }))
-			
+                log:info("ctld.FOBbeacons: $1", inspect(ctld.FOBbeacons, { newline = " ", indent = "" }))
+
                 if ctld.troopPickupAtFOB == true then
                     trigger.action.outTextForCoalition(_args[3], "[TEAM] " .. "Finished building " .. _args[6] .. ". Crates and Troops can now be picked up.", 10)
                 else
                     trigger.action.outTextForCoalition(_args[3], "[TEAM] " .. "Finished building " .. _args[6] .. ". Crates can now be picked up.", 10)
                 end
             end,
-			{
-				_centroid, --_args[1] = ignore for base (airbase/FARP) repair
-				_logisticsCentreName, --_args[2] = name of logistics centre static object
-				_coalition, --_args[3] = _coalition for ctld.logisticCentreObjects nested table reference and coaltion message
-				_playerName, -- _args[4] = name FOB after player
-				_country, -- _args[5] = country of player, but static objects are always neutral country e.g. Greece
-				_FOBname, -- _args[6] = referenced in ctld.logisticCentreObjects for 'isLogisticsCentreAliveAt' function
-			}, timer.getTime() + _buildTime)
+                    {
+                        _centroid, --_args[1] = ignore for base (airbase/FARP) repair
+                        _logisticsCentreName, --_args[2] = name of logistics centre static object
+                        _coalition, --_args[3] = _coalition for ctld.logisticCentreObjects nested table reference and coaltion message
+                        _playerName, -- _args[4] = name FOB after player
+                        _country, -- _args[5] = country of player, but static objects are always neutral country e.g. Greece
+                        _FOBname, -- _args[6] = referenced in ctld.logisticCentreObjects for 'isLogisticsCentreAliveAt' function
+                    }, timer.getTime() + _buildTime)
 
             local _FOBbuildMSG = string.format("[TEAM] %s started deploying a FOB in %s and it will be finished in %d seconds.", _playerName, _FOBgrid, _buildTime)
-			trigger.action.outTextForCoalition(_coalition, _FOBbuildMSG, 10)
+            trigger.action.outTextForCoalition(_coalition, _FOBbuildMSG, 10)
 			log:info("$1 built FOB at $2",_playerName,_FOBgrid)
 			
         else
@@ -3430,7 +3437,7 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
             --]]
             _logisticsCentreName = _logisticsCentreName .. _baseName .. " Logistics Centre #" .. _LCid .. " " .. _aircraftSideName -- "MM75 Logistics Centre #001 red"
             logisticsManager.spawnLogisticsBuildingForBase(_baseName, _aircraftSideName, _logisticsCentreName, false, _playerName)
-            trigger.action.outTextForCoalition(_coalition, "[TEAM]" .. _playerName .. " has repaired the Logistics Centre at " .. _baseName, 10)
+            trigger.action.outTextForCoalition(_coalition, "[TEAM] " .. _playerName .. " has repaired the Logistics Centre at " .. _baseName, 10)
 			log:info("$1 repaired $2",_playerName,_baseName)
         end
 
@@ -3485,7 +3492,7 @@ function ctld.unloadInternalCrate (_args)
         local _crateBaseOfOrigin = _currentCrate.baseOfOrigin
         -- ctld.spawnCrateStatic: local _baseOfOriginFromName = string.match(_name, "%((.+)%)$")
         local _crateName = string.format("%s #%i (%s)", _currentCrate.desc, _unitId, _crateBaseOfOrigin)
-		local _isLogisticsCentreCrate = _currentCrate.unit == "LogisticsCentre"
+        local _isLogisticsCentreCrate = _currentCrate.unit == "LogisticsCentre"
 
         --{_inBaseZoneAndRSRrepairRadius,_inFOBexclusionZone,_closestBaseSideDist,_baseType}
         local _baseProximity = ctld.baseProximity(_heli)
@@ -3718,22 +3725,21 @@ end
 -- one for VHF and one for UHF
 -- The units are set to to NOT engage
 function ctld.createRadioBeacon(_point, _coalition, _country, _name, _batteryTime, _isFOB, _outpost)
-	
-	log:info("_point: $1, _coalition: $2, _country: $3, _name: $4, _batteryTime: $5, _isFOB: $6",_point, _coalition, _country, _name, _batteryTime, _isFOB)
-	
-	local _radioBeaconObj
-	if _isFOB then
-		_radioBeaconObj = ctld.spawnRadioBeaconObjectInOutpost(_outpost)
-	else
-		_radioBeaconObj = ctld.spawnRadioBeaconObject(_point,_name)
-	end
 
-	log:info("_radioBeaconObj: $1, _radioBeaconObj (serialized): $2",_radioBeaconObj, mist.utils.basicSerialize(_radioBeaconObj))
-	
-	local _message = _name
-	
+    log:info("_point: $1, _coalition: $2, _country: $3, _name: $4, _batteryTime: $5, _isFOB: $6", _point, _coalition, _country, _name, _batteryTime, _isFOB)
+
+    local _radioBeaconObj
+    if _isFOB then
+        _radioBeaconObj = ctld.spawnRadioBeaconObjectInOutpost(_outpost)
+    else
+        _radioBeaconObj = ctld.spawnRadioBeaconObject(_point, _name)
+    end
+
+    log:info("_radioBeaconObj: $1, _radioBeaconObj (serialized): $2", _radioBeaconObj, mist.utils.basicSerialize(_radioBeaconObj))
+
+    local _message = _name
+
     local _freq = ctld.generateADFFrequencies()
-
 
     local _lat, _lon = coord.LOtoLL(_point)
 
@@ -3777,15 +3783,15 @@ function ctld.createRadioBeacon(_point, _coalition, _country, _name, _batteryTim
         battery = _battery,
         coalition = _coalition,
     }
-	
-	if _isFOB then
-		table.insert(ctld.deployedFOBRadioBeacons, _beaconDetails)
-	else
-		table.insert(ctld.deployedRadioBeacons, _beaconDetails)
-	end
-	ctld.updateRadioBeacon(_beaconDetails)
 
-	log:info("ctld.deployedFOBRadioBeacons: $1", inspect(ctld.deployedFOBRadioBeacons, { newline = " ", indent = "" }))
+    if _isFOB then
+        table.insert(ctld.deployedFOBRadioBeacons, _beaconDetails)
+    else
+        table.insert(ctld.deployedRadioBeacons, _beaconDetails)
+    end
+    ctld.updateRadioBeacon(_beaconDetails)
+
+    log:info("ctld.deployedFOBRadioBeacons: $1", inspect(ctld.deployedFOBRadioBeacons, { newline = " ", indent = "" }))
 
     return _beaconDetails
 end
@@ -3823,59 +3829,58 @@ end
 
 function ctld.spawnRadioBeaconObjectInOutpost(_outpost)
 
-local _azimuth = mist.getHeading(_outpost)
--- outpost spawns 20m east from registered if facing north
-local _offsetPos = ctld.getPointAtXOclockStaticObject(_outpost,3,20,_azimuth)
-local _unitId = ctld.getNextUnitId()
+    local _azimuth = mist.getHeading(_outpost)
+    -- outpost spawns 20m east from registered if facing north
+    local _offsetPos = ctld.getPointAtXOclockStaticObject(_outpost, 3, 20, _azimuth)
+    local _unitId = ctld.getNextUnitId()
 
-	--local _radioGroup = {
-	local _radioStaticObjDetails = {
-		["visible"] = false,
-		["hidden"] = false,
-		["canCargo"] = false,
+    --local _radioGroup = {
+    local _radioStaticObjDetails = {
+        ["visible"] = false,
+        ["hidden"] = false,
+        ["canCargo"] = false,
         ["type"] = "TACAN_beacon", --TACAN beacon
         ["rate"] = 1,
         ["y"] = _offsetPos.z,
         ["x"] = _offsetPos.x,
         --["name"] = _beaconType .. " Radio Beacon Unit #" .. _unitId,
-		["name"] = "Radio Beacon Unit #" .. _unitId,
+        ["name"] = "Radio Beacon Unit #" .. _unitId,
         ["heading"] = _azimuth,
-		["category"] = "Fortifications",
-		--["country"] = _country
-		["country"] = ctld.neutralCountry --need to ensure country is part of neutral coalition e.g. Greece = neutral static obj
+        ["category"] = "Fortifications",
+        --["country"] = _country
+        ["country"] = ctld.neutralCountry --need to ensure country is part of neutral coalition e.g. Greece = neutral static obj
     }
-	
-	mist.dynAddStatic(_radioStaticObjDetails)
+
+    mist.dynAddStatic(_radioStaticObjDetails)
     local _radioStaticObj = StaticObject.getByName(_radioStaticObjDetails["name"])
-	
-	return _radioStaticObj
+
+    return _radioStaticObj
 end
 
-function ctld.spawnRadioBeaconObject(_point,_name)
+function ctld.spawnRadioBeaconObject(_point, _name)
 
-	--local _radioGroup = {
-	local _radioStaticObjDetails = {
-		["visible"] = false,
-		["hidden"] = false,
-		["canCargo"] = false,
+    --local _radioGroup = {
+    local _radioStaticObjDetails = {
+        ["visible"] = false,
+        ["hidden"] = false,
+        ["canCargo"] = false,
         ["type"] = "TACAN_beacon", --TACAN beacon
         ["rate"] = 1,
         ["y"] = _point.z,
         ["x"] = _point.x,
         --["name"] = _beaconType .. " Radio Beacon Unit #" .. _unitId,
-		["name"] = _name,
+        ["name"] = _name,
         ["heading"] = 0,
-		["category"] = "Fortifications",
-		--["country"] = _country
-		["country"] = ctld.neutralCountry --need to ensure country is part of neutral coalition e.g. Greece = neutral static obj
+        ["category"] = "Fortifications",
+        --["country"] = _country
+        ["country"] = ctld.neutralCountry --need to ensure country is part of neutral coalition e.g. Greece = neutral static obj
     }
-	
-	mist.dynAddStatic(_radioStaticObjDetails)
-    local _radioStaticObj = StaticObject.getByName(_radioStaticObjDetails["name"])
-	
-	return _radioStaticObj
-end
 
+    mist.dynAddStatic(_radioStaticObjDetails)
+    local _radioStaticObj = StaticObject.getByName(_radioStaticObjDetails["name"])
+
+    return _radioStaticObj
+end
 
 function ctld.updateRadioBeacon(_beaconDetails)
 
@@ -3895,17 +3900,17 @@ function ctld.updateRadioBeacon(_beaconDetails)
         table.insert(_radioLoop, { group = _uhfGroup, freq = _beaconDetails.uhf, silent = true, mode = 0 })
     end
 
-    if _fmGroup ~= nil and StaticObject.getLife(_fmGroup) > 0  then
+    if _fmGroup ~= nil and StaticObject.getLife(_fmGroup) > 0 then
         table.insert(_radioLoop, { group = _fmGroup, freq = _beaconDetails.fm, silent = false, mode = 1 })
     end
-	
-	--fobs have unlimited battery life
+
+    --fobs have unlimited battery life
     local _batLife = _beaconDetails.battery - timer.getTime()
-	--[[
-	if _battery ~= -1 then
-		_text = _text.." "..mist.utils.round(_batLife).." seconds of battery"
+    --[[
+    if _battery ~= -1 then
+        _text = _text.." "..mist.utils.round(_batLife).." seconds of battery"
     end
-	--]]
+    --]]
 
     if (_batLife <= 0 and _beaconDetails.battery ~= -1) or #_radioLoop ~= 3 then
         -- ran out of batteries
@@ -3939,9 +3944,9 @@ function ctld.updateRadioBeacon(_beaconDetails)
 
         --
     end
-	
-	--  trigger.action.radioTransmission(ctld.radioSound, _point, 1, true, _frequency, 1000)
-	
+
+    --  trigger.action.radioTransmission(ctld.radioSound, _point, 1, true, _frequency, 1000)
+
     return true
 end
 
@@ -3949,9 +3954,9 @@ function ctld.listRadioBeacons(_args)
 
     local _heli = ctld.getTransportUnit(_args[1])
     local _message = ""
-	
+
     if _heli ~= nil then
-	
+
         for _, _details in pairs(ctld.deployedRadioBeacons) do
 
             if _details.coalition == _heli:getCoalition() then
@@ -4933,7 +4938,7 @@ end
 --returns closest base to player and also if in repair radius or FOB exclusion zone
 --{_inBaseZoneAndRSRrepairRadius,_inFOBexclusionZone,_closestBaseSideDist,_baseType}
 function ctld.baseProximity(_aircraft)
-	log:info("_aircraft: $1",_aircraft)
+    log:info("_aircraft: $1", _aircraft)
     local _inFOBexclusionZone = false
     local _inBaseZoneAndRSRrepairRadius = false
 
@@ -4949,22 +4954,22 @@ function ctld.baseProximity(_aircraft)
     local _distToTZcentroid = _debugDistToTZcentroid
     local _baseName = _debugBaseName
     local _baseType = "NoType"
-	local _firstBase = true
-	
+    local _firstBase = true
+
     for _k, _triggerZone in pairs(ctld.RSRbaseCaptureZones) do
         _triggerZoneName = _triggerZone.name
         -- TriggerZone 2D coords xy, where y = z in Vec 3D coords e.g. _aircraft:getPoint()
         _triggerZonePoint = { x = _triggerZone.x, z = _triggerZone.y }
         _distToTZcentroid = ctld.getDistance(_aircraftPoint, _triggerZonePoint)
-		
-		--log:info("_triggerZoneName: $1, _distToTZcentroid: $2, _closestBaseSideDist: $3",_triggerZoneName, _distToTZcentroid, _closestBaseSideDist)
-		
+
+        --log:info("_triggerZoneName: $1, _distToTZcentroid: $2, _closestBaseSideDist: $3",_triggerZoneName, _distToTZcentroid, _closestBaseSideDist)
+
         if _distToTZcentroid < _closestBaseSideDist[3] or _firstBase then
             _baseName = string.match(_triggerZoneName, ("^(.+)%sRSR")) --"MM75 RSRbaseCaptureZone FARP" = "MM75"
             _baseType = string.match(_triggerZoneName, ("%w+$")) --"MM75 RSRbaseCaptureZone FARP" = "FARP"
             _closestBaseSideDist[1] = _baseName
             _closestBaseSideDist[3] = _distToTZcentroid
-			_firstBase = false
+            _firstBase = false
         end
     end
 
@@ -5025,16 +5030,16 @@ function ctld.inPickupZone(_heli)
         return { inZone = false, limit = -1, index = -1 }
     end
 
-	local _heliCoalition = _heli:getCoalition()
+    local _heliCoalition = _heli:getCoalition()
     local _heliPoint = _heli:getPoint()
 
-	local _inPickupZone = { inZone = false, limit = -1, index = -1, dist = -1, pickupName = "NoName", pickupArea = "NoArea" }
-	
+    local _inPickupZone = { inZone = false, limit = -1, index = -1, dist = -1, pickupName = "NoName", pickupArea = "NoArea" }
+
     --(zoneName, smokeColor, reinforcementsAvail, active, coalition)
-	--{ "Beslan PickUp", -1, 10000, 0, 0 }
-	local _firstBaseSet = false
+    --{ "Beslan PickUp", -1, 10000, 0, 0 }
+    local _firstBaseSet = false
     for _i, _zoneDetails in pairs(ctld.pickupZones) do
-		
+
         local _triggerZone = trigger.misc.getZone(_zoneDetails[1])
 
         if _triggerZone == nil then
@@ -5050,106 +5055,106 @@ function ctld.inPickupZone(_heli)
         end
 
         if _triggerZone ~= nil then
-		
-			-- is pickUp zone active and friendly
-			if _zoneDetails[4] == 1 and (_zoneDetails[5] == _heliCoalition or _zoneDetails[5] == 0) then
-			
-				local _dist = ctld.getDistance(_heliPoint, _triggerZone.point)
-				local _BaseNameFromTriggerZoneName = string.match(_zoneDetails[1], ("^(.+)%sPick"))
-				
-				local _isAirbase = utils.getCurrABside(_BaseNameFromTriggerZoneName)
-				if _isAirbase ~= "ABnotFound" then
-					_pickupArea = "Runway"
-					_pickupName = _BaseNameFromTriggerZoneName .. " Airbase"
-				end
-				
-				local _isFARP = utils.getCurrFARPside(_BaseNameFromTriggerZoneName)
-				if _isFARP ~= "FARPnotFound" then
-					_pickupArea = "FARP helipad"
-					_pickupName = _BaseNameFromTriggerZoneName .. " FARP"
-				end
-				
-				if _isAirbase ~= "ABnotFound" and _isFARP ~= "FARPnotFound" then
-					log:error("No friendly airbases or FARPs found for troop pickup: _BaseNameFromTriggerZoneName: $1, _isAirbase: $2, _isFARP: $3", _BaseNameFromTriggerZoneName,_isAirbase, _isFARP)
-				end
-				--log:info("_BaseNameFromTriggerZoneName: $1, _isAirbase: $2, _isFARP: $3, _dist: $4, _inPickupZone.dist: $5", _BaseNameFromTriggerZoneName,_isAirbase, _isFARP,_dist,_inPickupZone.dist)
-				--log:info("TEST: $1",_dist < _inPickupZone.dist)
-				if _firstBaseSet and _dist < _inPickupZone.dist then
-					_inPickupZone = { inZone = false, limit = _zoneDetails[3], index = _i, dist = _dist, pickupName = _BaseNameFromTriggerZoneName, pickupArea = _pickupArea}
-				elseif not _firstBaseSet then
-					_inPickupZone = { inZone = false, limit = _zoneDetails[3], index = _i, dist = _dist, pickupName = _BaseNameFromTriggerZoneName, pickupArea = _pickupArea}
-					_firstBaseSet = true
-				end
-				
-				if _dist <= _triggerZone.radius then
-					_inPickupZone.inZone = true
-					return _inPickupZone
-				end
-			end
+
+            -- is pickUp zone active and friendly
+            if _zoneDetails[4] == 1 and (_zoneDetails[5] == _heliCoalition or _zoneDetails[5] == 0) then
+
+                local _dist = ctld.getDistance(_heliPoint, _triggerZone.point)
+                local _BaseNameFromTriggerZoneName = string.match(_zoneDetails[1], ("^(.+)%sPick"))
+
+                local _isAirbase = utils.getCurrABside(_BaseNameFromTriggerZoneName)
+                if _isAirbase ~= "ABnotFound" then
+                    _pickupArea = "Runway"
+                    _pickupName = _BaseNameFromTriggerZoneName .. " Airbase"
+                end
+
+                local _isFARP = utils.getCurrFARPside(_BaseNameFromTriggerZoneName)
+                if _isFARP ~= "FARPnotFound" then
+                    _pickupArea = "FARP helipad"
+                    _pickupName = _BaseNameFromTriggerZoneName .. " FARP"
+                end
+
+                if _isAirbase ~= "ABnotFound" and _isFARP ~= "FARPnotFound" then
+                    log:error("No friendly airbases or FARPs found for troop pickup: _BaseNameFromTriggerZoneName: $1, _isAirbase: $2, _isFARP: $3", _BaseNameFromTriggerZoneName, _isAirbase, _isFARP)
+                end
+                --log:info("_BaseNameFromTriggerZoneName: $1, _isAirbase: $2, _isFARP: $3, _dist: $4, _inPickupZone.dist: $5", _BaseNameFromTriggerZoneName,_isAirbase, _isFARP,_dist,_inPickupZone.dist)
+                --log:info("TEST: $1",_dist < _inPickupZone.dist)
+                if _firstBaseSet and _dist < _inPickupZone.dist then
+                    _inPickupZone = { inZone = false, limit = _zoneDetails[3], index = _i, dist = _dist, pickupName = _BaseNameFromTriggerZoneName, pickupArea = _pickupArea }
+                elseif not _firstBaseSet then
+                    _inPickupZone = { inZone = false, limit = _zoneDetails[3], index = _i, dist = _dist, pickupName = _BaseNameFromTriggerZoneName, pickupArea = _pickupArea }
+                    _firstBaseSet = true
+                end
+
+                if _dist <= _triggerZone.radius then
+                    _inPickupZone.inZone = true
+                    return _inPickupZone
+                end
+            end
         end
     end
-	
-	-- no airbases or FARPs close enough, so check deployed FOBs
+
+    -- no airbases or FARPs close enough, so check deployed FOBs
     local _fobs = ctld.getFriendlyFOBsLCs(_heli)
 
     for _, _fob in ipairs(_fobs) do
 
         local _dist = ctld.getDistance(_heliPoint, _fob:getPoint())
-		local _LCobjName = _fob:getName()
-		--local _FOBsideFromLCobj = string.match(_LCobjName, ("%w+$"))
-		--local _FOBcoalition = utils.getSide(_FOBsideFromLCobj)
-		local _FOBnameFromLCobj = string.match(_LCobjName, ("^(.+)%sLog"))
-		
-		--log:info("_LCobjName: $1, _FOBnameFromLCobj: $2", _LCobjName, _FOBnameFromLCobj)
-		if _dist < _inPickupZone.dist then
-			_inPickupZone = { inZone = false, limit = 10000, index = -1, dist = _dist, pickupName = _FOBnameFromLCobj, pickupArea = "Outpost" }
-		end
-		
+        local _LCobjName = _fob:getName()
+        --local _FOBsideFromLCobj = string.match(_LCobjName, ("%w+$"))
+        --local _FOBcoalition = utils.getSide(_FOBsideFromLCobj)
+        local _FOBnameFromLCobj = string.match(_LCobjName, ("^(.+)%sLog"))
+
+        --log:info("_LCobjName: $1, _FOBnameFromLCobj: $2", _LCobjName, _FOBnameFromLCobj)
+        if _dist < _inPickupZone.dist then
+            _inPickupZone = { inZone = false, limit = 10000, index = -1, dist = _dist, pickupName = _FOBnameFromLCobj, pickupArea = "Outpost" }
+        end
+
         if _dist <= 150 then
-			_inPickupZone.inZone = true
+            _inPickupZone.inZone = true
             return _inPickupZone
         end
     end
-	log:info("_inPickupZone: $1", _inPickupZone)
+    log:info("_inPickupZone: $1", _inPickupZone)
     return _inPickupZone
 end
 
 function ctld.getFriendlyFOBsLCs(_aircraft)
 
-	local _aircraftSide = _aircraft:getCoalition()
-	local _aircraftSideName = utils.getSideName(_aircraftSide)
+    local _aircraftSide = _aircraft:getCoalition()
+    local _aircraftSideName = utils.getSideName(_aircraftSide)
 
     local _friendlyFOBsLCs = {}
-	local _LCobj
-	for _refLCsideName, _baseTable in pairs(ctld.logisticCentreObjects) do
-		for _refLCbaseName, _LCobj in pairs(_baseTable) do
+    local _LCobj
+    for _refLCsideName, _baseTable in pairs(ctld.logisticCentreObjects) do
+        for _refLCbaseName, _LCobj in pairs(_baseTable) do
 
-			local _isFOB = false
-			if _LCobj ~= nil and _LCobj:isExist() and _LCobj:getLife() > 0 then
+            local _isFOB = false
+            if _LCobj ~= nil and _LCobj:isExist() and _LCobj:getLife() > 0 then
 
-				_LCname = _LCobj:getName()
-				
-				--"Krymsk Logistics Centre #001 red" = "red"
-				local _derivedLCsideName = string.match(_LCname, ("%w+$"))
+                _LCname = _LCobj:getName()
 
-				--"Sochi Logistics Centre #001 red" = "Sochi" i.e. from whitepace and 'Log' up
-				local _derivedLCbaseNameOrGrid = string.match(_LCname, ("^(.+)%sLog"))
-				
-				-- run checks
-				if _refLCsideName ~= _derivedLCsideName then
-					log:error("Reference LC side in ctld.logisticCentreObjects (_refLCsideName: $1) and derived LC side by name (_derivedLCsideName: $2) mistmatch",_refLCsideName,_derivedLCsideName)
-				end
-				
-				if _refLCbaseName ~= _derivedLCbaseNameOrGrid then
-					log:error("Reference LC base (_refLCbaseName: $1) and derived base from LC name (_derivedLCbaseNameOrGrid: $2) mistmatch",_refLCbaseName,_derivedLCbaseNameOrGrid)
-				end
-				
-				_isFOB = string.find(_derivedLCbaseNameOrGrid, "FOB")	
-				if _isFOB and _derivedLCsideName == _aircraftSideName then
-					table.insert(_friendlyFOBsLCs, _LCobj)
-				end
-			end
-            
+                --"Krymsk Logistics Centre #001 red" = "red"
+                local _derivedLCsideName = string.match(_LCname, ("%w+$"))
+
+                --"Sochi Logistics Centre #001 red" = "Sochi" i.e. from whitepace and 'Log' up
+                local _derivedLCbaseNameOrGrid = string.match(_LCname, ("^(.+)%sLog"))
+
+                -- run checks
+                if _refLCsideName ~= _derivedLCsideName then
+                    log:error("Reference LC side in ctld.logisticCentreObjects (_refLCsideName: $1) and derived LC side by name (_derivedLCsideName: $2) mistmatch", _refLCsideName, _derivedLCsideName)
+                end
+
+                if _refLCbaseName ~= _derivedLCbaseNameOrGrid then
+                    log:error("Reference LC base (_refLCbaseName: $1) and derived base from LC name (_derivedLCbaseNameOrGrid: $2) mistmatch", _refLCbaseName, _derivedLCbaseNameOrGrid)
+                end
+
+                _isFOB = string.find(_derivedLCbaseNameOrGrid, "FOB")
+                if _isFOB and _derivedLCsideName == _aircraftSideName then
+                    table.insert(_friendlyFOBsLCs, _LCobj)
+                end
+            end
+
         end
     end
 
@@ -5210,7 +5215,7 @@ end
 function ctld.isLogisticsCentreAliveAt(_passedLogisiticsCentreBase)
 
     local _LogisiticsCentreAlive = true
-	local _logisticCentreObj = utils.getAliveLogisticsCentreforBase(_passedLogisiticsCentreBase)
+    local _logisticCentreObj = utils.getAliveLogisticsCentreforBase(_passedLogisiticsCentreBase)
     if _logisticCentreObj == nil then
         _LogisiticsCentreAlive = false
     end
@@ -5223,184 +5228,185 @@ function ctld.friendlyLogisticsCentreProximity(_aircraft)
     local _aircraftPoint = _aircraft:getPoint()
     local _aircraftSide = _aircraft:getCoalition()
     local _aircraftSideName = utils.getSideName(_aircraftSide)
-	local _aircraftName = _aircraft:getName()
-	
-	-- "RedStagingPoint Red Helos #003" = "RedStagingPoint"
-	local _aircraftHomeBase = string.match(_aircraftName, ("^%w+"))
+    local _aircraftName = _aircraft:getName()
 
-	local _derivedLCsideName = "NoSide"
+    -- "RedStagingPoint Red Helos #003" = "RedStagingPoint"
+    local _aircraftHomeBase = string.match(_aircraftName, ("^%w+"))
+
+    local _derivedLCsideName = "NoSide"
     local _LCpoint = { 0, 0, 0 }
     local _LCobj
-	
-	local _LCprox = { "NoFriendlyLC", "NoDist", "NoBase" }
-	local _LCname = _LCprox[1]
+
+    local _LCprox = { "NoFriendlyLC", "NoDist", "NoBase" }
+    local _LCname = _LCprox[1]
     local _LCdist = _LCprox[2]
     local _derivedLCbaseNameOrGrid = _LCprox[3]
-		
-	for _refLCsideName, _baseTable in pairs(ctld.logisticCentreObjects) do
-		for _refLCbaseName, _LCobj in pairs(_baseTable) do
 
-			--log:info("_refLCbaseName: $1, _LCobj: $2",_refLCbaseName, mist.utils.basicSerialize(_LCobj))
+    for _refLCsideName, _baseTable in pairs(ctld.logisticCentreObjects) do
+        for _refLCbaseName, _LCobj in pairs(_baseTable) do
 
-			if _LCobj ~= nil then
-				_LCname = _LCobj:getName()
-				_LCpoint = _LCobj:getPoint()
-				--log:info("_LCname: $1, _LCpoint: $2",_LCname, mist.utils.basicSerialize(_LCpoint))
-				
-				--"Krymsk Logistics Centre #001 red" = "red"
-				_derivedLCsideName = string.match(_LCname, ("%w+$"))
+            --log:info("_refLCbaseName: $1, _LCobj: $2",_refLCbaseName, mist.utils.basicSerialize(_LCobj))
 
-				--"Sochi Logistics Centre #001 red" = "Sochi" i.e. from whitepace and 'Log' up
-				_derivedLCbaseNameOrGrid = string.match(_LCname, ("^(.+)%sLog"))
-				
-				if _refLCsideName ~= _derivedLCsideName then
-					log:error("LC side in ctld.logisticCentreObjects (_refLCsideName: $1) and LC side by name (_derivedLCsideName: $2) mistmatch",_refLCsideName,_derivedLCsideName)
-				end
-				
-				-- run checks
-				if _refLCsideName ~= _derivedLCsideName then
-					log:error("Reference LC side in ctld.logisticCentreObjects (_refLCsideName: $1) and derived LC side by name (_derivedLCsideName: $2) mistmatch",_refLCsideName,_derivedLCsideName)
-				end
-				
-				if _refLCbaseName ~= _derivedLCbaseNameOrGrid then
-					log:error("Reference LC base (_refLCbaseName: $1) and derived base from LC name (_derivedLCbaseNameOrGrid: $2) mistmatch",_refLCbaseName,_derivedLCbaseNameOrGrid)
-				end
+            if _LCobj ~= nil then
+                _LCname = _LCobj:getName()
+                _LCpoint = _LCobj:getPoint()
+                --log:info("_LCname: $1, _LCpoint: $2",_LCname, mist.utils.basicSerialize(_LCpoint))
 
-				--log:info("_LCobj: $1, _derivedLCsideName: $2, _derivedLCbaseNameOrGrid: $3",_LCobj,_derivedLCsideName,_derivedLCbaseNameOrGrid)
+                --"Krymsk Logistics Centre #001 red" = "red"
+                _derivedLCsideName = string.match(_LCname, ("%w+$"))
 
-				if _derivedLCsideName == _aircraftSideName then
-				
+                --"Sochi Logistics Centre #001 red" = "Sochi" i.e. from whitepace and 'Log' up
+                _derivedLCbaseNameOrGrid = string.match(_LCname, ("^(.+)%sLog"))
+
+                if _refLCsideName ~= _derivedLCsideName then
+                    log:error("LC side in ctld.logisticCentreObjects (_refLCsideName: $1) and LC side by name (_derivedLCsideName: $2) mistmatch", _refLCsideName, _derivedLCsideName)
+                end
+
+                -- run checks
+                if _refLCsideName ~= _derivedLCsideName then
+                    log:error("Reference LC side in ctld.logisticCentreObjects (_refLCsideName: $1) and derived LC side by name (_derivedLCsideName: $2) mistmatch", _refLCsideName, _derivedLCsideName)
+                end
+
+                if _refLCbaseName ~= _derivedLCbaseNameOrGrid then
+                    log:error("Reference LC base (_refLCbaseName: $1) and derived base from LC name (_derivedLCbaseNameOrGrid: $2) mistmatch", _refLCbaseName, _derivedLCbaseNameOrGrid)
+                end
+
+                --log:info("_LCobj: $1, _derivedLCsideName: $2, _derivedLCbaseNameOrGrid: $3",_LCobj,_derivedLCsideName,_derivedLCbaseNameOrGrid)
+
+                if _derivedLCsideName == _aircraftSideName then
+
 					--log:info("_LCname: $1, _derivedLCsideName: $2, _aircraftSideName: $3",_LCname,_derivedLCsideName,_aircraftSideName)
-					
-					--get distance
-					_LCdist = ctld.getDistance(_aircraftPoint, _LCpoint)
 
-					if _LCprox[2] == "NoDist" then --if no LC set, set first alive LC to compare others against
-						_LCprox[1] = _LCname
-						_LCprox[2] = _LCdist
-						_LCprox[3] = _derivedLCbaseNameOrGrid
+                    --get distance
+                    _LCdist = ctld.getDistance(_aircraftPoint, _LCpoint)
 
-					elseif _LCdist < _LCprox[2] then
-						_LCprox[1] = _LCname
-						_LCprox[2] = _LCdist
-						_LCprox[3] = _derivedLCbaseNameOrGrid
-					end
-				end
-			end
-		end	
+                    if _LCprox[2] == "NoDist" then
+                        --if no LC set, set first alive LC to compare others against
+                        _LCprox[1] = _LCname
+                        _LCprox[2] = _LCdist
+                        _LCprox[3] = _derivedLCbaseNameOrGrid
+
+                    elseif _LCdist < _LCprox[2] then
+                        _LCprox[1] = _LCname
+                        _LCprox[2] = _LCdist
+                        _LCprox[3] = _derivedLCbaseNameOrGrid
+                    end
+                end
+            end
+        end
     end
-	
-	log:info("_aircraftName: $1, _LCprox: $2", _aircraftName, inspect(_LCprox, { newline = " ", indent = "" }))
-	
-	-- (rare) no friendly LCs alive, set to LCdist to integer to prevent error when comparing distance to staging bases
-	if _LCprox[2] == "NoDist" then
-		_LCprox[2] = 999999 -- 999km
-	end
-	
-	--check staging base proximity, regardless if no friendly LC found anywhere, OR (extremely rare) if staging base closer than LC at helo base of origin
-	for _k, _stagingBaseName in ipairs (rsrConfig.stagingBases) do
-		log:info("_aircraftName: $1, _aircraftHomeBase: $2, _stagingBaseName: $3",_aircraftName,_aircraftHomeBase,_stagingBaseName)
-		
-		local _stagingBaseSideFound = false
-		local _stagingBaseSideName = "NoSide"
-		local _ABside = utils.getCurrABside(_stagingBaseName)
-		if _ABside ~= "ABnotFound" then
-			_stagingBaseSideName = _ABside
-			_stagingBaseSideFound = true
-		end
-		
-		local _FARPside = utils.getCurrFARPside(_stagingBaseName)
-		if _FARPside ~= "FARPnotFound" then
-			_stagingBaseSideName = _FARPside
-			_stagingBaseSideFound = true
-		end
-		
-		if not _stagingBaseSideFound then
-			log:error("Staging Base: $1, side not found",_stagingBaseName)
-		end
 
-		local _stagingBaseObject = Airbase.getByName(_stagingBaseName)
+    log:info("PRE stagingBase checks: _aircraftName: $1, _LCprox: $2", _aircraftName, inspect(_LCprox, { newline = " ", indent = "" }))
 
-		--[[
-			-- command centre static object life = 10000, gas platform static object life = 3600
-			-- gas platforms seems indestructible, despite being reported as destroyed with large missiles/bombs in SP
-			-- airbases are not an object and will produce an error when inspecting life points
-			local _testGasPlatformLife = StaticObject.getLife(_stagingBaseObject)
-			local _testABobj = Airbase.getByName("Mozdok")
-			--local _testABLife = Airbase.getLife(_testABobj) -- produces error
-			local _testABLife = -1
-			log:info("_testGasPlatformLife: $1, _testABobj: $2, _testABLife: $3",_testGasPlatformLife,_testABobj,_testABLife)
-		--]]
-		
-		-- if staging base an object e.g. gas platform, check it's still alive
-		if _stagingBaseObject ~= nil and _stagingBaseSideName == _aircraftSideName then
-			
-			local _stagingBasePoint = _stagingBaseObject:getPoint()
-			local _stagingBaseDist = ctld.getDistance(_aircraftPoint, _stagingBasePoint)
-			
-			-- check if helo from staging area (gas platform)? not reliable enough as helo could go from airbase/FARP 'to' gas platform
-			-- if string.lower(_aircraftHomeBase) == string.lower(_stagingBaseName) then
-			
-			if _stagingBaseDist < _LCprox[2] then
-				_LCprox[1] = _stagingBaseName .. " NoLC " .. "#999 " .. _aircraftSideName --fake LC name
-				_LCprox[2] = _stagingBaseDist
-				_LCprox[3] = _stagingBaseName
-			end
-		end
-	end
-	
-    log:info("_aircraftName: $1, _LCprox: $2", _aircraftName, inspect(_LCprox, { newline = " ", indent = "" }))
-	
-	-- gas platforms seem indestructible, despite being reported as destroyed with large missiles/bombs in SP
-	--[[
-		-- no friendly LCs at all and staging base is an object (e.g. gas platform) that is dead
-		if _LCprox[3] == "NoBase" then
-			log:info("No friendly LCs for $1 and all friendly staging point base objects all dead",_aircraftSideName)
-	
-		end
-	--]]
-	
+    -- (rare) no friendly LCs alive, set to LCdist to integer to prevent error when comparing distance to staging bases
+    if _LCprox[2] == "NoDist" then
+        _LCprox[2] = 999999 -- 999km
+    end
+
+    --check staging base proximity, regardless if no friendly LC found anywhere, OR (extremely rare) if staging base closer than LC at helo base of origin
+    for _k, _stagingBaseName in ipairs(rsrConfig.stagingBases) do
+        --log:info("_aircraftName: $1, _aircraftHomeBase: $2, _stagingBaseName: $3", _aircraftName, _aircraftHomeBase, _stagingBaseName)
+
+        local _stagingBaseSideFound = false
+        local _stagingBaseSideName = "NoSide"
+        local _ABside = utils.getCurrABside(_stagingBaseName)
+        if _ABside ~= "ABnotFound" then
+            _stagingBaseSideName = _ABside
+            _stagingBaseSideFound = true
+        end
+
+        local _FARPside = utils.getCurrFARPside(_stagingBaseName)
+        if _FARPside ~= "FARPnotFound" then
+            _stagingBaseSideName = _FARPside
+            _stagingBaseSideFound = true
+        end
+
+        if not _stagingBaseSideFound then
+            log:error("Staging Base: $1, side not found", _stagingBaseName)
+        end
+
+        local _stagingBaseObject = Airbase.getByName(_stagingBaseName)
+
+        --[[
+            -- command centre static object life = 10000, gas platform static object life = 3600
+            -- gas platforms seems indestructible, despite being reported as destroyed with large missiles/bombs in SP
+            -- airbases are not an object and will produce an error when inspecting life points
+            local _testGasPlatformLife = StaticObject.getLife(_stagingBaseObject)
+            local _testABobj = Airbase.getByName("Mozdok")
+            --local _testABLife = Airbase.getLife(_testABobj) -- produces error
+            local _testABLife = -1
+            log:info("_testGasPlatformLife: $1, _testABobj: $2, _testABLife: $3",_testGasPlatformLife,_testABobj,_testABLife)
+        --]]
+
+        -- if staging base an object e.g. gas platform, check it's still alive
+        if _stagingBaseObject ~= nil and _stagingBaseSideName == _aircraftSideName then
+
+            local _stagingBasePoint = _stagingBaseObject:getPoint()
+            local _stagingBaseDist = ctld.getDistance(_aircraftPoint, _stagingBasePoint)
+
+            -- check if helo from staging area (gas platform)? not reliable enough as helo could go from airbase/FARP 'to' gas platform
+            -- if string.lower(_aircraftHomeBase) == string.lower(_stagingBaseName) then
+
+            if _stagingBaseDist < _LCprox[2] then
+                _LCprox[1] = _stagingBaseName .. " NoLC " .. "#999 " .. _aircraftSideName --fake LC name
+                _LCprox[2] = _stagingBaseDist
+                _LCprox[3] = _stagingBaseName
+            end
+        end
+    end
+
+    log:info("POST stagingBase checks:_aircraftName: $1, _LCprox: $2", _aircraftName, inspect(_LCprox, { newline = " ", indent = "" }))
+
+    -- gas platforms seem indestructible, despite being reported as destroyed with large missiles/bombs in SP
+    --[[
+        -- no friendly LCs at all and staging base is an object (e.g. gas platform) that is dead
+        if _LCprox[3] == "NoBase" then
+            log:info("No friendly LCs for $1 and all friendly staging point base objects all dead",_aircraftSideName)
+
+        end
+    --]]
+
     return _LCprox
 end
 
 
 -- checks whether player is far away enough from FRIENDLY logistics centre object NOT whether player in logisitics zone
 function ctld.farEnoughFromLogisticCentre(_heli)
-	
-	local _heliSide = _heli:getCoalition()
+
+    local _heliSide = _heli:getCoalition()
     local _heliSideName = utils.getSideName(_aircraftSide)
-	
+
     local _heliPoint = _heli:getPoint()
-	
+
     local _farEnough = true
 
-	for _refLCsideName, _baseTable in pairs(ctld.logisticCentreObjects) do
-		for _refLCbaseName, _LCobj in pairs(_baseTable) do
-			local _derivedLCsideName = "none"
-			if  _LCobj ~= nil then
-				local _LCname = _LCobj:getName()
-				_derivedLCsideName = string.match(_LCname, ("%w+$")) --"Krymsk Logistics Centre #001 red" = "red"
-			end
-			
-			-- run checks
-			if _refLCsideName ~= _derivedLCsideName then
-				log:error("Reference LC side in ctld.logisticCentreObjects (_refLCsideName: $1) and derived LC side by name (_derivedLCsideName: $2) mistmatch",_refLCsideName,_derivedLCsideName)
-			end
-			
-			--[[
-			if _refLCbaseName ~= _derivedLCbaseNameOrGrid then
-				log:error("Reference LC base (_refLCbaseName: $1) and derived base from LC name (_derivedLCbaseNameOrGrid: $2) mistmatch",_refLCbaseName,_derivedLCbaseNameOrGrid)
-			end
-			--]]
+    for _refLCsideName, _baseTable in pairs(ctld.logisticCentreObjects) do
+        for _refLCbaseName, _LCobj in pairs(_baseTable) do
+            local _derivedLCsideName = "none"
+            if _LCobj ~= nil then
+                local _LCname = _LCobj:getName()
+                _derivedLCsideName = string.match(_LCname, ("%w+$")) --"Krymsk Logistics Centre #001 red" = "red"
+            end
 
-			if _derivedLCsideName == _heliSideName then
-				local _LCdist = ctld.getDistance(_heliPoint, _LCobj:getPoint()) --get distance
-				if _LCdist <= ctld.minimumDeployDistance then
-					_farEnough = false
-				end
-			end
-			
-		end
+            -- run checks
+            if _refLCsideName ~= _derivedLCsideName then
+                log:error("Reference LC side in ctld.logisticCentreObjects (_refLCsideName: $1) and derived LC side by name (_derivedLCsideName: $2) mistmatch", _refLCsideName, _derivedLCsideName)
+            end
+
+            --[[
+            if _refLCbaseName ~= _derivedLCbaseNameOrGrid then
+                log:error("Reference LC base (_refLCbaseName: $1) and derived base from LC name (_derivedLCbaseNameOrGrid: $2) mistmatch",_refLCbaseName,_derivedLCbaseNameOrGrid)
+            end
+            --]]
+
+            if _derivedLCsideName == _heliSideName then
+                local _LCdist = ctld.getDistance(_heliPoint, _LCobj:getPoint()) --get distance
+                if _LCdist <= ctld.minimumDeployDistance then
+                    _farEnough = false
+                end
+            end
+
+        end
     end
 
     return _farEnough
@@ -5671,7 +5677,7 @@ function ctld.checkAIStatus()
                 if _zone.inZone == true and not ctld.troopsOnboard(_unit, true) then
                     --   env.error("in zone, loading.. ".._unit:getName())
 
-					--mr: ctld.allowRandomAiTeamPickups = false in CTLD_config.lua for RSR = unused
+                    --mr: ctld.allowRandomAiTeamPickups = false in CTLD_config.lua for RSR = unused
                     if ctld.allowRandomAiTeamPickups == true then
                         -- Random troop pickup implementation
                         if _unit:getCoalition() == 1 then
@@ -5797,34 +5803,36 @@ function ctld.addF10MenuOptions(_unitName)
                         missionCommands.addCommandForGroup(_groupId, "Unload / Extract Troops", _troopCommandsPath, ctld.unloadExtractTroops, { _unitName })
                         missionCommands.addCommandForGroup(_groupId, "Check Cargo", _troopCommandsPath, ctld.checkCargoStatus, { _unitName })
 
-						if ctld.isCargoPlane(_unit) then 
+                        if ctld.isCargoPlane(_unit) then
 
-							for _, _loadGroup in pairs(ctld.loadableGroupsCargoPlanes) do --cargo planes
-								
-								-- check for side restricted troop types
-								if not _loadGroup.side or _loadGroup.side == _unit:getCoalition() then
-									
-									-- check size & unit
-									if ctld.getTransportLimit(_unit:getTypeName()) >= _loadGroup.total then
-										missionCommands.addCommandForGroup(_groupId, "Load " .. _loadGroup.name, _troopCommandsPath, ctld.loadTroopsFromZone, { _unitName, true, _loadGroup, false })
-									end
-								end
-							end
-						else
-							-- local _loadPath = missionCommands.addSubMenuForGroup(_groupId, "Load From Zone", _troopCommandsPath)
-							for _, _loadGroup in pairs(ctld.loadableGroupsHelis) do  --helis
-								
-								-- check for side restricted troop types
-								if not _loadGroup.side or _loadGroup.side == _unit:getCoalition() then
-									
-									-- check size & unit
-									if ctld.getTransportLimit(_unit:getTypeName()) >= _loadGroup.total then
-										missionCommands.addCommandForGroup(_groupId, "Load " .. _loadGroup.name, _troopCommandsPath, ctld.loadTroopsFromZone, { _unitName, true, _loadGroup, false })
-									end
-								end
-							end
-						end
-						
+                            for _, _loadGroup in pairs(ctld.loadableGroupsCargoPlanes) do
+                                --cargo planes
+
+                                -- check for side restricted troop types
+                                if not _loadGroup.side or _loadGroup.side == _unit:getCoalition() then
+
+                                    -- check size & unit
+                                    if ctld.getTransportLimit(_unit:getTypeName()) >= _loadGroup.total then
+                                        missionCommands.addCommandForGroup(_groupId, "Load " .. _loadGroup.name, _troopCommandsPath, ctld.loadTroopsFromZone, { _unitName, true, _loadGroup, false })
+                                    end
+                                end
+                            end
+                        else
+                            -- local _loadPath = missionCommands.addSubMenuForGroup(_groupId, "Load From Zone", _troopCommandsPath)
+                            for _, _loadGroup in pairs(ctld.loadableGroupsHelis) do
+                                --helis
+
+                                -- check for side restricted troop types
+                                if not _loadGroup.side or _loadGroup.side == _unit:getCoalition() then
+
+                                    -- check size & unit
+                                    if ctld.getTransportLimit(_unit:getTypeName()) >= _loadGroup.total then
+                                        missionCommands.addCommandForGroup(_groupId, "Load " .. _loadGroup.name, _troopCommandsPath, ctld.loadTroopsFromZone, { _unitName, true, _loadGroup, false })
+                                    end
+                                end
+                            end
+                        end
+
                     end
 
                     if ctld.unitCanCarryVehicles(_unit) then
@@ -5844,8 +5852,9 @@ function ctld.addF10MenuOptions(_unitName)
                         missionCommands.addCommandForGroup(_groupId, "Check Cargo", _vehicleCommandsPath, ctld.checkCargoStatus, { _unitName })
                     end
 
-                    if ctld.isCargoPlane(_unit) and not ctld.unitCanCarryVehicles(_unit) then --avoid duplication
-                        
+                    if ctld.isCargoPlane(_unit) and not ctld.unitCanCarryVehicles(_unit) then
+                        --avoid duplication
+
                         local _internalCargoCommandsPath = missionCommands.addSubMenuForGroup(_groupId, "Internal Cargo", _rootPath)
                         if ctld.enabledFOBBuilding and ctld.staticBugWorkaround == false then
                             missionCommands.addCommandForGroup(_groupId, "Load / Unload Logistics Centre crate", _internalCargoCommandsPath, ctld.loadUnloadLogisticsCrate, { _unitName })
@@ -6646,7 +6655,7 @@ function ctld.getJTACStatus(_args)
     local _distToPlayerKm = -1 --set to -1 for debug
     local _roundedDist = -1 --set to -1 for debug
     local _mapGrid = "AA11" --set for debug
-	local _coordinates = _mapGrid
+    local _coordinates = _mapGrid
     local _coordinateTitle = "Grid:"
     local _JTACref = -1 --set to -1 for debug
 
@@ -6691,7 +6700,7 @@ function ctld.getJTACStatus(_args)
                 end
                 --]]
 
-				-- report distance to JTAC not enemy unit to avoid exploit by spamming JTAC status whilst flying over area
+                -- report distance to JTAC not enemy unit to avoid exploit by spamming JTAC status whilst flying over area
                 _distToPlayer = ctld.getDistance(_playerUnit:getPoint(), _jtacUnit:getPoint()) --distance in metres assuming flat worl
                 _distToPlayerKm = _distToPlayer / 1000 --convert from metres to km -- line 1176: function ctld.metersToFeet(_meters)
                 _roundedDist = mist.utils.round(_distToPlayerKm, 1) -- function mist.utils.round(num, idp) -- +idp for after decimal, -idp for before decimal
@@ -6708,16 +6717,15 @@ function ctld.getJTACStatus(_args)
                 local _targetName = _enemyUnit:getTypeName()
 
                 _mapGrid = utils.posToMapGrid(_enemyUnit:getPosition()) --coordinate spam should not be exploitable
-				_coordinates = _mapGrid
+                _coordinates = _mapGrid
 
-				--Discovered JTAC Format: [180 : 55.3km] Grid: MN61, Target: M1A2, JTAC: mad rabbit --one line per JTAC
+                --Discovered JTAC Format: [180 : 55.3km] Grid: MN61, Target: M1A2, JTAC: mad rabbit --one line per JTAC
                 -- can't use utf8.char(730) for degree symbol as DCS = LUA v5.2 not v5.3
                 _discoveredJTACsUnsorted[_discoveredJTACsCount] = { _jtacUnit, _distToPlayer, _JTACref, "" .. "[" .. _azFromPlayerStr --[[.. utf8.char(730)]] .. " : " .. _roundedDist .. "km] " .. _coordinateTitle .. " " .. _coordinates .. ", Target: " .. _targetName .. ", JTAC: " .. _jtacOwner .. _visualOnMsg }
 
             else
                 _searchingJTACsCount = _searchingJTACsCount + 1
 
-                
                 _distToPlayer = ctld.getDistance(_playerUnit:getPoint(), _jtacUnit:getPoint())
                 _distToPlayerKm = _distToPlayer / 1000
                 _roundedDist = mist.utils.round(_distToPlayerKm, 1)
@@ -6730,34 +6738,34 @@ function ctld.getJTACStatus(_args)
                         _azFromPlayerStr = "0" .. _azFromPlayerStr
                     end
                 end
-				
-				_mapGrid = utils.posToMapGrid(_jtacUnit:getPosition())
-				_coordinates = _mapGrid
-				
-				--[[
-				-- ":" = self, needed as settings client specific
-                -- dedicated server test: GetMGRS_Accuracy = 5 (default setting) even when client radio specifies 2.  Need to test further.
-				
-				log:info("Moose playerMenu enabled: $1",mist.utils.basicSerialize(SETTINGS.ShowPlayerMenu)) --mrDEBUG011
 
-				--Moose.lua: line 7723: playerMenu unit selection and accuracy
+                _mapGrid = utils.posToMapGrid(_jtacUnit:getPosition())
+                _coordinates = _mapGrid
+
+                --[[
+                -- ":" = self, needed as settings client specific
+                -- dedicated server test: GetMGRS_Accuracy = 5 (default setting) even when client radio specifies 2.  Need to test further.
+
+                log:info("Moose playerMenu enabled: $1",mist.utils.basicSerialize(SETTINGS.ShowPlayerMenu)) --mrDEBUG011
+
+                --Moose.lua: line 7723: playerMenu unit selection and accuracy
                 log:info("Moose MenuMGRS_Accuracy:  $1",mist.utils.basicSerialize(SETTINGS:GetMGRS_Accuracy()))
                 log:info("Moose SETTINGS:IsMetric: $1",mist.utils.basicSerialize(SETTINGS:IsMetric()))
                 log:info("Moose SETTINGS:IsImperial: $1",mist.utils.basicSerialize(SETTINGS:IsImperial()))
-				
+
                 log:info("mist.tostringMGRS (SETTINGS:GetMGRS_Accuracy()): $1", mist.tostringMGRS(coord.LLtoMGRS(coord.LOtoLL(_jtacUnit:getPosition().p)), SETTINGS:GetMGRS_Accuracy()))
 
                 if (SETTINGS.ShowPlayerMenu ~= nil and SETTINGS.ShowPlayerMenu == true) then
-					if (SETTINGS:GetMGRS_Accuracy()) > 1 then
-						_coordinates = mist.tostringMGRS(coord.LLtoMGRS(coord.LOtoLL(_jtacUnit:getPosition().p)), SETTINGS:GetMGRS_Accuracy())
-					end
+                    if (SETTINGS:GetMGRS_Accuracy()) > 1 then
+                        _coordinates = mist.tostringMGRS(coord.LLtoMGRS(coord.LOtoLL(_jtacUnit:getPosition().p)), SETTINGS:GetMGRS_Accuracy())
+                    end
                     if (SETTINGS:IsImperial()) then
-						_coordinateTitle = "@"
-					end
+                        _coordinateTitle = "@"
+                    end
                 end
-				]]--
-				
-				--Searching JTAC Format: [180 : 55.3km] Grid: MN61, JTAC: mad rabbit
+                ]]--
+
+                --Searching JTAC Format: [180 : 55.3km] Grid: MN61, JTAC: mad rabbit
                 _searchingJTACsUnsorted[_searchingJTACsCount] = { _jtacUnit, _distToPlayer, _JTACref, "" .. "[" .. _azFromPlayerStr --[[.. utf8.char(730)]] .. " : " .. _roundedDist .. "km] " .. _coordinateTitle .. " " .. _coordinates .. ", JTAC: " .. _jtacOwner }
 
             end
@@ -7067,7 +7075,6 @@ function ctld.generateFMFrequencies()
         end
     end
 end
-
 
 function ctld.getPositionString(_unit)
 
