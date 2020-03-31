@@ -45,8 +45,8 @@ ewrs = {} --DO NOT REMOVE
 
 ----SCRIPT OPTIONS----
 
-ewrs.messageUpdateInterval = 5 --How often EWRS will update automated BRA messages (seconds)
-ewrs.messageDisplayTime = 4 --How long EWRS BRA messages will show for (seconds)
+ewrs.messageUpdateInterval = 30 --How often EWRS will update automated BRA messages (seconds)
+ewrs.messageDisplayTime = 20 --How long EWRS BRA messages will show for (seconds)
 ewrs.useImprovedDetectionLogic = true --this makes the messages more realistic. If the radar doesn't know the type or distance to the detected threat, it will be reflected in the picture report / BRA message
 ewrs.maxThreatDisplay = 1 -- Max amounts of threats to display on picture report (0 will display all)
 ewrs.radarUnitsUpdateInterval = 60 -- minimum time between radar units update
@@ -85,19 +85,33 @@ Aircraft type list
 This is used to restrict availability to just these types
 ]]
 ewrs.enabledAircraftTypes = {
+    ["A-10A"] = true,
+    ["A-10C"] = true,
+    ["AJS37"] = true,
+    ["AV8BNA"] = true,
+    ["AV8BNA"] = true,
+    ["Bf-109K-4"] = true,
     ["C-101CC"] = true,
     ["F-5E-3"] = true,
     ["F-86F Sabre"] = true,
+    ["FW-190A8"] = true,
+    ["FW-190D9"] = true,
+    ["I-16"] = true,
     ["Ka-50"] = true,
     ["L-39ZA"] = true,
     ["Mi-8MT"] = true,
     ["MiG-15bis"] = true,
+    ["MiG-19P"] = true,
     ["MiG-21Bis"] = true,
     ["MiG-29A"] = true,
     ["MiG-29G"] = true,
     ["MiG-29S"] = true,
+    ["P-51D"] = true,
+    ["P-51D-30-NA"] = true,
     ["SA342L"] = true,
     ["SA342M"] = true,
+    ["Su-25T"] = true,
+    ["TF-51D"] = true,
     ["UH-1H"] = true,
 }
 
