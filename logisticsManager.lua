@@ -38,7 +38,7 @@ function M.spawnLogisticsBuildingForBase(baseName, sideName, logisticsCentreName
         end
         --log:info("Base: $1, availLogiZonesCount: $2, randomLogiZoneNumber: $3", baseName,_availLogiZonesCount,_randomLogiZoneNumber)
         local _selectedLogiZoneName = _availLogiZones[_randomLogiZoneNumber]
-		local _position = trigger.misc.getZone(_selectedLogiZoneName)
+        local _position = trigger.misc.getZone(_selectedLogiZoneName)
         log:info("isMissionInit: $1", isMissionInit)
         --(_point, _name, _coalition, _baseORfarp, _baseORfarpName)
         ctld.spawnLogisticsCentre(_position.point, _staticObjectName, sideName, "BASE", baseName, isMissionInit, _playerName)

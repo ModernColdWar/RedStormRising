@@ -25,21 +25,21 @@ local function blockAllSlots()
     log:info("Blocking all slots")
     M.clientSet:ForEach(function(client)
         -- note that we pass unit names here while slot blocker uses group names - make sure they're the same!
-		local _disableSlot = true
+        local _disableSlot = true
         if utils.startswith(client.ClientName, "Carrier") then
             log:info("Not blocking carrier slot '$1'", client.ClientName)
-			_disableSlot = false
+            _disableSlot = false
         else
-			-- rsrConfig.stagingBases = { "RedStagingPoint", "BlueStagingPoint" } = Gas Platforms
-			for _k, stagingBase in ipairs(rsrConfig.stagingBases) do
-				if utils.startswith(client.ClientName, stagingBase) then
-					_disableSlot = false
-					log:info("Not blocking staging base slot '$1'", client.ClientName)
-				end
-			end
-		end
+            -- rsrConfig.stagingBases = { "RedStagingPoint", "BlueStagingPoint" } = Gas Platforms
+            for _k, stagingBase in ipairs(rsrConfig.stagingBases) do
+                if utils.startswith(client.ClientName, stagingBase) then
+                    _disableSlot = false
+                    log:info("Not blocking staging base slot '$1'", client.ClientName)
+                end
+            end
+        end
 
-		if _disableSlot then
+        if _disableSlot then
             disableSlot(client.ClientName)
         end
     end)

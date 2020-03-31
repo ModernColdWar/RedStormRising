@@ -39,47 +39,47 @@ local function activateBaseDefences(baseName, sideName, rsrConfig, missionInit, 
             -- we can't use any of the GROUP:InZone methods as these are late activated units
             if activationZone:IsVec3InZone(group:GetVec3()) then
                 local groupName = group:GetName() --MOOSE
-				-- assumes group name prefix includes base name for base defences
-				local _baseOriginForGroup = string.match(groupName, ("^%w+")) 
-				local _groupMatchesBase = utils.matchesBaseName(baseName,_baseOriginForGroup)
-				
-				-- log:info("groupName: $1 _baseOriginForGroup: $2, _groupMatchesBase: $3, baseName: $4", groupName, _baseOriginForGroup, _groupMatchesBase, baseName)
-				if _groupMatchesBase then
-					log:info("Activating $1 $2 base defence group $3", baseName, sideName, groupName)
-					group:Activate()
-					
-					--[[
-						campaignStartSetup == true, missionInit = true:
-							add base defences to spawn queue (persistent unit list) at campaign start and mission start as not yet added
-						campaignStartSetup == true, missionInit = false:
-							add base defences to spawn queue (persistent unit list) as mission progresses after campaign setup
-						campaignStartSetup == false, missionInit = true:
-							do NOT add base defences to spawn queue (persistent unit list) at mission start as already present in rsrState.json
-						campaignStartSetup == false, missionInit = false:
-							add base defences to spawn queue (persistent unit list) as mission progresses
-					--]]
-					if campaignStartSetup or not missionInit then
-						updateSpawnQueue.pushSpawnQueue(groupName)
-					end
-					utils.setGroupControllerOptions(group:GetDCSObject())
-					
-					if ctld.isJTACUnitType(group:GetTypeName()) then
-						timer.scheduleFunction(function(_groupName)
-							-- do this 2 seconds later so that group has time to be activated
-							local _code = ctld.getLaserCode(Group.getByName(_groupName):getCoalition())
-							log:info("Configuring base defences group $1 to auto-lase on $2", _groupName, _code)
-							ctld.JTACAutoLase(_groupName, _code)
-						end, groupName, timer.getTime() + 2)
-					end
-					
-					if string.match(groupName, "1L13 EWR") then
-						log:info("Configuring group $1 as EWR", groupName)
-						ctld.addEWRTask(group)
-					end
-				else
-					--mr: add to validateMissionFile.lua type check for mission editors?
-					log:warn("Group ($1) found within $2m of airbase/FARP ($3) not activated due to base origin ($4) mismatch!",groupName,radius,baseName,_baseOriginForGroup)
-				end
+                -- assumes group name prefix includes base name for base defences
+                local _baseOriginForGroup = string.match(groupName, ("^%w+"))
+                local _groupMatchesBase = utils.matchesBaseName(baseName, _baseOriginForGroup)
+
+                -- log:info("groupName: $1 _baseOriginForGroup: $2, _groupMatchesBase: $3, baseName: $4", groupName, _baseOriginForGroup, _groupMatchesBase, baseName)
+                if _groupMatchesBase then
+                    log:info("Activating $1 $2 base defence group $3", baseName, sideName, groupName)
+                    group:Activate()
+
+                    --[[
+                        campaignStartSetup == true, missionInit = true:
+                            add base defences to spawn queue (persistent unit list) at campaign start and mission start as not yet added
+                        campaignStartSetup == true, missionInit = false:
+                            add base defences to spawn queue (persistent unit list) as mission progresses after campaign setup
+                        campaignStartSetup == false, missionInit = true:
+                            do NOT add base defences to spawn queue (persistent unit list) at mission start as already present in rsrState.json
+                        campaignStartSetup == false, missionInit = false:
+                            add base defences to spawn queue (persistent unit list) as mission progresses
+                    --]]
+                    if campaignStartSetup or not missionInit then
+                        updateSpawnQueue.pushSpawnQueue(groupName)
+                    end
+                    utils.setGroupControllerOptions(group:GetDCSObject())
+
+                    if ctld.isJTACUnitType(group:GetTypeName()) then
+                        timer.scheduleFunction(function(_groupName)
+                            -- do this 2 seconds later so that group has time to be activated
+                            local _code = ctld.getLaserCode(Group.getByName(_groupName):getCoalition())
+                            log:info("Configuring base defences group $1 to auto-lase on $2", _groupName, _code)
+                            ctld.JTACAutoLase(_groupName, _code)
+                        end, groupName, timer.getTime() + 2)
+                    end
+
+                    if string.match(groupName, "1L13 EWR") then
+                        log:info("Configuring group $1 as EWR", groupName)
+                        ctld.addEWRTask(group)
+                    end
+                else
+                    --mr: add to validateMissionFile.lua type check for mission editors?
+                    log:warn("Group ($1) found within $2m of airbase/FARP ($3) not activated due to base origin ($4) mismatch!", groupName, radius, baseName, _baseOriginForGroup)
+                end
             end
         else
             log:warn("Could not find first unit in group $1", group:GetName())

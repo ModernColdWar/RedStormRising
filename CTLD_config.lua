@@ -388,8 +388,8 @@ ctld.transportTypes = {
 -- You can also add an optional coalition side to limit the group to one side
 -- for the side - 2 is BLUE and 1 is RED
 ctld.loadableGroupsHelis = {
-    { name = "Infantry Squad: \n    5 x AK/M4, 2 x MGs", inf = 5, mg = 2}, -- will make a loadable group with 5 infantry, 2 MGs and 2 anti-tank for both coalitions
-    { name = "Infantry Platoon [Mi-8]: \n    12 x AK/M4, 4 x MGs", inf = 12, mg = 4},
+    { name = "Infantry Squad: \n    5 x AK/M4, 2 x MGs", inf = 5, mg = 2 }, -- will make a loadable group with 5 infantry, 2 MGs and 2 anti-tank for both coalitions
+    { name = "Infantry Platoon [Mi-8]: \n    12 x AK/M4, 4 x MGs", inf = 12, mg = 4 },
     { name = "Anti-Air Squad: \n    2 x MANPAD", aa = 2 },
     { name = "Anti-Tank Squad: \n    2 x AK/M4, 4 x AT", inf = 2, at = 4 },
     { name = "Artillery Squad: \n    6 x Mortar", mortar = 6 },
@@ -398,8 +398,8 @@ ctld.loadableGroupsHelis = {
 
 --duplicated list for cargo planes to avoid clutter in helo list
 ctld.loadableGroupsCargoPlanes = {
-    { name = "Rifle Infantry: \n    1 x AK/M4", inf = 1},
-    { name = "MG Infantry: \n    1 x MG", mg = 1},
+    { name = "Rifle Infantry: \n    1 x AK/M4", inf = 1 },
+    { name = "MG Infantry: \n    1 x MG", mg = 1 },
     --{ name = "Anti-Air Infantry: 1 x MANPAD", aa = 1 },
     --{ name = "Anti-Tank Infantry: 1 x AT", at = 1 },
     --{ name = "Artillery Infantry: 1 x Mortar", mortar = 1 },
@@ -476,7 +476,7 @@ ctld.spawnableCrates = {
         { weight = 821, desc = "T-72", unit = "T-72B", side = 1, cratesRequired = 1, unitQuantity = 1, internal = 0 },
         { weight = 822, desc = "T-80UD", unit = "T-80UD", side = 1, cratesRequired = 2, unitQuantity = 1, internal = 0 },
         { weight = 823, desc = "T-90", unit = "T-90", side = 1, cratesRequired = 2, unitQuantity = 1, internal = 0 },
-		{ weight = 825, desc = "ZTZ-96B", unit = "ZTZ96B", side = 1, cratesRequired = 2, unitQuantity = 1, internal = 0 },
+        { weight = 825, desc = "ZTZ-96B", unit = "ZTZ96B", side = 1, cratesRequired = 2, unitQuantity = 1, internal = 0 },
         { weight = 824, desc = "LeClerc", unit = "Leclerc", side = 1, cratesRequired = 3, unitQuantity = 1, internal = 0 },
 
         { weight = 830, desc = "Leopard 1A3", unit = "Leopard1A3", side = 2, cratesRequired = 1, unitQuantity = 2, internal = 0 },
