@@ -242,9 +242,9 @@ function ewrs.outText(groupID, threatTable)
             local threat = threatTable[1]
             local message
             if threat.range == ewrs.notAvailable then
-                message = "EWRS: Nearest target position unknown"
+                message = "GCI: Nearest target position unknown"
             else
-                message = string.format("EWRS: Nearest target %03d for %d%s at %d%s, type %s, heading %03d at %d%s",
+                message = string.format("GCI: Nearest target %03d for %d%s at %d%s, type %s, heading %03d at %d%s",
                         threat.bearing,
                         utils.round(threat.range, 1), rangeUnits,
                         utils.round(threat.altitude, 100), altUnits,
@@ -255,7 +255,7 @@ function ewrs.outText(groupID, threatTable)
             end
             trigger.action.outTextForGroup(groupID, message, ewrs.messageDisplayTime)
         else
-            trigger.action.outTextForGroup(groupID, "EWRS: No targets detected", ewrs.messageDisplayTime)
+            trigger.action.outTextForGroup(groupID, "GCI: No targets detected", ewrs.messageDisplayTime)
         end
     end)
     if not status then
@@ -438,7 +438,7 @@ end
 function ewrs.setGroupMeasurements(args)
     local groupID = args[1]
     ewrs.groupSettings[tostring(groupID)].measurements = args[2]
-    trigger.action.outTextForGroup(groupID, "Measurement units changed to " .. args[2], ewrs.messageDisplayTime)
+    trigger.action.outTextForGroup(groupID, "GCI: Measurement units changed to " .. args[2], ewrs.messageDisplayTime)
 end
 
 function ewrs.setGroupUpdates(args)
@@ -450,7 +450,7 @@ function ewrs.setGroupUpdates(args)
         onOff = "off"
     end
     ewrs.groupSettings[tostring(groupID)].pictureUpdates = args[2]
-    trigger.action.outTextForGroup(groupID, "Picture updates for group turned " .. onOff, ewrs.messageDisplayTime)
+    trigger.action.outTextForGroup(groupID, "GCI: Picture updates for group turned " .. onOff, ewrs.messageDisplayTime)
     if args[2] then
         ewrs.onDemandMessage(groupID)
     end
