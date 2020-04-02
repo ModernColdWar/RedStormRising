@@ -5,6 +5,10 @@ local utils = require("utils")
 
 local M = {}
 
+-- These values must match what's in Hooks\RSRSlotBlocker.lua
+M.slotEnabled = 1
+M.slotDisabled = 99 -- see Hooks\RSRSlotBlocker.lua for the reason for this value
+
 local log = mist.Logger:new("SlotBlocker", "info")
 
 M.clientGroupNames = {}
@@ -18,12 +22,12 @@ end)
 
 local function disableSlot(groupName)
     log:info("Disabling group '$1'", groupName)
-    trigger.action.setUserFlag(groupName, 1)
+    trigger.action.setUserFlag(groupName, M.slotDisabled)
 end
 
 local function enableSlot(groupName)
     log:info("Enabling group '$1'", groupName)
-    trigger.action.setUserFlag(groupName, 0)
+    trigger.action.setUserFlag(groupName, M.slotEnabled)
 end
 
 local function blockAllSlots()
