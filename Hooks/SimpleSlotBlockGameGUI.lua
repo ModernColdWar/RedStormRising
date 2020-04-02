@@ -213,6 +213,8 @@ ssb.commanderPlayerUCID = {
     "1d62619fb7ccd513e9f7cd639ad595bb", -- Lam, added by Mobius
     "4052f4b970efd04829623d087898a66f", -- =KAG=Zakha
     "1d086e78fb0870ad682ff5ee90aa94fd", -- -=WildCat=-
+    "e61489151c2de788e78e8c92b97a2cca", -- ROSS berrymore by deebix
+    "7fa9836632054f227b042f6a185b957c", -- ROSS grishik by deebix
     -----------------------------------
 
 }
