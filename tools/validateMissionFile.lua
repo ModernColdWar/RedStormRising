@@ -18,8 +18,8 @@ local fuelSettings = {
     FA_18C_hornet = { capacity = 4900, fraction = 0.5 },
     FW_190A8 = { capacity = 409, fraction = 1.0 },
     FW_190D9 = { capacity = 388, fraction = 1.0 },
-	TF_51D = { capacity = 340.68, fraction = 1.0},
-	P_51D = { capacity = 732, fraction = 1.0},
+    TF_51D = { capacity = 340.68, fraction = 1.0 },
+    P_51D = { capacity = 732, fraction = 1.0 },
     I_16 = { capacity = 191, fraction = 1.0 },
     J_11A = { capacity = 9400, fraction = 0.5 },
     JF_17 = { capacity = 2325, fraction = 0.5 },
@@ -82,8 +82,8 @@ end
 local function validateClientGroup(group)
     local errors = {}
     local groupName = missionUtils.getDictionaryValue(group.name)
-	
-	--mr: groups/wings (DCS max = 4) are required to allow Wingmen to be differentially shown on datalink to other friendlies i.e. F16
+
+    --mr: groups/wings (DCS max = 4) are required to allow Wingmen to be differentially shown on datalink to other friendlies i.e. F16
     if #group.units ~= 1 then
         table.insert(errors, string.format("'%s' should only have 1 unit, but has %d", groupName, #group.units))
     end

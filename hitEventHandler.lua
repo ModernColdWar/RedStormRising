@@ -72,17 +72,17 @@ function M.HIT_EVENTHANDLER:onHit(event)
         SCENERY 5
         CARGO   6
     --]]
-	
+
     --exclude scenery hits e.g. missed bomb hitting tree/house, from hit notifications
     if event.TgtObjectCategory == Object.Category.SCENERY then
         log:info("Aborting hit notification for scenery object: event.TgtObjectCategory: $1, event.TgtTypeName: $2", event.TgtObjectCategory, event.TgtTypeName)
         return
     end
 
-	if event.IniObjectCategory == Object.Category.CARGO then
-		log:info("Aborting hit notification for cargo object: event.TgtObjectCategory: $1, event.TgtTypeName: $2", event.TgtObjectCategory, event.TgtTypeName)
-		return
-	end
+    if event.IniObjectCategory == Object.Category.CARGO then
+        log:info("Aborting hit notification for cargo object: event.TgtObjectCategory: $1, event.TgtTypeName: $2", event.TgtObjectCategory, event.TgtTypeName)
+        return
+    end
 
     local message = M.buildHitMessage(event)
     if message ~= nil then
