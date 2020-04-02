@@ -1160,7 +1160,7 @@ function ctld.spawnCrate(_arguments)
 			
 			--prevent Logistics Centre crate supply from FOBs
 			local _isFOB = string.match(_nearestLogisticsCentreBaseNameOrFOBgrid, "FOB")
-			if _logisticsCentreReq and _crateType.unit == "LogisticsCentre" and _isFOB ~= nil then
+			if _logisticsCentreReq and _crateType.unit == "LogisticsCentre" and _isFOB ~= nil and not ctld.allowLogisticsCentreCratesFromFOBs then
 				ctld.displayMessageToGroup(_heli, "Logistics Centre crates are not available from FOBs", 10)
                 return
 			end
@@ -1761,7 +1761,7 @@ function ctld.loadUnloadLogisticsCrate(_args)
 				
 			--prevent Logistics Centre crate supply from FOBs
 			local _isFOB = string.match(_nearestLogisticsCentreBaseNameOrFOBgrid, "FOB")
-			if _isFOB ~= nil then
+			if _isFOB ~= nil and not ctld.allowLogisticsCentreCratesFromFOBs then
 				ctld.displayMessageToGroup(_heli, "Logistics Centre crates are not available from FOBs", 10)
                 return
 			end

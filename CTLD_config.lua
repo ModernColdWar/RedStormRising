@@ -415,12 +415,17 @@ ctld.maximumDistFromFARPToRepair = 3000
 ctld.maximumDistFromAirbaseToRepair = 5000
 
 --[[
-	FOBs needs to be spaced-out > 10km from airbases, FARPs and other FOBs 
+	FOBs need to be excluded > 10km from airbases, FARPs and other FOBs 
 	- for balancing given that logistics centre crates are available from FOBs and logistics centre destruction required for all captures
+	- prevent multiple FOBs within an airbase/FARP
 	- for ctld.spawnLogisticsCentre referencing as each FOB named after it's airbase or MGRS grid which is a 10km square
+	- detection of player within airbase of FARP to initiate repair c.f. FOB deployment
+	- FOB building being an outpost is somewhat camouflaged in towns c.f. bunker building in airbases/FARPs
+	- FOB building being an outpost being a neutral coalition object won't be detected by red/blue ground units
 --]]
 ctld.exclusionZoneFromBasesForFOBs = 10000 --15km
 ctld.friendlyLogisiticsCentreSpacing = 10000 --15km
+ctld.allowLogisticsCentreCratesFromFOBs = false
 
 --need to ensure country is part of neutral coalition e.g. Greece, as neutral static objects will not block DCS controlled rearm/refuel
 ctld.neutralCountry = "Greece"
