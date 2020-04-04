@@ -10,9 +10,9 @@ end
 
 env.info("RSR STARTUP: RSR.LUA INIT")
 
--- used for calling the RSR Discord bot's backend
+-- Add external paths (socket for calling n0xy's bot, luarocks systree for other dependencies)
 package.path = package.path .. [[;.\LuaSocket\?.lua]]
-package.cpath = package.cpath .. [[;.\LuaSocket\?.dll]]
+package.cpath = package.cpath .. [[;C:\dev\luarocks\lib\lua\5.1\?.dll]]
 
 require("mist_4_3_74")
 require("Moose")
