@@ -173,7 +173,7 @@ local function logNonAircraftSlot(playerId, playerName, playerUcid, unitRole, al
 end
 
 -- DCS documentation says returning nothing is success, otherwise a failure
-M.onPlayerTryChangeSlot = function(playerId, side, slotId)
+function M.onPlayerTryChangeSlot(playerId, side, slotId)
     if not DCS.isServer() or not DCS.isMultiplayer() or side == 0 or slotId == '' or slotId == nil then
         return
     end
