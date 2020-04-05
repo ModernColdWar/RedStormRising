@@ -5,3 +5,4 @@
 .idea/
 rsrState.json*
 rsrState-backup.json
+*.sqlite
