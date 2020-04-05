@@ -196,14 +196,16 @@ ssb.commanderPlayerUCID = {
     "c70c2a7bb2d855e80bcf4964ee1daaeb", -- moupe added by deebix
     "9de0e2e317a56c09aecff8eeeecdd47a", -- =AW=33COM added by mad rabbit
     -----------------------------------
-    -- Russian Players
+    -- Russian Players (new or stayed)
     "53c1017106f484956c9e56d8c4b85acb", -- GenaPilot
     "09bc71361a591195159e2b84dfc67482", -- ROSS_Pups added by deebix
     "20ef9ad2392e236cf72cd3f3a853da42", -- ROSS_BoomSbk added by mad rabbit
+	"e61489151c2de788e78e8c92b97a2cca", -- ROSS berrymore by deebix
+    "7fa9836632054f227b042f6a185b957c", -- ROSS grishik by deebix
     "3dd6e3bcd9f99a8826e8f9791dc15199", -- Sakhalin66
     "90d0af5d35b62cc5012de966b5bd1dcf", -- Harkonnen
     -----------------------------------
-    -- Russian Players
+    -- Russian Players (left)
     "00e5296e187ccfb8ee5edb55a7968d39", -- ★ВАРЯГ★
     "b148135d459915551e3d2b5489821c16", -- Santa
     "e5f8848b3ef84a88c635e5bc2a8e2a41", -- Djim

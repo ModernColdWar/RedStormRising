@@ -1,3 +1,7 @@
-This folder contains the server-side hook scripts installed into  `..\..\Hooks`.
+This folder contains the server-side hook scripts.  They should be linked via a directory junction into a `Scripts\Hooks`
+directory on the server as below:
 
-Note that the script copies in here are for source control, **they are not read by the server**.  They must be copied to `..\..\Hooks`.
+```
+C:\Users\Administrator\Saved Games\DCS.openbeta_server\Scripts>mklink /J Hooks RSR\Hooks
+Junction created for Hooks <<===>> RSR\Hooks
+```
