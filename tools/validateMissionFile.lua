@@ -21,6 +21,7 @@ local fuelSettings = {
     TF_51D = { capacity = 340.68, fraction = 1.0 },
     P_51D = { capacity = 732, fraction = 1.0 },
     I_16 = { capacity = 191, fraction = 1.0 },
+	["Christen Eagle II"] = { capacity = 71, fraction = 1.0 },
     J_11A = { capacity = 9400, fraction = 0.5 },
     JF_17 = { capacity = 2325, fraction = 0.5 },
     Ka_50 = { capacity = 1450, fraction = 0.5 },
@@ -38,6 +39,7 @@ local fuelSettings = {
     SA342M = { capacity = 416.33, fraction = 0.4 },
     SA342Mistral = { capacity = 416.33, fraction = 0.4 },
     SpitfireLFMkIX = { capacity = 247, fraction = 1.0 },
+	--["Su-25"] = { capacity = 2835, fraction = 0.7 }, -- still produces error but removed all Su-25s from mission anyway
     Su_25T = { capacity = 3790, fraction = 0.7 },
     Su_27 = { capacity = 5590.18, fraction = 0.5 },
     Su_33 = { capacity = 9500, fraction = 0.5 },
@@ -178,15 +180,10 @@ missionUtils.iterBases(mission, "Caucasus", function(baseName, warehouse)
         print("WARN:  Skipping neutral base " .. baseName)
         return
     end
-    local foundLogisticsZone = false
+
     local foundPickupZone = false
     missionUtils.iterZones(mission, function(zone)
         local zoneName = zone.name
-        local logisticsZoneBaseName = utils.getBaseNameFromZoneName(zoneName, "logistics")
-
-        if logisticsZoneBaseName ~= nil and utils.matchesBaseName(baseName, logisticsZoneBaseName) then
-            foundLogisticsZone = true
-        end
 
         local pickupZoneBaseName = utils.getBaseNameFromZoneName(zoneName, "pickup")
         if pickupZoneBaseName ~= nil and utils.matchesBaseName(baseName, pickupZoneBaseName) then
@@ -194,9 +191,6 @@ missionUtils.iterBases(mission, "Caucasus", function(baseName, warehouse)
         end
     end)
 
-    if not foundLogisticsZone then
-        print("ERROR: No logistics zone found for " .. baseName)
-    end
     if not foundPickupZone then
         print("ERROR: No pickup zone found for " .. baseName)
     end
