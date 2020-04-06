@@ -85,14 +85,13 @@ local function validateClientGroup(group)
     local errors = {}
     local groupName = missionUtils.getDictionaryValue(group.name)
 
-    --mr: groups/wings (DCS max = 4) are required to allow Wingmen to be differentially shown on datalink to other friendlies i.e. F16
-    if #group.units ~= 1 then
-        table.insert(errors, string.format("'%s' should only have 1 unit, but has %d", groupName, #group.units))
-    end
     local unit = group.units[1]
     local unitName = missionUtils.getDictionaryValue(unit.name)
     if missionUtils.isTransportType(unit.type) and unitName ~= groupName then
-        table.insert(errors, string.format("Group '%s' must contain unit with same name, but was '%s'", groupName, unitName))
+        if #group.units ~= 1 then
+            table.insert(errors, string.format("Transport group '%s' should only have 1 unit, but has %d", groupName, #group.units))
+        end
+        table.insert(errors, string.format("Transport group '%s' must contain unit with same name, but was '%s'", groupName, unitName))
     end
     for _, error in ipairs(errors) do
         print("ERROR: " .. error)
