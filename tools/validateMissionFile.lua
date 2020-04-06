@@ -172,6 +172,15 @@ local function setF14StoredAlignment(unit)
     end
 end
 
+local function setM2000Options(unit)
+    if not unit.AddPropAircraft.INSAlignmentStored then
+        print("INFO:  Setting options for " .. description(unit))
+        unit.AddPropAircraft.ForceINSRules = false
+        unit.AddPropAircraft.NoDDMSensor = true  -- yes, really this is with the DDM!
+        unit.AddPropAircraft.LoadNVGCase = true
+    end
+end
+
 print("Checking bases for problems")
 missionUtils.iterBases(mission, "Caucasus", function(baseName, warehouse, isAirbase)
     setWeaponsUnlimited(baseName, warehouse)
@@ -206,6 +215,9 @@ missionUtils.iterGroups(mission, function(group, sideName)
         setRopeLength(unit)
         if unit.type == "F-14B" then
             setF14StoredAlignment(unit)
+        end
+        if unit.type == "M-2000C" then
+            setM2000Options(unit)
         end
     end
 end)
