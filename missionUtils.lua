@@ -205,14 +205,14 @@ end
 function M.iterBases(mission, theatre, baseCallback)
     -- luacheck: read_globals warehouses
     for baseId, baseName in pairs(M.airbases[theatre]) do
-        baseCallback(baseName, warehouses.airports[baseId])
+        baseCallback(baseName, warehouses.airports[baseId], true)
     end
     M.iterCountries(mission, function(_, country)
         if country.static ~= nil and country.static.group ~= nil then
             for _, group in ipairs(country.static.group) do
                 for _, unit in ipairs(group.units) do
                     if unit.type == "FARP" then
-                        baseCallback(M.getDictionaryValue(unit.name), warehouses.warehouses[unit.unitId])
+                        baseCallback(M.getDictionaryValue(unit.name), warehouses.warehouses[unit.unitId], false)
                     end
                 end
             end

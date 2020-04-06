@@ -173,10 +173,10 @@ local function setF14StoredAlignment(unit)
 end
 
 print("Checking bases for problems")
-missionUtils.iterBases(mission, "Caucasus", function(baseName, warehouse)
+missionUtils.iterBases(mission, "Caucasus", function(baseName, warehouse, isAirbase)
     setWeaponsUnlimited(baseName, warehouse)
-    if warehouse.coalition:lower() == "neutral" then
-        print("WARN:  Skipping neutral base " .. baseName)
+    if isAirbase and warehouse.coalition:lower() ~= "neutral" then
+        print("ERROR: Base is not neutral " .. baseName .. " (is " .. warehouse.coalition .. ")")
         return
     end
 
