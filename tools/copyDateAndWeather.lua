@@ -25,5 +25,5 @@ mission.date = date
 mission.weather = weather
 
 if write then
-    missionUtils.serializeMission(mission, outputMissionDir)
+    missionUtils.serializeMission(outputMissionDir)
 end

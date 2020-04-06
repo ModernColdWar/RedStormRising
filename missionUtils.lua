@@ -51,7 +51,7 @@ local function serialize(filename, name, object)
 end
 
 -- luacheck: globals warehouses
-function M.serializeMission(mission, missionDir)
+function M.serializeMission(missionDir)
     local dcsPath = os.getenv("DCS_PATH")
     if dcsPath == nil then
         error("DCS_PATH environment variable must be set")
@@ -59,6 +59,7 @@ function M.serializeMission(mission, missionDir)
     package.path = package.path .. ";" .. dcsPath .. [[\Scripts\?.lua]]
     serialize(missionDir .. [[\mission]], "mission", mission)
     serialize(missionDir .. [[\warehouses]], "warehouses", warehouses)
+    serialize(missionDir .. [[\options]], "options", options)
 end
 
 function M.getDictionaryValue(key)

@@ -75,7 +75,7 @@ end
 local write = #arg >= 2 and arg[2] == "--write"
 
 missionUtils.loadMission(missionDir)
--- luacheck: read_globals mission
+-- luacheck: read_globals mission options
 
 local function getSettingsKey(unit)
     return string.gsub(unit.type, "-", "_")
@@ -231,8 +231,17 @@ missionUtils.iterVehicleGroups(mission, function(group, sideName)
     end
 end)
 
+print("\Setting mission options")
+options.miscellaneous.f5_nearest_ac = false
+options.miscellaneous.f11_free_camera = false
+options.difficulty.spectatorExternalViews = false
+options.difficulty.externalViews = false
+options.plugins.CA.ground_aim_helper = false
+
+
+
 if write then
-    missionUtils.serializeMission(mission, missionDir)
+    missionUtils.serializeMission(missionDir)
 end
 
 print("Done")
