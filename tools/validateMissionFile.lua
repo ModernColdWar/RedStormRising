@@ -64,6 +64,7 @@ local radioSettings = {
     },
     blue = {
         L_39ZA = { { channels = { 305, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269 } } },
+        F_5E_3 = { { channels = { 305, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269 } } }
     },
 }
 
@@ -165,19 +166,46 @@ local function setRopeLength(unit)
     end
 end
 
-local function setF14StoredAlignment(unit)
+local function setF14Options(unit, sideName)
     if not unit.AddPropAircraft.INSAlignmentStored then
-        print("INFO:  Setting stored alignment on for " .. description(unit))
+        print("INFO:  Setting options for " .. description(unit))
         unit.AddPropAircraft.INSAlignmentStored = true
+    end
+    if sideName == "red" then
+        unit.AddPropAircraft.LGB1 = 6
+    else
+        unit.AddPropAircraft.LGB1 = 7
     end
 end
 
-local function setM2000Options(unit)
-    if not unit.AddPropAircraft.INSAlignmentStored then
-        print("INFO:  Setting options for " .. description(unit))
-        unit.AddPropAircraft.ForceINSRules = false
-        unit.AddPropAircraft.NoDDMSensor = true  -- yes, really this is with the DDM!
-        unit.AddPropAircraft.LoadNVGCase = true
+local function setM2000Options(unit, sideName)
+    print("INFO:  Setting options for " .. description(unit))
+    unit.AddPropAircraft.ForceINSRules = false
+    unit.AddPropAircraft.NoDDMSensor = true  -- yes, really this is with the DDM!
+    unit.AddPropAircraft.LoadNVGCase = true
+    if sideName == "red" then
+        unit.AddPropAircraft.LaserCode1 = 6
+    else
+        unit.AddPropAircraft.LaserCode1 = 7
+    end
+end
+
+local function setJF17Options(unit, sideName)
+    print("INFO:  Setting options for " .. description(unit))
+    unit.AddPropAircraft.AARProbe = false
+    if sideName == "red" then
+        unit.AddPropAircraft.LaserCode1 = 6
+    else
+        unit.AddPropAircraft.LaserCode1 = 7
+    end
+end
+
+local function setF5Options(unit, sideName)
+    print("INFO:  Setting options for " .. description(unit))
+    if sideName == "red" then
+        unit.AddPropAircraft.LaserCode1 = 6
+    else
+        unit.AddPropAircraft.LaserCode1 = 7
     end
 end
 
@@ -214,10 +242,16 @@ missionUtils.iterGroups(mission, function(group, sideName)
         setRadio(unit, sideName)
         setRopeLength(unit)
         if unit.type == "F-14B" then
-            setF14StoredAlignment(unit)
+            setF14Options(unit, sideName)
         end
         if unit.type == "M-2000C" then
-            setM2000Options(unit)
+            setM2000Options(unit, sideName)
+        end
+        if unit.type == "JF-17" then
+            setJF17Options(unit, sideName)
+        end
+        if unit.type == "F-5E-3" then
+            setF5Options(unit, sideName)
         end
     end
 end)
@@ -237,8 +271,6 @@ options.miscellaneous.f11_free_camera = false
 options.difficulty.spectatorExternalViews = false
 options.difficulty.externalViews = false
 options.plugins.CA.ground_aim_helper = false
-
-
 
 if write then
     missionUtils.serializeMission(missionDir)
