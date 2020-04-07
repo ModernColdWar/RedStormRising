@@ -353,3 +353,8 @@ function dcsStub.setTimeOffset(timeOffset)
     dcsStub.timeOffset = timeOffset
 end
 
+lfs = {}
+
+function lfs.writedir()
+    return ''
+end
