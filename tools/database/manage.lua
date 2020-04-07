@@ -1,7 +1,7 @@
 package.cpath = package.cpath .. [[;C:\dev\luarocks\lib\lua\5.1\?.dll]]
 
 local lfs = require("lfs")
-local sqlite3 = require("lsqlite3")
+local database = require("database")
 
 local MIGRATIONS_DIR = [[tools\database\migrations]]
 
@@ -20,7 +20,7 @@ if action == nil then
     os.exit(1)
 end
 
-local db = sqlite3.open("rsr.sqlite", sqlite3.OPEN_READWRITE + sqlite3.OPEN_CREATE)
+local db = database.openOrCreate()
 
 local db_version
 for v in db:urows("PRAGMA user_version") do
@@ -67,11 +67,4 @@ end
 
 print("New version of database is " .. db_version)
 
-
---
---
----- parses SQLite datetime to seconds since 1970
-----function M.toEpochSeconds(s)
-----    local y, m, d, hh, mm, ss = s:match("^(%d+)%-(%d+)%-(%d+) (%d+):(%d+):(%d+)$")
-----    return os.time({ year = y, month = m, day = d, hour = hh, min = mm, sec = ss })
-----end
+db:close()
