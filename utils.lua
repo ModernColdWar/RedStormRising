@@ -1,7 +1,5 @@
-require("mist_4_3_74")
-local inspect = require("inspect")
-
-local log = mist.Logger:new("utils", "info")
+local logging = require("logging")
+local log = logging.Logger:new("utils")
 
 local M = {}
 
@@ -129,7 +127,7 @@ function M.posToMapGrid(position)
 
     -- .p as coord.LOtoLL requires x,y,z format
     local _MGRStable = coord.LLtoMGRS(coord.LOtoLL(position.p))
-    --log:info("_MGRStable: $1",inspect(_MGRStable, { newline = " ", indent = "" }))
+    --log:info("_MGRStable: $1",_MGRStable)
 
     -- DCS drops leading 0 for 10km map grids
     -- e.g. Vazani @ NM00: MGRStable = { Easting = 2566, MGRSDigraph = "NM", Northing = 9426, UTMZone = "38T" }
@@ -373,9 +371,9 @@ function M.baseCaptureZoneToNameSideType(_zone)
 
     if _baseSide == "ERROR" then
         if _whiteInitZoneCheck == 3 then
-            log:error("RSR MIZ SETUP: $1 $2 Trigger Zone color not changed from white. Setting as neutral", _RSRbaseCaptureZoneName, inspect(_zoneColor, { newline = " ", indent = "" }))
+            log:error("RSR MIZ SETUP: $1 $2 Trigger Zone color not changed from white. Setting as neutral", _RSRbaseCaptureZoneName, _zoneColor)
         elseif _whiteInitZoneCheck > 1 then
-            log:error("RSR MIZ SETUP: $1 $2 Trigger Zone color not correctly set to only red, blue or green. Setting as neutral", _RSRbaseCaptureZoneName, inspect(_zoneColor, { newline = " ", indent = "" }))
+            log:error("RSR MIZ SETUP: $1 $2 Trigger Zone color not correctly set to only red, blue or green. Setting as neutral", _RSRbaseCaptureZoneName, _zoneColor)
         end
         _baseSide = "neutral"
     end
@@ -410,9 +408,9 @@ function M.carrierActivateForBaseWhenOwnedBySide(_zone)
 
     if _whenBaseOwnedBySide == "ERROR" then
         if _whiteInitZoneCheck == 3 then
-            log:error("RSR MIZ SETUP: $1 Trigger Zone color $2 not chnaged from white to only red or blue. Setting 'when owned by requirement' to neutral.  Carriers will NEVER activate.", _zoneName, inspect(_zoneColor, { newline = " ", indent = "" }))
+            log:error("RSR MIZ SETUP: $1 Trigger Zone color $2 not chnaged from white to only red or blue. Setting 'when owned by requirement' to neutral.  Carriers will NEVER activate.", _zoneName, _zoneColor)
         elseif _whiteInitZoneCheck > 1 then
-            log:error("RSR MIZ SETUP: $1 Trigger Zone color $2 not correctly set to only red or blue. Setting 'when owned by requirement' to neutral.  Carriers will NEVER activate.", _zoneName, inspect(_zoneColor, { newline = " ", indent = "" }))
+            log:error("RSR MIZ SETUP: $1 Trigger Zone color $2 not correctly set to only red or blue. Setting 'when owned by requirement' to neutral.  Carriers will NEVER activate.", _zoneName, _zoneColor)
         end
         _whenBaseOwnedBySide = "neutral"
     end
@@ -430,7 +428,7 @@ function M.getAliveLogisticsCentreforBase(_airbaseORfarpORfob)
         for _refLCbaseName, _LCobj in pairs(_baseTable) do
             if _refLCbaseName == _airbaseORfarpORfob then
 
-                --log:info("_refLCbaseName: $1, _LCobj: $2",_refLCbaseName, mist.utils.basicSerialize(_LCobj))
+                --log:info("_refLCbaseName: $1, _LCobj: $2",_refLCbaseName, _LCobj)
 
                 if _LCobj ~= nil then
 
