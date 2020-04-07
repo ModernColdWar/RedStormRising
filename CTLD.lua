@@ -24,14 +24,14 @@ env.info("RSR STARTUP: CTLD.LUA INIT")
 require("mist_4_3_74")
 require("CTLD_config")
 require("Moose")
-local inspect = require("inspect")
+local logging = require("logging")
 local utils = require("utils")
 local rsrConfig = require("RSR_config")
 local baseOwnershipCheck = require("baseOwnershipCheck")
 local logisticsManager = require("logisticsManager")
 --local playerDetails = require("playerDetails")
 
-local log = mist.Logger:new("CTLD", "info")
+local log = logging.Logger:new("CTLD")
 
 ctld.nextUnitId = 1;
 ctld.getNextUnitId = function()
@@ -989,7 +989,7 @@ function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight, _side,
             ctld.spawnedCratesBLUE[_name] = _crateDetails
         end
     end
-    log:info("_name: $1, _crateDetails: $2", _name, inspect(_crateDetails, { newline = " ", indent = "" }))
+    log:info("_name: $1, _crateDetails: $2", _name, _crateDetails)
     return _spawnedCrate
 end
 
@@ -1095,7 +1095,7 @@ function ctld.spawnLogisticsCentre(_point, _name, _sideName, _baseORfob, _baseOR
     end
     --(_passedBaseName,_playerORunit,_campaignStartSetup)
     baseOwnershipCheck.baseOwnership = baseOwnershipCheck.getAllBaseOwnership(_checkWhichBasesAndFARPs, _playerName, false)
-    log:info("_isMissionInit: $1, _checkWhichBasesAndFARPs: $2,  _playerName: $3, _name: $4_spawnedLogiCentreObject: $5,", _isMissionInit, _playerName, _name, _checkWhichBasesAndFARPs, mist.utils.basicSerialize(_spawnedLogiCentreObject))
+    log:info("_isMissionInit: $1, _checkWhichBasesAndFARPs: $2,  _playerName: $3, _name: $4_spawnedLogiCentreObject: $5,", _isMissionInit, _playerName, _name, _checkWhichBasesAndFARPs, _spawnedLogiCentreObject)
 
     return _spawnedLogiCentreObject
 end
@@ -1244,7 +1244,7 @@ function ctld.spawnCrate(_arguments)
             local _name = string.format("%s #%i (%s)", _crateType.desc, _unitId, _nearestLogisticsCentreBaseNameOrFOBgrid)
 
             if not _logisticsCentreReq and _internal == 1 then
-                log:info("spawnCrate: not _logisticsCentreReq: _crateType: $1, _name: $2", inspect(_crateType, { newline = " ", indent = "" }), _name)
+                log:info("spawnCrate: not _logisticsCentreReq: _crateType: $1, _name: $2", _crateType, _name)
 
                 local _crateDetails = _crateType
                 _crateDetails.baseOfOrigin = _nearestLogisticsCentreBaseNameOrFOBgrid
@@ -1747,7 +1747,7 @@ function ctld.loadUnloadLogisticsCrate(_args)
     local _crateOnboardDetails -- { baseOfOrigin = "Gelendzhik", desc = "Logistics Centre", internal = 1, unit = "LogisticsCentre", weight = 503 }
     if _crateOnboard then
         _crateOnboardDetails = ctld.inTransitLogisticsCentreCrates[_aircraft:getName()]
-        log:info("_crateOnboardDetails: $1", inspect(ctld.inTransitLogisticsCentreCrates[_aircraft:getName()], { newline = " ", indent = "" }))
+        log:info("_crateOnboardDetails: $1", ctld.inTransitLogisticsCentreCrates[_aircraft:getName()])
     end
     log:info("_inFOBexclusionZone: $1, _inBaseZoneAndRSRrepairRadius: $2, _closestBaseSide: $3, _closestBaseName: $4, _aircraftSideName: $5, _nearestLogisticsCentreSideName: $6, _nearestLogisticsCentreBaseNameOrFOBgrid: $7 ", _inFOBexclusionZone, _inBaseZoneAndRSRrepairRadius, _closestBaseSide, _closestBaseName, _aircraftSideName, _nearestLogisticsCentreSideName, _nearestLogisticsCentreBaseNameOrFOBgrid)
 
@@ -2032,7 +2032,7 @@ function ctld.loadUnloadJTACcrate(_args)
 
     --debug
     if _crateOnboard then
-        log:info("_crateOnboard: $1", inspect(ctld.inTransitSlingLoadCrates[_aircraft:getName()], { newline = " ", indent = "" }))
+        log:info("_crateOnboard: $1", ctld.inTransitSlingLoadCrates[_aircraft:getName()])
     end
     log:info("_inFOBexclusionZone: $1, _inBaseZoneAndRSRrepairRadius: $2, _closestBaseSide: $3, _closestBaseName: $4, _aircraftSideName: $5, _nearestLogisticsCentreSideName: $6, _nearestLogisticsCentreBaseNameOrFOBgrid: $7", _inFOBexclusionZone, _inBaseZoneAndRSRrepairRadius, _closestBaseSide, _closestBaseName, _aircraftSideName, _nearestLogisticsCentreSideName, _nearestLogisticsCentreBaseNameOrFOBgrid)
 
@@ -2059,9 +2059,9 @@ function ctld.loadUnloadJTACcrate(_args)
 
             local _crateDetails = ctld.crateLookupTable[tostring(_JTACcrateWeightPerSide)]
             _crateDetails.baseOfOrigin = _nearestLogisticsCentreBaseNameOrFOBgrid
-            log:info("_crateDetails: $1", inspect(_crateDetails, { newline = " ", indent = "" }))
+            log:info("_crateDetails: $1", _crateDetails)
             ctld.inTransitSlingLoadCrates[_aircraft:getName()] = _crateDetails
-            log:info("inTransitSlingLoadCrates: aircraft: $1", inspect(ctld.inTransitSlingLoadCrates[_aircraft:getName()], { newline = " ", indent = "" }))
+            log:info("inTransitSlingLoadCrates: aircraft: $1", ctld.inTransitSlingLoadCrates[_aircraft:getName()])
             ctld.displayMessageToGroup(_aircraft, "JTAC crate loaded", 10)
             trigger.action.outTextForCoalition(_aircraft:getCoalition(), "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " loaded a JTAC crate for transport from " .. _nearestLogisticsCentreBaseNameOrFOBgrid, 10)
             log:info("$1 loaded JTAC crate from $2", _playerName, _nearestLogisticsCentreBaseNameOrFOBgrid)
@@ -2428,7 +2428,7 @@ function ctld.checkCargoStatus(_args)
             _currentCrate = ctld.inTransitLogisticsCentreCrates[_aircraft:getName()] -- logistics centre crates
         end
 
-        log:info("_currentCrate: $1", inspect(_currentCrate, { newline = " ", indent = "" })) --debug
+        log:info("_currentCrate: $1", _currentCrate) --debug
 
         if _currentCrate ~= nil then
             ctld.displayMessageToGroup(_aircraft, "Currently Transporting: " .. _currentCrate.desc .. " crate", 10)
@@ -2627,7 +2627,7 @@ function ctld.loadNearbyCrate(_aircraft)
 
                     -- { desc = "Logistics Centre crate", internal = 1, unit = "LogisticsCentre", weight = 503, baseOfOrigin = "MM75" }
                     local _copiedCrateDetails = mist.utils.deepCopy(_crate.details)
-                    log:info("ctld.loadNearbyCrate: _copiedCrateDetails: $1", inspect(_copiedCrateDetails, { newline = " ", indent = "" }))
+                    log:info("ctld.loadNearbyCrate: _copiedCrateDetails: $1", _copiedCrateDetails)
 
                     if _isLogisticsCentreCrate then
                         ctld.inTransitLogisticsCentreCrates[_aircraft] = _copiedCrateDetails
@@ -2878,7 +2878,7 @@ function ctld.getFOBposStringAndBeacons(_fob)
 
     local _beaconInfo = ctld.FOBbeacons[_fob:getName()]
 
-    log:info("_beaconInfo: $1", inspect(_beaconInfo, { newline = " ", indent = "" }))
+    log:info("_beaconInfo: $1", _beaconInfo)
 
     if _beaconInfo ~= nil then
         _message = string.format("%s - %.2f KHz ", _message, _beaconInfo.vhf / 1000)
@@ -3070,7 +3070,7 @@ function ctld.unpackCrates(_arguments)
             local _crates = ctld.getCratesAndDistance(_aircraft)
             local _crate = ctld.getClosestCrate(_aircraft, _crates)
 
-            --log:info("ctld.unpackCrates: _playerName: $1, _crate: $2", _playerName, inspect(_crate, { newline = " ", indent = "" }))
+            --log:info("ctld.unpackCrates: _playerName: $1, _crate: $2", _playerName, _crate)
 
             local _friendlyLogisticsCentreProximity = ctld.friendlyLogisticsCentreProximity(_aircraft)
             local _nearestLogisticsCentreName = _friendlyLogisticsCentreProximity[1] --(rare) if no friendly LC at all = "NoFriendlyLC"
@@ -3108,7 +3108,7 @@ function ctld.unpackCrates(_arguments)
                 --_crateBaseOfOrigin = string.match(_crateName, "%((.+)%)$")
                 local _crateBaseOfOrigin = _crate.details.baseOfOrigin
 
-                --log:info("ctld.unpackCrates: _playerName: $1, _crate.name: $2, _crateBaseOfOrigin: $3, _crate: $4", _playerName, _crate.name, _crateBaseOfOrigin, inspect(_crate, { newline = " ", indent = "" }))
+                --log:info("ctld.unpackCrates: _playerName: $1, _crate.name: $2, _crateBaseOfOrigin: $3, _crate: $4", _playerName, _crate.name, _crateBaseOfOrigin, _crate)
                 log:info("ctld.unpackCrates: _playerName: $1, _crate.name: $2, _crateBaseOfOrigin: $3", _playerName, _crate.name, _crateBaseOfOrigin)
 
                 if not ctld.isLogisticsCentreAliveAt(_crateBaseOfOrigin) then
@@ -3401,7 +3401,7 @@ function ctld.unpackLogisticsCentreCrates(_crates, _aircraft)
                 -- (_point, _coalition, _country, _name, _batteryTime, _isFOB, _FOBobj)
                 local _radioBeaconDetails = ctld.createRadioBeacon(_args[1], _args[3], _args[5], _radioBeaconName, nil, true, _newLogisticCentre)
                 ctld.FOBbeacons[_newLogisticCentre:getName()] = { vhf = _radioBeaconDetails.vhf, uhf = _radioBeaconDetails.uhf, fm = _radioBeaconDetails.fm }
-                log:info("ctld.FOBbeacons: $1", inspect(ctld.FOBbeacons, { newline = " ", indent = "" }))
+                log:info("ctld.FOBbeacons: $1", ctld.FOBbeacons)
 
                 if ctld.troopPickupAtFOB == true then
                     trigger.action.outTextForCoalition(_args[3], "[TEAM] " .. "Finished building " .. _args[6] .. ". Crates and Troops can now be picked up.", 10)
@@ -3472,12 +3472,12 @@ function ctld.unloadInternalCrate (_args)
 
     -- ctld.loadNearbyCrate: ctld.inTransitSlingLoadCrates[_name] = _copiedCrate
     local _currentCrate = ctld.inTransitSlingLoadCrates[_heli:getName()]
-    log:info("ctld.unloadInternalCrate: ctld.inTransitSlingLoadCrates: $1", inspect(ctld.inTransitSlingLoadCrates, { newline = " ", indent = "" }))
+    log:info("ctld.unloadInternalCrate: ctld.inTransitSlingLoadCrates: $1", ctld.inTransitSlingLoadCrates)
 
     if _currentCrate == nil then
         _currentCrate = ctld.inTransitLogisticsCentreCrates[_heli:getName()]
     end
-    log:info("ctld.unloadInternalCrate: ctld.inTransitLogisticsCentreCrates: $1", inspect(ctld.inTransitLogisticsCentreCrates, { newline = " ", indent = "" }))
+    log:info("ctld.unloadInternalCrate: ctld.inTransitLogisticsCentreCrates: $1", ctld.inTransitLogisticsCentreCrates)
 
     if _currentCrate == nil then
         ctld.displayMessageToGroup(_heli, "You are not currently transporting any crates. \n\nTo Pickup a crate - land and use F10 Crate Commands to load one.", 10)
@@ -3735,7 +3735,7 @@ function ctld.createRadioBeacon(_point, _coalition, _country, _name, _batteryTim
         _radioBeaconObj = ctld.spawnRadioBeaconObject(_point, _name)
     end
 
-    log:info("_radioBeaconObj: $1, _radioBeaconObj (serialized): $2", _radioBeaconObj, mist.utils.basicSerialize(_radioBeaconObj))
+    log:info("_radioBeaconObj: $1, _radioBeaconObj (serialized): $2", _radioBeaconObj, _radioBeaconObj)
 
     local _message = _name
 
@@ -3791,7 +3791,7 @@ function ctld.createRadioBeacon(_point, _coalition, _country, _name, _batteryTim
     end
     ctld.updateRadioBeacon(_beaconDetails)
 
-    log:info("ctld.deployedFOBRadioBeacons: $1", inspect(ctld.deployedFOBRadioBeacons, { newline = " ", indent = "" }))
+    log:info("ctld.deployedFOBRadioBeacons: $1", ctld.deployedFOBRadioBeacons)
 
     return _beaconDetails
 end
@@ -4988,7 +4988,7 @@ function ctld.baseProximity(_aircraft)
         end
     end
 
-    log:info("ctld.baseProximity: _closestBaseSideDist: $1, _baseType: $2", inspect(_closestBaseSideDist, { newline = " ", indent = "" }), _baseType)
+    log:info("ctld.baseProximity: _closestBaseSideDist: $1, _baseType: $2", _closestBaseSideDist, _baseType)
 
     -- determine type of base
     local _RSRradius = 10000 -- RSRbaseCaptureZones FARP zones 5km in MIZ, most RSRbaseCaptureZones Airbase zones 10km in MIZ
@@ -5245,12 +5245,12 @@ function ctld.friendlyLogisticsCentreProximity(_aircraft)
     for _refLCsideName, _baseTable in pairs(ctld.logisticCentreObjects) do
         for _refLCbaseName, _LCobj in pairs(_baseTable) do
 
-            --log:info("_refLCbaseName: $1, _LCobj: $2",_refLCbaseName, mist.utils.basicSerialize(_LCobj))
+            --log:info("_refLCbaseName: $1, _LCobj: $2",_refLCbaseName, _LCobj)
 
             if _LCobj ~= nil then
                 _LCname = _LCobj:getName()
                 _LCpoint = _LCobj:getPoint()
-                --log:info("_LCname: $1, _LCpoint: $2",_LCname, mist.utils.basicSerialize(_LCpoint))
+                --log:info("_LCname: $1, _LCpoint: $2",_LCname, _LCpoint)
 
                 --"Krymsk Logistics Centre #001 red" = "red"
                 _derivedLCsideName = string.match(_LCname, ("%w+$"))
@@ -5296,7 +5296,7 @@ function ctld.friendlyLogisticsCentreProximity(_aircraft)
         end
     end
 
-    log:info("PRE stagingBase checks: _aircraftName: $1, _LCprox: $2", _aircraftName, inspect(_LCprox, { newline = " ", indent = "" }))
+    log:info("PRE stagingBase checks: _aircraftName: $1, _LCprox: $2", _aircraftName, _LCprox)
 
     -- (rare) no friendly LCs alive, set to LCdist to integer to prevent error when comparing distance to staging bases
     if _LCprox[2] == "NoDist" then
@@ -5355,7 +5355,7 @@ function ctld.friendlyLogisticsCentreProximity(_aircraft)
         end
     end
 
-    log:info("POST stagingBase checks:_aircraftName: $1, _LCprox: $2", _aircraftName, inspect(_LCprox, { newline = " ", indent = "" }))
+    log:info("POST stagingBase checks:_aircraftName: $1, _LCprox: $2", _aircraftName, _LCprox)
 
     -- gas platforms seem indestructible, despite being reported as destroyed with large missiles/bombs in SP
     --[[
@@ -6100,7 +6100,7 @@ function ctld.JTACAutoLase(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
                 end
             end
         end
-        log:info("POST-isNil: ctld.jtacUnits[_jtacGroupName] $1", mist.utils.basicSerialize(ctld.jtacUnits[_jtacGroupName]))
+        log:info("POST-isNil: ctld.jtacUnits[_jtacGroupName] $1", ctld.jtacUnits[_jtacGroupName])
         if ctld.jtacUnits[_jtacGroupName] ~= nil then
             ctld.notifyCoalition("JTAC: " .. _jtacGroupName .. " KIA!", 10, ctld.jtacUnits[_jtacGroupName].side)
         end
@@ -6117,9 +6117,9 @@ function ctld.JTACAutoLase(_jtacGroupName, _laserCode, _smoke, _lock, _colour)
         --add to list
         ctld.jtacUnits[_jtacGroupName] = { name = _jtacUnit:getName(), side = _jtacUnit:getCoalition() }
 
-        --log:info("_jtacUnit $1, _jtacGroupName: $3, _jtacGroup: $3", _jtacUnit, _jtacGroupName, inspect(_jtacGroup, { newline = " ", indent = "" }))
+        --log:info("_jtacUnit $1, _jtacGroupName: $3, _jtacGroup: $3", _jtacUnit, _jtacGroupName, _jtacGroup)
         --log:info("_jtacUnit name $1",_jtacUnit:getName())
-        --log:info("ctld.jtacUnits $1",inspect(ctld.jtacUnits, { newline = " ", indent = "" }))
+        --log:info("ctld.jtacUnits $1", ctld.jtacUnits)
 
         -- work out smoke colour
         if _colour == nil then
@@ -6659,7 +6659,7 @@ function ctld.getJTACStatus(_args)
     local _coordinateTitle = "Grid:"
     local _JTACref = -1 --set to -1 for debug
 
-    log:info("ctld.jtacUnits $1", inspect(ctld.jtacUnits, { newline = " ", indent = "" }))
+    log:info("ctld.jtacUnits $1", ctld.jtacUnits)
 
     for _jtacGroupName, _jtacDetails in pairs(ctld.jtacUnits) do
 
@@ -6746,12 +6746,12 @@ function ctld.getJTACStatus(_args)
                 -- ":" = self, needed as settings client specific
                 -- dedicated server test: GetMGRS_Accuracy = 5 (default setting) even when client radio specifies 2.  Need to test further.
 
-                log:info("Moose playerMenu enabled: $1",mist.utils.basicSerialize(SETTINGS.ShowPlayerMenu)) --mrDEBUG011
+                log:info("Moose playerMenu enabled: $1",SETTINGS.ShowPlayerMenu) --mrDEBUG011
 
                 --Moose.lua: line 7723: playerMenu unit selection and accuracy
-                log:info("Moose MenuMGRS_Accuracy:  $1",mist.utils.basicSerialize(SETTINGS:GetMGRS_Accuracy()))
-                log:info("Moose SETTINGS:IsMetric: $1",mist.utils.basicSerialize(SETTINGS:IsMetric()))
-                log:info("Moose SETTINGS:IsImperial: $1",mist.utils.basicSerialize(SETTINGS:IsImperial()))
+                log:info("Moose MenuMGRS_Accuracy:  $1",SETTINGS:GetMGRS_Accuracy())
+                log:info("Moose SETTINGS:IsMetric: $1",SETTINGS:IsMetric())
+                log:info("Moose SETTINGS:IsImperial: $1",SETTINGS:IsImperial())
 
                 log:info("mist.tostringMGRS (SETTINGS:GetMGRS_Accuracy()): $1", mist.tostringMGRS(coord.LLtoMGRS(coord.LOtoLL(_jtacUnit:getPosition().p)), SETTINGS:GetMGRS_Accuracy()))
 

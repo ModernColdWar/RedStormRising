@@ -1,13 +1,13 @@
 env.info("RSR STARTUP: state.LUA INIT")
 require("mist_4_3_74")
 require("CTLD")
-local inspect = require("inspect")
 local JSON = require("JSON")
 local utils = require("utils")
 local baseOwnershipCheck = require("baseOwnershipCheck")
 local updateSpawnQueue = require("updateSpawnQueue")
+local logging = require("logging")
 
-local log = mist.Logger:new("State", "info")
+local log = logging.Logger:new("State", "info")
 
 --luacheck: push no unused
 function JSON:onDecodeError(message, text, location, etc)
@@ -76,7 +76,7 @@ function M.getGroupData(groupName)
         }
         table.insert(groupData.units, unitData)
     end
-    --log:info("getGroupData($1) = $2", groupName, inspect(groupData))
+    --log:info("getGroupData($1) = $2", groupName, groupData)
     return groupData
 end
 
@@ -243,7 +243,7 @@ function M.setCurrentStateFromFile(stateFileName)
         M.currentState = mist.utils.deepCopy(M.defaultState)
         M.updateBaseOwnership()
     end
-    log:info("currentState = $1", inspect(M.currentState, { newline = " ", indent = "" }))
+    log:info("currentState = $1", M.currentState)
     return M.canUseStateFromFile
 end
 env.info("RSR STARTUP: state.LUA LOADED")

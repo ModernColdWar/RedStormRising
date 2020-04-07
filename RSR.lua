@@ -18,8 +18,9 @@ require("mist_4_3_74")
 require("Moose")
 require("CTLD")
 require("CSAR")
+local logging = require("logging")
 
-local log = mist.Logger:new("RSR", "info")
+local log = logging.Logger:new("RSR")
 
 local rsrConfig = require("RSR_config")
 if rsrConfig.devMode then

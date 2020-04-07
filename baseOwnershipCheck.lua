@@ -1,6 +1,6 @@
 env.info("RSR STARTUP: baseOwnershipCheck.LUA INIT")
 local utils = require("utils")
-local inspect = require("inspect")
+local logging = require("logging")
 local rsrConfig = require("RSR_config")
 -- require("CTLD_config")
 require("Moose")
@@ -9,7 +9,7 @@ local missionUtils = require("missionUtils")
 
 local M = {}
 
-local log = mist.Logger:new("baseOwnershipCheck", "info")
+local log = logging.Logger:new("baseOwnershipCheck")
 
 --most likely always will be NIL as baseOwnershipSetup.LUA starts before state.lua
 if baseOwnership == nil then
@@ -125,7 +125,7 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
                 _RSRcoalition = utils.getSide(_RSRowner)
 
                 local _baseCaptureZoneName = _baseName .. " RSRbaseCaptureZone Airbase"
-                log:info("_baseCaptureZoneName: $1", mist.utils.basicSerialize(_baseCaptureZoneName))
+                log:info("_baseCaptureZoneName: $1", _baseCaptureZoneName)
                 local _baseCaptureZone = missionUtils.getSpecificZone(env.mission, string.lower(_baseCaptureZoneName))
                 local _revBaseNameSideType = utils.baseCaptureZoneToNameSideType(_baseCaptureZone)
                 local _zoneSideFromColor = _revBaseNameSideType[2] --zone color translated to side
@@ -436,7 +436,7 @@ function M.getAllBaseOwnership(_passedBaseName, _playerORunit, _campaignStartSet
         log:info("_baseName: $1 _logisticsCentreName: $2, _logisticsCentreSide: $3", _baseName, _logisticsCentreName, _logisticsCentreSide)
 
     end
-    log:info("baseOwnership (_passedBaseName: $1) = $2", _passedBaseName, inspect(baseOwnership, { newline = " ", indent = "" }))
+    log:info("baseOwnership (_passedBaseName: $1) = $2", _passedBaseName, baseOwnership)
     return baseOwnership
 end
 env.info("RSR STARTUP: baseOwnershipCheck.LUA LOADED")

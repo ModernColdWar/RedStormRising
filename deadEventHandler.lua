@@ -1,9 +1,8 @@
-require("mist_4_3_74")
+local logging = require("logging")
 require("Moose")
-local inspect = require("inspect")
 local baseOwnershipCheck = require("baseOwnershipCheck")
 
-local log = mist.Logger:new("deadEventHandler", "info")
+local log = logging.Logger:new("deadEventHandler")
 
 local M = {}
 
@@ -13,13 +12,13 @@ function M.register()
 
     function M.eventHandler:OnEventDead(Event)
         --MOOSE
-        --log:info("eventHander DEAD: event: $1",inspect(Event, { newline = " ", indent = "" }))
+        --log:info("eventHander DEAD: event: $1",Event)
         log:info("eventHander DEAD: TYPE: $1, DCS NAME: $2, UNIT: $3", Event.IniTypeName, Event.IniDCSUnitName, Event.IniDCSUnit)
 
         local _deadUnitCategory = Event.IniObjectCategory
         local _deadUnitType = Event.IniTypeName
         local _deadUnitName = Event.IniDCSUnitName
-        --log:info("eventHander DEAD: TEST1 DEAD LC = nil: $1",mist.utils.basicSerialize(_deadUnit == nil))
+        --log:info("eventHander DEAD: TEST1 DEAD LC = nil: $1",_deadUnit == nil)
 
 
         if _deadUnitCategory == Object.Category.STATIC then
@@ -60,9 +59,9 @@ function M.register()
                         --log:info("eventHander DEAD: _storedLogisticsCentreBase: $1, _LCbaseName: $2", _storedLogisticsCentreBase, _LCbaseName)
                         if _storedLogisticsCentreName == _deadUnitName and _storedLogisticsCentreSideName == _LCsideName and _storedLogisticsCentreBase == _LCbaseName then
 
-                            --log:info("eventHander DEAD (PRE): ctld.logisticCentreObjects[_LCsideName][_LCbaseName]: $1",inspect(ctld.logisticCentreObjects[_LCsideName][_LCbaseName], { newline = " ", indent = "" }))
+                            --log:info("eventHander DEAD (PRE): ctld.logisticCentreObjects[_LCsideName][_LCbaseName]: $1",ctld.logisticCentreObjects[_LCsideName][_LCbaseName])
                             ctld.logisticCentreObjects[_LCsideName][_LCbaseName] = nil
-                            --log:info("eventHander DEAD (POST): ctld.logisticCentreObjects[_LCsideName][_LCbaseName]: $1",inspect(ctld.logisticCentreObjects[_LCsideName][_LCbaseName], { newline = " ", indent = "" }))
+                            --log:info("eventHander DEAD (POST): ctld.logisticCentreObjects[_LCsideName][_LCbaseName]: $1",ctld.logisticCentreObjects[_LCsideName][_LCbaseName])
 
                             -- remove map marker
                             _storedLogisticsCentreMarkerID = ctld.logisticCentreMarkerID[_LCsideName][_LCbaseName]

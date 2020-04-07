@@ -1,11 +1,11 @@
-require("mist_4_3_74")
+local logging = require("logging")
 local utils = require("utils")
 local state = require("state")
 local baseOwnershipCheck = require("baseOwnershipCheck")
 
 local M = {}
 
-local log = mist.Logger:new("BaseCapturedHandler", "info")
+local log = logging.Logger:new("BaseCapturedHandler")
 
 function M.register()
     M.eventHandler = EVENTHANDLER:New():HandleEvent(EVENTS.BaseCaptured)

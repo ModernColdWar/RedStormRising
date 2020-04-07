@@ -1,6 +1,6 @@
 local utils = require("utils")
-local inspect = require("inspect")
-local log = mist.Logger:new("hitEventHandler", "info")
+local logging = require("logging")
+local log = logging.Logger:new("hitEventHandler")
 
 local M = {}
 

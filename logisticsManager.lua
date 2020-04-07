@@ -1,9 +1,9 @@
-require("mist_4_3_74")
+local logging = require("logging")
 local utils = require("utils")
 
 local M = {}
 
-local log = mist.Logger:new("LogisticsManager", "info")
+local log = logging.Logger:new("LogisticsManager")
 
 function M.spawnLogisticsBuildingForBase(baseName, sideName, logisticsCentreName, isMissionInit, constructingPlayerName)
 
@@ -42,7 +42,7 @@ function M.spawnLogisticsBuildingForBase(baseName, sideName, logisticsCentreName
         log:info("isMissionInit: $1", isMissionInit)
         --(_point, _name, _coalition, _baseORfarp, _baseORfarpName)
         ctld.spawnLogisticsCentre(_position.point, _staticObjectName, sideName, "BASE", baseName, isMissionInit, _playerName)
-        log:info("$1 Logistics Centre spawned at $2", sideName, mist.utils.basicSerialize(_selectedLogiZoneName))
+        log:info("$1 Logistics Centre spawned at $2", sideName, _selectedLogiZoneName)
         return
     end
     log:warn("No logistics zone called for $1 found; no logistics building will spawn", baseName)

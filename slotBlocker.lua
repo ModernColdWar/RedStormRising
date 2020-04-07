@@ -1,4 +1,4 @@
-require("mist_4_3_74")
+local logging = require("logging")
 local missionUtils = require("missionUtils")
 local rsrConfig = require("RSR_config")
 local utils = require("utils")
@@ -9,7 +9,7 @@ local M = {}
 M.slotEnabled = 1
 M.slotDisabled = 99 -- see Hooks\RSRSlotBlocker.lua for the reason for this value
 
-local log = mist.Logger:new("SlotBlocker", "info")
+local log = logging.Logger:new("SlotBlocker", "info")
 
 M.clientGroupNames = {}
 

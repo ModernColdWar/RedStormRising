@@ -4,8 +4,6 @@
        ]]
 -- luacheck: no max line length
 -- luacheck: globals EV_MANAGER
-local inspect = require("inspect")
-local log = mist.Logger:new("weaponManager", "info")
 
 local M = {}
 

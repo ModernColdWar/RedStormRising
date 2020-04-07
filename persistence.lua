@@ -7,8 +7,9 @@ local utils = require("utils")
 local bases = require("bases")
 local state = require("state")
 local updateSpawnQueue = require("updateSpawnQueue")
+local logging = require("logging")
 
-local log = mist.Logger:new("Persistence", "info")
+local log = logging.Logger:new("Persistence", "info")
 
 local M = {}
 
@@ -26,7 +27,7 @@ end
 
 function M.updateGroupData(persistentGroupData)
     log:info("Updating persistent group data")
-    log:info("persistentGroupData: $1", mist.utils.basicSerialize(persistentGroupData))
+    log:info("persistentGroupData: $1", persistentGroupData)
     for i = #persistentGroupData, 1, -1 do
         local groupData = persistentGroupData[i]
         local groupName = groupData.name
@@ -182,7 +183,7 @@ local function configureBasesAtStartup(rsrConfig, baseOwnership, missionInitSetu
                 if AIRBASE:FindByName(baseName) == nil then
                     log:error("Unable to find base $1 on map but was in state file; skipping setup", baseName)
                 else
-                    log:info("bases.onMissionStart;  M.campaignStartSetup: $1", mist.utils.basicSerialize(M.campaignStartSetup))
+                    log:info("bases.onMissionStart;  M.campaignStartSetup: $1", M.campaignStartSetup)
                     bases.onMissionStart(baseName, sideName, rsrConfig, missionInitSetup, M.campaignStartSetup)
                 end
             end
@@ -194,7 +195,7 @@ end
 function M.restoreFromState(rsrConfig)
     log:info("Restoring mission state")
     state.copyToCtld()
-    log:info("state.missionInitSetup: $1", mist.utils.basicSerialize(state.missionInitSetup))
+    log:info("state.missionInitSetup: $1", state.missionInitSetup)
     configureBasesAtStartup(rsrConfig, state.currentState.baseOwnership, state.missionInitSetup)
 
     -- We clear state.current.persistentGroupData here, as this is updated in handleSpawnQueue later
@@ -211,7 +212,7 @@ end
 
 function M.onMissionStart(rsrConfig)
     if not state.setCurrentStateFromFile(rsrConfig.stateFileName) then
-        log:error("Unable to load state from $1", mist.utils.basicSerialize(rsrConfig.stateFileName))
+        log:error("Unable to load state from $1", rsrConfig.stateFileName)
         M.campaignStartSetup = true
     end
 

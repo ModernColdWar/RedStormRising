@@ -1,6 +1,5 @@
 env.info("RSR STARTUP: bases.LUA INIT")
-require("mist_4_3_74")
-local inspect = require("inspect")
+local logging = require("logging")
 local logisticsManager = require("logisticsManager")
 local pickupZoneManager = require("pickupZoneManager")
 local slotBlocker = require("slotBlocker")
@@ -10,7 +9,7 @@ local utils = require("utils")
 local M = {}
 M.mapMarkers = {}
 
-local log = mist.Logger:new("bases", "info")
+local log = logging.Logger:new("bases")
 
 local function getRadius(rsrConfig, base)
     if base:GetAirbaseCategory() == Airbase.Category.AIRDROME then
@@ -22,7 +21,7 @@ local function getRadius(rsrConfig, base)
 end
 
 local function activateBaseDefences(baseName, sideName, rsrConfig, missionInit, campaignStartSetup)
-    log:info("Activating base defences. missionInit: $1, Add to spawnQueue (campaignStartSetup): $2 ", mist.utils.basicSerialize(missionInit), mist.utils.basicSerialize(campaignStartSetup))
+    log:info("Activating base defences. missionInit: $1, Add to spawnQueue (campaignStartSetup): $2 ", missionInit, campaignStartSetup)
     local base = AIRBASE:FindByName(baseName)
     local radius = getRadius(rsrConfig, base)
     log:info("Activating base defences for $1 base $2 within $3m", sideName, baseName, radius)
@@ -126,7 +125,7 @@ function M.configureForSide(baseName, sideName)
 end
 
 function M.resupply(baseName, sideName, rsrConfig, spawnLC, missionInit, campaignStartSetup)
-    log:info("RESUPPLY: baseName: $1, sideName: $2, missionInit: $3, campaignStartSetup: $4", baseName, sideName, mist.utils.basicSerialize(missionInit), mist.utils.basicSerialize(campaignStartSetup))
+    log:info("RESUPPLY: baseName: $1, sideName: $2, missionInit: $3, campaignStartSetup: $4", baseName, sideName, missionInit, campaignStartSetup)
     log:info("Configuring $1 resupplied by $2", baseName, sideName)
     if checkNeutral(baseName, sideName) then
         return

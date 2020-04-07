@@ -1,6 +1,6 @@
 --split of state.lua respawn queue updating to allow bases.lua to update spawn queue without creating a loop between state.lua and baseOwnershipCheck.lua
-require("mist_4_3_74")
-local log = mist.Logger:new("updateSpawnQueue", "info")
+local logging = require("logging")
+local log = logging.Logger:new("updateSpawnQueue")
 local M = {}
 
 -- recently spawned units (from player unpacking via CTLD or via code)

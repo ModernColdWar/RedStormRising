@@ -1,9 +1,9 @@
-require("mist_4_3_74")
+local logging = require("logging")
 local state = require("state")
 
 local M = {}
 
-local log = mist.Logger:new("AWACS", "info")
+local log = logging.Logger:new("AWACS")
 
 local function spawnAWACS(spawnTemplatePrefix, spawnLimit)
     log:info("Spawning $1", spawnTemplatePrefix)

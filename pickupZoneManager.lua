@@ -1,9 +1,9 @@
-require("mist_4_3_74")
+local logging = require("logging")
 local utils = require("utils")
 
 local M = {}
 
-local log = mist.Logger:new("PickupZoneManager", "info")
+local log = logging.Logger:new("PickupZoneManager", "info")
 
 local function setPickupZoneSide(pickupZone, sideName)
     local _zoneName = pickupZone[1]
