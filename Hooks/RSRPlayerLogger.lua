@@ -1,5 +1,5 @@
 -- RedStormRising player info and chat logger
-package.cpath = package.cpath .. [[;C:\dev\luarocks\lib\lua\5.1\?.dll]]
+package.cpath = package.cpath .. [[C:\dev\luarocks\lib\lua\5.1\?.dll]]
 local sqlite3 = require("lsqlite3")
 local lfs = require('lfs')
 

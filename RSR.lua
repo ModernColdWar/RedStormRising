@@ -1,18 +1,11 @@
 --- Red Storm Rising DCS mission LUA code
--- stub DCS if we're running outside3
--- dofile(lfs.writedir() .. [[Scripts\RSR\RSR.lua]])
-if env == nil then
-    require("tests.dcs_stub")
-else
-    local module_folder = lfs.writedir() .. [[Scripts\RSR\]]
-    package.path = module_folder .. "?.lua;" .. package.path
-end
+
+-- Add this dir and external paths (socket for calling n0xy's bot, luarocks systree for other dependencies)
+-- note default path does not end with ; but the cpath does
+package.path = package.path .. ";" .. lfs.writedir() .. [[Scripts\RSR\?.lua;.\LuaSocket\?.lua]]
+package.cpath = package.cpath .. [[C:\dev\luarocks\lib\lua\5.1\?.dll]]
 
 env.info("RSR STARTUP: RSR.LUA INIT")
-
--- Add external paths (socket for calling n0xy's bot, luarocks systree for other dependencies)
-package.path = package.path .. [[;.\LuaSocket\?.lua]]
-package.cpath = package.cpath .. [[;C:\dev\luarocks\lib\lua\5.1\?.dll]]
 
 require("mist_4_3_74")
 require("Moose")
