@@ -4,6 +4,15 @@ require("Moose")
 
 local hitEventHandler = require("hitEventHandler")
 
+-- stub out enough for an event's Weapon attribute
+local function weaponWithDisplayName(displayName)
+    return {
+        getDesc = function()
+            return { displayName = displayName }
+        end
+    }
+end
+
 TestHitEventHandler = {}
 
 function TestHitEventHandler:tearDown()
@@ -21,10 +30,10 @@ function TestHitEventHandler:testAIHitOnPlayer()
         TgtCoalition = 1,
         TgtPlayerName = "Winston",
         TgtTypeName = "UH-1H",
-        WeaponName = "weapons.shells.M2_12_7_T",
+        Weapon = weaponWithDisplayName("120mm HE"),
     }
     lu.assertEquals(hitEventHandler.buildHitMessage(event),
-            "Blue M-1 Abrams hit Winston in red UH-1H with weapons.shells.M2_12_7_T")
+            "[ALL] blue M-1 Abrams hit Winston in red UH-1H with 120mm HE")
 end
 
 function TestHitEventHandler:testPlayerHitOnAI()
@@ -34,10 +43,10 @@ function TestHitEventHandler:testPlayerHitOnAI()
         IniTypeName = "F/A-18C",
         TgtCoalition = 2,
         TgtTypeName = "ZSU-23",
-        WeaponName = "AIM-120C",
+        Weapon = weaponWithDisplayName("AIM-120C"),
     }
     lu.assertEquals(hitEventHandler.buildHitMessage(event),
-            "Bob in red F/A-18C hit blue ZSU-23 with AIM-120C")
+            "[ALL] Bob in red F/A-18C hit blue ZSU-23 with AIM-120C")
 end
 
 function TestHitEventHandler:testPlayerHitOnAIWithNoIniCoalition()
@@ -46,10 +55,10 @@ function TestHitEventHandler:testPlayerHitOnAIWithNoIniCoalition()
         IniTypeName = "F/A-18C",
         TgtCoalition = 2,
         TgtTypeName = "ZSU-23",
-        WeaponName = "AIM-120C",
+        Weapon = weaponWithDisplayName("AIM-120C"),
     }
     lu.assertEquals(hitEventHandler.buildHitMessage(event),
-            "Bob in F/A-18C hit blue ZSU-23 with AIM-120C")
+            "[ALL] Bob in F/A-18C hit blue ZSU-23 with AIM-120C")
 end
 
 function TestHitEventHandler:testPlayerHitOnAINoWeaponName()
@@ -61,7 +70,7 @@ function TestHitEventHandler:testPlayerHitOnAINoWeaponName()
         TgtTypeName = "ZSU-23"
     }
     lu.assertEquals(hitEventHandler.buildHitMessage(event),
-            "Bob in red F/A-18C hit blue ZSU-23")
+            "[ALL] Bob in red F/A-18C hit blue ZSU-23")
 end
 
 function TestHitEventHandler:testPlayerOnPlayerHit()
@@ -71,11 +80,11 @@ function TestHitEventHandler:testPlayerOnPlayerHit()
         IniTypeName = "F/A-18C",
         TgtCoalition = 2,
         TgtTypeName = "ZSU-23",
-        WeaponName = "AIM-120C",
+        Weapon = weaponWithDisplayName("AIM-120C"),
         TgtPlayerName = "Alan",
     }
     lu.assertEquals(hitEventHandler.buildHitMessage(event),
-            "Bob in red F/A-18C hit Alan in blue ZSU-23 with AIM-120C")
+            "[ALL] Bob in red F/A-18C hit Alan in blue ZSU-23 with AIM-120C")
 end
 
 function TestHitEventHandler:testPlayerOnPlayerFriendlyHit()
@@ -85,11 +94,11 @@ function TestHitEventHandler:testPlayerOnPlayerFriendlyHit()
         IniTypeName = "F/A-18C",
         TgtCoalition = 1,
         TgtTypeName = "ZSU-23",
-        WeaponName = "AIM-120C",
+        Weapon = weaponWithDisplayName("AIM-120C"),
         TgtPlayerName = "Alan",
     }
     lu.assertEquals(hitEventHandler.buildHitMessage(event),
-            "FRIENDLY FIRE: Bob in red F/A-18C hit Alan in red ZSU-23 with AIM-120C")
+            "[ALL] FRIENDLY FIRE: Bob in red F/A-18C hit Alan in red ZSU-23 with AIM-120C")
 end
 
 function TestHitEventHandler:testAIOnAIHit()
@@ -124,10 +133,10 @@ function TestHitEventHandler:testSlungUnitHitOnPlayer()
         TgtCoalition = 1,
         TgtPlayerName = "Alan",
         TgtTypeName = "UH-1H",
-        WeaponName = "weapons.shells.M2_12_7_T",
+        Weapon = weaponWithDisplayName("120mm AP"),
     }
     lu.assertEquals(hitEventHandler.buildHitMessage(event),
-            "Winston's blue M-1 Abrams hit Alan in red UH-1H with weapons.shells.M2_12_7_T")
+            "[ALL] Winston's blue M-1 Abrams hit Alan in red UH-1H with 120mm AP")
 end
 
 function TestHitEventHandler:testPlayerHitOnSlungUnit()
@@ -138,10 +147,10 @@ function TestHitEventHandler:testPlayerHitOnSlungUnit()
         TgtCoalition = 2,
         TgtTypeName = "ZSU-23",
         TgtGroupName = "CTLD_ZSU_23 1 (Winston)",
-        WeaponName = "AGM-65D",
+        Weapon = weaponWithDisplayName("AGM-65D"),
     }
     lu.assertEquals(hitEventHandler.buildHitMessage(event),
-            "Bob in red F/A-18C hit Winston's blue ZSU-23 with AGM-65D")
+            "[ALL] Bob in red F/A-18C hit Winston's blue ZSU-23 with AGM-65D")
 end
 
 function TestHitEventHandler:testShouldSendMessageRemovesImmediatelyRepeatedMessages()

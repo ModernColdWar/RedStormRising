@@ -140,7 +140,10 @@ world = {
         S_EVENT_MAX = 99,
     },
     addEventHandler = function()
-    end
+    end,
+    getAirbases = function()
+        return {}
+    end,
 }
 
 coalition = {
