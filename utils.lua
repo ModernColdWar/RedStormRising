@@ -66,13 +66,10 @@ function M.matchesBaseName(baseName, prefix)
         return true
     end
 
-    --mr: shouldn't be required any more as of MIZ 4.2.4
-    --[[
     -- special case for typos!
     if prefix == "Sukumi" and baseName == "Sukhumi-Babushara" then
         return true
     end
-    --]]
 
     local baseNameParts = split(baseName, "-")
     local prefixParts = split(prefix, "-")
