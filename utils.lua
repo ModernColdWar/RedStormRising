@@ -11,24 +11,33 @@ function M.getFilePath(filename)
     end
 end
 
-local sideLookupTable = {
-    bySide = {
-        [coalition.side.RED] = "red",
-        [coalition.side.BLUE] = "blue",
-        [coalition.side.NEUTRAL] = "neutral",
-    },
-    byName = {
-        red = coalition.side.RED,
-        blue = coalition.side.BLUE,
-        neutral = coalition.side.NEUTRAL,
+local sideLookupTable
+
+local function populateSideLookupTable()
+    if sideLookupTable ~= nil then
+        return
+    end
+    sideLookupTable = {
+        bySide = {
+            [coalition.side.RED] = "red",
+            [coalition.side.BLUE] = "blue",
+            [coalition.side.NEUTRAL] = "neutral",
+        },
+        byName = {
+            red = coalition.side.RED,
+            blue = coalition.side.BLUE,
+            neutral = coalition.side.NEUTRAL,
+        }
     }
-}
+end
 
 function M.getSideName(side)
+    populateSideLookupTable()
     return sideLookupTable.bySide[side]
 end
 
 function M.getSide(sideName)
+    populateSideLookupTable()
     return sideLookupTable.byName[sideName]
 end
 
