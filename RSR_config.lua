@@ -7,7 +7,7 @@ local rsrConfig = {}
 rsrConfig.devMode = false
 
 -- Event reporting for the n0xy bot
-rsrConfig.udpEventReporting = true
+rsrConfig.udpEventReporting = false
 rsrConfig.udpEventHost = "walsh.systems"
 rsrConfig.udpEventPort = 9696
 
