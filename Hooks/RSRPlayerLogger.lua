@@ -20,11 +20,17 @@ M.db = sqlite3.open(lfs.writedir() .. [[Scripts\RSR\rsr.sqlite]], sqlite3.OPEN_R
 
 M.insert_stmt = M.db:prepare("INSERT INTO connection(ucid, name, ipaddr) VALUES(?, ?, ?)")
 
+-- populated on connect; used in callbacks which just pass in a playerId
+M.connectedPlayerInfo = {
+    -- {name = <name>, ucid = <ucid>},
+}
+
 function M.onPlayerConnect(playerId)
     local ucid = net.get_player_info(playerId, 'ucid')
     local name = net.get_player_info(playerId, 'name')
     local ipaddr = net.get_player_info(playerId, 'ipaddr')
     net.log("RSRPlayerLogger: logging connection from " .. name)
+    M.connectedPlayerInfo[playerId] = { name = name, ucid = ucid }
     M.insert_stmt:bind_values(ucid, name, ipaddr)
     M.insert_stmt:step()
     M.insert_stmt:reset()
@@ -42,6 +48,16 @@ function M.onPlayerTryConnect(ipaddr, name, ucid)
         return false, "You are banned from this server."
     end
     -- return nothing
+end
+
+function M.onPlayerTrySendChat(playerId, msg, all)
+    local playerInfo = M.connectedPlayerInfo[playerId]
+    local name = playerInfo.name
+    local ucid = playerInfo.ucid
+    -- all is -1 for chat to all, -2 for chat to allies (!!!)
+    local toAll = all == -1
+    local destination = toAll and "ALL" or "ALLIES"
+    net.log("RSRPlayerLogger: CHAT [" .. name .. "] (" .. ucid .. ") <" .. destination .. ">: " .. msg)
 end
 
 DCS.setUserCallbacks(M)
