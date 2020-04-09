@@ -1,4 +1,5 @@
 -- RedStormRising player info and chat logger
+-- This handles callbacks related to connections and chat; slot changes are handled by RSRSlotBlocker
 package.cpath = package.cpath .. [[C:\dev\luarocks\lib\lua\5.1\?.dll]]
 local sqlite3 = require("lsqlite3")
 local lfs = require('lfs')

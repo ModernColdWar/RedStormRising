@@ -1,6 +1,8 @@
 -- RedStormRising slot blocker
 -- Based on the excellent work by the authors of Simple Slot Block (thank you Ciribob et al!)
 
+-- Events related to connection and chat are handled by RSRPlayerLogger
+
 local M = {}
 
 -- RSR developers and admins
