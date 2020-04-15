@@ -63,8 +63,8 @@ local ropeLengths = {
 local radioSettings = {
     red = {
         MiG_21Bis = { { channels = { 126, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139 } } },
-		JF_17 = { { channels = { 124, 151, 152, 153, 154, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114 } } },
-
+        JF_17 = { { channels = { 124, 151, 152, 153, 154, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114 } } },
+    },
     blue = {
         L_39ZA = { { channels = { 305, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269 } } },
         F_5E_3 = { { channels = { 305, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269 } } }
@@ -235,26 +235,27 @@ missionUtils.iterBases(mission, "Caucasus", function(baseName, warehouse, isAirb
     end
 end)
 
-print("\nChecking client slots for problems")
+print("\nSetting options for client aircraft")
 missionUtils.iterGroups(mission, function(group, sideName)
     if missionUtils.isClientGroup(group) then
         validateClientGroup(group)
-        local unit = group.units[1]
-        setFuel(unit)
-        setCountermeasures(unit)
-        setRadio(unit, sideName)
-        setRopeLength(unit)
-        if unit.type == "F-14B" then
-            setF14Options(unit, sideName)
-        end
-        if unit.type == "M-2000C" then
-            setM2000Options(unit, sideName)
-        end
-        if unit.type == "JF-17" then
-            setJF17Options(unit, sideName)
-        end
-        if unit.type == "F-5E-3" then
-            setF5Options(unit, sideName)
+        for _, unit in pairs(group.units) do
+            setFuel(unit)
+            setCountermeasures(unit)
+            setRadio(unit, sideName)
+            setRopeLength(unit)
+            if unit.type == "F-14B" then
+                setF14Options(unit, sideName)
+            end
+            if unit.type == "M-2000C" then
+                setM2000Options(unit, sideName)
+            end
+            if unit.type == "JF-17" then
+                setJF17Options(unit, sideName)
+            end
+            if unit.type == "F-5E-3" then
+                setF5Options(unit, sideName)
+            end
         end
     end
 end)
