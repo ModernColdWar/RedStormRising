@@ -235,7 +235,7 @@ missionUtils.iterBases(mission, "Caucasus", function(baseName, warehouse, isAirb
     end
 end)
 
-print("\nChecking client slots for problems")
+print("\nSetting options for client aircraft")
 missionUtils.iterGroups(mission, function(group, sideName)
     if missionUtils.isClientGroup(group) then
         validateClientGroup(group)
