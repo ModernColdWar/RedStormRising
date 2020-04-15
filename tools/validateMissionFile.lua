@@ -239,22 +239,23 @@ print("\nChecking client slots for problems")
 missionUtils.iterGroups(mission, function(group, sideName)
     if missionUtils.isClientGroup(group) then
         validateClientGroup(group)
-        local unit = group.units[1]
-        setFuel(unit)
-        setCountermeasures(unit)
-        setRadio(unit, sideName)
-        setRopeLength(unit)
-        if unit.type == "F-14B" then
-            setF14Options(unit, sideName)
-        end
-        if unit.type == "M-2000C" then
-            setM2000Options(unit, sideName)
-        end
-        if unit.type == "JF-17" then
-            setJF17Options(unit, sideName)
-        end
-        if unit.type == "F-5E-3" then
-            setF5Options(unit, sideName)
+        for _, unit in pairs(group.units) do
+            setFuel(unit)
+            setCountermeasures(unit)
+            setRadio(unit, sideName)
+            setRopeLength(unit)
+            if unit.type == "F-14B" then
+                setF14Options(unit, sideName)
+            end
+            if unit.type == "M-2000C" then
+                setM2000Options(unit, sideName)
+            end
+            if unit.type == "JF-17" then
+                setJF17Options(unit, sideName)
+            end
+            if unit.type == "F-5E-3" then
+                setF5Options(unit, sideName)
+            end
         end
     end
 end)
