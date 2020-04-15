@@ -2588,12 +2588,13 @@ function ctld.checkHoverStatus()
     end
 end
 
-function ctld.loadNearbyCrate(_aircraft)
-    local _transUnit = ctld.getTransportUnit(_aircraft)
+function ctld.loadNearbyCrate(_aircraftName)
+    local _aircraft = ctld.getTransportUnit(_aircraftName)
 
-    if _transUnit ~= nil then
+    if _aircraft ~= nil then
 	
-		local _aircraftCoalition =_aircraft:getCoalition()
+		local _aircraftCoalition = _aircraft:getCoalition()
+		local _playerName = ctld.getPlayerNameOrType(_aircraft)
 	
 		local _friendlyLogisticsCentreProximity = ctld.friendlyLogisticsCentreProximity(_aircraft)
 		local _nearestLogisticsCentreName = _friendlyLogisticsCentreProximity[1]
@@ -2601,37 +2602,37 @@ function ctld.loadNearbyCrate(_aircraft)
 		--(extremely rare) if no friendly LC AND staging point object (e.g. gas platform) dead = "NoBase"
 		local _nearestLogisticsCentreBaseNameOrFOBgrid = _friendlyLogisticsCentreProximity[3]
 	
-        if ctld.inAir(_transUnit) then
-            ctld.displayMessageToGroup(_transUnit, "You must land before you can load a crate!", 10, true)
+        if ctld.inAir(_aircraft) then
+            ctld.displayMessageToGroup(_aircraft, "You must land before you can load a crate!", 10, true)
             return
         end
 
         if not ctld.simultaneousTroopInternalCrateLoad then
-            if ctld.troopsOnboard(_transUnit, true) then
-                ctld.displayMessageToGroup(_transUnit, "You already have troops on board. There's no room!", 10, true)
+            if ctld.troopsOnboard(_aircraft, true) then
+                ctld.displayMessageToGroup(_aircraft, "You already have troops on board. There's no room!", 10, true)
                 return
             end
         end
 
-        if ctld.unitCargoDoorsOpen(_transUnit) ~= true then
-            ctld.displayMessageToGroup(_transUnit, "You must open, or remove, the cargo doors to load cargo", 10, true)
+        if ctld.unitCargoDoorsOpen(_aircraft) ~= true then
+            ctld.displayMessageToGroup(_aircraft, "You must open, or remove, the cargo doors to load cargo", 10, true)
             return
         end
 
-        if ctld.inTransitSlingLoadCrates[_aircraft] == nil then
+        if ctld.inTransitSlingLoadCrates[_aircraftName] == nil then
             --loads internal cargo if pre-existing internal cargo not detected
 
             -- ctld.getCratesAndDistance: { crateUnit = _crate, dist = _dist, details = _details }
-            local _crates = ctld.getCratesAndDistance(_transUnit)
+            local _crates = ctld.getCratesAndDistance(_aircraft)
 
             for _, _crate in pairs(_crates) do
 
-                if (_crate.dist < 50.0) and (_crate.details.internal == 1) and (ctld.crateValidLoadPoint(_transUnit, _crate)) then
+                if (_crate.dist < 50.0) and (_crate.details.internal == 1) and (ctld.crateValidLoadPoint(_aircraft, _crate)) then
+				
+					ctld.displayMessageToGroup(_aircraft, "Loaded " .. _crate.details.desc .. " crate!", 10, true)
+					trigger.action.outTextForCoalition(_aircraftCoalition, "[TEAM] " .. _playerName .. " loaded a " .. _crate.details.desc .. " crate for transport from " .. _nearestLogisticsCentreBaseNameOrFOBgrid, 10)
 					
-					trigger.action.outTextForCoalition(_aircraftCoalition, "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " loaded a " .. _crate.details.desc .. " crate for transport from " .. _nearestLogisticsCentreBaseNameOrFOBgrid, 10)
-					ctld.displayMessageToGroup(_transUnit, "Loaded " .. _crate.details.desc .. " crate!", 10, true)
-
-                    if _transUnit:getCoalition() == 1 then
+                    if _aircraft:getCoalition() == 1 then
                         ctld.spawnedCratesRED[_crate.crateUnit:getName()] = nil
                     else
                         ctld.spawnedCratesBLUE[_crate.crateUnit:getName()] = nil
@@ -2647,22 +2648,22 @@ function ctld.loadNearbyCrate(_aircraft)
 					
 					local _isLogisticsCentreCrate = _crate.details.unit == "LogisticsCentre"
                     if _isLogisticsCentreCrate then
-                        ctld.inTransitLogisticsCentreCrates[_aircraft] = _copiedCrateDetails
+                        ctld.inTransitLogisticsCentreCrates[_aircraftName] = _copiedCrateDetails
                     else
-                        ctld.inTransitSlingLoadCrates[_aircraft] = _copiedCrateDetails --crate details copied and associated with player as internal cargo
+                        ctld.inTransitSlingLoadCrates[_aircraftName] = _copiedCrateDetails --crate details copied and associated with player as internal cargo
                     end
                     return
                 end
             end
 
-            ctld.displayMessageToGroup(_transUnit, "No Crates within the vicinity of the cargo door load area to load!", 10, true)
+            ctld.displayMessageToGroup(_aircraft, "No Crates within the vicinity of the cargo door load area to load!", 10, true)
 
         else
             -- crate onboard
 
-            local _currentCrate = mist.utils.deepCopy(ctld.inTransitSlingLoadCrates[_aircraft])
+            local _currentCrate = mist.utils.deepCopy(ctld.inTransitSlingLoadCrates[_aircraftName])
 
-            ctld.displayMessageToGroup(_transUnit, "You already have a " .. _currentCrate.desc .. " crate onboard!", 10, true)
+            ctld.displayMessageToGroup(_aircraft, "You already have a " .. _currentCrate.desc .. " crate onboard!", 10, true)
         end
     end
 
