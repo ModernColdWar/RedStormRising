@@ -131,6 +131,7 @@ local transportTypes = {
     --"SA342Mistral",
     "SA342L",
     "SA342M",
+	"SA342Minigun",
     "Ka-50",
     "UH-1H",
     "Mi-8MT",

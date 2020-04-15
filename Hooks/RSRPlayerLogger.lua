@@ -13,13 +13,12 @@ M.bannedIps = {
 
 -- Banned player UCIDs
 M.bannedUcids = {
-    "7c0dc87190061fd98dcf2936444ba05c", -- "nuke china!!!" 2020-04-09
+    "7c0dc87190061fd98dcf2936444ba05c", -- "nuke china!!!" said some shit 2020-04-09
 }
 
 M.db = sqlite3.open(lfs.writedir() .. [[Scripts\RSR\rsr.sqlite]], sqlite3.OPEN_READWRITE)
 
-M.insert_connection = M.db:prepare("INSERT INTO connection(ucid, name, ipaddr) VALUES(?, ?, ?)")
-M.insert_chat = M.db:prepare("INSERT INTO chat(ucid, name, to_all, message) VALUES(?, ?, ?, ?)")
+M.insert_stmt = M.db:prepare("INSERT INTO connection(ucid, name, ipaddr) VALUES(?, ?, ?)")
 
 -- populated on connect; used in callbacks which just pass in a playerId
 M.connectedPlayerInfo = {
@@ -32,9 +31,9 @@ function M.onPlayerConnect(playerId)
     local ipaddr = net.get_player_info(playerId, 'ipaddr')
     net.log("RSRPlayerLogger: logging connection from " .. name)
     M.connectedPlayerInfo[playerId] = { name = name, ucid = ucid }
-    M.insert_connection:bind_values(ucid, name, ipaddr)
-    M.insert_connection:step()
-    M.insert_connection:reset()
+    M.insert_stmt:bind_values(ucid, name, ipaddr)
+    M.insert_stmt:step()
+    M.insert_stmt:reset()
 end
 
 -- based on slmod from https://github.com/mrSkortch/DCS-SLmod/blob/master/Scripts/net/Slmodv7_5/SlmodCallbacks.lua
@@ -59,9 +58,6 @@ function M.onPlayerTrySendChat(playerId, msg, all)
     local toAll = all == -1
     local destination = toAll and "ALL" or "ALLIES"
     net.log("RSRPlayerLogger: CHAT [" .. name .. "] (" .. ucid .. ") <" .. destination .. ">: " .. msg)
-    M.insert_chat:bind_values(ucid, name, toAll, msg)
-    M.insert_chat:step()
-    M.insert_chat:reset()
 end
 
 DCS.setUserCallbacks(M)

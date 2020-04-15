@@ -40,6 +40,22 @@ local function formatText(text, ...)
         v = toStr(v)
         text = text:gsub('$' .. i, v)
     end
+	
+	local fName = nil
+    local cLine = nil
+	local dInfo = debug.getinfo(3)
+	fName = dInfo.name
+	cLine = dInfo.currentline
+	-- local fsrc = dinfo.short_src
+	--local fLine = dInfo.linedefined
+	if fName and cLine then
+		return fName .. '|' .. cLine .. ': ' .. text
+	elseif cLine then
+		return cLine .. ': ' .. text
+	else
+		return ' ' .. text
+	end
+
     return text
 end
 

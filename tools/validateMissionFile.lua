@@ -38,6 +38,7 @@ local fuelSettings = {
     SA342L = { capacity = 416.33, fraction = 0.4 },
     SA342M = { capacity = 416.33, fraction = 0.4 },
     SA342Mistral = { capacity = 416.33, fraction = 0.4 },
+	SA342Minigun = { capacity = 416.33, fraction = 0.4 },
     SpitfireLFMkIX = { capacity = 247, fraction = 1.0 },
     --["Su-25"] = { capacity = 2835, fraction = 0.7 }, -- still produces error but removed all Su-25s from mission anyway
     Su_25T = { capacity = 3790, fraction = 0.7 },
@@ -52,16 +53,18 @@ local countermeasuresSettings = {
 
 
 -- default length in mission editor is 15m
+-- 13/04/20 testing: rope length >15m for Mi8 or KA50 cause CTDs, severe lag/hang-ups, helo to backflip, rope to creation problems, etc.
 local ropeLengths = {
-    Ka_50 = 20,
-    Mi_8MT = 20,
+    Ka_50 = 15,
+    Mi_8MT = 15,
     UH_1H = 10,
 }
 
 local radioSettings = {
     red = {
         MiG_21Bis = { { channels = { 126, 121, 122, 123, 124, 125, 126, 127, 128, 129, 130, 131, 132, 133, 134, 135, 136, 137, 138, 139 } } },
-    },
+		JF_17 = { { channels = { 124, 151, 152, 153, 154, 100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112, 113, 114 } } },
+
     blue = {
         L_39ZA = { { channels = { 305, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269 } } },
         F_5E_3 = { { channels = { 305, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 266, 267, 268, 269 } } }

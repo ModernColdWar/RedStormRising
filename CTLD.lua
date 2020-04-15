@@ -1152,11 +1152,20 @@ function ctld.spawnCrate(_arguments)
                 end
             end
 
-            --staging base
+            --internal crates only from staging base
             if not _logisticsCentreReq and _internal == 0 and _nearestLogisticsCentreBaseNameOrFOBgrid ~= "NoBase" then
                 ctld.displayMessageToGroup(_heli, "Only internal crates are available from " .. _closestBaseName, 10)
                 return
             end
+			
+			--prevent auto 'provision and loading' of internal crates at staging bases for helos that are not normally allowed internal crates
+			local _unitActions = ctld.getUnitActions(_heli:getTypeName())
+			if not _logisticsCentreReq and _internal == 1 and (ctld.internalCargo == false or _unitActions.internal == false) then
+				ctld.displayMessageToGroup(_heli, "Aircraft is not capable of transporting crates internally", 10)
+				return
+			end
+			
+			log:info("_unitActions: $1, ctld.internalCargo: $2, _internal: $3, _logisticsCentreReq: $4",_unitActions, ctld.internalCargo,_internal, _logisticsCentreReq)
 
             --prevent Logistics Centre crate supply from FOBs
             local _isFOB = string.match(_nearestLogisticsCentreBaseNameOrFOBgrid, "FOB")
@@ -2583,7 +2592,15 @@ function ctld.loadNearbyCrate(_aircraft)
     local _transUnit = ctld.getTransportUnit(_aircraft)
 
     if _transUnit ~= nil then
-
+	
+		local _aircraftCoalition =_aircraft:getCoalition()
+	
+		local _friendlyLogisticsCentreProximity = ctld.friendlyLogisticsCentreProximity(_aircraft)
+		local _nearestLogisticsCentreName = _friendlyLogisticsCentreProximity[1]
+		local _nearestLogisticsCentreDist = _friendlyLogisticsCentreProximity[2]
+		--(extremely rare) if no friendly LC AND staging point object (e.g. gas platform) dead = "NoBase"
+		local _nearestLogisticsCentreBaseNameOrFOBgrid = _friendlyLogisticsCentreProximity[3]
+	
         if ctld.inAir(_transUnit) then
             ctld.displayMessageToGroup(_transUnit, "You must land before you can load a crate!", 10, true)
             return
@@ -2610,10 +2627,9 @@ function ctld.loadNearbyCrate(_aircraft)
             for _, _crate in pairs(_crates) do
 
                 if (_crate.dist < 50.0) and (_crate.details.internal == 1) and (ctld.crateValidLoadPoint(_transUnit, _crate)) then
-                    -- Ironwulf2000 Updated for Internal Cargo
-                    ctld.displayMessageToGroup(_transUnit, "Loaded " .. _crate.details.desc .. " crate!", 10, true)
-
-                    local _isLogisticsCentreCrate = _crate.details.unit == "LogisticsCentre"
+					
+					trigger.action.outTextForCoalition(_aircraftCoalition, "[TEAM] " .. ctld.getPlayerNameOrType(_aircraft) .. " loaded a " .. _crate.details.desc .. " crate for transport from " .. _nearestLogisticsCentreBaseNameOrFOBgrid, 10)
+					ctld.displayMessageToGroup(_transUnit, "Loaded " .. _crate.details.desc .. " crate!", 10, true)
 
                     if _transUnit:getCoalition() == 1 then
                         ctld.spawnedCratesRED[_crate.crateUnit:getName()] = nil
@@ -2628,7 +2644,8 @@ function ctld.loadNearbyCrate(_aircraft)
                     -- { desc = "Logistics Centre crate", internal = 1, unit = "LogisticsCentre", weight = 503, baseOfOrigin = "MM75" }
                     local _copiedCrateDetails = mist.utils.deepCopy(_crate.details)
                     log:info("ctld.loadNearbyCrate: _copiedCrateDetails: $1", _copiedCrateDetails)
-
+					
+					local _isLogisticsCentreCrate = _crate.details.unit == "LogisticsCentre"
                     if _isLogisticsCentreCrate then
                         ctld.inTransitLogisticsCentreCrates[_aircraft] = _copiedCrateDetails
                     else
@@ -3164,14 +3181,14 @@ function ctld.unpackCrates(_arguments)
                         --env.info("Added EWR")
                     end
 
-                    local quantityTxt = ""
-                    local plural = ""
+                    local _quantityTxt = "1"
+                    local _plural = ""
                     if _crate.details.unitQuantity ~= nil and _crate.details.unitQuantity > 1 then
-                        quantityTxt = tostring(_crate.details.unitQuantity) .. " "
-                        plural = "s"
+                        _quantityTxt = tostring(_crate.details.unitQuantity) .. " "
+                        _plural = "s"
                     end
-                    trigger.action.outTextForCoalition(_heliCoalition, "[TEAM] " .. _playerName .. " successfully deployed " .. quantityTxt .. _crate.details.desc .. plural .. " to the field", 10)
-                    log:info("$1 unpacked $2 x $3", _playerName, quantityTxt, _crate.details.desc)
+                    trigger.action.outTextForCoalition(_heliCoalition, "[TEAM] " .. _playerName .. " successfully deployed " .. _quantityTxt .. " x " .. _crate.details.desc .. _plural .. " to the field", 10)
+                    log:info("$1 unpacked $2 x $3", _playerName, _quantityTxt, _crate.details.desc)
 
                     if ctld.isJTACUnitType(_crate.details.unit) and ctld.JTAC_dropEnabled then
                         local _code = ctld.getLaserCode(_heliCoalition)

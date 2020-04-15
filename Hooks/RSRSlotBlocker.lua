@@ -15,6 +15,7 @@ M.gameMasterUcids = {
     "6e14d6e4deb4bf3b08d99713754cd1dc", -- n0xy Steam
     "87dd983a6c5b678de30c9adb55b18cf4", -- n0xy Standalone
     "263d36e3b60782a6c16e2b3c5cebf3f9", -- mad rabbit
+	"53c1017106f484956c9e56d8c4b85acb", -- GENA pilot (for video creation April 2020); remove eventually
 }
 
 M.tacCmdrUcids = {
@@ -101,6 +102,8 @@ M.tacCmdrUcids = {
     "079236f5f48b0350bdaf364d042dccfe", -- rocket_knight added by deebix
     "c70c2a7bb2d855e80bcf4964ee1daaeb", -- moupe added by deebix
     "9de0e2e317a56c09aecff8eeeecdd47a", -- =AW=33COM added by mad rabbit
+	"7695c98ec481ce38dc1728d469dbd5ba"  -- Kestrel added by mad rabbit
+	"062792cea85dc2159a74a82e0ceeeff3"  -- REAPER 54 | Sturdyguns added by mad rabbit
     -----------------------------------
     -- Russian Players
     "53c1017106f484956c9e56d8c4b85acb", -- GenaPilot

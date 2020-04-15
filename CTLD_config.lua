@@ -276,8 +276,9 @@ ctld.unitLoadLimits = {
     ---
     ["UH-1H"] = 10,
     ["Mi-8MT"] = 20,
+	["SA342Minigun"] = 1,
     ["SA342M"] = 1,
-    ["SA342L"] = 2,
+    ["SA342L"] = 1,
     --["Ka-50"] = 1,
     ---
     ["C-101CC"] = 1,
@@ -318,6 +319,7 @@ ctld.unitActions = {
 
     -- Remove the -- below to turn on options
     --["SA342Mistral"] = { crates = false, troops = false, internal = false },
+	["SA342Minigun"] = { crates = false, troops = true, internal = false },
     ["SA342L"] = { crates = false, troops = true, internal = false },
     ["SA342M"] = { crates = false, troops = true, internal = false },
     ["Ka-50"] = { crates = true, troops = false, internal = false },
@@ -354,6 +356,7 @@ ctld.transportTypes = {
     --"SA342Mistral",
     "SA342L",
     "SA342M",
+	"SA342Minigun",
     "Ka-50",
     "UH-1H",
     "Mi-8MT",
@@ -387,19 +390,25 @@ ctld.transportTypes = {
 -- You must add a name to the group for it to work
 -- You can also add an optional coalition side to limit the group to one side
 -- for the side - 2 is BLUE and 1 is RED
+-- {name = "Mortar Squad Red", inf = 2, mortar = 5, side =1 }, --would make a group loadable by RED only
 ctld.loadableGroupsHelis = {
-    { name = "Infantry Squad: \n    5 x AK/M4, 2 x MGs", inf = 5, mg = 2 }, -- will make a loadable group with 5 infantry, 2 MGs and 2 anti-tank for both coalitions
+    { name = "Infantry Squad: \n    5 x AK/M4, 2 x MGs", inf = 5, mg = 2 }, 
     { name = "Infantry Platoon [Mi-8]: \n    12 x AK/M4, 4 x MGs", inf = 12, mg = 4 },
     { name = "Anti-Air Squad: \n    2 x MANPAD", aa = 2 },
     { name = "Anti-Tank Squad: \n    2 x AK/M4, 4 x AT", inf = 2, at = 4 },
     { name = "Artillery Squad: \n    6 x Mortar", mortar = 6 },
-    -- {name = "Mortar Squad Red", inf = 2, mortar = 5, side =1 }, --would make a group loadable by RED only
+	----
+	{ name = "Rifle Infantry: 1 x AK/M4", inf = 1 },
+	{ name = "MG Infantry: 1 x MG", mg = 1 },
+    { name = "Anti-Air Infantry: 1 x MANPAD", aa = 1 },
+    { name = "Anti-Tank Infantry: 1 x AT", at = 1 },
+    { name = "Artillery Infantry: 1 x Mortar", mortar = 1 },
 }
 
---duplicated list for cargo planes to avoid clutter in helo list
+--duplicated list for cargo planes
 ctld.loadableGroupsCargoPlanes = {
     { name = "Rifle Infantry: \n    1 x AK/M4", inf = 1 },
-    { name = "MG Infantry: \n    1 x MG", mg = 1 },
+    --{ name = "MG Infantry: \n    1 x MG", mg = 1 },
     --{ name = "Anti-Air Infantry: 1 x MANPAD", aa = 1 },
     --{ name = "Anti-Tank Infantry: 1 x AT", at = 1 },
     --{ name = "Artillery Infantry: 1 x Mortar", mortar = 1 },
