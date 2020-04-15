@@ -71,6 +71,7 @@ local radioSettings = {
         },
     }
 }
+
 local missionDir = arg[1]
 if missionDir == nil then
     print("No mission dir specified")
