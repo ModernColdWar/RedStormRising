@@ -3,6 +3,7 @@ env.info("RSR STARTUP: persistence.LUA INIT")
 require("mist_4_3_74") --required if loaded in utils?
 require("CTLD")
 require("Moose")
+local inspect = require("inspect")
 local utils = require("utils")
 local bases = require("bases")
 local state = require("state")
@@ -89,27 +90,37 @@ function M.spawnGroup(groupData)
 
     -- Fix issue where mist group data doesn't contain playerCanDrive flag (it's always true for our persisted units)
     local _isJTAC = false
+	local _isAAsystem = false
+	local _AAsystem
     for _, unitData in pairs(groupData.units) do
         unitData.playerCanDrive = true
-
-        --group name for MIZ pre-placed JTACs won't contain "UAZ" or "Hummer", therefore check unit type
-        local _unitType = unitData.type
+		local _unitType = unitData.type
+		
+        --group name for MIZ pre-placed JTACs won't contain "GAZ" or "Hummer", therefore check unit type
         if ctld.isJTACUnitType(_unitType) then
             _isJTAC = true
         end
+		
+		_AAsystem = ctld.getAATemplate(_unitType)
+		if _AAsystem ~= nil then
+			_isAAsystem = true
+		end
     end
-
-    --log:info("_isJTAC $1 groupName $2", _isJTAC, groupName)
-
-    -- make base defence units uncontrollable
-    if not utils.startswith(groupName, "CTLD_") then
-        log:info("Setting $1 as uncontrollable", groupName)
-        groupData["uncontrollable"] = true
-    end
-
-    local spawnedGroup = Group.getByName(mist.dynAdd(groupData).name)
-
-    log:info("_isJTAC $1 groupName $2", _isJTAC, groupName)
+	
+	log:info("_isJTAC $1 groupName $2", _isJTAC, groupName)
+    log:info("_isAAsystem $1 groupName $2, _AAsystem: $3", _isAAsystem, groupName, _AAsystem)
+	
+	-------------------------------
+	
+	-- check if late activated group (e.g. pre-placed base defences, FARP trucks) already spawned
+	local spawnedGroup = Group.getByName(groupName)
+	if spawnedGroup == nil then
+		spawnedGroup = Group.getByName(mist.dynAdd(groupData).name)
+	else
+		
+		log:info("$1 already exists.  Skipping spawning.", groupName)
+	end
+	
     if _isJTAC then
         local _code = ctld.getLaserCode(Group.getByName(groupName):getCoalition())
         log:info("Configuring group $1 to auto-lase on $2", groupName, _code)
@@ -121,11 +132,18 @@ function M.spawnGroup(groupData)
         ctld.addEWRTask(spawnedGroup)
     end
 
-    -- make base defence units uncontrollable
-    if not utils.startswith(groupName, "CTLD_") then
+	if utils.startswith(groupName, "CTLD_") and _isAAsystem then
+        log:info("Adding $1 as AAsystem", groupName)
+		log:info("ctld.completeAASystems: $1", inspect(ctld.completeAASystems, { newline = " ", indent = "" }))
+		ctld.completeAASystems[groupName] = ctld.getAASystemDetails(spawnedGroup, _AAsystem)
+		log:info("ctld.completeAASystems: $1", inspect(ctld.completeAASystems, { newline = " ", indent = "" }))
+    end
+	
+	-- make base defence units uncontrollable
+	if not utils.startswith(groupName, "CTLD_") then
         log:info("Setting $1 as uncontrollable", groupName)
         groupData["uncontrollable"] = true
-    end
+	end
 
     utils.setGroupControllerOptions(spawnedGroup)
 

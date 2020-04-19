@@ -534,7 +534,8 @@ ctld.spawnableCrates = {
         { weight = 869, desc = "Buk Search Radar", unit = "SA-11 Buk SR 9S18M1", side = 1, internal = 0 },
         { weight = 870, desc = "Buk CC Radar", unit = "SA-11 Buk CC 9S470M1", side = 1, internal = 0 },
 
-        --{ weight = 871, desc = "SA-8 Osa 9A33", unit = "Osa 9A33 ln", side = 1, cratesRequired = 2, internal = 0 },
+		-- SA-8 Osa
+        { weight = 871, desc = "SA-8 Osa 9A33", unit = "Osa 9A33 ln", side = 1, cratesRequired = 1, internal = 0 },
 
         -- Hawk System
         { weight = 872, desc = "Hawk Launcher", unit = "Hawk ln", side = 2, internal = 0 },
@@ -587,7 +588,7 @@ ctld.spawnableCrates = {
 
     ["Internal Cargo"] = {
         { weight = 501, desc = "HMMWV - JTAC", unit = "Hummer", side = 2, cratesRequired = 1, internal = 1 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
-        { weight = 502, desc = "UAZ - JTAC", unit = "UAZ-469", side = 1, cratesRequired = 1, internal = 1 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
+        { weight = 502, desc = "GAZ - JTAC", unit = "Tigr_233036", side = 1, cratesRequired = 1, internal = 1 }, -- used as jtac and unarmed, not on the crate list if JTAC is disabled
         { weight = 503, desc = "Logistics Centre", unit = "LogisticsCentre", internal = 1 },
     },
 }
@@ -596,7 +597,7 @@ ctld.internalCratesOnly = ctld.spawnableCrates["Internal Cargo"]
 
 -- if the unit is on this list, it will be made into a JTAC when deployed
 ctld.jtacUnitTypes = {
-    "UAZ", "Hummer" -- there are some wierd encoding issues so if you write SKP-11 it wont match as the - sign is encoded differently...
+    "Tigr_233036", "Hummer" -- there are some wierd encoding issues so if you write SKP-11 it wont match as the - sign is encoded differently...
 }
 
 --- Tells CTLD What multipart AA Systems there are and what parts they need

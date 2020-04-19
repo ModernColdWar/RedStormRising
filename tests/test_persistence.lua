@@ -101,7 +101,7 @@ function TestPersistence:testAddingGroupOwnership()
     lu.assertEquals(persistence.getOwnedJtacCount(ownership, "blue", "Winston"), 0)
     lu.assertEquals(persistence.getOwnedJtacCount(ownership, "blue", "Bob"), 0)
 
-    persistence.addGroupOwnership(ownership, "red", "Winston", "UAZ-469")
+    persistence.addGroupOwnership(ownership, "red", "Winston", "Tigr_233036")
     lu.assertEquals(persistence.getOwnedJtacCount(ownership, "red", "Winston"), 1)
 end
 

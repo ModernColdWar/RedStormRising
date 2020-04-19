@@ -24,12 +24,12 @@ env.info("RSR STARTUP: CTLD.LUA INIT")
 require("mist_4_3_74")
 require("CTLD_config")
 require("Moose")
+local inspect = require("inspect")
 local logging = require("logging")
 local utils = require("utils")
 local rsrConfig = require("RSR_config")
 local baseOwnershipCheck = require("baseOwnershipCheck")
 local logisticsManager = require("logisticsManager")
---local playerDetails = require("playerDetails")
 
 local log = logging.Logger:new("CTLD")
 
@@ -857,7 +857,7 @@ function ctld.spawnCrateStatic(_country, _unitId, _point, _name, _weight, _side,
         }
         local _baseOfOriginRemovedFromName = string.gsub(_name, "%((.+)%)$", "") -- remove base from name to hide base of origin from unit name
         -- HUMVEE FOR BLUE IF TO USE FOR RSR
-        _group.units[1] = ctld.createUnit(_point.x, _point.z, 0, { type = "UAZ-469", name = _baseOfOriginRemovedFromName, unitId = _unitId })
+        _group.units[1] = ctld.createUnit(_point.x, _point.z, 0, { type = "Tigr_233036", name = _baseOfOriginRemovedFromName, unitId = _unitId })
 
         --switch to MIST
         _group.category = Group.Category.GROUND;
@@ -1261,7 +1261,7 @@ function ctld.spawnCrate(_arguments)
                 if _crateType.unit == "LogisticsCentre" then
                     ctld.inTransitLogisticsCentreCrates[_heli:getName()] = _crateDetails
                     ctld.displayMessageToGroup(_heli, string.format("A %s crate has been provisioned and loaded", _crateType.desc), 20)
-                elseif _crateType.unit == "UAZ-469" or _crateType.unit == "Hummer" then
+                elseif _crateType.unit == "Tigr_233036" or _crateType.unit == "Hummer" then
                     ctld.inTransitSlingLoadCrates[_heli:getName()] = _crateDetails
                     ctld.displayMessageToGroup(_heli, string.format("A %s crate has been provisioned and loaded", _crateType.desc), 20)
                 else
@@ -1985,13 +1985,13 @@ function ctld.loadUnloadJTACcrate(_args)
         end
     --]]
 
-    -- { weight = 502, desc = "UAZ - JTAC", unit = "UAZ-469", side = 1, cratesRequired = 1, internal = 1 }
+    -- { weight = 502, desc = "GAZ - JTAC", unit = "Tigr_233036", side = 1, cratesRequired = 1, internal = 1 }
     -- { weight = 501, desc = "HMMWV - JTAC", unit = "Hummer", side = 2, cratesRequired = 1, internal = 1 }
     local _JTACcrateWeightPerSide = 500
     local _JTACcrateUnit = "NoUnit"
     if _aircraftSide == 1 then
         _JTACcrateWeightPerSide = 502
-        _JTACcrateUnit = "UAZ-469"
+        _JTACcrateUnit = "Tigr_233036"
     elseif _aircraftSide == 2 then
         _JTACcrateWeightPerSide = 501
         _JTACcrateUnit = "Hummer"
@@ -3182,13 +3182,13 @@ function ctld.unpackCrates(_arguments)
                         --env.info("Added EWR")
                     end
 
-                    local _quantityTxt = "1"
+                    local _quantityTxt = "1 "
                     local _plural = ""
                     if _crate.details.unitQuantity ~= nil and _crate.details.unitQuantity > 1 then
                         _quantityTxt = tostring(_crate.details.unitQuantity) .. " "
                         _plural = "s"
                     end
-                    trigger.action.outTextForCoalition(_heliCoalition, "[TEAM] " .. _playerName .. " successfully deployed " .. _quantityTxt .. " x " .. _crate.details.desc .. _plural .. " to the field", 10)
+                    trigger.action.outTextForCoalition(_heliCoalition, "[TEAM] " .. _playerName .. " successfully deployed " .. _quantityTxt .. "x " .. _crate.details.desc .. _plural .. " to the field", 10)
                     log:info("$1 unpacked $2 x $3", _playerName, _quantityTxt, _crate.details.desc)
 
                     if ctld.isJTACUnitType(_crate.details.unit) and ctld.JTAC_dropEnabled then
@@ -4352,6 +4352,7 @@ function ctld.unpackAASystem(_heli, _nearestCrate, _nearbyCrates, _aaSystemTempl
         local _spawnedGroup = ctld.spawnCrateGroup(_heli, _posArray, _typeArray)
 
         ctld.completeAASystems[_spawnedGroup:getName()] = ctld.getAASystemDetails(_spawnedGroup, _aaSystemTemplate)
+		log:info("ctld.completeAASystems: $1", inspect(ctld.completeAASystems, { newline = " ", indent = "" }))
 
         ctld.processCallback({ unit = _heli, crate = _nearestCrate, spawnedGroup = _spawnedGroup, action = "unpack" })
 

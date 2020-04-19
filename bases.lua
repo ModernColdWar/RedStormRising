@@ -57,8 +57,10 @@ local function activateBaseDefences(baseName, sideName, rsrConfig, missionInit, 
                         campaignStartSetup == false, missionInit = false:
                             add base defences to spawn queue (persistent unit list) as mission progresses
                     --]]
+					
+					--mr: adds late activated groups to spawn queue = persistence data => prevent until resupply system added
                     if campaignStartSetup or not missionInit then
-                        updateSpawnQueue.pushSpawnQueue(groupName)
+                        updateSpawnQueue.pushSpawnQueue(groupName) 
                     end
                     utils.setGroupControllerOptions(group:GetDCSObject())
 

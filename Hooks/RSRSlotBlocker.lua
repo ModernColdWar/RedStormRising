@@ -78,14 +78,6 @@ M.tacCmdrUcids = {
     "10fb130391f045766bb836e7c9f66c2c", -- Viper 77|Gandalf
     "964158664f15dd3d7fbb0ea80c6b296f", -- The State|LTJG SNOT
     "20dd4b54a9fc51df4d38cd8955103361", -- Disco
-    "4c38b2e3c3647473512e5400017df50e", -- 8==D Ritt
-    "92fd1d66e41dfa65c7dd73b4f309db87", -- 8==D Texas
-    "2afada4c6dcd47147a1140cea34bc43a", -- 8==D Redback
-    "d64300a70517b5878f2aae5cc4e96968", -- 8==D Shively
-    "a73cc77ec3926ac636a4fd419f1c0fb5", -- 8==D Jarhead
-    "c7dade15a8a58dca9d91e12402b77e65", -- 8==D Jarhead
-    "b7477d13cfac623b3ca55e1e2dd0df1f", -- 8==D Guns
-    "e64dcbab81dcdb157439018fc6e76488", -- 8==D Zooker
     "f10c00accc6b3f694490dbb307988e1d", -- ROGUE | Archangel
     "6cb230729c620cd22eea9a1900279dcb", -- GasMachine
     "a72632f9d4aef4bc3fc12fb0a6bcdc87", -- =R|D= johnnytrump
@@ -104,18 +96,41 @@ M.tacCmdrUcids = {
     "079236f5f48b0350bdaf364d042dccfe", -- rocket_knight added by deebix
     "c70c2a7bb2d855e80bcf4964ee1daaeb", -- moupe added by deebix
     "9de0e2e317a56c09aecff8eeeecdd47a", -- =AW=33COM added by mad rabbit
-	"7695c98ec481ce38dc1728d469dbd5ba",  -- Kestrel added by mad rabbit
-	"062792cea85dc2159a74a82e0ceeeff3",  -- REAPER 54 | Sturdyguns added by mad rabbit
+	"7695c98ec481ce38dc1728d469dbd5ba", -- Kestrel added by mad rabbit
+	"062792cea85dc2159a74a82e0ceeeff3", -- REAPER 54 | Sturdyguns added by mad rabbit
+	"c3bb707bca08093fdb732fcf3f99fa5a", -- Sauce added by mad rabbit
+	"89e2077ea937fbed24efe004e16e9739", -- NIGHTFOX 2 [GER] added by mad rabbit
+	"5c9b2c4bd446d3b64a7c60efd35b3cfa", -- Ayey added by mad rabbit
+	-----------------------------------
+	-- Penis clan
+	"4c38b2e3c3647473512e5400017df50e", -- 8==D Ritt
+    "92fd1d66e41dfa65c7dd73b4f309db87", -- 8==D Texas
+    "2afada4c6dcd47147a1140cea34bc43a", -- 8==D Redback
+    "d64300a70517b5878f2aae5cc4e96968", -- 8==D Shively
+    "a73cc77ec3926ac636a4fd419f1c0fb5", -- 8==D Jarhead
+    "c7dade15a8a58dca9d91e12402b77e65", -- 8==D Jarhead
+    "b7477d13cfac623b3ca55e1e2dd0df1f", -- 8==D Guns
+    "e64dcbab81dcdb157439018fc6e76488", -- 8==D Zooker
+	-----------------------------------
+	-- Russian Players
     -----------------------------------
-    -- Russian Players
-    "53c1017106f484956c9e56d8c4b85acb", -- GenaPilot
+	"53c1017106f484956c9e56d8c4b85acb", -- GenaPilot
+	"3dd6e3bcd9f99a8826e8f9791dc15199", -- Sakhalin66
+    -- ROSS Clan
     "09bc71361a591195159e2b84dfc67482", -- ROSS_Pups added by deebix
     "20ef9ad2392e236cf72cd3f3a853da42", -- ROSS_BoomSbk added by mad rabbit
 	"253bbe973927a779286cdbef17928f30", -- ROSS_Checkist added by mad rabbit
-    "3dd6e3bcd9f99a8826e8f9791dc15199", -- Sakhalin66
-    "90d0af5d35b62cc5012de966b5bd1dcf", -- Harkonnen
-    -----------------------------------
-    -- Russian Players
+	"566dadeeeede5c4c21322bf5c2e6b30f", -- ROSS_Kuzia added by mad rabbit
+    "90d0af5d35b62cc5012de966b5bd1dcf", -- ROSS_Harkonnen added by mad rabbit
+	"e61489151c2de788e78e8c92b97a2cca", -- ROSS berrymore by deebix
+    "7fa9836632054f227b042f6a185b957c", -- ROSS grishik by deebix
+	"2ae207adbe9eb102edaaee21e20211c1", -- ROSS_Gorillaz added by mad rabbit
+	-- TOPHATTERS Clan
+	--"6582f8c67aae73d83134e21cfbe73e35", -- TOPHATTERS 200 | Adler added by mad rabbit (not yet requested)
+	--"e9f2b5115c161b629fd4a18e99446e4e", -- TOPHATTERS 211 | Bes added by mad rabbit (not yet requested)
+	"7a88f3ed4ba0e1fd52e2d751befa6ce8", -- TOPHATTERS 203 | Adwar added by mad rabbit
+	"df80fd4f0f8683328658631998b1c8cc", -- TOPHATTERS 222 | Pitkun added by mad rabbit
+	-----------------------------------
     "00e5296e187ccfb8ee5edb55a7968d39", -- ★ВАРЯГ★
     "b148135d459915551e3d2b5489821c16", -- Santa
     "e5f8848b3ef84a88c635e5bc2a8e2a41", -- Djim
@@ -125,8 +140,6 @@ M.tacCmdrUcids = {
     "1d62619fb7ccd513e9f7cd639ad595bb", -- Lam, added by Mobius
     "4052f4b970efd04829623d087898a66f", -- =KAG=Zakha
     "1d086e78fb0870ad682ff5ee90aa94fd", -- -=WildCat=-
-    "e61489151c2de788e78e8c92b97a2cca", -- ROSS berrymore by deebix
-    "7fa9836632054f227b042f6a185b957c", -- ROSS grishik by deebix
     -----------------------------------
 
 }
