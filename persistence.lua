@@ -112,6 +112,7 @@ function M.spawnGroup(groupData)
 	
 	-------------------------------
 	
+	-- disabled overwriting of late activated base defences with persistence data until RESUPPLY SYSTEM developed
 	-- check if late activated group (e.g. pre-placed base defences, FARP trucks) already spawned
 	local spawnedGroup = Group.getByName(groupName)
 	if spawnedGroup == nil then
@@ -132,11 +133,10 @@ function M.spawnGroup(groupData)
         ctld.addEWRTask(spawnedGroup)
     end
 
+	-- CTLD_ = player slung only i.e. no repair allowed for (resupplied) base defences as it will make resupply pointless
 	if utils.startswith(groupName, "CTLD_") and _isAAsystem then
-        log:info("Adding $1 as AAsystem", groupName)
-		log:info("ctld.completeAASystems: $1", inspect(ctld.completeAASystems, { newline = " ", indent = "" }))
+        log:info("Adding $1 to ctld.completeAASystems to allow repair", groupName)
 		ctld.completeAASystems[groupName] = ctld.getAASystemDetails(spawnedGroup, _AAsystem)
-		log:info("ctld.completeAASystems: $1", inspect(ctld.completeAASystems, { newline = " ", indent = "" }))
     end
 	
 	-- make base defence units uncontrollable
