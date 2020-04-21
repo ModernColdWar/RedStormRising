@@ -62,7 +62,8 @@ end
 function M.HIT_EVENTHANDLER:onHit(event)
 
     log:info("event.IniObjectCategory : $1, event.IniCategory: $2, event.TgtCategory: $3,  event.TgtObjectCategory: $4", event.IniObjectCategory, event.IniCategory, event.TgtCategory, event.TgtObjectCategory)
-    log:info("event.IniUnitName : $1, event.IniTypeName: $2, event.TgtDCSUnitName: $3, event.TgtTypeName: $4 ", event.IniUnitName, event.IniTypeName, event.TgtDCSUnitName, event.TgtTypeName)
+	
+    log:info("event.IniUnitName : $1, event.IniTypeName: $2, event.TgtDCSUnitName: $3, event.TgtTypeName: $4, event.WeaponName: $5", event.IniUnitName, event.IniTypeName, event.TgtDCSUnitName, event.TgtTypeName, event.WeaponName)
     --[[
         Object.Category
         UNIT    1
@@ -72,18 +73,35 @@ function M.HIT_EVENTHANDLER:onHit(event)
         SCENERY 5
         CARGO   6
     --]]
+	
+	--exclude hit notifications that do not have an initiating unit and/or target unit
+    if event.IniUnitName == nil or event.TgtDCSUnitName == nil then
+        log:info("Aborting hit notification for nil initiating and/or target unit: event.IniUnitName: $1, event.TgtDCSUnitName: $2", event.IniUnitName, event.TgtDCSUnitName)
+        return
+    end
 
-    --exclude scenery hits e.g. missed bomb hitting tree/house, from hit notifications
+    --exclude hit notifications of scenery objects e.g. missed bomb hitting tree/house 
     if event.TgtObjectCategory == Object.Category.SCENERY then
         log:info("Aborting hit notification for scenery object: event.TgtObjectCategory: $1, event.TgtTypeName: $2", event.TgtObjectCategory, event.TgtTypeName)
         return
     end
 
+	--exclude hit notifications of aircraft (helos) bumping into cargo container
     if event.IniObjectCategory == Object.Category.CARGO then
         log:info("Aborting hit notification for cargo object: event.TgtObjectCategory: $1, event.TgtTypeName: $2", event.TgtObjectCategory, event.TgtTypeName)
         return
     end
-
+	
+	--exclude hit notifications for aircraft (Harrier) take-off from friendly Tarawa
+	-- Tarawa starting life points = 7301. 
+	-- Tarawa:getLife0 = 0 so cannot obtain this value and even then, does not account for subsequent take-offs and assoc damage.
+	-- Su-27 S-25OFM rocket damage to Tarawa = 5% to 8% (S-25OFM can kill CommandCenter object with livfe points = 10000!)
+	-- Harrier take-off damage to Tarawa = 2%
+    if event.IniTypeName == "AV8BNA" and event.TgtTypeName == "LHA_Tarawa" and event.IniCoalition == event.TgtCoalition and event.WeaponName == "AV8BNA" then
+        log:info("Aborting hit notification for Harrier take-off from friendly Tarawa: event.IniPlayerName: $1, event.IniCoalition: $2", event.IniPlayerName, event.IniCoalition)
+        return
+    end
+	
     local message = M.buildHitMessage(event)
     if message ~= nil then
         if self:shouldSendMessage(message) then
@@ -96,6 +114,7 @@ function M.HIT_EVENTHANDLER:onHit(event)
                 trigger.action.outText(message, 10)
             end
         end
+		log:info("Hit notification sent: $1", message)
     end
 end
 
@@ -168,7 +187,7 @@ function M.buildHitMessage(event)
         message = message .. " with " .. _weaponDisplayName
     end
 
-    if event.IniPlayerName ~= nil and event.TgtPlayerName ~= nil and event.IniCoalition == event.TgtCoalition then
+    if event.IniPlayerName ~= nil and (event.TgtPlayerName ~= nil or event.TgtTypeName ~= nil) and event.IniCoalition == event.TgtCoalition then
         message = "FRIENDLY FIRE: " .. message
     end
 

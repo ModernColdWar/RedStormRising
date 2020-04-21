@@ -101,6 +101,7 @@ M.tacCmdrUcids = {
 	"c3bb707bca08093fdb732fcf3f99fa5a", -- Sauce added by mad rabbit
 	"89e2077ea937fbed24efe004e16e9739", -- NIGHTFOX 2 [GER] added by mad rabbit
 	"5c9b2c4bd446d3b64a7c60efd35b3cfa", -- Ayey added by mad rabbit
+	"1d31532cc4a452bb55dafa22e034e40d", -- [VMO-2] ApacheRed [BiH] added by mad rabbit
 	-----------------------------------
 	-- Penis clan
 	"4c38b2e3c3647473512e5400017df50e", -- 8==D Ritt
