@@ -552,11 +552,13 @@ ctld.spawnableCrates = {
         { weight = 868, desc = "SA-2 Launcher", unit = "S_75M_Volhov", side = 1, internal = 0 },
         { weight = 869, desc = "SA-2 Search Radar", unit = "p-19 s-125 sr", side = 1, internal = 0 },
         { weight = 870, desc = "SA-2 Track Radar", unit = "SNR_75V", side = 1, internal = 0 },
-	
+		
+		--[[
         -- SA-3 system
         { weight = 871, desc = "SA-3 Launcher", unit = "5p73 s-125 ln", side = 1, internal = 0 },
         { weight = 872, desc = "SA-3 Search Radar", unit = "p-19 s-125 sr", side = 1, internal = 0 },
         { weight = 873, desc = "SA-3 Track Radar", unit = "snr s-125 tr", side = 1, internal = 0 },
+		--]]
 		
 		------------------------------------------------------------
 	
