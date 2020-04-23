@@ -520,7 +520,11 @@ ctld.spawnableCrates = {
 
         -- SA-15 Tor
         { weight = 866, desc = "SA-15 Tor", unit = "Tor 9A331", side = 1, cratesRequired = 2, unitQuantity = 1, internal = 0 },
-
+		
+		-- Kub system
+        { weight = 860, desc = "Kub Launcher", unit = "Kub 2P25 ln", side = 1, internal = 0 },
+        { weight = 861, desc = "Kub Radar", unit = "Kub 1S91 str", side = 1, internal = 0 },
+		
 		-- Buk system
         { weight = 862, desc = "Buk Launcher", unit = "SA-11 Buk LN 9A310M1", side = 1, internal = 0 },
         { weight = 863, desc = "Buk Search Radar", unit = "SA-11 Buk SR 9S18M1", side = 1, internal = 0 },
@@ -544,10 +548,6 @@ ctld.spawnableCrates = {
 	
 	["Radar SAM (immobile)"] = {
 
-        -- Kub system
-        { weight = 860, desc = "Kub Launcher", unit = "Kub 2P25 ln", side = 1, internal = 0 },
-        { weight = 861, desc = "Kub Radar", unit = "Kub 1S91 str", side = 1, internal = 0 },
-		
         -- SA-2 system
         { weight = 868, desc = "SA-2 Launcher", unit = "S_75M_Volhov", side = 1, internal = 0 },
         { weight = 869, desc = "SA-2 Search Radar", unit = "p-19 s-125 sr", side = 1, internal = 0 },
@@ -637,7 +637,7 @@ ctld.AASystemTemplate = {
         systemType = "SR",
     },
     {
-        name = "HAWK SAM System",
+        name = "Hawk SAM System",
         count = 4,
         parts = {
             { name = "Hawk ln", desc = "Hawk Launcher", launcher = true },
