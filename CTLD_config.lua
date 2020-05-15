@@ -78,7 +78,7 @@ ctld.radioSoundFC3 = "beaconsilent.ogg" -- name of the second silent radio file,
 
 ctld.deployedBeaconBattery = 30 -- the battery on deployed beacons will last for this number minutes before needing to be re-deployed
 
-ctld.enabledRadioBeaconDrop = true -- if its set to false then beacons cannot be dropped by units
+ctld.enabledRadioBeaconDrop = false -- if its set to false then beacons cannot be dropped by units
 
 ctld.allowRandomAiTeamPickups = false -- Allows the AI to randomize the loading of infantry teams (specified below) at pickup zones
 
@@ -103,9 +103,9 @@ ctld.hoverTime = 4 -- Time to hold hover above a crate for loading in seconds
 -- When this limit is hit, a player will still be able to get crates for an AA system, just unable
 -- to unpack them
 
-ctld.AASystemLimitRED = 100 -- Red side limit
+ctld.AASystemLimitRED = 20 -- Red side limit
 
-ctld.AASystemLimitBLUE = 100 -- Blue side limit
+ctld.AASystemLimitBLUE = 20 -- Blue side limit
 
 ctld.aaSRLaunchers = 3 -- controls how many launchers to add to Short Range Missile systems when spawned.
 ctld.aaMRLaunchers = 4 -- controls how many launchers to add to Medium Range Missile systems when spawned.
@@ -322,7 +322,7 @@ ctld.unitActions = {
 	["SA342Minigun"] = { crates = false, troops = true, internal = false },
     ["SA342L"] = { crates = false, troops = true, internal = false },
     ["SA342M"] = { crates = false, troops = true, internal = false },
-    ["Ka-50"] = { crates = true, troops = false, internal = false },
+    ["Ka-50"] = { crates = true, troops = false, internal = true },
     ["UH-1H"] = { crates = true, troops = true, internal = true },
     ["Mi-8MT"] = { crates = true, troops = true, internal = true },
 
@@ -476,12 +476,12 @@ ctld.spawnableCrates = {
         { weight = 802, desc = "IFV BMP-2", unit = "BMP-2", side = 1, cratesRequired = 1, unitQuantity = 2, internal = 0 },
         { weight = 803, desc = "IFV BMP-3", unit = "BMP-3", side = 1, cratesRequired = 2, unitQuantity = 1, internal = 0 },
         { weight = 804, desc = "IFV ZBD04A", unit = "ZBD04A", side = 1, cratesRequired = 2, unitQuantity = 1, internal = 0 },
-
-        { weight = 810, desc = "HMMWV TOW", unit = "M1045 HMMWV TOW", side = 2, cratesRequired = 1, unitQuantity = 2, internal = 0 },
+		-- dont use TOW missiles 4/30/2020
+        --{ weight = 810, desc = "HMMWV TOW", unit = "M1045 HMMWV TOW", side = 2, cratesRequired = 1, --unitQuantity = 2, internal = 0 },
         { weight = 811, desc = "HMMWV MG", unit = "M1043 HMMWV Armament", side = 2, cratesRequired = 1, unitQuantity = 2, internal = 0 },
-        { weight = 812, desc = "Stryker ATGM", unit = "M1134 Stryker ATGM", side = 2, cratesRequired = 2, unitQuantity = 1, internal = 0 },
+        --{ weight = 812, desc = "Stryker ATGM", unit = "M1134 Stryker ATGM", side = 2, cratesRequired = 2, --unitQuantity = 1, internal = 0 },
         { weight = 813, desc = "Stryker MGS", unit = "M1128 Stryker MGS", side = 2, cratesRequired = 1, unitQuantity = 2, internal = 0 },
-        { weight = 814, desc = "IFV BRADLEY", unit = "M-2 Bradley", side = 2, cratesRequired = 1, internal = 0 },
+        --{ weight = 814, desc = "IFV BRADLEY", unit = "M-2 Bradley", side = 2, cratesRequired = 1, internal = 0 },
 
     },
 
@@ -494,7 +494,7 @@ ctld.spawnableCrates = {
         { weight = 824, desc = "LeClerc", unit = "Leclerc", side = 1, cratesRequired = 3, unitQuantity = 1, internal = 0 },
 
         { weight = 830, desc = "Leopard 1A3", unit = "Leopard1A3", side = 2, cratesRequired = 1, unitQuantity = 2, internal = 0 },
-        { weight = 831, desc = "Leopard 2", unit = "Leopard-2", side = 2, cratesRequired = 2, unitQuantity = 1, internal = 0 },
+        { weight = 831, desc = "Leopard 2", unit = "Leopard-2", side = 2, cratesRequired = 1, unitQuantity = 1, internal = 0 },
         { weight = 832, desc = "Challenger II", unit = "Challenger2", side = 2, cratesRequired = 2, unitQuantity = 1, internal = 0 },
         { weight = 833, desc = "M1A2 Abrams", unit = "M-1 Abrams", side = 2, cratesRequired = 3, unitQuantity = 1, internal = 0 },
     },
@@ -542,7 +542,7 @@ ctld.spawnableCrates = {
 		
 		-- HQ-7 (can also be configured as a system, but not currently doing so; just using the launcher)
         -- HQ-7 launcher has different names per side for immersion sake
-		{ weight = 880, desc = "Crotale", unit = "HQ-7_LN_SP", side = 2, cratesRequired = 3, unitQuantity = 2, internal = 0 },
+		{ weight = 880, desc = "Crotale", unit = "HQ-7_LN_SP", side = 2, cratesRequired = 3, unitQuantity = 3, internal = 0 },
 
     },
 	
@@ -552,6 +552,21 @@ ctld.spawnableCrates = {
         { weight = 868, desc = "SA-2 Launcher", unit = "S_75M_Volhov", side = 1, internal = 0 },
         { weight = 869, desc = "SA-2 Search Radar", unit = "p-19 s-125 sr", side = 1, internal = 0 },
         { weight = 870, desc = "SA-2 Track Radar", unit = "SNR_75V", side = 1, internal = 0 },
+		
+		-- Patriot
+		{ weight = 900, desc = "Patriot EPP", unit = "Patriot EPP", side = 2, internal = 0 },
+		{ weight = 901, desc = "Patriot STR", unit = "Patriot str", side = 2, internal = 0 },
+		{ weight = 902, desc = "Patriot CP", unit = "Patriot cp", side = 2, internal = 0 },
+		{ weight = 903, desc = "Patriot AMG", unit = "Patriot AMG", side = 2, internal = 0},
+		{ weight = 904, desc = "Patriot ECS", unit = "Patriot ECS", side = 2, internal = 0},
+		{ weight = 905, desc = "Patriot ln", unit = "Patriot ln", side = 2, internal = 0},
+		
+		-- S-300
+		{ weight = 906, desc = "S-300PS 64H6E sr", unit = "S-300PS 64H6E sr", side = 1, internal = 0 },
+		{ weight = 907, desc = "S-300PS 40B6M tr", unit = "S-300PS 40B6M tr", side = 1, internal = 0 },
+		{ weight = 908, desc = "S-300PS 54K6 cp", unit = "S-300PS 54K6 cp", side = 1, internal = 0 },
+		{ weight = 909, desc = "S-300PS 5P85D ln", unit = "S-300PS 5P85D ln", side = 1, internal = 0 },
+		{ weight = 910, desc = "S-300PS 5P85C ln", unit = "S-300PS 5P85C ln", side = 1, internal = 0 },
 		
 		--[[
         -- SA-3 system
@@ -570,7 +585,8 @@ ctld.spawnableCrates = {
 
     },
 
-    ["Artillery"] = {
+    --[[ Take out artillery due to crashing on server when player selects target. 5/11/2020
+	["Artillery"] = {
         { weight = 890, desc = "2S9 Nona", unit = "2S9 Nona", side = 1, cratesRequired = 1, unitQuantity = 2, internal = 0 },
         { weight = 891, desc = "SAU Gvozdika", unit = "SAU Gvozdika", side = 1, cratesRequired = 1, internal = 0 },
         { weight = 892, desc = "SPH 2S19 Msta", unit = "SAU Msta", side = 1, cratesRequired = 1, internal = 0 },
@@ -581,6 +597,7 @@ ctld.spawnableCrates = {
         { weight = 896, desc = "M-109", unit = "M-109", side = 2, cratesRequired = 1, internal = 0 },
         { weight = 897, desc = "MLRS", unit = "MLRS", side = 2, cratesRequired = 3, unitQuantity = 2, internal = 0 },
     },
+	--]]
 
     ["Support"] = {
         { weight = 600, desc = "ATZ-10 Fuel Truck", unit = "ATZ-10", side = 1, cratesRequired = 1, internal = 0 },
@@ -590,12 +607,12 @@ ctld.spawnableCrates = {
         { weight = 611, desc = "M-818 Ammo Truck", unit = "M 818", side = 2, cratesRequired = 1, internal = 0 },
 
         { weight = 620, desc = "SA-2 Repair", unit = "SA-2 Repair", side = 1, internal = 0 },
-        --{ weight = 621, desc = "SA-3 Repair", unit = "SA-3 Repair", side = 1, internal = 0 },
+        { weight = 621, desc = "SA-10 Repair", unit = "SA-10 Repair", side = 1, internal = 0 },
         { weight = 622, desc = "Kub Repair", unit = "Kub Repair", side = 1, internal = 0 },
         { weight = 623, desc = "Buk Repair", unit = "Buk Repair", side = 1, internal = 0 },
         { weight = 624, desc = "Hawk Repair", unit = "Hawk Repair", side = 2, internal = 0 },
         { weight = 625, desc = "Roland Repair", unit = "Roland Repair", side = 2, internal = 0 },
-        --{ weight = 626, desc = "HQ-7 Repair", unit = "HQ-7 Repair", side = 2, internal = 0 },
+        { weight = 626, desc = "Patriot repair", unit = "Patriot repair", side = 2, internal = 0 },
         { weight = 627, desc = "Early Warning Radar", unit = "1L13 EWR", internal = 0 },
     },
 
@@ -657,7 +674,7 @@ ctld.AASystemTemplate = {
             { name = "SA-11 Buk SR 9S18M1", desc = "Buk Search Radar" },
         },
         repair = "Buk Repair",
-        systemType = "MR"
+        systemType = "SR"
     },
     {
         name = "Kub SAM System",
@@ -680,6 +697,33 @@ ctld.AASystemTemplate = {
         repair = "SA-2 Repair",
         systemType = "MR",
     },
+	{
+		name = "Patriot SAM System",
+		count = 6,
+		parts = {
+			{ name = "Patriot ln", desc = "Patriot ln", launcher = true },
+			{ name = "Patriot AMG", desc = "Patriot AMG" },
+			{ name = "Patriot ECS", desc = "Patriot ECS" },
+			{ name = "Patriot cp", desc = "Patriot cp" },
+			{ name = "Patriot str", desc = "Patriot str" },
+			{ name = "Patriot EPP", desc = "Patriot EPP" },
+		},
+		repair = "Patriot repair",
+		systemType = "MR",
+	},
+	{
+		name = "S-300 SAM System",
+		count = 5,
+		parts = {
+			{ name = "S-300PS 64H6E sr", desc = "S-300PS 64H6E sr" },
+			{ name = "S-300PS 5P85D ln", desc = "S-300PS 5P85D ln", launcher = true },
+			{ name = "S-300PS 54K6 cp", desc = "S-300PS 54K6 cp" },
+			{ name = "S-300PS 40B6M tr", desc = "S-300PS 40B6M tr" },
+			{ name = "S-300PS 5P85C ln", desc = "S-300PS 5P85C ln", launcher = true },
+		},
+		repair = "SA-10 Repair",
+		systemType = "SR",
+	},
 	-- omit SA3-3 for now given 82K ft ceiling
 	--[[
 	{

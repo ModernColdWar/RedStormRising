@@ -107,11 +107,11 @@ local limitations = {
     --    QTY = 0,
     --    DISPLAY_NAME = "Kh-58U"
     --},
-    --{
-    --    WP_NAME = "weapons.missiles.LD-10",
-    --    QTY = 0,
-    --    DISPLAY_NAME = "LD-10"
-    --},
+    {
+        WP_NAME = "weapons.missiles.LD-10",
+        QTY = 4,
+        DISPLAY_NAME = "LD-10"
+    },
     --{
     --    WP_NAME = "weapons.missiles.LS-6-500",
     --    QTY = 0,

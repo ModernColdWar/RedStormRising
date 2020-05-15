@@ -8,7 +8,7 @@ rsrConfig.devMode = false
 
 -- Event reporting for the n0xy bot
 rsrConfig.udpEventReporting = false
-rsrConfig.udpEventHost = "walsh.systems"
+rsrConfig.udpEventHost = "localhost"
 rsrConfig.udpEventPort = 9696
 
 -- state saving
@@ -31,7 +31,7 @@ rsrConfig.restartHours = utils.getRestartHours(rsrConfig.firstRestartHour, rsrCo
 rsrConfig.livesPerHour = 1.25
 -- added on 31st March 2020 as an experiment in "unlimited lives"
 -- tuning ratio for adjusting number of lives without giving more weapons per restart
-rsrConfig.livesMultiplier = 4
+rsrConfig.livesMultiplier = 1
 
 rsrConfig.maxLives = math.floor(rsrConfig.missionDurationInHours * rsrConfig.livesPerHour * rsrConfig.livesMultiplier + 0.5)
 
