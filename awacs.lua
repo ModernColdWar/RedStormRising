@@ -32,7 +32,6 @@ BlueA2ADispatcher = AI_A2A_DISPATCHER:New( BlueDetection )
 
 --Zones for CAP
 KrasC_NorthCAPZone = ZONE_POLYGON:New( "Kras-C CAP Zone", GROUP:FindByName( "Kras-C CAP Zone" ) )
-
 Vaziani_SouthCAPZone = ZONE_POLYGON:New( "Vaziani CAP Zone", GROUP:FindByName( "Vaziani CAP Zone" ) )
 
 --Zones for CAS
@@ -51,6 +50,7 @@ function M.onMissionStart(awacsBases, awacsSpawnLimit)
             spawnAWACS(string.format("%s Blue AWACS", baseName), awacsSpawnLimit)
         end
     end
+
     local KrasC_Ownership = state.getOwner("Krasnodar-Center")
     if KrasC_Ownership == "red" then
       RedA2ADispatcher:SetSquadron( "41st Fighter Aviation Regiment", AIRBASE.Caucasus.Krasnodar_Center, { "41st Fighter Aviation Regiment" }, 8 ) -- MiG-25 Squadron
