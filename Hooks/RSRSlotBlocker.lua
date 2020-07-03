@@ -112,6 +112,9 @@ M.tacCmdrUcids = {
 	"dc8ddea5c1552879b1e2b1af0d1629aa", -- Junior2
 	"2534dbad9f36ddab28e2979a4fd98cf2", -- grey cat
 	"1c995d8143cc2ee52058ef9c7f34715c", -- rabo 36
+	"13ea9d40c254af11d9c897d17dad3657", -- Hump
+	"b551b2cce5b647b597823d01b51be2ad", -- Neon
+	"351a8154f9e0e4de6b6d979b50d1d711", -- Armchairaviator
 	-----------------------------------
 	-- Penis clan
 	"4c38b2e3c3647473512e5400017df50e", -- 8==D Ritt
@@ -141,6 +144,7 @@ M.tacCmdrUcids = {
 	--"e9f2b5115c161b629fd4a18e99446e4e", -- TOPHATTERS 211 | Bes added by mad rabbit (not yet requested)
 	"7a88f3ed4ba0e1fd52e2d751befa6ce8", -- TOPHATTERS 203 | Adwar added by mad rabbit
 	"df80fd4f0f8683328658631998b1c8cc", -- TOPHATTERS 222 | Pitkun added by mad rabbit
+	"dfbdef0a5fda039a98c7efb4f2bc15c1", -- TMS Nikheli
 	-----------------------------------
     "00e5296e187ccfb8ee5edb55a7968d39", -- ★ВАРЯГ★
     "b148135d459915551e3d2b5489821c16", -- Santa

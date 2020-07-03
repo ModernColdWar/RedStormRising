@@ -1195,8 +1195,8 @@ do -- the main scope
 	-- @treturn number next unit id.
 	function mist.getNextUnitId()
 		mist.nextUnitId = mist.nextUnitId + 1
-		if mist.nextUnitId > 6900 then
-			mist.nextUnitId = 14000
+		if mist.nextUnitId > 1500000 then
+			mist.nextUnitId = 2000000
 		end
 		return mist.nextUnitId
 	end
@@ -1205,8 +1205,8 @@ do -- the main scope
 	-- @treturn number next group id.
 	function mist.getNextGroupId()
 		mist.nextGroupId = mist.nextGroupId + 1
-		if mist.nextGroupId > 6900 then
-			mist.nextGroupId = 14000
+		if mist.nextGroupId > 1500000 then
+			mist.nextGroupId = 2000000
 		end
 		return mist.nextGroupId
 	end

@@ -34,6 +34,9 @@ local hitEventHandler = require("hitEventHandler")
 local birthEventHandler = require("birthEventHandler")
 local deadEventHandler = require("deadEventHandler")
 local restartInfo = require("restartInfo")
+local SGS_RSR = require("SGS_RSR") --Group Saves
+local baseResupply = require("baseResupply")
+local SCUD_EventHandler = require("SCUD_EventHandler")
 require("weaponManager")
 require("EWRS_OPM")
 
@@ -45,7 +48,7 @@ hitEventHandler.onMissionStart(rsrConfig.hitMessageDelay)
 birthEventHandler.onMissionStart(rsrConfig.restartHours)
 deadEventHandler.register()
 restartInfo.onMissionStart(rsrConfig.restartHours, rsrConfig.restartWarningMinutes)
-
+--SSS_RSR.onMissionStart() --Turning off for now
 --disables MOOSE player setting radio menu item that allows player to set own coordinate and measurement system (not yet integrated)
 -- _SETTINGS:SetPlayerMenuOff() not SETTINGS:SetPlayerMenuOff()
 _SETTINGS:SetPlayerMenuOff()
