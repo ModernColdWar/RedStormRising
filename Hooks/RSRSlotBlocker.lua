@@ -102,6 +102,19 @@ M.tacCmdrUcids = {
 	"89e2077ea937fbed24efe004e16e9739", -- NIGHTFOX 2 [GER] added by mad rabbit
 	"5c9b2c4bd446d3b64a7c60efd35b3cfa", -- Ayey added by mad rabbit
 	"1d31532cc4a452bb55dafa22e034e40d", -- [VMO-2] ApacheRed [BiH] added by mad rabbit
+	"bfac4912fc76ce35ea9b23fca847469f", -- Laki
+	"1d38915c6832da64abbef295b7500e69", -- Growler
+	"1b0edc653739a916094c0d2e92bff172", -- ROSS LLiymep
+	"5a2e7e61bd064b2bbde419268958f75c", -- ROSS pancake
+	"32a3b1621ee8ddd067990545c12b849c", -- ACE 298
+	"f32255e69f89e2e16abdf1cc70e2c8f1", -- VRACG BOULDER
+	"1bcabe31b4a39f213da417e434fe9e71", -- Junior1
+	"dc8ddea5c1552879b1e2b1af0d1629aa", -- Junior2
+	"2534dbad9f36ddab28e2979a4fd98cf2", -- grey cat
+	"1c995d8143cc2ee52058ef9c7f34715c", -- rabo 36
+	"13ea9d40c254af11d9c897d17dad3657", -- Hump
+	"b551b2cce5b647b597823d01b51be2ad", -- Neon
+	"351a8154f9e0e4de6b6d979b50d1d711", -- Armchairaviator
 	-----------------------------------
 	-- Penis clan
 	"4c38b2e3c3647473512e5400017df50e", -- 8==D Ritt
@@ -131,6 +144,7 @@ M.tacCmdrUcids = {
 	--"e9f2b5115c161b629fd4a18e99446e4e", -- TOPHATTERS 211 | Bes added by mad rabbit (not yet requested)
 	"7a88f3ed4ba0e1fd52e2d751befa6ce8", -- TOPHATTERS 203 | Adwar added by mad rabbit
 	"df80fd4f0f8683328658631998b1c8cc", -- TOPHATTERS 222 | Pitkun added by mad rabbit
+	"dfbdef0a5fda039a98c7efb4f2bc15c1", -- TMS Nikheli
 	-----------------------------------
     "00e5296e187ccfb8ee5edb55a7968d39", -- ★ВАРЯГ★
     "b148135d459915551e3d2b5489821c16", -- Santa

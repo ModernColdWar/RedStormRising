@@ -33,6 +33,8 @@ local logisticsManager = require("logisticsManager")
 
 local log = logging.Logger:new("CTLD")
 
+--ctld.minimumDeployDistance = 600 -- minimum distance from a friendly pickup zone where you can deploy a crate
+
 ctld.nextUnitId = 1;
 ctld.getNextUnitId = function()
     ctld.nextUnitId = ctld.nextUnitId + 1
@@ -3053,7 +3055,49 @@ function ctld.getCrateObject(_name)
     end
     return _crate
 end
+----
+--function ctld.farEnoughFromLogisticCentre(_aircraft)
+function ctld.farEnoughFromLogisticCentre(_heli)
+--    local _aircraft = ctld.getTransportUnit(_args[1])
+--    local _aircraftSide = _aircraft:getCoalition()
+    local _heliSideName = utils.getSideName(_heliSide)
+    local _heliSide = _heli:getCoalition()
+--    local _heliSideName = utils.getSideName(_aircraftSide)
 
+    local _heliPoint = _heli:getPoint()
+    local _farEnough = true
+
+    for _refLCsideName, _baseTable in pairs(ctld.logisticCentreObjects) do
+        for _refLCbaseName, _LCobj in pairs(_baseTable) do
+            local _derivedLCsideName = "none"
+            local _LCdist = ctld.getDistance(_heliPoint, _LCobj:getPoint()) --get distance
+            if _LCobj ~= nil then
+                local _LCname = _LCobj:getName()
+                _derivedLCsideName = string.match(_LCname, ("%w+$")) --"Krymsk Logistics Centre #001 red" = "red"
+            end
+            -- run checks
+            if _refLCsideName ~= _derivedLCsideName then
+                log:error("Reference LC side in ctld.logisticCentreObjects (_refLCsideName: $1) and derived LC side by name (_derivedLCsideName: $2) mistmatch", _refLCsideName, _derivedLCsideName)
+            end
+            --[[
+            if _refLCbaseName ~= _derivedLCbaseNameOrGrid then
+                log:error("Reference LC base (_refLCbaseName: $1) and derived base from LC name (_derivedLCbaseNameOrGrid: $2) mistmatch",_refLCbaseName,_derivedLCbaseNameOrGrid)
+            end
+            --]]
+
+--            if _derivedLCsideName == _heliSideName then
+--                local _LCdist = ctld.getDistance(_heliPoint, _LCobj:getPoint()) --get distance
+            if _LCdist <= ctld.minimumDeployDistance then
+              _farEnough = false
+--                end
+              ctld.displayMessageToGroup(_heli, "Not far enough from Logistics Center ".._LCdist.." meters, need to be greater than "..ctld.minimumDeployDistance.." meters", 10)
+--              log:info("DEBUG-2: Is LC Distance less than or equal to minimum deploy distance (600m)?")
+            end
+        end
+    end
+    return _farEnough
+end
+----
 function ctld.unpackCrates(_arguments)
 
     local _status, _err = pcall(function(_args)
@@ -3084,6 +3128,7 @@ function ctld.unpackCrates(_arguments)
             local _playerName = ctld.getPlayerNameOrType(_aircraft)
 
             local _heliCoalition = _aircraft:getCoalition()
+--            local _heliCoalition = _heli:getCoalition()
 
             local _crates = ctld.getCratesAndDistance(_aircraft)
             local _crate = ctld.getClosestCrate(_aircraft, _crates)
@@ -5390,46 +5435,54 @@ end
 
 
 -- checks whether player is far away enough from FRIENDLY logistics centre object NOT whether player in logisitics zone
-function ctld.farEnoughFromLogisticCentre(_heli)
-
-    local _heliSide = _heli:getCoalition()
-    local _heliSideName = utils.getSideName(_aircraftSide)
-
-    local _heliPoint = _heli:getPoint()
-
-    local _farEnough = true
-
-    for _refLCsideName, _baseTable in pairs(ctld.logisticCentreObjects) do
-        for _refLCbaseName, _LCobj in pairs(_baseTable) do
-            local _derivedLCsideName = "none"
-            if _LCobj ~= nil then
-                local _LCname = _LCobj:getName()
-                _derivedLCsideName = string.match(_LCname, ("%w+$")) --"Krymsk Logistics Centre #001 red" = "red"
-            end
-
-            -- run checks
-            if _refLCsideName ~= _derivedLCsideName then
-                log:error("Reference LC side in ctld.logisticCentreObjects (_refLCsideName: $1) and derived LC side by name (_derivedLCsideName: $2) mistmatch", _refLCsideName, _derivedLCsideName)
-            end
-
-            --[[
-            if _refLCbaseName ~= _derivedLCbaseNameOrGrid then
-                log:error("Reference LC base (_refLCbaseName: $1) and derived base from LC name (_derivedLCbaseNameOrGrid: $2) mistmatch",_refLCbaseName,_derivedLCbaseNameOrGrid)
-            end
-            --]]
-
-            if _derivedLCsideName == _heliSideName then
-                local _LCdist = ctld.getDistance(_heliPoint, _LCobj:getPoint()) --get distance
-                if _LCdist <= ctld.minimumDeployDistance then
-                    _farEnough = false
-                end
-            end
-
-        end
-    end
-
-    return _farEnough
-end
+--function ctld.farEnoughFromLogisticCentre(_heli)
+--function ctld.farEnoughFromLogisticCentre(_aircraft)
+--ctld.displayMessageToGroup(_aircraft, "Debug: Is farEnoughFromLogisticCentre Running?", 10)
+--log:debug("DEBUG:Is farEnoughFromLogisticCentre Running?")
+--
+--    local _heliSide = _heli:getCoalition()
+--    local _heliSideName = utils.getSideName(_aircraftSide)
+--
+--    local _heliPoint = _heli:getPoint()
+--
+--    local _farEnough = true
+--
+--    for _refLCsideName, _baseTable in pairs(ctld.logisticCentreObjects) do
+--        for _refLCbaseName, _LCobj in pairs(_baseTable) do
+--            local _derivedLCsideName = "none"
+--            ctld.displayMessageToGroup(_aircraft, "Debug: Is LC Derived name running?", 10)
+--            log:debug("DEBUG::Is LC Distance less than or equal to minimum deploy distance (600m)?")
+--            
+--            if _LCobj ~= nil then
+--                local _LCname = _LCobj:getName()
+--                _derivedLCsideName = string.match(_LCname, ("%w+$")) --"Krymsk Logistics Centre #001 red" = "red"
+--            end
+--
+--            -- run checks
+--            if _refLCsideName ~= _derivedLCsideName then
+--                log:error("Reference LC side in ctld.logisticCentreObjects (_refLCsideName: $1) and derived LC side by name (_derivedLCsideName: $2) mistmatch", _refLCsideName, _derivedLCsideName)
+--            end
+--
+--            --[[
+--            if _refLCbaseName ~= _derivedLCbaseNameOrGrid then
+--                log:error("Reference LC base (_refLCbaseName: $1) and derived base from LC name (_derivedLCbaseNameOrGrid: $2) mistmatch",_refLCbaseName,_derivedLCbaseNameOrGrid)
+--            end
+--            --]]
+--
+--            if _derivedLCsideName == _heliSideName then
+--                local _LCdist = ctld.getDistance(_heliPoint, _LCobj:getPoint()) --get distance
+--                if _LCdist <= ctld.minimumDeployDistance then
+--                    trigger.action.outText("Debug:Is LC Distance less than or equal to minimum deploy distance (600m)?", 10)
+--                    env.info("DEBUG::Is LC Distance less than or equal to minimum deploy distance (600m)?")
+--                    _farEnough = false
+--                end
+--            end
+--
+--        end
+--    end
+--
+--    return _farEnough
+--end
 
 function ctld.refreshSmoke()
 

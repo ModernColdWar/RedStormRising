@@ -50,8 +50,7 @@ function M.onMissionStart(awacsBases, awacsSpawnLimit)
             spawnAWACS(string.format("%s Blue AWACS", baseName), awacsSpawnLimit)
         end
     end
-	
-	--KrasC config
+
     local KrasC_Ownership = state.getOwner("Krasnodar-Center")
     if KrasC_Ownership == "red" then
       RedA2ADispatcher:SetSquadron( "41st Fighter Aviation Regiment", AIRBASE.Caucasus.Krasnodar_Center, { "41st Fighter Aviation Regiment" }, 8 ) -- MiG-25 Squadron
@@ -81,8 +80,7 @@ function M.onMissionStart(awacsBases, awacsSpawnLimit)
           end)
         :SpawnScheduled(1800,0.1)
     end   
-	
-	--Vaziani config
+
     local Vaziani_Ownership = state.getOwner("Vaziani")
     if Vaziani_Ownership == "red" then
       RedA2ADispatcher:SetSquadron( "472nd Fighter Aviation Regiment", AIRBASE.Caucasus.Vaziani, { "472nd Fighter Aviation Regiment" }, 8 ) -- MiG-25 Squadron

@@ -19,7 +19,7 @@ local socket = require("socket")
 local limitations = {
     {
         WP_NAME = "AIM_54A_Mk47",
-        QTY = 1 * perLife,
+        QTY = 2 * perLife,
         DISPLAY_NAME = "AIM-54A Mk47"
     },
     {
@@ -29,16 +29,16 @@ local limitations = {
     },
     {
         WP_NAME = "AIM_54C_Mk47",
-        QTY = 1 * perLife,
+        QTY = 2 * perLife,
         DISPLAY_NAME = "AIM-54C Mk47"
     },
     {
-        WP_NAME = "AIM_120",
-        QTY = 1 * perLife,
+        WP_NAME = "weapons.missiles.AIM_120",
+        QTY = 4 * perLife,
         DISPLAY_NAME = "AIM-120B"
     },
     {
-        WP_NAME = "AIM_120C",
+        WP_NAME = "weapons.missiles.AIM_120C",
         QTY = 4 * perLife,
         DISPLAY_NAME = "AIM-120C"
     },
@@ -107,11 +107,11 @@ local limitations = {
     --    QTY = 0,
     --    DISPLAY_NAME = "Kh-58U"
     --},
-    --{
-    --    WP_NAME = "weapons.missiles.LD-10",
-    --    QTY = 0,
-    --    DISPLAY_NAME = "LD-10"
-    --},
+    {
+        WP_NAME = "weapons.missiles.LD-10",
+        QTY = 4,
+        DISPLAY_NAME = "LD-10"
+    },
     --{
     --    WP_NAME = "weapons.missiles.LS-6-500",
     --    QTY = 0,
@@ -127,11 +127,11 @@ local limitations = {
     --    QTY = 0,
     --    DISPLAY_NAME = "R-27ER"
     --},
-    {
-        WP_NAME = "P_77",
-        QTY = 8 * perLife,
-        DISPLAY_NAME = "R-77"
-    },
+    --{
+    --    WP_NAME = "P_77",
+    --    QTY = 8 * perLife,
+    --    DISPLAY_NAME = "R-77"
+    --},
     {
         WP_NAME = "weapons.bombs.RN-24",
         QTY = 0,
