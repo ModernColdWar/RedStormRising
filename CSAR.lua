@@ -12,6 +12,7 @@ local ctldUtils = require("ctldUtils")
 local missionUtils = require("missionUtils")
 local spatialUtils = require("spatialUtils")
 local utils = require("utils")
+local rsrConfig = require("RSR_config")
 
 csar = {}
 
@@ -31,8 +32,11 @@ csar.csarMode = 3
 --      2 - Disable Aircraft for Pilot when he's shot down -- timeout to reenable pilot for aircraft
 --      3 - Pilot Life Limit - No Aircraft Disabling -- timeout to reset lives?
 
-csar.maxLives = 12 -- Maximum pilot lives
-
+--csar.maxLives = 12 -- Maximum pilot lives
+--[[
+Lives are now set based on mission duration
+--]]
+csar.maxLives = rsrConfig.maxLives
 csar.countCSARCrash = false -- If you set to true, pilot lives count for CSAR and CSAR aircraft will count.
 
 csar.reenableIfCSARCrashes = true -- If a CSAR heli crashes, the pilots are counted as rescued anyway. Set to false to Stop this
@@ -74,7 +78,7 @@ csar.radioSound = "beacon.ogg" -- the name of the sound file to use for the Pilo
 
 csar.allowFARPRescue = true --allows pilot to be rescued by landing at a FARP or Airbase
 
-csar.enemyBaseCaptureDistance = 8000 -- minimum distance in m from enemy base to allow CSAR mission spawn (otherwise pilot captured!)
+csar.enemyBaseCaptureDistance = 20000 -- minimum distance in m from enemy base to allow CSAR mission spawn (otherwise pilot captured!)
 
 -- SETTINGS FOR MISSION DESIGNER ^^^^^^^^^^^^^^^^^^^*
 
@@ -177,7 +181,7 @@ function csar.tooCloseToEnemyBase(_unit)
     local unitSideName = utils.getSideName(_unit:getCoalition())
     if spatialUtils.closestBaseIsEnemyAndWithinRange(position, unitSideName, csar.enemyBaseCaptureDistance) then
         local nearestBase, _ = spatialUtils.findNearestBase(position)
-        local message = string.format("[TEAM] Mayday, mayday, mayday!  %s was shot down; captured by enemy forces at %s",
+        local message = string.format("Mayday, mayday, mayday!  %s was shot down; captured by enemy forces at %s",
                 _unit:getTypeName(), nearestBase)
         trigger.action.outTextForCoalition(_unit:getCoalition(), message, 10)
         return true
@@ -187,259 +191,54 @@ function csar.tooCloseToEnemyBase(_unit)
 end
 
 -- Handles all world events
---csar.eventHandler = {}
--- luacheck: push no unused
-
---function csar.eventHandler:onEvent(event)
---    local status, err = pcall(function(_event)
---
---        if _event == nil or _event.initiator == nil then
---            return false
---
---        elseif _event.id == world.event.S_EVENT_TAKEOFF then
---
---            if _event.initiator:getName() then
---                csar.takenOff[_event.initiator:getName()] = true
---            end
---
---            return true
---        elseif _event.id == world.event.S_EVENT_BIRTH then
---            --player entered unit
---
---            if _event.initiator:getName() then
---                csar.takenOff[_event.initiator:getName()] = nil
---            end
---
---            -- if its a sar heli, re-add check status script
---            for _, _heliName in pairs(csar.csarUnits) do
---
---                if _heliName == _event.initiator:getName() then
---                    -- add back the status script
---                    for _woundedName, _groupInfo in pairs(csar.woundedGroups) do
---
---                        if _groupInfo.side == _event.initiator:getCoalition() then
---
---                            --env.info(string.format("Schedule Respawn %s %s",_heliName,_woundedName))
---                            -- queue up script
---                            -- Schedule timer to check when to pop smoke
---                            timer.scheduleFunction(csar.checkWoundedGroupStatus, { _heliName, _woundedName }, timer.getTime() + 5)
---                        end
---                    end
---                end
---            end
---            -- FIXME: below is raising errors
---            if _event.initiator:getName() and _event.initiator.getPlayerName ~= nil and _event.initiator:getPlayerName() then
---                env.info("Checking Unit - " .. _event.initiator:getName())
---                csar.checkDisabledAircraftStatus({ _event.initiator:getName(), _event.initiator:getPlayerName() })
---            end
---
---            return true
---
---        elseif _event.id == world.event.S_EVENT_PILOT_DEAD then
---
---            env.info("Event unit - Pilot Dead")
---
---            local _unit = _event.initiator
---
---            if _unit == nil then
---                return -- error!
---            end
---
---            local _coalition = _unit:getCoalition()
---
---            if _coalition == 1 and not csar.enableForRED then
---                return --ignore!
---            end
---
---            if _coalition == 2 and not csar.enableForBLUE then
---                return --ignore!
---            end
---
---            -- Catch multiple events here?
---            if csar.takenOff[_event.initiator:getName()] == true or _unit:inAir() then
---
---                if csar.doubleEjection(_unit) then
---                    return
---                end
---                local message = "[TEAM] Mayday, mayday, mayday!  " .. _unit:getTypeName() .. " was shot down; no chute spotted"
---                --trigger.action.outTextForCoalition(_unit:getCoalition(), message, 10)
---                env.info(message)
---                csar.handleEjectOrCrash(_unit, true)
---            else
---                env.info("Pilot Hasnt taken off, ignore")
---            end
---
---            return
---
---        elseif world.event.S_EVENT_EJECTION == _event.id then
---
---            env.info("Event unit - Pilot Ejected")
---
---            local _unit = _event.initiator
---
---            if _unit == nil then
---                env.warning("No unit found for ejection event")
---                return -- error!
---            end
---
---            local _coalition = _unit:getCoalition()
---
---            if _coalition == 1 and not csar.enableForRED then
---                env.info("Ignoring ejection as not enabled for red")
---                return --ignore!
---            end
---
---            if _coalition == 2 and not csar.enableForBLUE then
---                env.info("Ignoring ejection as not enabled for blue")
---                return --ignore!
---            end
---
---            -- TODO catch ejection on runway?
---
---            if csar.enableForAI == false and _unit:getPlayerName() == nil then
---                env.info("Ignoring ejection as getPlayerName is nil")
---                return
---            end
---
---            if csar.takenOff[_event.initiator:getName()] ~= true and not _unit:inAir() then
---                env.info("Pilot hasn't taken off, ignoring")
---                return -- give up, pilot hasnt taken off
---            end
---
---            if csar.doubleEjection(_unit) then
---                env.info("Double ejection")
---                return
---            end
---
---            if csar.tooCloseToEnemyBase(_unit) then
---                csar.handleEjectOrCrash(_unit, true)
---                return true
---            end
---
---            env.info("Spawning CSAR group")
---            local _spawnedGroup = csar.spawnGroup(_unit)
---            csar.addSpecialParametersToGroup(_spawnedGroup)
---
---            local message = "[TEAM] Mayday, mayday, mayday!  " .. _unit:getTypeName() .. " was shot down; chute spotted"
---            trigger.action.outTextForCoalition(_unit:getCoalition(), message, 10)
---            env.info(message)
---
---            local _freq = csar.generateADFFrequency()
---
---            csar.addBeaconToGroup(_spawnedGroup:getName(), _freq)
---
---            --handle lives and plane disabling
---            csar.handleEjectOrCrash(_unit, false)
---
---            -- Generate DESCRIPTION text
---            local _text = " "
---            if _unit:getPlayerName() ~= nil then
---                _text = "Pilot " .. _unit:getPlayerName() .. " of " .. _unit:getName() .. " - " .. _unit:getTypeName()
---            else
---                _text = "AI Pilot of " .. _unit:getName() .. " - " .. _unit:getTypeName()
---            end
---
---            csar.woundedGroups[_spawnedGroup:getName()] = { side = _spawnedGroup:getCoalition(), originalUnit = _unit:getName(), frequency = _freq, desc = _text, player = _unit:getPlayerName() }
---
---            csar.initSARForPilot(_spawnedGroup, _freq)
---
---            return true
---
---        elseif world.event.S_EVENT_LAND == _event.id then
---
---            if _event.initiator:getName() then
---                csar.takenOff[_event.initiator:getName()] = nil
---            end
---
---            if csar.allowFARPRescue then
---
---                --env.info("Landing")
---
---                local _unit = _event.initiator
---
---                if _unit == nil then
---                    env.info("Unit Nil on Landing")
---                    return -- error!
---                end
---
---                csar.takenOff[_event.initiator:getName()] = nil
---
---                local _place = _event.place
---
---                if _place == nil then
---                    env.info("Landing Place Nil")
---                    return -- error!
---                end
---                -- Coalition == 3 seems to be a bug... unless it means contested?!
---                if _place:getCoalition() == _unit:getCoalition() or _place:getCoalition() == 0 or _place:getCoalition() == 3 then
---                    csar.rescuePilots(_unit)
---                    --env.info("Rescued")
---                    --   env.info("Rescued by Landing")
---
---                else
---                    --    env.info("Cant Rescue ")
---
---                    env.info(string.format("airfield %d, unit %d", _place:getCoalition(), _unit:getCoalition()))
---                end
---            end
---
---            return true
---        end
---    end, event)
---    if (not status) then
---        env.error(string.format("Error while handling event %s", err), false)
---    end
---end
-
--- Handles all world events
 csar.eventHandler = {}
-function csar.eventHandler:onEvent(_event)
+-- luacheck: push no unused
+function csar.eventHandler:onEvent(event)
     local status, err = pcall(function(_event)
 
         if _event == nil or _event.initiator == nil then
             return false
 
-        elseif _event.id == 3 then -- taken offf
+        elseif _event.id == world.event.S_EVENT_TAKEOFF then
 
-        if _event.initiator:getName() then
-            csar.takenOff[_event.initiator:getName()] = true
-        end
+            if _event.initiator:getName() then
+                csar.takenOff[_event.initiator:getName()] = true
+            end
 
-        return true
-        elseif _event.id == 15 then --player entered unit
+            return true
+        elseif _event.id == world.event.S_EVENT_BIRTH then
+            --player entered unit
 
-        if _event.initiator:getName() then
-            csar.takenOff[_event.initiator:getName()] = nil
-        end
+            if _event.initiator:getName() then
+                csar.takenOff[_event.initiator:getName()] = nil
+            end
 
-        -- if its a sar heli, re-add check status script
-        for _, _heliName in pairs(csar.csarUnits) do
+            -- if its a sar heli, re-add check status script
+            for _, _heliName in pairs(csar.csarUnits) do
 
-            if _heliName == _event.initiator:getName() then
-                -- add back the status script
-                for _woundedName, _groupInfo in pairs(csar.woundedGroups) do
+                if _heliName == _event.initiator:getName() then
+                    -- add back the status script
+                    for _woundedName, _groupInfo in pairs(csar.woundedGroups) do
 
-                    if _groupInfo.side == _event.initiator:getCoalition() then
+                        if _groupInfo.side == _event.initiator:getCoalition() then
 
-                        --env.info(string.format("Schedule Respawn %s %s",_heliName,_woundedName))
-                        -- queue up script
-                        -- Schedule timer to check when to pop smoke
-                        timer.scheduleFunction(csar.checkWoundedGroupStatus, { _heliName, _woundedName }, timer.getTime() + 5)
+                            --env.info(string.format("Schedule Respawn %s %s",_heliName,_woundedName))
+                            -- queue up script
+                            -- Schedule timer to check when to pop smoke
+                            timer.scheduleFunction(csar.checkWoundedGroupStatus, { _heliName, _woundedName }, timer.getTime() + 5)
+                        end
                     end
                 end
             end
-        end
+            -- FIXME: below is raising errors
+            if _event.initiator:getName() and _event.initiator.getPlayerName ~= nil and _event.initiator:getPlayerName() then
+                env.info("Checking Unit - " .. _event.initiator:getName())
+                csar.checkDisabledAircraftStatus({ _event.initiator:getName(), _event.initiator:getPlayerName() })
+            end
 
-        if _event.initiator:getName() and _event.initiator:getPlayerName() then
+            return true
 
-            env.info("Checking Unit - " .. _event.initiator:getName())
-            csar.checkDisabledAircraftStatus({ _event.initiator:getName(), _event.initiator:getPlayerName() })
-        end
-
-        return true
-
-        elseif (_event.id == 9) then
-            -- Pilot dead
+        elseif _event.id == world.event.S_EVENT_PILOT_DEAD then
 
             env.info("Event unit - Pilot Dead")
 
@@ -465,8 +264,9 @@ function csar.eventHandler:onEvent(_event)
                 if csar.doubleEjection(_unit) then
                     return
                 end
-
-                trigger.action.outTextForCoalition(_unit:getCoalition(), "MAYDAY MAYDAY! " .. _unit:getTypeName() .. " shot down. No Chute!", 10)
+                local message = "Mayday, mayday, mayday!  " .. _unit:getTypeName() .. " was shot down; no chute spotted"
+                --trigger.action.outTextForCoalition(_unit:getCoalition(), message, 10)
+                env.info(message)
                 csar.handleEjectOrCrash(_unit, true)
             else
                 env.info("Pilot Hasnt taken off, ignore")
@@ -481,41 +281,51 @@ function csar.eventHandler:onEvent(_event)
             local _unit = _event.initiator
 
             if _unit == nil then
+                env.warning("No unit found for ejection event")
                 return -- error!
             end
 
             local _coalition = _unit:getCoalition()
 
             if _coalition == 1 and not csar.enableForRED then
+                env.info("Ignoring ejection as not enabled for red")
                 return --ignore!
             end
 
             if _coalition == 2 and not csar.enableForBLUE then
+                env.info("Ignoring ejection as not enabled for blue")
                 return --ignore!
             end
 
             -- TODO catch ejection on runway?
 
             if csar.enableForAI == false and _unit:getPlayerName() == nil then
-
+                env.info("Ignoring ejection as getPlayerName is nil")
                 return
             end
 
             if csar.takenOff[_event.initiator:getName()] ~= true and not _unit:inAir() then
-                env.info("Pilot Hasnt taken off, ignore")
+                env.info("Pilot hasn't taken off, ignoring")
                 return -- give up, pilot hasnt taken off
             end
 
             if csar.doubleEjection(_unit) then
+                env.info("Double ejection")
                 return
             end
 
+            if csar.tooCloseToEnemyBase(_unit) then
+                csar.handleEjectOrCrash(_unit, true)
+                return true
+            end
 
-
+            env.info("Spawning CSAR group")
             local _spawnedGroup = csar.spawnGroup(_unit)
             csar.addSpecialParametersToGroup(_spawnedGroup)
 
-            trigger.action.outTextForCoalition(_unit:getCoalition(), "MAYDAY MAYDAY! " .. _unit:getTypeName() .. " shot down. Chute Spotted!", 10)
+            local message = "Mayday, mayday, mayday!  " .. _unit:getTypeName() .. " was shot down; chute spotted"
+            trigger.action.outTextForCoalition(_unit:getCoalition(), message, 10)
+            env.info(message)
 
             local _freq = csar.generateADFFrequency()
 
@@ -578,7 +388,7 @@ function csar.eventHandler:onEvent(_event)
 
             return true
         end
-    end, _event)
+    end, event)
     if (not status) then
         env.error(string.format("Error while handling event %s", err), false)
     end
@@ -1267,13 +1077,13 @@ function csar.checkCloseWoundedGroup(_distance, _heliUnit, _heliName, _woundedGr
                     --check height!
                     local _height = _heliUnit:getPoint().y - _woundedLeader:getPoint().y
 
-                    if _height <= 90.0 then
+                    if _height <= 20.0 then
 
                         local _time = csar.hoverStatus[_lookupKeyHeli]
 
                         if _time == nil then
-                            csar.hoverStatus[_lookupKeyHeli] = 5
-                            _time = 5
+                            csar.hoverStatus[_lookupKeyHeli] = 10
+                            _time = 10
                         else
                             _time = csar.hoverStatus[_lookupKeyHeli] - 1
                             csar.hoverStatus[_lookupKeyHeli] = _time
@@ -1721,32 +1531,38 @@ end
 
 
 -- Adds menuitem to all medevac units that are active
-function csar.addMedevacMenuItem(_unitName)
+function csar.addMedevacMenuItem()
     -- Loop through all Medevac units
 
-    --timer.scheduleFunction(csar.addMedevacMenuItem, nil, timer.getTime() + 5)
+    --[[commented out because this is added as a menu item in birthEventHandler.lua
+    timer.scheduleFunction(csar.addMedevacMenuItem, nil, timer.getTime() + 5)
+  --]]
+    for _, _unitName in pairs(csar.csarUnits) do
 
-    local _unit = csar.getSARHeli(_unitName)
+        local _unit = csar.getSARHeli(_unitName)
 
-    if _unit ~= nil then
+        if _unit ~= nil then
 
-        local _groupId = csar.getGroupId(_unit)
+            local _groupId = csar.getGroupId(_unit)
 
-        if _groupId then
+            if _groupId then
 
-            if csar.addedTo[tostring(_groupId)] == nil then
+                if csar.addedTo[tostring(_groupId)] == nil then
 
-                csar.addedTo[tostring(_groupId)] = true
+                    csar.addedTo[tostring(_groupId)] = true
 
-                local _rootPath = missionCommands.addSubMenuForGroup(_groupId, "CSAR")
+                    local _rootPath = missionCommands.addSubMenuForGroup(_groupId, "CSAR")
 
-                missionCommands.addCommandForGroup(_groupId, "List Active CSAR", _rootPath, csar.displayActiveSAR,
+                    missionCommands.addCommandForGroup(_groupId, "List Active CSAR", _rootPath, csar.displayActiveSAR,
                         _unitName)
 
-                missionCommands.addCommandForGroup(_groupId, "Check Onboard", _rootPath, csar.checkOnboard, _unitName)
+                    missionCommands.addCommandForGroup(_groupId, "Check Onboard", _rootPath, csar.checkOnboard, _unitName)
 
-                missionCommands.addCommandForGroup(_groupId, "Request Signal Flare", _rootPath, csar.signalFlare, _unitName)
+                    missionCommands.addCommandForGroup(_groupId, "Request Signal Flare", _rootPath, csar.signalFlare, _unitName)
+                end
             end
+        else
+            -- env.info(string.format("unit nil %s",_unitName))
         end
     end
 
@@ -1957,8 +1773,11 @@ end
 
 csar.generateVHFrequencies()
 
+--[[
+Commented out the medevac menu is populated in the birthEventHandler
 -- Schedule timer to add radio item
---timer.scheduleFunction(csar.addMedevacMenuItem, nil, timer.getTime() + 5)
+timer.scheduleFunction(csar.addMedevacMenuItem, nil, timer.getTime() + 5)
+--]]
 
 if csar.disableAircraftTimeout then
     -- Schedule timer to reactivate things

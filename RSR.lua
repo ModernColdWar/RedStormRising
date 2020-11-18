@@ -23,27 +23,33 @@ if rsrConfig.devMode then
     ctld.crateWaitTime = 1
 end
 
-log:info("Setting csar.maxLives to $1", rsrConfig.maxLives)
-csar.maxLives = rsrConfig.maxLives
+--log:info("Setting csar.maxLives to $1", rsrConfig.maxLives)
+--csar.maxLives = rsrConfig.maxLives
 
 local persistence = require("persistence")
 local slotBlocker = require("slotBlocker")
 local baseCapturedHandler = require("baseCapturedHandler")
-local awacs = require("awacs")
+--local awacs = require("awacs")
+--local CAS = require("CAS") --AI CAS KA50s
 local hitEventHandler = require("hitEventHandler")
 local birthEventHandler = require("birthEventHandler")
 local deadEventHandler = require("deadEventHandler")
 local restartInfo = require("restartInfo")
 local SGS_RSR = require("SGS_RSR") --Group Saves
-local baseResupply = require("baseResupply")
+--local baseResupply = require("baseResupply")
 local SCUD_EventHandler = require("SCUD_EventHandler")
+local UAV_Designate = require("UAV_Designate")
+local warehouseResupply = require("warehouseResupply")
+local AWACS_Tankers = require("AWACS_Tankers")
+local UAV_Recon = require("UAV_Recon")
 require("weaponManager")
 require("EWRS_OPM")
 
 slotBlocker.onMissionStart()
 baseCapturedHandler.register()
 persistence.onMissionStart(rsrConfig)
-awacs.onMissionStart(rsrConfig.awacsBases, rsrConfig.awacsSpawnLimit)
+--awacs.onMissionStart(rsrConfig.awacsBases, rsrConfig.awacsSpawnLimit)
+--CAS.CASstart()
 hitEventHandler.onMissionStart(rsrConfig.hitMessageDelay)
 birthEventHandler.onMissionStart(rsrConfig.restartHours)
 deadEventHandler.register()

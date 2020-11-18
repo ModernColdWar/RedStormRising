@@ -532,7 +532,7 @@ ctld.spawnableCrates = {
     
         -- HQ-7 (can also be configured as a system, but not currently doing so; just using the launcher)
         -- HQ-7 launcher has different names per side for immersion sake
-    { weight = 867, desc = "HQ-7", unit = "HQ-7_LN_SP", side = 1, cratesRequired = 3, unitQuantity = 2, internal = 0 },
+    { weight = 867, desc = "HQ-7", unit = "HQ-7_LN_SP", side = 1, cratesRequired = 2, unitQuantity = 2, internal = 0 },
     
     ------------------------------------------------------------
 
@@ -542,7 +542,7 @@ ctld.spawnableCrates = {
     
     -- HQ-7 (can also be configured as a system, but not currently doing so; just using the launcher)
         -- HQ-7 launcher has different names per side for immersion sake
-    { weight = 880, desc = "Crotale", unit = "HQ-7_LN_SP", side = 2, cratesRequired = 3, unitQuantity = 3, internal = 0 },
+    { weight = 880, desc = "Crotale", unit = "HQ-7_LN_SP", side = 2, cratesRequired = 2, unitQuantity = 3, internal = 0 },
 
     },
   
@@ -630,7 +630,7 @@ ctld.internalCratesOnly = ctld.spawnableCrates["Internal Cargo"]
 
 -- if the unit is on this list, it will be made into a JTAC when deployed
 ctld.jtacUnitTypes = {
-    "Tigr_233036", "Hummer" -- there are some wierd encoding issues so if you write SKP-11 it wont match as the - sign is encoded differently...
+    "Tigr_233036", "Hummer", "FW-190A8", "P-47D-30" -- there are some wierd encoding issues so if you write SKP-11 it wont match as the - sign is encoded differently...
 }
 
 --- Tells CTLD What multipart AA Systems there are and what parts they need

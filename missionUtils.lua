@@ -5,7 +5,7 @@ local M = {}
 
 -- From https://wiki.hoggitworld.com/view/Category:Terrain_Information
 M.airbases = {
-    Caucasus = {
+    --[[Caucasus = {
         [12] = "Anapa-Vityazevo",
         [13] = "Krasnodar-Center",
         [14] = "Novorossiysk",
@@ -27,9 +27,43 @@ M.airbases = {
         [30] = "Soganlug",
         [31] = "Vaziani",
         [32] = "Beslan",
-    }
+    }--]]	
+    Syria = {
+  	    [1] = "Abu al-Duhur", 
+      	[2] = "Adana Sakirpasa", 
+      	[3] = "Al Qusayr", 
+      	[4] = "An Nasiriyah", 
+      	[6] = "Beirut-Rafic Hariri", 
+      	[7] = "Damascus", 
+      	[8] = "Marj as Sultan South", 
+      	[9] = "Al-Dumayr", 
+      	[10] = "Eyn Shemer", 
+      	[13] = "Haifa", 
+      	[14] = "Hama", 
+      	[15] = "Hatay", 
+      	[16] = "Incirlik", 
+      	[17] = "Jirah", 
+      	[18] = "Khalkhalah", 
+      	[19] = "King Hussein Air College", 
+      	[20] = "Kiryat Shmona", 
+      	[21] = "Bassel Al-Assad", 
+      	[22] = "Marj as Sultan North", 
+      	[23] = "Marj Ruhayyil", 
+      	[24] = "Megiddo", 
+      	[25] = "Mezzeh", 
+      	[26] = "Minakh", 
+      	[27] = "Aleppo", 
+      	[28] = "Palmyra", 
+      	[29] = "Qabr as Sitt", 
+      	[30] = "Ramat David",
+      	[31] = "Kuweires",
+      	[32] = "Rayak", 
+      	[33] = "Rene Mouawad", 
+      	[37] = "Tabqa", 
+      	[38] = "Taftanaz", 
+      	[40] = "Wujah Al Hajar",
+	}
 }
-
 function M.loadMission(missionDir)
     print("Loading mission from " .. missionDir)
     dofile(missionDir .. [[\mission]])
@@ -129,30 +163,30 @@ end
 local transportTypes = {
 
     --"SA342Mistral",
-    "SA342L",
+--    "SA342L",
     "SA342M",
-	"SA342Minigun",
+--	"SA342Minigun",
     "Ka-50",
     "UH-1H",
     "Mi-8MT",
     ----
-    "C-101CC",
-    "L-39ZA",
+--    "C-101CC",
+--    "L-39ZA",
     ----
-    "MiG-15bis",
-    "F-86F Sabre",
+--    "MiG-15bis",
+--    "F-86F Sabre",
     ----
     "TF-51D",
-    "Bf-109K-4",
-    "FW-190D9",
-    "FW-190A8",
-    "I-16",
-    "SpitfireLFMkIX",
-    "SpitfireLFMkIXCW",
-    "P-51D",
-    "P-51D-30-NA",
-    "Christen Eagle II",
-    "Yak-52"
+--    "Bf-109K-4",
+--    "FW-190D9",
+--    "FW-190A8",
+--    "I-16",
+--    "SpitfireLFMkIX",
+--    "SpitfireLFMkIXCW",
+--    "P-51D",
+--    "P-51D-30-NA",
+--   "Christen Eagle II",
+--    "Yak-52"
 }
 
 function M.isTransportType(type)
