@@ -350,7 +350,7 @@ function M.baseCaptureZoneToNameSideType(_zone)
     --"MM75 RSRbaseCaptureZone FARP" = "MM75" i.e. from whitepace and RSR up
     local _RSRbaseCaptureZoneName = string.match(_zoneName, ("^(.+)%sRSR"))
 
-    --log:info("_RSRbaseCaptureZoneName: $1",_RSRbaseCaptureZoneName)
+    log:info("_RSRbaseCaptureZoneName: $1",_RSRbaseCaptureZoneName)
 
     --"MM75 RSRbaseCaptureZone FARP" = "FARP"
     local _baseType = string.match(_zoneName, ("%w+$"))

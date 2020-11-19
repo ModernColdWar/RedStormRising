@@ -40,11 +40,7 @@ rsrConfig.maxLives = math.floor(rsrConfig.missionDurationInHours * rsrConfig.liv
 rsrConfig.restartWarningMinutes = { 60, 45, 30, 20, 15, 10, 5, 3, 1 } -- times in minutes before restart to broadcast message
 rsrConfig.hitMessageDelay = 30
 
--- AWACS configuration
-rsrConfig.awacsBases = { "Krasnodar-Center", "Vaziani" } -- bases with linked AWACS spawns
-rsrConfig.awacsSpawnLimit = math.floor(rsrConfig.missionDurationInHours / 2)
-
 -- staging bases that never change side, never have logisitics centres and cannot be distinguished from FARP helipads
-rsrConfig.stagingBases = { "RedStagingPoint", "BlueStagingPoint" }
+rsrConfig.stagingBases = { "RedStagingPoint" }
 
 return rsrConfig
