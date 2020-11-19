@@ -21,7 +21,7 @@
  ]]
 -- luacheck: no max line length
 env.info("RSR STARTUP: CTLD.LUA INIT")
-require("mist_4_3_74")
+require("mist_4_4_90")
 require("CTLD_config")
 require("Moose")
 local inspect = require("inspect")

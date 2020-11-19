@@ -1,6 +1,6 @@
 --- Saving/loading/updating code for managing "live" units and persisting them across server restarts
 env.info("RSR STARTUP: persistence.LUA INIT")
-require("mist_4_3_74") --required if loaded in utils?
+require("mist_4_4_90")
 require("CTLD")
 require("Moose")
 local inspect = require("inspect")
